@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/samber/lo"
 )
@@ -50,12 +51,12 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 		Version: "2",
 		SQL: []config.SQLConfig{
 			{
-				Name:    lo.Ternary(data.ProjectName != "", data.ProjectName, "service"),
-				Engine:  string(data.Database),
-				Queries: config.NewPathOrPaths([]string{data.QueriesDir}),
-				Schema:  config.NewPathOrPaths([]string{data.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(data.SafetyRules.StrictFunctions),
-				StrictOrderBy:        lo.ToPtr(data.SafetyRules.StrictOrderBy),
+				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "service"),
+				Engine:               string(data.Database),
+				Queries:              config.NewPathOrPaths([]string{data.QueriesDir}),
+				Schema:               config.NewPathOrPaths([]string{data.SchemaDir}),
+				StrictFunctionChecks: lo.ToPtr(data.StrictFunctions),
+				StrictOrderBy:        lo.ToPtr(data.StrictOrderBy),
 				Database: &config.DatabaseConfig{
 					URI:     data.DatabaseURL,
 					Managed: data.UseManagedDB,
@@ -86,7 +87,7 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 						Rename:                    t.getRenameRules(),
 					},
 				},
-				Rules: t.getSafetyRules(data.SafetyRules),
+				Rules: data.SafetyRules.ToRuleConfigs(),
 			},
 		},
 	}
@@ -106,7 +107,7 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 		SchemaDir:      "internal/db/schema",
 		DatabaseURL:    "${DATABASE_URL}",
 		Features:       DefaultFeatures(),
-		SafetyRules:    DefaultSafetyRules(),
+		SafetyRules:    domain.DefaultSafetyRules(),
 	}
 }
 
@@ -198,41 +199,3 @@ func (t *MicroserviceTemplate) getRenameRules() map[string]string {
 	}
 }
 
-// getSafetyRules converts SafetyRules to config.RuleConfig
-func (t *MicroserviceTemplate) getSafetyRules(rules SafetyRules) []config.RuleConfig {
-	var configRules []config.RuleConfig
-
-	if rules.NoSelectStar {
-		configRules = append(configRules, config.RuleConfig{
-			Name:    "no-select-star",
-			Rule:    "!query.sql.contains(\"SELECT *\")",
-			Message: "SELECT * is not allowed for security and performance reasons",
-		})
-	}
-
-	if rules.RequireWhere {
-		configRules = append(configRules, config.RuleConfig{
-			Name:    "require-where-delete",
-			Rule:    "query.cmd != \"exec\" || !query.sql.contains(\"DELETE\") || query.sql.contains(\"WHERE\")",
-			Message: "DELETE statements must include a WHERE clause",
-		})
-	}
-
-	if rules.NoDropTable {
-		configRules = append(configRules, config.RuleConfig{
-			Name:    "no-drop-table",
-			Rule:    "!query.sql.contains(\"DROP TABLE\")",
-			Message: "DROP TABLE statements are not allowed",
-		})
-	}
-
-	if rules.RequireLimit {
-		configRules = append(configRules, config.RuleConfig{
-			Name:    "require-limit-select",
-			Rule:    "query.cmd == \"many\" implies query.sql.contains(\"LIMIT\")",
-			Message: "SELECT queries that return multiple rows should include a LIMIT clause",
-		})
-	}
-
-	return configRules
-}
