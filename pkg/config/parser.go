@@ -1,9 +1,9 @@
 package config
 
 import (
-	"fmt"
 	"os"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -11,17 +11,25 @@ import (
 func ParseFile(path string) (*SqlcConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
-		return nil, fmt.Errorf("failed to read config file: %w", err)
+		if os.IsNotExist(err) {
+			return nil, errors.NewConfigNotFoundError(path)
+		}
+		return nil, errors.NewFileReadError(path, err)
 	}
 
-	return Parse(data)
+	cfg, err := Parse(data)
+	if err != nil {
+		return nil, errors.NewConfigParseError(path, err)
+	}
+
+	return cfg, nil
 }
 
 // Parse parses YAML data into a SqlcConfig
 func Parse(data []byte) (*SqlcConfig, error) {
 	var cfg SqlcConfig
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, fmt.Errorf("failed to parse YAML: %w", err)
+		return nil, errors.Wrap(errors.ErrCodeConfigParseFailed, "failed to parse YAML", err)
 	}
 
 	return &cfg, nil
