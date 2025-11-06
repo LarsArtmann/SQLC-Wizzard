@@ -69,6 +69,13 @@ deps:
 # Run all verification steps (build, lint, test)
 verify: build lint test
 
+# Generate Go types from TypeSpec
+generate-typespec:
+	@echo "Generating types from TypeSpec..."
+	@mkdir -p generated
+	@tsp compile api/typespec.tsp --emit @typespec/openapi3 --output-dir tsp-output
+	@echo "TypeSpec compilation complete: tsp-output/"
+
 # Development workflow (clean, build, test, find duplicates)
 dev: clean build test find-duplicates
 	@echo "Development workflow complete"
