@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/charmbracelet/huh"
@@ -43,7 +44,7 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	// Initialize template data with defaults
 	data := templates.TemplateData{
 		Features:    templates.DefaultFeatures(),
-		SafetyRules: templates.DefaultSafetyRules(),
+		SafetyRules: domain.DefaultSafetyRules(),
 	}
 
 	// Step 1: Project Type

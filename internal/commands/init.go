@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/generators"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
@@ -106,7 +107,7 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 		Database:     templates.DatabaseType(opts.Database),
 		PackagePath:  opts.PackagePath,
 		Features:     templates.DefaultFeatures(),
-		SafetyRules:  templates.DefaultSafetyRules(),
+		SafetyRules:  domain.DefaultSafetyRules(),
 	}
 
 	// Generate config from template

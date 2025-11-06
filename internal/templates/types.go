@@ -1,6 +1,9 @@
 package templates
 
-import "github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+import (
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+)
 
 // ProjectType represents the type of project template
 type ProjectType string
@@ -50,8 +53,12 @@ type TemplateData struct {
 	// Feature flags
 	Features Features
 
-	// Safety settings
-	SafetyRules SafetyRules
+	// Safety rules (CEL-based validation)
+	SafetyRules domain.SafetyRules
+
+	// Strict validation flags (config-level, not CEL rules)
+	StrictFunctions bool
+	StrictOrderBy   bool
 }
 
 // Features represents optional database features
@@ -69,15 +76,8 @@ type Features struct {
 	OmitUnusedStructs  bool
 }
 
-// SafetyRules represents validation and safety features
-type SafetyRules struct {
-	NoSelectStar      bool
-	RequireWhere      bool
-	RequireLimit      bool
-	NoDropTable       bool
-	StrictFunctions   bool
-	StrictOrderBy     bool
-}
+// NOTE: SafetyRules moved to internal/domain/rule.go to eliminate split brain.
+// Use domain.SafetyRules and domain.DefaultSafetyRules() instead.
 
 // Template represents a project template
 type Template interface {
@@ -147,14 +147,4 @@ func DefaultFeatures() Features {
 	}
 }
 
-// DefaultSafetyRules returns recommended safety rules
-func DefaultSafetyRules() SafetyRules {
-	return SafetyRules{
-		NoSelectStar:    true,
-		RequireWhere:    true,
-		RequireLimit:    false,
-		NoDropTable:     true,
-		StrictFunctions: true,
-		StrictOrderBy:   true,
-	}
-}
+// NOTE: DefaultSafetyRules moved to domain.DefaultSafetyRules()
