@@ -15,7 +15,7 @@ import (
 // WizardResult contains the output of running the wizard
 type WizardResult struct {
 	Config          *config.SqlcConfig
-	TemplateData    templates.TemplateData
+	TemplateData    generated.TemplateData
 	GenerateQueries bool
 	GenerateSchema  bool
 }
