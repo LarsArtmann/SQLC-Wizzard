@@ -40,8 +40,8 @@ Generate perfect sqlc.yaml configurations in minutes, not hours!`,
 	rootCmd.AddCommand(commands.NewInitCommand())
 	rootCmd.AddCommand(commands.NewValidateCommand())
 	rootCmd.AddCommand(commands.NewGenerateCommand())
+	rootCmd.AddCommand(commands.NewDoctorCommand())
 
-	// TODO: Add doctor command
 	// TODO: Add plugins command
 	// TODO: Add migrate command
 
