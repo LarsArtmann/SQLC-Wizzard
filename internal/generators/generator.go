@@ -70,13 +70,13 @@ func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey
 	
 	switch templateType {
 	case "queries":
-		dir = data.QueriesDir
+		dir = data.Output.QueriesDir
 		if dir == "" {
 			dir = defaultDir
 		}
 		templateContent = getQueryTemplate
 	case "schema":
-		dir = data.SchemaDir
+		dir = data.Output.SchemaDir
 		if dir == "" {
 			dir = defaultDir
 		}

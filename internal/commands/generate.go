@@ -51,11 +51,30 @@ func generateExampleFiles(outputDir string, force bool) error {
 	// Create template data with defaults
 	templateData := templates.TemplateData{
 		ProjectName: "generated-project",
-		Database:    templates.MustNewDatabaseType("postgresql"),
-		QueriesDir:  "queries",
-		SchemaDir:   "schema",
-		OutputDir:   outputDir,
-		PackagePath: "db",
+		ProjectType: templates.MustNewProjectType("microservice"),
+		
+		Package: templates.PackageConfig{
+			Name: "db",
+			Path: "db",
+		},
+		
+		Database: templates.DatabaseConfig{
+			Engine:     templates.MustNewDatabaseType("postgresql"),
+			UseUUIDs:   false,
+			UseJSON:    true,
+			UseArrays:  false,
+		},
+		
+		Output: templates.OutputConfig{
+			BaseDir:    outputDir,
+			QueriesDir:  "queries",
+			SchemaDir:   "schema",
+		},
+		
+		Validation: templates.ValidationConfig{
+			StrictFunctions: true,
+			StrictOrderBy:   true,
+		},
 	}
 
 	// Check if output directory exists and has files

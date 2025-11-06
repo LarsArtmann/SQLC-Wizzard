@@ -27,24 +27,32 @@ func (t *MicroserviceTemplate) Description() string {
 // Generate creates a SqlcConfig from template data
 func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, error) {
 	// Set defaults
-	if data.PackageName == "" {
-		data.PackageName = "db"
+	packageConfig := data.Package
+	if packageConfig.Name == "" {
+		packageConfig.Name = "db"
 	}
-	if data.OutputDir == "" {
-		data.OutputDir = "internal/db"
+	if packageConfig.Path == "" {
+		packageConfig.Path = "db"
 	}
-	if data.QueriesDir == "" {
-		data.QueriesDir = "internal/db/queries"
+	
+	outputConfig := data.Output
+	if outputConfig.BaseDir == "" {
+		outputConfig.BaseDir = "internal/db"
 	}
-	if data.SchemaDir == "" {
-		data.SchemaDir = "internal/db/schema"
+	if outputConfig.QueriesDir == "" {
+		outputConfig.QueriesDir = "internal/db/queries"
 	}
-	if data.DatabaseURL == "" {
-		data.DatabaseURL = "${DATABASE_URL}"
+	if outputConfig.SchemaDir == "" {
+		outputConfig.SchemaDir = "internal/db/schema"
+	}
+	
+	databaseConfig := data.Database
+	if databaseConfig.URL == "" {
+		databaseConfig.URL = "${DATABASE_URL}"
 	}
 
 	// Determine SQL package based on database type
-	sqlPackage := t.getSQLPackage(data.Database)
+	sqlPackage := t.getSQLPackage(databaseConfig.Engine)
 
 	// Build config
 	cfg := &config.SqlcConfig{
@@ -52,19 +60,19 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 		SQL: []config.SQLConfig{
 			{
 				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "service"),
-				Engine:               string(data.Database),
-				Queries:              config.NewPathOrPaths([]string{data.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{data.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(data.StrictFunctions),
-				StrictOrderBy:        lo.ToPtr(data.StrictOrderBy),
+				Engine:               string(databaseConfig.Engine),
+				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
+				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
+				StrictFunctionChecks: lo.ToPtr(data.Validation.StrictFunctions),
+				StrictOrderBy:        lo.ToPtr(data.Validation.StrictOrderBy),
 				Database: &config.DatabaseConfig{
-					URI:     data.DatabaseURL,
-					Managed: data.UseManagedDB,
+					URI:     databaseConfig.URL,
+					Managed: databaseConfig.UseManaged,
 				},
 				Gen: config.GenConfig{
 					Go: t.buildGoGenConfig(data, sqlPackage),
 				},
-				Rules: data.SafetyRules.ToRuleConfigs(),
+				Rules: data.Validation.SafetyRules.ToRuleConfigs(),
 			},
 		},
 	}
@@ -75,22 +83,36 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 // DefaultData returns default TemplateData for microservice template
 func (t *MicroserviceTemplate) DefaultData() TemplateData {
 	return TemplateData{
-		ProjectType:       ProjectTypeMicroservice,
-		Database:          DatabaseTypePostgreSQL,
-		UseManagedDB:      true,
-		PackageName:       "db",
-		OutputDir:         "internal/db",
-		QueriesDir:        "internal/db/queries",
-		SchemaDir:         "internal/db/schema",
-		DatabaseURL:       "${DATABASE_URL}",
-		UseUUIDs:          true,
-		UseJSON:           true,
-		UseArrays:         false,
-		UseFullTextSearch: false,
-		EmitOptions:       domain.DefaultEmitOptions(),
-		SafetyRules:       domain.DefaultSafetyRules(),
-		StrictFunctions:   false,
-		StrictOrderBy:     false,
+		ProjectName: "",
+		ProjectType: MustNewProjectType("microservice"),
+		
+		Package: PackageConfig{
+			Name: "db",
+			Path: "internal/db",
+		},
+		
+		Database: DatabaseConfig{
+			Engine:      MustNewDatabaseType("postgresql"),
+			URL:         "${DATABASE_URL}",
+			UseManaged:  true,
+			UseUUIDs:    true,
+			UseJSON:     true,
+			UseArrays:   false,
+			UseFullText: false,
+		},
+		
+		Output: OutputConfig{
+			BaseDir:    "internal/db",
+			QueriesDir:  "internal/db/queries",
+			SchemaDir:   "internal/db/schema",
+		},
+		
+		Validation: ValidationConfig{
+			StrictFunctions: false,
+			StrictOrderBy:   false,
+			EmitOptions:    domain.DefaultEmitOptions(),
+			SafetyRules:     domain.DefaultSafetyRules(),
+		},
 	}
 }
 
@@ -100,11 +122,11 @@ func (t *MicroserviceTemplate) RequiredFeatures() []string {
 }
 
 // buildGoGenConfig builds the GoGenConfig from template data.
-// This eliminates split brain by using EmitOptions.ApplyToGoGenConfig().
+// This eliminates split brain by using Validation.EmitOptions.ApplyToGoGenConfig().
 func (t *MicroserviceTemplate) buildGoGenConfig(data TemplateData, sqlPackage string) *config.GoGenConfig {
 	cfg := &config.GoGenConfig{
-		Package:    data.PackageName,
-		Out:        data.OutputDir,
+		Package:    data.Package.Name,
+		Out:        data.Output.BaseDir,
 		SQLPackage: sqlPackage,
 		BuildTags:  t.getBuildTags(data),
 		Overrides:  t.getTypeOverrides(data),
@@ -133,7 +155,7 @@ func (t *MicroserviceTemplate) getSQLPackage(db DatabaseType) string {
 
 // getBuildTags returns appropriate build tags
 func (t *MicroserviceTemplate) getBuildTags(data TemplateData) string {
-	switch data.Database {
+	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
 		return "postgres,pgx"
 	case DatabaseTypeMySQL:
@@ -149,10 +171,10 @@ func (t *MicroserviceTemplate) getBuildTags(data TemplateData) string {
 func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Override {
 	var overrides []config.Override
 
-	switch data.Database {
+	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
 		// UUID support
-		if data.UseUUIDs {
+		if data.Database.UseUUIDs {
 			overrides = append(overrides, config.Override{
 				DBType:       "uuid",
 				GoType:       "UUID",

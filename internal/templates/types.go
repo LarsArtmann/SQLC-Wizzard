@@ -28,43 +28,49 @@ const (
 	DatabaseTypeSQLite     DatabaseType = "sqlite"
 )
 
-// TemplateData contains all data needed to render a template
-type TemplateData struct {
-	// Project information
-	ProjectName string
-	ProjectType ProjectType
-	PackagePath string
+// PackageConfig represents complete package configuration
+type PackageConfig struct {
+	Name     string
+	Path      string
+	BuildTags string
+}
 
-	// Database configuration
-	Database       DatabaseType
-	DatabaseURL    string
-	UseManagedDB   bool
+// DatabaseConfig represents database-specific configuration
+type DatabaseConfig struct {
+	Engine      DatabaseType
+	URL         string
+	UseManaged  bool
+	UseUUIDs    bool
+	UseJSON     bool
+	UseArrays   bool
+	UseFullText bool
+}
 
-	// Output directories
-	OutputDir  string
-	QueriesDir string
-	SchemaDir  string
+// OutputConfig represents output directory configuration
+type OutputConfig struct {
+	BaseDir    string
+	QueriesDir  string
+	SchemaDir   string
+}
 
-	// Go package settings
-	PackageName string
-	SQLPackage  string
-	BuildTags   string
-
-	// Database feature flags (affect type overrides and template logic)
-	UseUUIDs          bool
-	UseJSON           bool
-	UseArrays         bool
-	UseFullTextSearch bool
-
-	// Code generation options
-	EmitOptions domain.EmitOptions
-
-	// Safety rules (CEL-based validation)
-	SafetyRules domain.SafetyRules
-
-	// Strict validation flags (config-level, not CEL rules)
+// ValidationConfig represents validation settings
+type ValidationConfig struct {
 	StrictFunctions bool
 	StrictOrderBy   bool
+	EmitOptions    domain.EmitOptions
+	SafetyRules     domain.SafetyRules
+}
+
+// TemplateData contains all data needed to render a template
+// SPLIT BRAIN FIXED: Unified configuration structure
+type TemplateData struct {
+	ProjectName string
+	ProjectType ProjectType
+	
+	Package    PackageConfig
+	Database   DatabaseConfig
+	Output     OutputConfig
+	Validation ValidationConfig
 }
 
 // NOTE: Features split brain eliminated!
