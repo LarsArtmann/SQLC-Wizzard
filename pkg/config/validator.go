@@ -72,12 +72,12 @@ func validateSQLConfig(cfg *SQLConfig, index int, result *ValidationResult) {
 	}
 
 	// Validate queries path
-	if cfg.Queries == nil {
+	if cfg.Queries.IsEmpty() {
 		result.AddError(prefix+".queries", "queries path is required")
 	}
 
 	// Validate schema path
-	if cfg.Schema == nil {
+	if cfg.Schema.IsEmpty() {
 		result.AddError(prefix+".schema", "schema path is required")
 	}
 

@@ -20,8 +20,8 @@ type CloudConfig struct {
 type SQLConfig struct {
 	Name                  string            `yaml:"name,omitempty"`
 	Engine                string            `yaml:"engine"`
-	Queries               interface{}       `yaml:"queries"` // Can be string or []string
-	Schema                interface{}       `yaml:"schema"`  // Can be string or []string
+	Queries               PathOrPaths       `yaml:"queries"` // Paths to SQL query files
+	Schema                PathOrPaths       `yaml:"schema"`  // Paths to SQL schema/migration files
 	Gen                   GenConfig         `yaml:"gen"`
 	Database              *DatabaseConfig   `yaml:"database,omitempty"`
 	Rules                 []RuleConfig      `yaml:"rules,omitempty"`
