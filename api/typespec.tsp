@@ -2,33 +2,33 @@ namespace sqlc.wizard;
 
 /// ProjectType represents the type of project template
 enum ProjectType {
-  hobby = "hobby";
-  microservice = "microservice";
-  enterprise = "enterprise";
-  api_first = "api-first";
-  analytics = "analytics";
-  testing = "testing";
-  multi_tenant = "multi-tenant";
-  library = "library";
+  hobby: "hobby";
+  microservice: "microservice";
+  enterprise: "enterprise";
+  api_first: "api-first";
+  analytics: "analytics";
+  testing: "testing";
+  multi_tenant: "multi-tenant";
+  library: "library";
 }
 
 /// DatabaseType represents the supported database engines
 enum DatabaseType {
-  postgresql = "postgresql";
-  mysql = "mysql";
-  sqlite = "sqlite";
+  postgresql: "postgresql";
+  mysql: "mysql";
+  sqlite: "sqlite";
 }
 
 /// EmitOptions defines SQL code generation options
 model EmitOptions {
-  emit_json_tags: bool;
-  emit_prepared_queries: bool;
-  emit_interface: bool;
-  emit_empty_slices: bool;
-  emit_result_struct_pointers: bool;
-  emit_params_struct_pointers: bool;
-  emit_enum_valid_method: bool;
-  emit_all_enum_values: bool;
+  emit_json_tags: boolean;
+  emit_prepared_queries: boolean;
+  emit_interface: boolean;
+  emit_empty_slices: boolean;
+  emit_result_struct_pointers: boolean;
+  emit_params_struct_pointers: boolean;
+  emit_enum_valid_method: boolean;
+  emit_all_enum_values: boolean;
   json_tags_case_style: string; // TODO: convert to enum
 }
 
@@ -46,8 +46,8 @@ model TemplateData {
   package_path: string;
   
   database: DatabaseType;
-  database_url: string?;
-  use_managed_db: bool;
+  database_url?: string;
+  use_managed_db: boolean;
   
   output_dir: string;
   queries_dir: string;
@@ -55,18 +55,18 @@ model TemplateData {
   
   package_name: string;
   sql_package: string;
-  build_tags: string?;
+  build_tags?: string;
   
-  use_uuids: bool;
-  use_json: bool;
-  use_arrays: bool;
-  use_full_text_search: bool;
+  use_uuids: boolean;
+  use_json: boolean;
+  use_arrays: boolean;
+  use_full_text_search: boolean;
   
   emit_options: EmitOptions;
   safety_rules: SafetyRule[];
   
-  strict_functions: bool;
-  strict_order_by: bool;
+  strict_functions: boolean;
+  strict_order_by: boolean;
 }
 
 /// CreateProjectCommand represents a command to create a new project
@@ -88,7 +88,7 @@ model ProjectCreated {
 
 /// ValidationResult represents the result of validation
 model ValidationResult {
-  is_valid: bool;
+  is_valid: boolean;
   errors: string[];
   warnings: string[];
 }
@@ -96,7 +96,7 @@ model ValidationResult {
 /// GenerateFilesCommand represents a command to generate files
 model GenerateFilesCommand {
   template_data: TemplateData;
-  force: bool;
+  force: boolean;
 }
 
 /// FilesGenerated represents a domain event when files are generated
