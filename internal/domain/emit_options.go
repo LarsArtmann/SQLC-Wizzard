@@ -1,6 +1,9 @@
 package domain
 
-import "github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+import (
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+)
 
 // EmitOptions represents code generation options.
 // This is the SINGLE SOURCE OF TRUTH for code generation settings.
@@ -69,4 +72,68 @@ func DefaultEmitOptions() EmitOptions {
 		CopyfromFileName:   "copyfrom.go",
 		BatchFileName:      "batch.go",
 	}
+}
+
+// Validate checks if the EmitOptions are valid.
+// This is a smart constructor pattern - validate after construction.
+func (eo EmitOptions) Validate() error {
+	// Validate JSON tags case style
+	if eo.JSONTags && eo.JSONTagsCaseStyle != "" {
+		switch eo.JSONTagsCaseStyle {
+		case "camel", "pascal", "snake", "none":
+			// Valid
+		default:
+			return errors.NewValidationErrorf(
+				"json_tags_case_style",
+				"invalid JSON tags case style: %s (must be one of: camel, pascal, snake, none)",
+				eo.JSONTagsCaseStyle,
+			).Error
+		}
+	}
+
+	// Validate file names are not empty
+	if eo.DBFileName == "" {
+		return errors.NewValidationError("db_file_name", "DB file name cannot be empty").Error
+	}
+	if eo.ModelsFileName == "" {
+		return errors.NewValidationError("models_file_name", "models file name cannot be empty").Error
+	}
+	if eo.QuerierFileName == "" {
+		return errors.NewValidationError("querier_file_name", "querier file name cannot be empty").Error
+	}
+
+	// File names should end with .go
+	fileNames := map[string]string{
+		"db_file_name":       eo.DBFileName,
+		"models_file_name":   eo.ModelsFileName,
+		"querier_file_name":  eo.QuerierFileName,
+		"copyfrom_file_name": eo.CopyfromFileName,
+		"batch_file_name":    eo.BatchFileName,
+	}
+
+	for field, fileName := range fileNames {
+		if fileName != "" && len(fileName) < 3 || !hasGoExtension(fileName) {
+			return errors.NewValidationErrorf(
+				field,
+				"file name must end with .go: %s",
+				fileName,
+			).Error
+		}
+	}
+
+	return nil
+}
+
+// hasGoExtension checks if a filename ends with .go
+func hasGoExtension(filename string) bool {
+	return len(filename) >= 3 && filename[len(filename)-3:] == ".go"
+}
+
+// NewEmitOptions creates and validates EmitOptions.
+// Use this constructor when building EmitOptions from user input.
+func NewEmitOptions(opts EmitOptions) (EmitOptions, error) {
+	if err := opts.Validate(); err != nil {
+		return EmitOptions{}, err
+	}
+	return opts, nil
 }
