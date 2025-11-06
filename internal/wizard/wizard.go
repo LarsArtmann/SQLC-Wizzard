@@ -6,6 +6,7 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/utils"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
@@ -216,10 +217,10 @@ func (w *Wizard) selectFeatures(data *templates.TemplateData) error {
 	}
 
 	// Update features based on selection
-	data.UseUUIDs = contains(features, "uuid")
-	data.UseJSON = contains(features, "json")
-	data.UseArrays = contains(features, "arrays")
-	data.UseFullTextSearch = contains(features, "fts")
+	data.UseUUIDs = utils.Contains(features, "uuid")
+	data.UseJSON = utils.Contains(features, "json")
+	data.UseArrays = utils.Contains(features, "arrays")
+	data.UseFullTextSearch = utils.Contains(features, "fts")
 
 	return nil
 }
@@ -272,12 +273,4 @@ func (w *Wizard) outputConfiguration(data *templates.TemplateData) error {
 	return form.Run()
 }
 
-// contains checks if a string slice contains a value
-func contains(slice []string, value string) bool {
-	for _, item := range slice {
-		if item == value {
-			return true
-		}
-	}
-	return false
-}
+

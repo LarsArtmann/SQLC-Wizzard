@@ -62,70 +62,62 @@ func (g *Generator) GenerateSqlcConfig(cfg *config.SqlcConfig) error {
 	return nil
 }
 
-// GenerateExampleQueries copies example query files
-func (g *Generator) GenerateExampleQueries(data templates.TemplateData) error {
-	// Determine queries directory from first SQL config
-	queriesDir := data.QueriesDir
-	if queriesDir == "" {
-		queriesDir = "internal/db/queries"
+// generateFileWithTemplate is a helper to generate files with templates
+func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey, defaultDir, templateType, filename string) error {
+	// Determine directory
+	var dir string
+	var templateContent func(templates.DatabaseType) string
+	
+	switch templateType {
+	case "queries":
+		dir = data.QueriesDir
+		if dir == "" {
+			dir = defaultDir
+		}
+		templateContent = getQueryTemplate
+	case "schema":
+		dir = data.SchemaDir
+		if dir == "" {
+			dir = defaultDir
+		}
+		templateContent = getSchemaTemplate
+	default:
+		return fmt.Errorf("unsupported template type: %s", templateType)
 	}
 
 	// Make it absolute path if relative
-	if !filepath.IsAbs(queriesDir) {
-		queriesDir = filepath.Join(g.outputDir, queriesDir)
+	if !filepath.IsAbs(dir) {
+		dir = filepath.Join(g.outputDir, dir)
 	}
 
 	// Ensure directory exists
-	if err := os.MkdirAll(queriesDir, 0755); err != nil {
-		return fmt.Errorf("failed to create queries directory: %w", err)
+	if err := os.MkdirAll(dir, 0755); err != nil {
+		return fmt.Errorf("failed to create %s directory: %w", templateType, err)
 	}
 
 	// Get template content based on database type
-	content := getQueryTemplate(data.Database)
+	content := templateContent(data.Database)
 	if content == "" {
-		return fmt.Errorf("no query template for database: %s", data.Database)
+		return fmt.Errorf("no %s template for database: %s", templateType, data.Database)
 	}
 
 	// Write to output
-	outputPath := filepath.Join(queriesDir, "users.sql")
+	outputPath := filepath.Join(dir, filename)
 	if err := os.WriteFile(outputPath, []byte(content), 0644); err != nil {
-		return fmt.Errorf("failed to write queries file: %w", err)
+		return fmt.Errorf("failed to write %s file: %w", templateType, err)
 	}
 
 	return nil
 }
 
+// GenerateExampleQueries copies example query files
+func (g *Generator) GenerateExampleQueries(data templates.TemplateData) error {
+	return g.generateFileWithTemplate(data, "queries", "internal/db/queries", "queries", "users.sql")
+}
+
 // GenerateExampleSchema copies example schema files
 func (g *Generator) GenerateExampleSchema(data templates.TemplateData) error {
-	// Determine schema directory
-	schemaDir := data.SchemaDir
-	if schemaDir == "" {
-		schemaDir = "internal/db/schema"
-	}
-
-	// Make it absolute path if relative
-	if !filepath.IsAbs(schemaDir) {
-		schemaDir = filepath.Join(g.outputDir, schemaDir)
-	}
-
-	// Ensure directory exists
-	if err := os.MkdirAll(schemaDir, 0755); err != nil {
-		return fmt.Errorf("failed to create schema directory: %w", err)
-	}
-
-	// Get template content based on database type
-	content := getSchemaTemplate(data.Database)
-	if content == "" {
-		return fmt.Errorf("no schema template for database: %s", data.Database)
-	}
-
-	// Write to output
-	outputPath := filepath.Join(schemaDir, "001_users_table.sql")
-	if err := os.WriteFile(outputPath, []byte(content), 0644); err != nil {
-		return fmt.Errorf("failed to write schema file: %w", err)
-	}
-
-	return nil
+	return g.generateFileWithTemplate(data, "schema", "internal/db/schema", "schema", "001_users_table.sql")
 }
 
 // GenerateSummary creates a summary of what was generated

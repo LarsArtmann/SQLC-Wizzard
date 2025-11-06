@@ -3,6 +3,8 @@ package config
 import (
 	"fmt"
 	"strings"
+
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/utils"
 )
 
 // ValidationError represents a configuration validation error
@@ -67,7 +69,7 @@ func validateSQLConfig(cfg *SQLConfig, index int, result *ValidationResult) {
 	validEngines := []string{"postgresql", "mysql", "sqlite"}
 	if cfg.Engine == "" {
 		result.AddError(prefix+".engine", "engine is required")
-	} else if !contains(validEngines, cfg.Engine) {
+	} else if !utils.Contains(validEngines, cfg.Engine) {
 		result.AddError(prefix+".engine", fmt.Sprintf("invalid engine: %s (must be one of: %s)", cfg.Engine, strings.Join(validEngines, ", ")))
 	}
 
@@ -105,7 +107,7 @@ func validateGoGenConfig(cfg *GoGenConfig, prefix string, result *ValidationResu
 	// Validate json_tags_case_style if set
 	if cfg.JSONTagsCaseStyle != "" {
 		validStyles := []string{"camel", "pascal", "snake"}
-		if !contains(validStyles, cfg.JSONTagsCaseStyle) {
+		if !utils.Contains(validStyles, cfg.JSONTagsCaseStyle) {
 			result.AddError(prefix+".json_tags_case_style", fmt.Sprintf("invalid case style: %s (must be one of: %s)", cfg.JSONTagsCaseStyle, strings.Join(validStyles, ", ")))
 		}
 	}
@@ -124,12 +126,4 @@ func validateGoGenConfig(cfg *GoGenConfig, prefix string, result *ValidationResu
 	}
 }
 
-// contains checks if a string slice contains a specific value
-func contains(slice []string, value string) bool {
-	for _, item := range slice {
-		if item == value {
-			return true
-		}
-	}
-	return false
-}
+

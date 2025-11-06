@@ -136,31 +136,33 @@ var _ = Describe("Constructors", func() {
 		})
 	})
 
-	Describe("IsValidProjectType", func() {
-		It("should return true for valid types", func() {
-			Expect(templates.IsValidProjectType("hobby")).To(BeTrue())
+	Describe("Validation Functions", func() {
+		Context("ProjectType validation", func() {
+			It("should return true for valid types", func() {
+				Expect(templates.IsValidProjectType("hobby")).To(BeTrue())
 			Expect(templates.IsValidProjectType("microservice")).To(BeTrue())
 			Expect(templates.IsValidProjectType("enterprise")).To(BeTrue())
-		})
+			})
 
-		It("should return false for invalid types", func() {
-			Expect(templates.IsValidProjectType("invalid")).To(BeFalse())
+			It("should return false for invalid types", func() {
+				Expect(templates.IsValidProjectType("invalid")).To(BeFalse())
 			Expect(templates.IsValidProjectType("")).To(BeFalse())
 			Expect(templates.IsValidProjectType("MICROSERVICE")).To(BeFalse()) // Case sensitive
+			})
 		})
-	})
 
-	Describe("IsValidDatabaseType", func() {
-		It("should return true for valid types", func() {
-			Expect(templates.IsValidDatabaseType("postgresql")).To(BeTrue())
+		Context("DatabaseType validation", func() {
+			It("should return true for valid types", func() {
+				Expect(templates.IsValidDatabaseType("postgresql")).To(BeTrue())
 			Expect(templates.IsValidDatabaseType("mysql")).To(BeTrue())
 			Expect(templates.IsValidDatabaseType("sqlite")).To(BeTrue())
-		})
+			})
 
-		It("should return false for invalid types", func() {
-			Expect(templates.IsValidDatabaseType("mongodb")).To(BeFalse())
+			It("should return false for invalid types", func() {
+				Expect(templates.IsValidDatabaseType("mongodb")).To(BeFalse())
 			Expect(templates.IsValidDatabaseType("")).To(BeFalse())
 			Expect(templates.IsValidDatabaseType("PostgreSQL")).To(BeFalse()) // Case sensitive
+			})
 		})
 	})
 })
