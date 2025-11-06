@@ -85,21 +85,21 @@ var _ = Describe("Constructors", func() {
 				dt, err := templates.NewDatabaseType("postgresql")
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(dt).To(Equal(templates.DatabaseTypePostgreSQL))
+				Expect(dt).To(Equal(templates.MustNewDatabaseType("postgresql")))
 			})
 
 			It("should accept mysql", func() {
 				dt, err := templates.NewDatabaseType("mysql")
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(dt).To(Equal(templates.DatabaseTypeMySQL))
+				Expect(dt).To(Equal(templates.MustNewDatabaseType("mysql")))
 			})
 
 			It("should accept sqlite", func() {
 				dt, err := templates.NewDatabaseType("sqlite")
 
 				Expect(err).ToNot(HaveOccurred())
-				Expect(dt).To(Equal(templates.DatabaseTypeSQLite))
+				Expect(dt).To(Equal(templates.MustNewDatabaseType("sqlite")))
 			})
 		})
 
@@ -126,7 +126,7 @@ var _ = Describe("Constructors", func() {
 		It("should return database type for valid input", func() {
 			dt := templates.MustNewDatabaseType("postgresql")
 
-			Expect(dt).To(Equal(templates.DatabaseTypePostgreSQL))
+			Expect(dt).To(Equal(templates.MustNewDatabaseType("postgresql")))
 		})
 
 		It("should panic for invalid input", func() {

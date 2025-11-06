@@ -40,27 +40,27 @@ var _ = Describe("MicroserviceTemplate", func() {
 		It("should return valid template data", func() {
 			data := tmpl.DefaultData()
 
-			Expect(data.ProjectType).To(Equal(templates.ProjectTypeMicroservice))
-			Expect(data.Database).To(Equal(templates.DatabaseTypePostgreSQL))
-			Expect(data.UseManagedDB).To(BeTrue())
-			Expect(data.PackageName).To(Equal("db"))
-			Expect(data.OutputDir).To(Equal("internal/db"))
+			Expect(data.ProjectType).To(Equal(templates.MustNewProjectType("microservice")))
+			Expect(data.Database.Engine).To(Equal(templates.MustNewDatabaseType("postgresql")))
+			Expect(data.Database.UseManaged).To(BeTrue())
+			Expect(data.Package.Name).To(Equal("db"))
+			Expect(data.Output.BaseDir).To(Equal("internal/db"))
 		})
 
 		It("should include default emit options", func() {
 			data := tmpl.DefaultData()
 
-			Expect(data.EmitOptions.EmitInterface).To(BeTrue())
-			Expect(data.EmitOptions.PreparedQueries).To(BeTrue())
-			Expect(data.EmitOptions.JSONTags).To(BeTrue())
+			Expect(data.Validation.EmitOptions.EmitInterface).To(BeTrue())
+			Expect(data.Validation.EmitOptions.PreparedQueries).To(BeTrue())
+			Expect(data.Validation.EmitOptions.JSONTags).To(BeTrue())
 		})
 
 		It("should include default safety rules", func() {
 			data := tmpl.DefaultData()
 
-			Expect(data.SafetyRules.NoSelectStar).To(BeTrue())
-			Expect(data.SafetyRules.RequireWhere).To(BeTrue())
-			Expect(data.SafetyRules.NoDropTable).To(BeTrue())
+			Expect(data.Validation.SafetyRules.NoSelectStar).To(BeTrue())
+			Expect(data.Validation.SafetyRules.RequireWhere).To(BeTrue())
+			Expect(data.Validation.SafetyRules.NoDropTable).To(BeTrue())
 		})
 	})
 
@@ -80,23 +80,34 @@ var _ = Describe("MicroserviceTemplate", func() {
 
 		BeforeEach(func() {
 			templateData = templates.TemplateData{
-				ProjectName:       "test-service",
-				ProjectType:       templates.ProjectTypeMicroservice,
-				Database:          templates.DatabaseTypePostgreSQL,
-				PackageName:       "db",
-				OutputDir:         "internal/db",
-				QueriesDir:        "internal/db/queries",
-				SchemaDir:         "internal/db/schema",
-				DatabaseURL:       "${DATABASE_URL}",
-				UseManagedDB:      true,
-				UseUUIDs:          true,
-				UseJSON:           true,
-				UseArrays:         false,
-				UseFullTextSearch: false,
-				EmitOptions:       domain.DefaultEmitOptions(),
-				SafetyRules:       domain.DefaultSafetyRules(),
-				StrictFunctions:   false,
-				StrictOrderBy:     false,
+				ProjectName: "test-service",
+				ProjectType: templates.MustNewProjectType("microservice"),
+				
+				Package: templates.PackageConfig{
+					Name: "db",
+				},
+				
+				Database: templates.DatabaseConfig{
+					Engine:     templates.MustNewDatabaseType("postgresql"),
+					UseManaged:  true,
+					UseUUIDs:    true,
+					UseJSON:     true,
+					UseArrays:   false,
+					UseFullText: false,
+				},
+				
+				Output: templates.OutputConfig{
+					BaseDir:    "internal/db",
+					QueriesDir:  "internal/db/queries",
+					SchemaDir:   "internal/db/schema",
+				},
+				
+				Validation: templates.ValidationConfig{
+					StrictFunctions: false,
+					StrictOrderBy:   false,
+					EmitOptions:    domain.DefaultEmitOptions(),
+					SafetyRules:     domain.DefaultSafetyRules(),
+				},
 			}
 		})
 
@@ -197,7 +208,7 @@ var _ = Describe("MicroserviceTemplate", func() {
 
 		Context("with MySQL", func() {
 			BeforeEach(func() {
-				templateData.Database = templates.DatabaseTypeMySQL
+				templateData.Database.Engine = templates.MustNewDatabaseType("mysql")
 			})
 
 			It("should use correct SQL package", func() {
@@ -227,7 +238,7 @@ var _ = Describe("MicroserviceTemplate", func() {
 
 		Context("with SQLite", func() {
 			BeforeEach(func() {
-				templateData.Database = templates.DatabaseTypeSQLite
+				templateData.Database.Engine = templates.MustNewDatabaseType("sqlite")
 			})
 
 			It("should use correct SQL package", func() {
@@ -243,10 +254,16 @@ var _ = Describe("MicroserviceTemplate", func() {
 		Context("with defaults", func() {
 			It("should apply default values for empty fields", func() {
 				minimalData := templates.TemplateData{
-					ProjectType: templates.ProjectTypeMicroservice,
-					Database:    templates.DatabaseTypePostgreSQL,
-					EmitOptions: domain.DefaultEmitOptions(),
-					SafetyRules: domain.DefaultSafetyRules(),
+					ProjectType: templates.MustNewProjectType("microservice"),
+					
+					Database: templates.DatabaseConfig{
+						Engine: templates.MustNewDatabaseType("postgresql"),
+					},
+					
+					Validation: templates.ValidationConfig{
+						EmitOptions: domain.DefaultEmitOptions(),
+						SafetyRules:  domain.DefaultSafetyRules(),
+					},
 				}
 
 				cfg, err := tmpl.Generate(minimalData)

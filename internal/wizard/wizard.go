@@ -44,12 +44,16 @@ func (w *Wizard) Run() (*WizardResult, error) {
 
 	// Initialize template data with defaults
 	data := templates.TemplateData{
-		UseUUIDs:          true,
-		UseJSON:           true,
-		UseArrays:         false,
-		UseFullTextSearch: false,
-		EmitOptions:       domain.DefaultEmitOptions(),
-		SafetyRules:       domain.DefaultSafetyRules(),
+		Database: templates.DatabaseConfig{
+			UseUUIDs:    true,
+			UseJSON:     true,
+			UseArrays:   false,
+			UseFullText: false,
+		},
+		Validation: templates.ValidationConfig{
+			EmitOptions: domain.DefaultEmitOptions(),
+			SafetyRules:  domain.DefaultSafetyRules(),
+		},
 	}
 
 	// Step 1: Project Type
@@ -154,7 +158,7 @@ func (w *Wizard) selectDatabase(data *templates.TemplateData) error {
 		return err
 	}
 
-	data.Database = templates.DatabaseType(database)
+	data.Database.Engine = templates.DatabaseType(database)
 	return nil
 }
 
@@ -177,7 +181,7 @@ func (w *Wizard) projectDetails(data *templates.TemplateData) error {
 				Title("Go Package Path").
 				Description("The full import path for your project").
 				Placeholder("github.com/user/project").
-				Value(&data.PackagePath).
+				Value(&data.Package.Path).
 				Validate(func(s string) error {
 					if strings.TrimSpace(s) == "" {
 						return fmt.Errorf("package path is required")
@@ -217,21 +221,21 @@ func (w *Wizard) selectFeatures(data *templates.TemplateData) error {
 	}
 
 	// Update features based on selection
-	data.UseUUIDs = utils.Contains(features, "uuid")
-	data.UseJSON = utils.Contains(features, "json")
-	data.UseArrays = utils.Contains(features, "arrays")
-	data.UseFullTextSearch = utils.Contains(features, "fts")
+	data.Database.UseUUIDs = utils.Contains(features, "uuid")
+	data.Database.UseJSON = utils.Contains(features, "json")
+	data.Database.UseArrays = utils.Contains(features, "arrays")
+	data.Database.UseFullText = utils.Contains(features, "fts")
 
 	return nil
 }
 
 func (w *Wizard) outputConfiguration(data *templates.TemplateData) error {
 	// Set defaults if not already set
-	if data.OutputDir == "" {
-		data.OutputDir = "internal/db"
+	if data.Output.BaseDir == "" {
+		data.Output.BaseDir = "internal/db"
 	}
-	if data.PackageName == "" {
-		data.PackageName = "db"
+	if data.Package.Name == "" {
+		data.Package.Name = "db"
 	}
 
 	form := huh.NewForm(
@@ -239,7 +243,7 @@ func (w *Wizard) outputConfiguration(data *templates.TemplateData) error {
 			huh.NewInput().
 				Title("Output Directory").
 				Description("Where generated Go code will be placed").
-				Value(&data.OutputDir).
+				Value(&data.Output.BaseDir).
 				Validate(func(s string) error {
 					if strings.TrimSpace(s) == "" {
 						return fmt.Errorf("output directory is required")
@@ -250,7 +254,7 @@ func (w *Wizard) outputConfiguration(data *templates.TemplateData) error {
 			huh.NewInput().
 				Title("Go Package Name").
 				Description("Package name for generated code").
-				Value(&data.PackageName).
+				Value(&data.Package.Name).
 				Validate(func(s string) error {
 					if strings.TrimSpace(s) == "" {
 						return fmt.Errorf("package name is required")

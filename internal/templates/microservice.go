@@ -30,20 +30,25 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 	packageConfig := data.Package
 	if packageConfig.Name == "" {
 		packageConfig.Name = "db"
+		data.Package = packageConfig
 	}
 	if packageConfig.Path == "" {
 		packageConfig.Path = "db"
+		data.Package = packageConfig
 	}
 	
 	outputConfig := data.Output
 	if outputConfig.BaseDir == "" {
 		outputConfig.BaseDir = "internal/db"
+		data.Output = outputConfig
 	}
 	if outputConfig.QueriesDir == "" {
 		outputConfig.QueriesDir = "internal/db/queries"
+		data.Output = outputConfig
 	}
 	if outputConfig.SchemaDir == "" {
 		outputConfig.SchemaDir = "internal/db/schema"
+		data.Output = outputConfig
 	}
 	
 	databaseConfig := data.Database
@@ -134,7 +139,7 @@ func (t *MicroserviceTemplate) buildGoGenConfig(data TemplateData, sqlPackage st
 	}
 
 	// Apply emit options (eliminates field-by-field copying!)
-	data.EmitOptions.ApplyToGoGenConfig(cfg)
+	data.Validation.EmitOptions.ApplyToGoGenConfig(cfg)
 
 	return cfg
 }
@@ -183,7 +188,7 @@ func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Over
 		}
 
 		// JSONB support
-		if data.UseJSON {
+		if data.Database.UseJSON {
 			overrides = append(overrides, config.Override{
 				DBType:       "jsonb",
 				GoType:       "RawMessage",
@@ -193,7 +198,7 @@ func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Over
 
 	case DatabaseTypeMySQL:
 		// JSON support for MySQL
-		if data.UseJSON {
+		if data.Database.UseJSON {
 			overrides = append(overrides, config.Override{
 				DBType:       "json",
 				GoType:       "RawMessage",

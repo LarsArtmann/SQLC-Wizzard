@@ -17,6 +17,7 @@ type InitOptions struct {
 	ProjectType    string
 	Database       string
 	PackagePath    string
+	PackageName    string
 	OutputDir      string
 	NonInteractive bool
 }
@@ -49,6 +50,7 @@ Example:
 	cmd.Flags().StringVar(&opts.ProjectType, "project-type", "", "Project type (hobby, microservice, enterprise, api-first, library)")
 	cmd.Flags().StringVar(&opts.Database, "database", "", "Database engine (postgresql, mysql, sqlite)")
 	cmd.Flags().StringVar(&opts.PackagePath, "package", "", "Go package path (e.g., github.com/user/project)")
+	cmd.Flags().StringVar(&opts.PackageName, "package-name", "", "Go package name (e.g., db)")
 	cmd.Flags().StringVarP(&opts.OutputDir, "output-dir", "o", ".", "Output directory for generated files")
 	cmd.Flags().BoolVar(&opts.NonInteractive, "non-interactive", false, "Run in non-interactive mode using flags")
 
@@ -103,15 +105,25 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 
 	// Create template data from flags
 	data := templates.TemplateData{
-		ProjectType:       templates.ProjectType(opts.ProjectType),
-		Database:          templates.DatabaseType(opts.Database),
-		PackagePath:       opts.PackagePath,
-		UseUUIDs:          true,
-		UseJSON:           true,
-		UseArrays:         false,
-		UseFullTextSearch: false,
-		EmitOptions:       domain.DefaultEmitOptions(),
-		SafetyRules:       domain.DefaultSafetyRules(),
+		ProjectType: templates.MustNewProjectType(opts.ProjectType),
+		
+		Package: templates.PackageConfig{
+			Path: opts.PackagePath,
+			Name: opts.PackageName,
+		},
+		
+		Database: templates.DatabaseConfig{
+			Engine:     templates.MustNewDatabaseType(opts.Database),
+			UseUUIDs:    true,
+			UseJSON:     true,
+			UseArrays:   false,
+			UseFullText: false,
+		},
+		
+		Validation: templates.ValidationConfig{
+			EmitOptions: domain.DefaultEmitOptions(),
+			SafetyRules:  domain.DefaultSafetyRules(),
+		},
 	}
 
 	// Generate config from template
