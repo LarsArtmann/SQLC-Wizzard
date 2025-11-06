@@ -69,6 +69,23 @@ deps:
 # Run all verification steps (build, lint, test)
 verify: build lint test
 
+# Run performance benchmarks
+bench:
+	@echo "Running performance benchmarks..."
+	@echo "=== Domain Events Benchmarks ==="
+	@go test ./internal/domain -bench=. -benchmem
+	@echo ""
+	@echo "=== Adapter Benchmarks ==="
+	@go test ./internal/adapters -bench=. -benchmem
+
+# Run performance benchmarks with profiling
+bench-profile:
+	@echo "Running performance benchmarks with profiling..."
+	@mkdir -p profile
+	@go test ./internal/domain -bench=. -benchmem -cpuprofile=profile/domain-cpu.prof -memprofile=profile/domain-mem.prof
+	@go test ./internal/adapters -bench=. -benchmem -cpuprofile=profile/adapter-cpu.prof -memprofile=profile/adapter-mem.prof
+	@echo "Profiles saved in profile/ directory"
+
 # Generate Go types from TypeSpec
 generate-typespec:
 	@echo "Generating types from TypeSpec..."
