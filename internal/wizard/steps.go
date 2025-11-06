@@ -32,14 +32,15 @@ func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 			if !templates.IsValidProjectType(projectType) {
 				return fmt.Errorf("invalid project type: %s", projectType)
 			}
-			// Update data
-			data.ProjectType = generated.ProjectType(projectType)
 			return nil
 		})
 }
 
 // CreateDatabaseStep creates database selection step
 func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
+	databasePtr := new(string)
+	*databasePtr = string(data.Database.Engine)
+	
 	return huh.NewSelect[string]().
 		Title("Select Database Engine").
 		Description("Choose the database engine for your project").
@@ -48,7 +49,7 @@ func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 			huh.NewOption("🐬  MySQL - Popular relational database", "mysql"),
 			huh.NewOption("📁  SQLite - Lightweight file-based database", "sqlite"),
 		).
-		Value(func(s string) { data.Database.Engine = generated.DatabaseType(s) }).
+		Value(databasePtr).
 		Validate(func(database string) error {
 			if !templates.IsValidDatabaseType(database) {
 				return fmt.Errorf("invalid database type: %s", database)
