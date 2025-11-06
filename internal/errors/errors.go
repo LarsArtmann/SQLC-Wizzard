@@ -192,7 +192,7 @@ func FileReadError(path string, err error) *Error {
 }
 
 func ConfigParseError(path string, err error) *Error {
-	return Wrap(err, ErrInvalidConfig, fmt.Sprintf("failed to parse config: %s", path)).
+	return Wrap(err, ErrConfigParseFailed, fmt.Sprintf("failed to parse config: %s", path)).
 		WithDetails("path", path).
 		WithCaller()
 }
