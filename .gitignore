@@ -6,7 +6,7 @@
 *.dylib
 bin/
 dist/
-sqlc-wizard
+/sqlc-wizard
 
 # Test binary, built with `go test -c`
 *.test
