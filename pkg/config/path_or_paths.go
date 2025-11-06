@@ -1,8 +1,7 @@
 package config
 
 import (
-	"fmt"
-
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -60,7 +59,10 @@ func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 		return nil
 	}
 
-	return fmt.Errorf("path_or_paths must be either a string or array of strings, got: %v", value.Kind)
+	return errors.Newf(
+		errors.ErrCodeInvalidValue,
+		"path_or_paths must be either a string or array of strings, got: %v", value.Kind,
+	)
 }
 
 // MarshalYAML implements yaml.Marshaler to output as []string.
