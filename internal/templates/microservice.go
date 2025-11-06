@@ -50,14 +50,10 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 		Version: "2",
 		SQL: []config.SQLConfig{
 			{
-				Name:   lo.Ternary(data.ProjectName != "", data.ProjectName, "service"),
-				Engine: string(data.Database),
-				Queries: []string{
-					data.QueriesDir,
-				},
-				Schema: []string{
-					data.SchemaDir,
-				},
+				Name:    lo.Ternary(data.ProjectName != "", data.ProjectName, "service"),
+				Engine:  string(data.Database),
+				Queries: config.NewPathOrPaths([]string{data.QueriesDir}),
+				Schema:  config.NewPathOrPaths([]string{data.SchemaDir}),
 				StrictFunctionChecks: lo.ToPtr(data.SafetyRules.StrictFunctions),
 				StrictOrderBy:        lo.ToPtr(data.SafetyRules.StrictOrderBy),
 				Database: &config.DatabaseConfig{
