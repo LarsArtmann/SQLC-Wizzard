@@ -1,7 +1,7 @@
 package templates
 
 import (
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/samber/lo"
 )
@@ -16,7 +16,7 @@ func NewMicroserviceTemplate() *MicroserviceTemplate {
 
 // Name returns the template name
 func (t *MicroserviceTemplate) Name() string {
-	return string(ProjectTypeMicroservice)
+	return "microservice"
 }
 
 // Description returns a human-readable description
@@ -25,7 +25,7 @@ func (t *MicroserviceTemplate) Description() string {
 }
 
 // Generate creates a SqlcConfig from template data
-func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, error) {
+func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	// Set defaults
 	packageConfig := data.Package
 	if packageConfig.Name == "" {
@@ -77,26 +77,40 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 				Gen: config.GenConfig{
 					Go: t.buildGoGenConfig(data, sqlPackage),
 				},
-				Rules: data.Validation.SafetyRules.ToRuleConfigs(),
+				Rules: []config.RuleConfig{}, // Will be set after conversion
 			},
 		},
 	}
+	
+	// Apply emit options (eliminates field-by-field copying!)
+	data.Validation.EmitOptions.ApplyToGoGenConfig(&cfg.SQL[0].Gen.Go)
+	
+	// Convert rule types
+	rules := data.Validation.SafetyRules.ToRuleConfigs()
+	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
+		return config.RuleConfig{
+			Name:    r.Name,
+			Rule:    r.Rule,
+			Message: r.Message,
+		}
+	})
+	cfg.SQL[0].Rules = configRules
 
 	return cfg, nil
 }
 
 // DefaultData returns default TemplateData for microservice template
 func (t *MicroserviceTemplate) DefaultData() TemplateData {
-	return TemplateData{
+	return generated.TemplateData{
 		ProjectName: "",
 		ProjectType: MustNewProjectType("microservice"),
 		
-		Package: PackageConfig{
+		Package: generated.PackageConfig{
 			Name: "db",
 			Path: "internal/db",
 		},
 		
-		Database: DatabaseConfig{
+		Database: generated.DatabaseConfig{
 			Engine:      MustNewDatabaseType("postgresql"),
 			URL:         "${DATABASE_URL}",
 			UseManaged:  true,
@@ -106,17 +120,17 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 			UseFullText: false,
 		},
 		
-		Output: OutputConfig{
+		Output: generated.OutputConfig{
 			BaseDir:    "internal/db",
 			QueriesDir:  "internal/db/queries",
 			SchemaDir:   "internal/db/schema",
 		},
 		
-		Validation: ValidationConfig{
+		Validation: generated.ValidationConfig{
 			StrictFunctions: false,
 			StrictOrderBy:   false,
-			EmitOptions:    domain.DefaultEmitOptions(),
-			SafetyRules:     domain.DefaultSafetyRules(),
+			EmitOptions:    generated.DefaultEmitOptions(),
+			SafetyRules:     generated.DefaultSafetyRules(),
 		},
 	}
 }
@@ -128,7 +142,7 @@ func (t *MicroserviceTemplate) RequiredFeatures() []string {
 
 // buildGoGenConfig builds the GoGenConfig from template data.
 // This eliminates split brain by using Validation.EmitOptions.ApplyToGoGenConfig().
-func (t *MicroserviceTemplate) buildGoGenConfig(data TemplateData, sqlPackage string) *config.GoGenConfig {
+func (t *MicroserviceTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
 	cfg := &config.GoGenConfig{
 		Package:    data.Package.Name,
 		Out:        data.Output.BaseDir,
@@ -137,9 +151,6 @@ func (t *MicroserviceTemplate) buildGoGenConfig(data TemplateData, sqlPackage st
 		Overrides:  t.getTypeOverrides(data),
 		Rename:     t.getRenameRules(),
 	}
-
-	// Apply emit options (eliminates field-by-field copying!)
-	data.Validation.EmitOptions.ApplyToGoGenConfig(cfg)
 
 	return cfg
 }

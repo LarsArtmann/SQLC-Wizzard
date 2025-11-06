@@ -33,7 +33,7 @@ func (r *Registry) Register(tmpl Template) {
 func (r *Registry) Get(projectType ProjectType) (Template, error) {
 	tmpl, ok := r.templates[projectType]
 	if !ok {
-		return nil, errors.NewTemplateNotFoundError(string(projectType))
+		return nil, errors.TemplateNotFoundError(string(projectType))
 	}
 	return tmpl, nil
 }

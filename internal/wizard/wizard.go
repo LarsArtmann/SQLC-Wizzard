@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/utils"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
@@ -43,16 +43,16 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	w.showWelcome()
 
 	// Initialize template data with defaults
-	data := templates.TemplateData{
-		Database: templates.DatabaseConfig{
+	data := generated.TemplateData{
+		Database: generated.DatabaseConfig{
 			UseUUIDs:    true,
 			UseJSON:     true,
 			UseArrays:   false,
 			UseFullText: false,
 		},
-		Validation: templates.ValidationConfig{
-			EmitOptions: domain.DefaultEmitOptions(),
-			SafetyRules:  domain.DefaultSafetyRules(),
+		Validation: generated.ValidationConfig{
+			EmitOptions: generated.DefaultEmitOptions(),
+			SafetyRules:  generated.DefaultSafetyRules(),
 		},
 	}
 

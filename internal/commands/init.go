@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/generators"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
@@ -104,15 +104,15 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 	}
 
 	// Create template data from flags
-	data := templates.TemplateData{
+	data := generated.TemplateData{
 		ProjectType: templates.MustNewProjectType(opts.ProjectType),
 		
-		Package: templates.PackageConfig{
+		Package: generated.PackageConfig{
 			Path: opts.PackagePath,
 			Name: opts.PackageName,
 		},
 		
-		Database: templates.DatabaseConfig{
+		Database: generated.DatabaseConfig{
 			Engine:     templates.MustNewDatabaseType(opts.Database),
 			UseUUIDs:    true,
 			UseJSON:     true,
@@ -120,9 +120,9 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 			UseFullText: false,
 		},
 		
-		Validation: templates.ValidationConfig{
-			EmitOptions: domain.DefaultEmitOptions(),
-			SafetyRules:  domain.DefaultSafetyRules(),
+		Validation: generated.ValidationConfig{
+			EmitOptions: generated.DefaultEmitOptions(),
+			SafetyRules:  generated.DefaultSafetyRules(),
 		},
 	}
 

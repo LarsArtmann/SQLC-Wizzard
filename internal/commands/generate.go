@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/generators"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/spf13/cobra"
@@ -49,29 +50,29 @@ func generateExampleFiles(outputDir string, force bool) error {
 	generator := generators.NewGenerator(outputDir)
 
 	// Create template data with defaults
-	templateData := templates.TemplateData{
+	templateData := generated.TemplateData{
 		ProjectName: "generated-project",
 		ProjectType: templates.MustNewProjectType("microservice"),
 		
-		Package: templates.PackageConfig{
+		Package: generated.PackageConfig{
 			Name: "db",
 			Path: "db",
 		},
 		
-		Database: templates.DatabaseConfig{
+		Database: generated.DatabaseConfig{
 			Engine:     templates.MustNewDatabaseType("postgresql"),
 			UseUUIDs:   false,
 			UseJSON:    true,
 			UseArrays:  false,
 		},
 		
-		Output: templates.OutputConfig{
+		Output: generated.OutputConfig{
 			BaseDir:    outputDir,
 			QueriesDir:  "queries",
 			SchemaDir:   "schema",
 		},
 		
-		Validation: templates.ValidationConfig{
+		Validation: generated.ValidationConfig{
 			StrictFunctions: true,
 			StrictOrderBy:   true,
 		},

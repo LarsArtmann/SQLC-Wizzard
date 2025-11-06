@@ -12,14 +12,14 @@ func ParseFile(path string) (*SqlcConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, errors.NewConfigNotFoundError(path)
+			return nil, errors.ConfigNotFoundError(path)
 		}
-		return nil, errors.NewFileReadError(path, err)
+		return nil, errors.FileReadError(path, err)
 	}
 
 	cfg, err := Parse(data)
 	if err != nil {
-		return nil, errors.NewConfigParseError(path, err)
+		return nil, errors.ConfigParseError(path, err)
 	}
 
 	return cfg, nil
@@ -29,7 +29,7 @@ func ParseFile(path string) (*SqlcConfig, error) {
 func Parse(data []byte) (*SqlcConfig, error) {
 	var cfg SqlcConfig
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, errors.Wrap(errors.ErrCodeConfigParseFailed, "failed to parse YAML", err)
+		return nil, errors.Wrapf(err, errors.ErrConfigParseFailed, "failed to parse YAML")
 	}
 
 	return &cfg, nil

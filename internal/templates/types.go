@@ -1,136 +1,85 @@
 package templates
 
 import (
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
-// ProjectType represents the type of project template
-type ProjectType string
-
-const (
-	ProjectTypeHobby        ProjectType = "hobby"
-	ProjectTypeMicroservice ProjectType = "microservice"
-	ProjectTypeEnterprise   ProjectType = "enterprise"
-	ProjectTypeAPIFirst     ProjectType = "api-first"
-	ProjectTypeAnalytics    ProjectType = "analytics"
-	ProjectTypeTesting      ProjectType = "testing"
-	ProjectTypeMultiTenant  ProjectType = "multi-tenant"
-	ProjectTypeLibrary      ProjectType = "library"
+// Type aliases for generated types - PROHIBIT DIRECT STRING USAGE!
+type (
+	ProjectType = generated.ProjectType
+	DatabaseType = generated.DatabaseType
+	TemplateData = generated.TemplateData
+	EmitOptions = generated.EmitOptions
+	SafetyRule   = generated.SafetyRule
+	SafetyRules = generated.SafetyRules
 )
 
-// DatabaseType represents the supported database engines
-type DatabaseType string
-
-const (
-	DatabaseTypePostgreSQL DatabaseType = "postgresql"
-	DatabaseTypeMySQL      DatabaseType = "mysql"
-	DatabaseTypeSQLite     DatabaseType = "sqlite"
-)
-
-// PackageConfig represents complete package configuration
-type PackageConfig struct {
-	Name     string
-	Path      string
-	BuildTags string
+// Helper functions for validation
+func IsValidProjectType(projectType string) bool {
+	return generated.ProjectType(projectType).IsValid()
 }
 
-// DatabaseConfig represents database-specific configuration
-type DatabaseConfig struct {
-	Engine      DatabaseType
-	URL         string
-	UseManaged  bool
-	UseUUIDs    bool
-	UseJSON     bool
-	UseArrays   bool
-	UseFullText bool
+func IsValidDatabaseType(database string) bool {
+	return generated.DatabaseType(database).IsValid()
 }
 
-// OutputConfig represents output directory configuration
-type OutputConfig struct {
-	BaseDir    string
-	QueriesDir  string
-	SchemaDir   string
-}
-
-// ValidationConfig represents validation settings
-type ValidationConfig struct {
-	StrictFunctions bool
-	StrictOrderBy   bool
-	EmitOptions    domain.EmitOptions
-	SafetyRules     domain.SafetyRules
-}
-
-// TemplateData contains all data needed to render a template
-// SPLIT BRAIN FIXED: Unified configuration structure
-type TemplateData struct {
-	ProjectName string
-	ProjectType ProjectType
-	
-	Package    PackageConfig
-	Database   DatabaseConfig
-	Output     OutputConfig
-	Validation ValidationConfig
-}
-
-// NOTE: Features split brain eliminated!
-// - Database features (UUIDs, JSON, Arrays, FTS) are now individual boolean fields in TemplateData
-// - Code generation options moved to internal/domain/emit_options.go
-// Use domain.EmitOptions and domain.DefaultEmitOptions() instead of Features.
-
-// NOTE: SafetyRules moved to internal/domain/rule.go to eliminate split brain.
-// Use domain.SafetyRules and domain.DefaultSafetyRules() instead.
-
-// Template represents a project template
+// Template interface defines behavior for all template implementations
 type Template interface {
-	// Name returns the template name
-	Name() string
-
-	// Description returns a human-readable description
-	Description() string
-
-	// Generate creates a SqlcConfig from template data
-	Generate(data TemplateData) (*config.SqlcConfig, error)
-
-	// DefaultData returns default TemplateData for this template
-	DefaultData() TemplateData
-
-	// RequiredFeatures returns which features this template requires
+	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
+	DefaultData() generated.TemplateData
 	RequiredFeatures() []string
+	Name() string
+	Description() string
 }
 
-// GetAllProjectTypes returns all available project types
-func GetAllProjectTypes() []ProjectType {
-	return []ProjectType{
-		ProjectTypeHobby,
-		ProjectTypeMicroservice,
-		ProjectTypeEnterprise,
-		ProjectTypeAPIFirst,
-		ProjectTypeAnalytics,
-		ProjectTypeTesting,
-		ProjectTypeMultiTenant,
-		ProjectTypeLibrary,
+// Smart constructors with validation - PREVENT INVALID STATES!
+func NewProjectType(projectType string) (ProjectType, error) {
+	pt := ProjectType(projectType)
+	if !pt.IsValid() {
+		return "", errors.ValidationError("project_type", projectType)
 	}
+	return pt, nil
 }
 
-// GetAllDatabaseTypes returns all supported database types
-func GetAllDatabaseTypes() []DatabaseType {
-	return []DatabaseType{
-		DatabaseTypePostgreSQL,
-		DatabaseTypeMySQL,
-		DatabaseTypeSQLite,
+func NewDatabaseType(database string) (DatabaseType, error) {
+	dt := DatabaseType(database)
+	if !dt.IsValid() {
+		return "", errors.ValidationError("database", database)
 	}
+	return dt, nil
 }
 
-// String returns the string representation of ProjectType
-func (pt ProjectType) String() string {
-	return string(pt)
+// MustNew constructors - PANIC on invalid input (for constants)
+func MustNewProjectType(projectType string) ProjectType {
+	pt, err := NewProjectType(projectType)
+	if err != nil {
+		panic(err) // This is programmer error, not runtime error
+	}
+	return pt
 }
 
-// String returns the string representation of DatabaseType
-func (dt DatabaseType) String() string {
-	return string(dt)
+func MustNewDatabaseType(database string) DatabaseType {
+	dt, err := NewDatabaseType(database)
+	if err != nil {
+		panic(err) // This is programmer error, not runtime error
+	}
+	return dt
 }
 
-// NOTE: DefaultFeatures moved to domain.DefaultEmitOptions()
-// NOTE: DefaultSafetyRules moved to domain.DefaultSafetyRules()
+// Constants - use generated types, NO MANUAL STRINGS!
+const (
+	ProjectTypeHobby        = ProjectType(generated.ProjectTypeHobby)
+	ProjectTypeMicroservice = ProjectType(generated.ProjectTypeMicroservice)
+	ProjectTypeEnterprise   = ProjectType(generated.ProjectTypeEnterprise)
+	ProjectTypeAPIFirst     = ProjectType(generated.ProjectTypeAPIFirst)
+	ProjectTypeAnalytics    = ProjectType(generated.ProjectTypeAnalytics)
+	ProjectTypeTesting      = ProjectType(generated.ProjectTypeTesting)
+	ProjectTypeMultiTenant  = ProjectType(generated.ProjectTypeMultiTenant)
+	ProjectTypeLibrary      = ProjectType(generated.ProjectTypeLibrary)
+	
+	DatabaseTypePostgreSQL = DatabaseType(generated.DatabaseTypePostgreSQL)
+	DatabaseTypeMySQL      = DatabaseType(generated.DatabaseTypeMySQL)
+	DatabaseTypeSQLite     = DatabaseType(generated.DatabaseTypeSQLite)
+)
