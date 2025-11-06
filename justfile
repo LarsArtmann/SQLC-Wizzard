@@ -1,0 +1,74 @@
+# SQLC-Wizard Justfile
+
+# Default recipe
+default:
+	@just --list
+
+# Build the binary
+build:
+	@echo "Building sqlc-wizard..."
+	@mkdir -p bin
+	go build -ldflags "-X main.Version=$(shell git describe --tags --always --dirty 2>/dev/null || echo 'dev')" -o bin/sqlc-wizard cmd/sqlc-wizard/main.go
+	@echo "Build complete: bin/sqlc-wizard"
+
+# Run all tests
+test:
+	@echo "Running tests..."
+	go test -v -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+# Run linters
+lint:
+	@echo "Running linters..."
+	@if command -v golangci-lint >/dev/null 2>&1; then \
+		golangci-lint run ./...; \
+	else \
+		echo "golangci-lint not installed. Run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest"; \
+	fi
+
+# Find code duplicates (alias for fd)
+find-duplicates:
+	@echo "Finding code duplicates..."
+	@if command -v dupl >/dev/null 2>&1; then \
+		dupl -t 100 -plumbing .; \
+	else \
+		echo "dupl not installed. Installing..."; \
+		go install github.com/golangci/dupl@latest; \
+		dupl -t 100 -plumbing .; \
+	fi
+
+# Native alias for find-duplicates
+fd: find-duplicates
+
+# Clean build artifacts
+clean:
+	@echo "Cleaning..."
+	rm -rf bin coverage.txt coverage.html
+	go clean
+
+# Format code
+fmt:
+	@echo "Formatting code..."
+	go fmt ./...
+	gofmt -s -w .
+
+# Run go vet
+vet:
+	@echo "Running go vet..."
+	go vet ./...
+
+# Tidy go modules
+tidy:
+	@echo "Tidying go modules..."
+	go mod tidy
+
+# Install dependencies
+deps:
+	@echo "Downloading dependencies..."
+	go mod download
+
+# Run all verification steps (build, lint, test)
+verify: build lint test
+
+# Development workflow (clean, build, test, find duplicates)
+dev: clean build test find-duplicates
+	@echo "Development workflow complete"
