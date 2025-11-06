@@ -62,30 +62,7 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 					Managed: data.UseManagedDB,
 				},
 				Gen: config.GenConfig{
-					Go: &config.GoGenConfig{
-						Package:                   data.PackageName,
-						Out:                       data.OutputDir,
-						SQLPackage:                sqlPackage,
-						BuildTags:                 t.getBuildTags(data),
-						EmitInterface:             data.Features.EmitInterface,
-						EmitJSONTags:              data.Features.JSONTags,
-						EmitDBTags:                data.Features.DBTags,
-						EmitPreparedQueries:       data.Features.PreparedQueries,
-						EmitExactTableNames:       data.Features.ExactTableNames,
-						EmitEmptySlices:           data.Features.EmptySlices,
-						EmitExportedQueries:       true,
-						EmitPointersForNullTypes:  false,
-						JSONTagsCaseStyle:         "camel",
-						OmitUnusedStructs:         data.Features.OmitUnusedStructs,
-						OmitSQLCVersion:           false,
-						OutputDBFileName:          "db.go",
-						OutputModelsFileName:      "models.go",
-						OutputQuerierFileName:     "querier.go",
-						OutputCopyfromFileName:    "copyfrom.go",
-						OutputBatchFileName:       "batch.go",
-						Overrides:                 t.getTypeOverrides(data),
-						Rename:                    t.getRenameRules(),
-					},
+					Go: t.buildGoGenConfig(data, sqlPackage),
 				},
 				Rules: data.SafetyRules.ToRuleConfigs(),
 			},
@@ -98,22 +75,46 @@ func (t *MicroserviceTemplate) Generate(data TemplateData) (*config.SqlcConfig, 
 // DefaultData returns default TemplateData for microservice template
 func (t *MicroserviceTemplate) DefaultData() TemplateData {
 	return TemplateData{
-		ProjectType:    ProjectTypeMicroservice,
-		Database:       DatabaseTypePostgreSQL,
-		UseManagedDB:   true,
-		PackageName:    "db",
-		OutputDir:      "internal/db",
-		QueriesDir:     "internal/db/queries",
-		SchemaDir:      "internal/db/schema",
-		DatabaseURL:    "${DATABASE_URL}",
-		Features:       DefaultFeatures(),
-		SafetyRules:    domain.DefaultSafetyRules(),
+		ProjectType:       ProjectTypeMicroservice,
+		Database:          DatabaseTypePostgreSQL,
+		UseManagedDB:      true,
+		PackageName:       "db",
+		OutputDir:         "internal/db",
+		QueriesDir:        "internal/db/queries",
+		SchemaDir:         "internal/db/schema",
+		DatabaseURL:       "${DATABASE_URL}",
+		UseUUIDs:          true,
+		UseJSON:           true,
+		UseArrays:         false,
+		UseFullTextSearch: false,
+		EmitOptions:       domain.DefaultEmitOptions(),
+		SafetyRules:       domain.DefaultSafetyRules(),
+		StrictFunctions:   false,
+		StrictOrderBy:     false,
 	}
 }
 
 // RequiredFeatures returns which features this template requires
 func (t *MicroserviceTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "prepared_queries", "json_tags"}
+}
+
+// buildGoGenConfig builds the GoGenConfig from template data.
+// This eliminates split brain by using EmitOptions.ApplyToGoGenConfig().
+func (t *MicroserviceTemplate) buildGoGenConfig(data TemplateData, sqlPackage string) *config.GoGenConfig {
+	cfg := &config.GoGenConfig{
+		Package:    data.PackageName,
+		Out:        data.OutputDir,
+		SQLPackage: sqlPackage,
+		BuildTags:  t.getBuildTags(data),
+		Overrides:  t.getTypeOverrides(data),
+		Rename:     t.getRenameRules(),
+	}
+
+	// Apply emit options (eliminates field-by-field copying!)
+	data.EmitOptions.ApplyToGoGenConfig(cfg)
+
+	return cfg
 }
 
 // getSQLPackage returns the appropriate SQL package for the database
@@ -151,7 +152,7 @@ func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Over
 	switch data.Database {
 	case DatabaseTypePostgreSQL:
 		// UUID support
-		if data.Features.UUIDs {
+		if data.UseUUIDs {
 			overrides = append(overrides, config.Override{
 				DBType:       "uuid",
 				GoType:       "UUID",
@@ -160,7 +161,7 @@ func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Over
 		}
 
 		// JSONB support
-		if data.Features.JSON {
+		if data.UseJSON {
 			overrides = append(overrides, config.Override{
 				DBType:       "jsonb",
 				GoType:       "RawMessage",
@@ -170,7 +171,7 @@ func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Over
 
 	case DatabaseTypeMySQL:
 		// JSON support for MySQL
-		if data.Features.JSON {
+		if data.UseJSON {
 			overrides = append(overrides, config.Override{
 				DBType:       "json",
 				GoType:       "RawMessage",

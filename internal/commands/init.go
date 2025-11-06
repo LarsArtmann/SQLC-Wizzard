@@ -103,11 +103,15 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 
 	// Create template data from flags
 	data := templates.TemplateData{
-		ProjectType:  templates.ProjectType(opts.ProjectType),
-		Database:     templates.DatabaseType(opts.Database),
-		PackagePath:  opts.PackagePath,
-		Features:     templates.DefaultFeatures(),
-		SafetyRules:  domain.DefaultSafetyRules(),
+		ProjectType:       templates.ProjectType(opts.ProjectType),
+		Database:          templates.DatabaseType(opts.Database),
+		PackagePath:       opts.PackagePath,
+		UseUUIDs:          true,
+		UseJSON:           true,
+		UseArrays:         false,
+		UseFullTextSearch: false,
+		EmitOptions:       domain.DefaultEmitOptions(),
+		SafetyRules:       domain.DefaultSafetyRules(),
 	}
 
 	// Generate config from template
