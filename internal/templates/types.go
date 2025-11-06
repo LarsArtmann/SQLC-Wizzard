@@ -50,8 +50,14 @@ type TemplateData struct {
 	SQLPackage  string
 	BuildTags   string
 
-	// Feature flags
-	Features Features
+	// Database feature flags (affect type overrides and template logic)
+	UseUUIDs          bool
+	UseJSON           bool
+	UseArrays         bool
+	UseFullTextSearch bool
+
+	// Code generation options
+	EmitOptions domain.EmitOptions
 
 	// Safety rules (CEL-based validation)
 	SafetyRules domain.SafetyRules
@@ -61,20 +67,10 @@ type TemplateData struct {
 	StrictOrderBy   bool
 }
 
-// Features represents optional database features
-type Features struct {
-	UUIDs              bool
-	JSON               bool
-	Arrays             bool
-	FullTextSearch     bool
-	EmitInterface      bool
-	PreparedQueries    bool
-	JSONTags           bool
-	DBTags             bool
-	ExactTableNames    bool
-	EmptySlices        bool
-	OmitUnusedStructs  bool
-}
+// NOTE: Features split brain eliminated!
+// - Database features (UUIDs, JSON, Arrays, FTS) are now individual boolean fields in TemplateData
+// - Code generation options moved to internal/domain/emit_options.go
+// Use domain.EmitOptions and domain.DefaultEmitOptions() instead of Features.
 
 // NOTE: SafetyRules moved to internal/domain/rule.go to eliminate split brain.
 // Use domain.SafetyRules and domain.DefaultSafetyRules() instead.
@@ -130,21 +126,5 @@ func (dt DatabaseType) String() string {
 	return string(dt)
 }
 
-// DefaultFeatures returns a sensible default feature set
-func DefaultFeatures() Features {
-	return Features{
-		UUIDs:              true,
-		JSON:               true,
-		Arrays:             false,
-		FullTextSearch:     false,
-		EmitInterface:      true,
-		PreparedQueries:    true,
-		JSONTags:           true,
-		DBTags:             false,
-		ExactTableNames:    true,
-		EmptySlices:        true,
-		OmitUnusedStructs:  true,
-	}
-}
-
+// NOTE: DefaultFeatures moved to domain.DefaultEmitOptions()
 // NOTE: DefaultSafetyRules moved to domain.DefaultSafetyRules()

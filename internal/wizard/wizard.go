@@ -43,8 +43,12 @@ func (w *Wizard) Run() (*WizardResult, error) {
 
 	// Initialize template data with defaults
 	data := templates.TemplateData{
-		Features:    templates.DefaultFeatures(),
-		SafetyRules: domain.DefaultSafetyRules(),
+		UseUUIDs:          true,
+		UseJSON:           true,
+		UseArrays:         false,
+		UseFullTextSearch: false,
+		EmitOptions:       domain.DefaultEmitOptions(),
+		SafetyRules:       domain.DefaultSafetyRules(),
 	}
 
 	// Step 1: Project Type
@@ -212,10 +216,10 @@ func (w *Wizard) selectFeatures(data *templates.TemplateData) error {
 	}
 
 	// Update features based on selection
-	data.Features.UUIDs = contains(features, "uuid")
-	data.Features.JSON = contains(features, "json")
-	data.Features.Arrays = contains(features, "arrays")
-	data.Features.FullTextSearch = contains(features, "fts")
+	data.UseUUIDs = contains(features, "uuid")
+	data.UseJSON = contains(features, "json")
+	data.UseArrays = contains(features, "arrays")
+	data.UseFullTextSearch = contains(features, "fts")
 
 	return nil
 }
