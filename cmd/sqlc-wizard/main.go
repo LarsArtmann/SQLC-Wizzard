@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
 	"github.com/spf13/cobra"
 )
 
@@ -34,10 +35,10 @@ Generate perfect sqlc.yaml configurations in minutes, not hours!`,
 		SilenceErrors: true,
 	}
 
-	// Add version command
+	// Add commands
 	rootCmd.AddCommand(newVersionCmd())
+	rootCmd.AddCommand(commands.NewInitCommand())
 
-	// TODO: Add init command
 	// TODO: Add generate command
 	// TODO: Add validate command
 	// TODO: Add doctor command
