@@ -117,8 +117,16 @@ func (e *Error) GetContext(key string) (interface{}, bool) {
 	return val, ok
 }
 
-// Is checks if the error has the given code
-func (e *Error) Is(code ErrorCode) bool {
+// Is checks if the error matches the target error
+func (e *Error) Is(target error) bool {
+	if t, ok := target.(*Error); ok {
+		return e.Code == t.Code
+	}
+	return false
+}
+
+// HasCode checks if the error has the given code
+func (e *Error) HasCode(code ErrorCode) bool {
 	return e.Code == code
 }
 

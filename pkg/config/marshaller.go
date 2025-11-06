@@ -38,7 +38,12 @@ func WriteFileFormatted(cfg *SqlcConfig, path string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create file: %w", err)
 	}
-	defer file.Close()
+		defer func() {
+		if err := file.Close(); err != nil {
+			// Log the close error, but don't override the primary error
+			fmt.Printf("warning: failed to close file %s: %v\n", path, err)
+		}
+	}()
 
 	encoder := yaml.NewEncoder(file)
 	encoder.SetIndent(2) // Use 2 spaces for indentation

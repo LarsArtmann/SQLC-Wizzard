@@ -1,6 +1,7 @@
 package config_test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -22,7 +23,10 @@ var _ = Describe("Parser", func() {
 
 	AfterEach(func() {
 		if tempDir != "" {
-			os.RemoveAll(tempDir)
+			if err := os.RemoveAll(tempDir); err != nil {
+				// Log the cleanup error but don't fail the test
+				fmt.Printf("warning: failed to cleanup temp dir %s: %v\n", tempDir, err)
+			}
 		}
 	})
 
