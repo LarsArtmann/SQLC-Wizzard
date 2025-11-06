@@ -91,7 +91,7 @@ sql:
 				_, err := config.Parse(yamlData)
 
 				Expect(err).To(HaveOccurred())
-				Expect(errors.HasCode(err, errors.ErrCodeConfigParseFailed)).To(BeTrue())
+				Expect(errors.Is(err, errors.ErrConfigParseFailed)).To(BeTrue())
 			})
 
 			It("should return error for empty data", func() {
@@ -141,7 +141,7 @@ sql:
 				_, err := config.ParseFile(nonExistentPath)
 
 				Expect(err).To(HaveOccurred())
-				Expect(errors.HasCode(err, errors.ErrCodeConfigNotFound)).To(BeTrue())
+				Expect(errors.Is(err, errors.ErrFileNotFound)).To(BeTrue())
 			})
 		})
 
@@ -159,7 +159,7 @@ sql:
 				_, err = config.ParseFile(configPath)
 
 				Expect(err).To(HaveOccurred())
-				Expect(errors.HasCode(err, errors.ErrCodeConfigParseFailed)).To(BeTrue())
+				Expect(errors.Is(err, errors.ErrConfigParseFailed)).To(BeTrue())
 			})
 		})
 	})
