@@ -1,40 +1,14 @@
 // Package domain provides domain models for business logic
 package domain
 
-import "strings"
+import (
+	"strings"
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+)
 
-// EmitOptions defines SQL code generation options
-type EmitOptions struct {
-	EmitJSONTags                bool   `json:"emit_json_tags"`
-	EmitPreparedQueries         bool   `json:"emit_prepared_queries"`
-	EmitInterface              bool   `json:"emit_interface"`
-	EmitEmptySlices            bool   `json:"emit_empty_slices"`
-	EmitResultStructPointers    bool   `json:"emit_result_struct_pointers"`
-	EmitParamsStructPointers    bool   `json:"emit_params_struct_pointers"`
-	EmitEnumValidMethod        bool   `json:"emit_enum_valid_method"`
-	EmitAllEnumValues         bool   `json:"emit_all_enum_values"`
-	JSONTagsCaseStyle          string `json:"json_tags_case_style"`
-}
-
-// ApplyToGoGenConfig applies emit options to a GoGenConfig
-// This eliminates field-by-field copying (DRY principle)
-func (e *EmitOptions) ApplyToGoGenConfig(cfg interface{}) {
-	// Type assertion for flexibility
-	type HasEmitJSONTags interface{ SetEmitJSONTags(bool) }
-	type HasEmitPreparedQueries interface{ SetEmitPreparedQueries(bool) }
-	type HasEmitInterface interface{ SetEmitInterface(bool) }
-	// ... more as needed
-	
-	if has, ok := cfg.(HasEmitJSONTags); ok {
-		has.SetEmitJSONTags(e.EmitJSONTags)
-	}
-	if has, ok := cfg.(HasEmitPreparedQueries); ok {
-		has.SetEmitPreparedQueries(e.EmitPreparedQueries)
-	}
-	if has, ok := cfg.(HasEmitInterface); ok {
-		has.SetEmitInterface(e.EmitInterface)
-	}
-}
+// EmitOptions is a type alias for the generated EmitOptions
+// This ensures we use the single source of truth from TypeSpec generation
+type EmitOptions = generated.EmitOptions
 
 // SafetyRules represents CEL-based validation rules
 type SafetyRules struct {
@@ -87,12 +61,9 @@ func (s *SafetyRules) ToRuleConfigs() []RuleConfig {
 	return rules
 }
 
-// RuleConfig represents a validation rule configuration
-type RuleConfig struct {
-	Name    string `json:"name"`
-	Rule    string `json:"rule"`
-	Message string `json:"message"`
-}
+// RuleConfig is a type alias for the generated RuleConfig
+// This ensures we use the single source of truth from TypeSpec generation
+type RuleConfig = generated.RuleConfig
 
 // DefaultEmitOptions returns safe defaults for code generation
 func DefaultEmitOptions() EmitOptions {
