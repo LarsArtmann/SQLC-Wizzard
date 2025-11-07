@@ -24,6 +24,7 @@ type WizardResult struct {
 type Wizard struct {
 	result *WizardResult
 	theme  *huh.Theme
+	ui     *UIHelper
 }
 
 // NewWizard creates a new wizard instance
@@ -34,13 +35,14 @@ func NewWizard() *Wizard {
 			GenerateSchema:  true,
 		},
 		theme: huh.ThemeBase(),
+		ui:    NewUIHelper(),
 	}
 }
 
 // Run executes the interactive wizard
 func (w *Wizard) Run() (*WizardResult, error) {
 	// Display welcome banner
-	w.showWelcome()
+	w.ui.ShowWelcome()
 
 	// Initialize template data with defaults
 	data := generated.TemplateData{

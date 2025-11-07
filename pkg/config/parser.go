@@ -12,7 +12,7 @@ func ParseFile(path string) (*SqlcConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, errors.ConfigNotFoundError(path)
+			return nil, errors.FileNotFoundError(path)
 		}
 		return nil, errors.FileReadError(path, err)
 	}
