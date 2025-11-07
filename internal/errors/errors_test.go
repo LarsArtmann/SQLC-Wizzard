@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	apperrors "github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	. "github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -37,10 +38,10 @@ func TestFileNotFoundError_Helper(t *testing.T) {
 
 func TestTemplateNotFoundError_Helper(t *testing.T) {
 	template := "missing-template"
-	err := apperrors.TemplateNotFoundError(template)
+	err := TemplateNotFoundError(template)
 	
 	require.Error(t, err)
-	assert.True(t, apperrors.Is(err, apperrors.ErrTemplateNotFound))
+	assert.True(t, Is(err, ErrTemplateNotFound))
 	assert.Contains(t, err.Error(), "template not found")
 	assert.Contains(t, err.Error(), template)
 }

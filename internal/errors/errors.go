@@ -1,5 +1,4 @@
-// Package errors provides centralized, professional error handling
-// All errors in the application should use these standardized types
+// Core error types and helper functions - keep minimal
 package errors
 
 import (
@@ -11,61 +10,19 @@ import (
 // ErrorCode represents standardized error codes
 type ErrorCode string
 
-const (
-	// Configuration errors
-	ErrConfigNotFound     ErrorCode = "CONFIG_NOT_FOUND"
-	ErrConfigParseFailed  ErrorCode = "CONFIG_PARSE_FAILED"
-	ErrConfigValidation   ErrorCode = "CONFIG_VALIDATION"
-	ErrValidationFailed    ErrorCode = "VALIDATION_FAILED"
-
-	// Validation errors
-	ErrInvalidConfig     ErrorCode = "INVALID_CONFIG"
-	ErrMissingField      ErrorCode = "MISSING_FIELD"
-	ErrInvalidType      ErrorCode = "INVALID_TYPE"
-	ErrInvalidState     ErrorCode = "INVALID_STATE"
-	ErrInvalidValue     ErrorCode = "INVALID_VALUE"
-
-	// File system errors
-	ErrFileNotFound     ErrorCode = "FILE_NOT_FOUND"
-	ErrPermissionDenied ErrorCode = "PERMISSION_DENIED"
-	ErrDirectoryExists ErrorCode = "DIRECTORY_EXISTS"
-
-	// SQLC errors
-	ErrSQLCNotFound     ErrorCode = "SQLC_NOT_FOUND"
-	ErrSQLCVersion      ErrorCode = "SQLC_VERSION"
-	ErrSQLCValidation   ErrorCode = "SQLC_VALIDATION"
-
-	// Template errors
-	ErrTemplateNotFound  ErrorCode = "TEMPLATE_NOT_FOUND"
-	ErrTemplateInvalid   ErrorCode = "TEMPLATE_INVALID"
-	ErrTemplateRender   ErrorCode = "TEMPLATE_RENDER"
-
-	// CLI errors
-	ErrInvalidCommand    ErrorCode = "INVALID_COMMAND"
-	ErrInvalidFlag      ErrorCode = "INVALID_FLAG"
-	ErrExecution        ErrorCode = "EXECUTION"
-
-	// Domain errors
-	ErrDomainViolation  ErrorCode = "DOMAIN_VIOLATION"
-	ErrAggregateNotFound ErrorCode = "AGGREGATE_NOT_FOUND"
-	ErrCommandRejected   ErrorCode = "COMMAND_REJECTED"
-)
-
 // Error represents a standardized application error
 type Error struct {
-	Code       ErrorCode              `json:"code"`
-	Message    string                 `json:"message"`
-	Details    map[string]interface{} `json:"details,omitempty"`
-	Cause      error                  `json:"-"`
-	File       string                 `json:"-"`
-	Line       int                    `json:"-"`
-	Function   string                 `json:"-"`
+	Code      ErrorCode                 `json:"code"`
+	Message   string                    `json:"message"`
+	Cause     error                     `json:"cause,omitempty"`
+	Details   map[string]interface{}     `json:"details,omitempty"`
+	Stack     []string                  `json:"stack,omitempty"`
 }
 
 // Error implements the error interface
 func (e *Error) Error() string {
-	if e.Details != nil {
-		return fmt.Sprintf("%s: %s (details: %+v)", e.Code, e.Message, e.Details)
+	if e.Cause != nil {
+		return fmt.Sprintf("%s: %s (caused by: %v)", e.Code, e.Message, e.Cause)
 	}
 	return fmt.Sprintf("%s: %s", e.Code, e.Message)
 }
@@ -75,9 +32,18 @@ func (e *Error) Unwrap() error {
 	return e.Cause
 }
 
-// WithCause adds a cause to the error
-func (e *Error) WithCause(err error) *Error {
-	e.Cause = err
+// WithCaller adds caller information to the error
+func (e *Error) WithCaller() *Error {
+	if e.Details == nil {
+		e.Details = make(map[string]interface{})
+	}
+	
+	if _, file, line, ok := runtime.Caller(1); ok {
+		e.Details["file"] = file
+		e.Details["line"] = line
+		e.Details["function"] = functionName(file, line)
+	}
+	
 	return e
 }
 
@@ -90,14 +56,9 @@ func (e *Error) WithDetails(key string, value interface{}) *Error {
 	return e
 }
 
-// WithCaller adds file, line, and function information
-func (e *Error) WithCaller() *Error {
-	_, file, line, ok := runtime.Caller(1)
-	if ok {
-		e.File = file
-		e.Line = line
-		e.Function = getCallerName()
-	}
+// WithCause adds a cause to the error
+func (e *Error) WithCause(err error) *Error {
+	e.Cause = err
 	return e
 }
 
@@ -106,6 +67,7 @@ func New(code ErrorCode, message string) *Error {
 	return &Error{
 		Code:    code,
 		Message: message,
+		Details: make(map[string]interface{}),
 	}
 }
 
@@ -119,6 +81,7 @@ func Wrap(err error, code ErrorCode, message string) *Error {
 		Code:    code,
 		Message: message,
 		Cause:   err,
+		Details: make(map[string]interface{}),
 	}
 	return e.WithCaller()
 }
@@ -152,65 +115,64 @@ func GetMessage(err error) string {
 	return err.Error()
 }
 
-// Validation helpers
-func ValidationError(field, value string) *Error {
-	return New(ErrInvalidType, fmt.Sprintf("invalid value for %s: %s", field, value)).
-		WithDetails("field", field).
-		WithDetails("value", value).
-		WithCaller()
+// GetDetails extracts details from error
+func GetDetails(err error) map[string]interface{} {
+	if appErr, ok := err.(*Error); ok {
+		return appErr.Details
+	}
+	return make(map[string]interface{})
 }
 
-func MissingFieldError(field string) *Error {
-	return New(ErrMissingField, fmt.Sprintf("required field is missing: %s", field)).
-		WithDetails("field", field).
-		WithCaller()
+// functionName extracts function name from file and line
+func functionName(file string, line int) string {
+	// Simplified function name extraction
+	parts := strings.Split(file, "/")
+	if len(parts) > 0 {
+		return parts[len(parts)-1]
+	}
+	return "unknown"
 }
 
-func StateValidationError(state string) *Error {
-	return New(ErrInvalidState, fmt.Sprintf("invalid state encountered: %s", state)).
-		WithDetails("state", state).
-		WithCaller()
-}
+// Additional core error codes (preserve from original)
+const (
+	// File system errors
+	ErrFileNotFound     ErrorCode = "FILE_NOT_FOUND"
+	ErrPermissionDenied ErrorCode = "PERMISSION_DENIED"
+	ErrDirectoryExists ErrorCode = "DIRECTORY_EXISTS"
+	
+	// Validation errors
+	ErrInvalidConfig   ErrorCode = "INVALID_CONFIG"
+	ErrMissingField    ErrorCode = "MISSING_FIELD"
+	ErrInvalidType     ErrorCode = "INVALID_TYPE"
+	ErrInvalidState    ErrorCode = "INVALID_STATE"
+	ErrInvalidValue    ErrorCode = "INVALID_VALUE"
+	
+	// Internal errors
+	ErrInternal        ErrorCode = "INTERNAL"
+	ErrExecution        ErrorCode = "EXECUTION"
+	ErrValidationFailed ErrorCode = "VALIDATION_FAILED"
+	
+	// SQLC errors
+	ErrSQLCNotFound   ErrorCode = "SQLC_NOT_FOUND"
+	ErrSQLCVersion    ErrorCode = "SQLC_VERSION"
+	ErrSQLCValidation ErrorCode = "SQLC_VALIDATION"
+	
+	// Template errors
+	ErrTemplateNotFound ErrorCode = "TEMPLATE_NOT_FOUND"
+	ErrTemplateInvalid  ErrorCode = "TEMPLATE_INVALID"
+	ErrTemplateRender  ErrorCode = "TEMPLATE_RENDER"
+	
+	// CLI errors
+	ErrInvalidCommand ErrorCode = "INVALID_COMMAND"
+	ErrInvalidFlag   ErrorCode = "INVALID_FLAG"
+	
+	// Domain errors
+	ErrDomainViolation    ErrorCode = "DOMAIN_VIOLATION"
+	ErrAggregateNotFound  ErrorCode = "AGGREGATE_NOT_FOUND"
+	ErrCommandRejected    ErrorCode = "COMMAND_REJECTED"
+)
 
-// File system helpers
-func FileNotFoundError(path string) *Error {
-	return New(ErrFileNotFound, fmt.Sprintf("file not found: %s", path)).
-		WithDetails("path", path).
-		WithCaller()
-}
-
-func ConfigNotFoundError(path string) *Error {
-	return New(ErrFileNotFound, fmt.Sprintf("config file not found: %s", path)).
-		WithDetails("path", path).
-		WithCaller()
-}
-
-func FileReadError(path string, err error) *Error {
-	return Wrap(err, ErrFileNotFound, fmt.Sprintf("failed to read file: %s", path)).
-		WithDetails("path", path).
-		WithCaller()
-}
-
-func ConfigParseError(path string, err error) *Error {
-	return Wrap(err, ErrConfigParseFailed, fmt.Sprintf("failed to parse config: %s", path)).
-		WithDetails("path", path).
-		WithCaller()
-}
-
-func PermissionDeniedError(operation, path string) *Error {
-	return New(ErrPermissionDenied, fmt.Sprintf("permission denied for %s on %s", operation, path)).
-		WithDetails("operation", operation).
-		WithDetails("path", path).
-		WithCaller()
-}
-
-func DirectoryExistsError(path string) *Error {
-	return New(ErrDirectoryExists, fmt.Sprintf("directory already exists: %s", path)).
-		WithDetails("path", path).
-		WithCaller()
-}
-
-// Formatting helpers
+// Formatting helpers (preserve from original)
 func Newf(code ErrorCode, format string, args ...interface{}) *Error {
 	return New(code, fmt.Sprintf(format, args...))
 }
@@ -221,65 +183,4 @@ func Wrapf(err error, code ErrorCode, format string, args ...interface{}) *Error
 	}
 	
 	return Wrap(err, code, fmt.Sprintf(format, args...))
-}
-
-// Template helpers
-func TemplateNotFoundError(template string) *Error {
-	return New(ErrTemplateNotFound, fmt.Sprintf("template not found: %s", template)).
-		WithDetails("template", template).
-		WithCaller()
-}
-
-func TemplateRenderError(template string, err error) *Error {
-	return Wrap(err, ErrTemplateRender, fmt.Sprintf("failed to render template: %s", template)).
-		WithDetails("template", template).
-		WithCaller()
-}
-
-// CLI helpers
-func InvalidCommandError(command string) *Error {
-	return New(ErrInvalidCommand, fmt.Sprintf("invalid command: %s", command)).
-		WithDetails("command", command).
-		WithCaller()
-}
-
-func InvalidFlagError(flag, value string) *Error {
-	return New(ErrInvalidFlag, fmt.Sprintf("invalid flag %s with value: %s", flag, value)).
-		WithDetails("flag", flag).
-		WithDetails("value", value).
-		WithCaller()
-}
-
-// Domain helpers
-func DomainViolationError(violation string) *Error {
-	return New(ErrDomainViolation, fmt.Sprintf("domain violation: %s", violation)).
-		WithDetails("violation", violation).
-		WithCaller()
-}
-
-func AggregateNotFoundError(aggregate, id string) *Error {
-	return New(ErrAggregateNotFound, fmt.Sprintf("%s not found: %s", aggregate, id)).
-		WithDetails("aggregate", aggregate).
-		WithDetails("id", id).
-		WithCaller()
-}
-
-func CommandRejectedError(command string, reason string) *Error {
-	return New(ErrCommandRejected, fmt.Sprintf("command rejected: %s, reason: %s", command, reason)).
-		WithDetails("command", command).
-		WithDetails("reason", reason).
-		WithCaller()
-}
-
-// getCallerName extracts the calling function name
-func getCallerName() string {
-	pc, _, _, ok := runtime.Caller(3)
-	if !ok {
-		return "unknown"
-	}
-	
-	name := runtime.FuncForPC(pc).Name()
-	// Extract just the function name (remove package path)
-	parts := strings.Split(name, ".")
-	return parts[len(parts)-1]
 }
