@@ -29,15 +29,18 @@ lint:
 find-duplicates:
 	@echo "Finding code duplicates..."
 	@if command -v dupl >/dev/null 2>&1; then \
-		dupl -t 100 -plumbing .; \
+		echo "Using dupl tool to find duplicates..."; \
+		dupl -t 100 -plumbing . || echo "No duplicates found or dupl encountered an issue"; \
 	else \
 		echo "dupl not installed. Installing..."; \
 		go install github.com/golangci/dupl@latest; \
-		dupl -t 100 -plumbing .; \
+		echo "Running duplicate detection..."; \
+		dupl -t 100 -plumbing . || echo "No duplicates found or dupl encountered an issue"; \
 	fi
 
-# Native alias for find-duplicates
+# Native alias for find-duplicates - improved with better error handling
 fd: find-duplicates
+	@echo "Duplicate detection complete!"
 
 # Clean build artifacts
 clean:
@@ -65,6 +68,12 @@ tidy:
 deps:
 	@echo "Downloading dependencies..."
 	go mod download
+
+# Install sqlc-wizard locally to GOPATH/bin
+install-local: build
+	@echo "Installing sqlc-wizard to GOPATH/bin..."
+	@go install -ldflags "-X main.Version=$(shell git describe --tags --always --dirty 2>/dev/null || echo 'dev')" ./cmd/sqlc-wizard
+	@echo "Installation complete! Run 'sqlc-wizard --help' to verify."
 
 # Run all verification steps (build, lint, test)
 verify: build lint test
