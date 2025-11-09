@@ -106,23 +106,23 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 	// Create template data from flags
 	data := generated.TemplateData{
 		ProjectType: templates.MustNewProjectType(opts.ProjectType),
-		
+
 		Package: generated.PackageConfig{
 			Path: opts.PackagePath,
 			Name: opts.PackageName,
 		},
-		
+
 		Database: generated.DatabaseConfig{
-			Engine:     templates.MustNewDatabaseType(opts.Database),
+			Engine:      templates.MustNewDatabaseType(opts.Database),
 			UseUUIDs:    true,
 			UseJSON:     true,
 			UseArrays:   false,
 			UseFullText: false,
 		},
-		
+
 		Validation: generated.ValidationConfig{
 			EmitOptions: generated.DefaultEmitOptions(),
-			SafetyRules:  generated.DefaultSafetyRules(),
+			SafetyRules: generated.DefaultSafetyRules(),
 		},
 	}
 

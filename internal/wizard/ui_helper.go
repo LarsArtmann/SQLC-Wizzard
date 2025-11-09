@@ -3,8 +3,8 @@ package wizard
 import (
 	"fmt"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/charmbracelet/huh"
 	"github.com/charmbracelet/lipgloss"
 )
@@ -54,8 +54,8 @@ func (ui *UIHelper) ShowPreview(data *templates.TemplateData, cfg *config.SqlcCo
 		Align(lipgloss.Left)
 
 	preview := titleStyle.Render("Configuration Preview")
-	
-	preview += "\n" + sectionStyle.Render("Project") + "\n" + 
+
+	preview += "\n" + sectionStyle.Render("Project") + "\n" +
 		contentStyle.Render(fmt.Sprintf(`
   Name: %s
   Type: %s
@@ -79,7 +79,7 @@ func (ui *UIHelper) ShowPreview(data *templates.TemplateData, cfg *config.SqlcCo
 // getConfirmation shows final confirmation
 func (ui *UIHelper) GetConfirmation() (bool, error) {
 	var confirmed bool
-	
+
 	err := huh.NewForm(
 		huh.NewGroup(
 			huh.NewConfirm().

@@ -8,37 +8,37 @@ import (
 type Event interface {
 	// ID returns the unique identifier for this event
 	ID() string
-	
+
 	// AggregateID returns the ID of the aggregate that generated this event
 	AggregateID() string
-	
+
 	// EventType returns the type of this event
 	EventType() string
-	
+
 	// OccurredAt returns when this event occurred
 	OccurredAt() time.Time
-	
+
 	// Data returns the event data
-	Data() interface{}
+	Data() any
 }
 
 // BaseEvent provides common functionality for all domain events
 type BaseEvent struct {
-	id         string
+	id          string
 	aggregateID string
-	eventType  string
-	occurredAt time.Time
-	data       interface{}
+	eventType   string
+	occurredAt  time.Time
+	data        any
 }
 
 // NewBaseEvent creates a new base event
-func NewBaseEvent(id, aggregateID, eventType string, data interface{}) *BaseEvent {
+func NewBaseEvent(id, aggregateID, eventType string, data any) *BaseEvent {
 	return &BaseEvent{
-		id:         id,
+		id:          id,
 		aggregateID: aggregateID,
-		eventType:  eventType,
-		occurredAt: time.Now(),
-		data:       data,
+		eventType:   eventType,
+		occurredAt:  time.Now(),
+		data:        data,
 	}
 }
 
@@ -63,6 +63,6 @@ func (e *BaseEvent) OccurredAt() time.Time {
 }
 
 // Data returns the event data
-func (e *BaseEvent) Data() interface{} {
+func (e *BaseEvent) Data() any {
 	return e.data
 }

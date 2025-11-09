@@ -10,9 +10,8 @@ import (
 func BenchmarkInMemoryEventStore_SaveEvent(b *testing.B) {
 	eventStore := domain.NewInMemoryEventStore()
 	event := domain.NewBaseEvent("test-id", "agg-id", "TestEvent", "test-data")
-	
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		_ = eventStore.SaveEvent(event)
 	}
 }
@@ -20,15 +19,14 @@ func BenchmarkInMemoryEventStore_SaveEvent(b *testing.B) {
 // BenchmarkInMemoryEventStore_GetEventsByAggregate benchmarks event retrieval
 func BenchmarkInMemoryEventStore_GetEventsByAggregate(b *testing.B) {
 	eventStore := domain.NewInMemoryEventStore()
-	
+
 	// Setup: save 1000 events for testing
-	for i := 0; i < 1000; i++ {
+	for range 1000 {
 		event := domain.NewBaseEvent("test-id", "agg-id", "TestEvent", "test-data")
 		_ = eventStore.SaveEvent(event)
 	}
-	
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		_, _ = eventStore.GetEventsByAggregate("agg-id")
 	}
 }
@@ -37,22 +35,21 @@ func BenchmarkInMemoryEventStore_GetEventsByAggregate(b *testing.B) {
 func BenchmarkSimpleEventBus_Publish(b *testing.B) {
 	eventBus := domain.NewSimpleEventBus()
 	event := domain.NewBaseEvent("test-id", "agg-id", "TestEvent", "test-data")
-	
+
 	// Add some subscribers
 	handler := func(e domain.Event) error { return nil }
 	_ = eventBus.Subscribe("TestEvent", handler)
 	_ = eventBus.Subscribe("TestEvent", handler)
 	_ = eventBus.Subscribe("TestEvent", handler)
-	
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		_ = eventBus.Publish(event)
 	}
 }
 
 // BenchmarkDomainServices_GenerateUUID benchmarks UUID generation
 func BenchmarkDomainServices_GenerateUUID(b *testing.B) {
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		_ = domain.GenerateUUID()
 	}
 }

@@ -125,5 +125,3 @@ func validateGoGenConfig(cfg *GoGenConfig, prefix string, result *ValidationResu
 		result.AddWarning(prefix+".emit_json_tags", "consider enabling emit_json_tags for JSON serialization support")
 	}
 }
-
-

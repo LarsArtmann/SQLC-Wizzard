@@ -3,10 +3,10 @@ package errors
 
 // Domain error codes
 const (
-	ErrDomainNotFound     ErrorCode = "DOMAIN_NOT_FOUND"
-	ErrDomainValidation   ErrorCode = "DOMAIN_VALIDATION"
-	ErrDomainState       ErrorCode = "DOMAIN_STATE"
-	ErrDomainInvariant    ErrorCode = "DOMAIN_INVARIANT"
+	ErrDomainNotFound   ErrorCode = "DOMAIN_NOT_FOUND"
+	ErrDomainValidation ErrorCode = "DOMAIN_VALIDATION"
+	ErrDomainState      ErrorCode = "DOMAIN_STATE"
+	ErrDomainInvariant  ErrorCode = "DOMAIN_INVARIANT"
 )
 
 // Error helpers for domain operations

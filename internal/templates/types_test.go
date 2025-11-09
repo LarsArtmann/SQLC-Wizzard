@@ -13,14 +13,14 @@ import (
 
 func TestNewProjectType_Valid(t *testing.T) {
 	result, err := templates.NewProjectType("microservice")
-	
+
 	require.NoError(t, err)
 	assert.Equal(t, generated.ProjectTypeMicroservice, result)
 }
 
 func TestNewProjectType_Invalid(t *testing.T) {
 	result, err := templates.NewProjectType("invalid")
-	
+
 	require.Error(t, err)
 	assert.Empty(t, result)
 	assert.True(t, errors.Is(err, errors.ErrInvalidType))
@@ -28,14 +28,14 @@ func TestNewProjectType_Invalid(t *testing.T) {
 
 func TestNewDatabaseType_Valid(t *testing.T) {
 	result, err := templates.NewDatabaseType("postgresql")
-	
+
 	require.NoError(t, err)
 	assert.Equal(t, generated.DatabaseTypePostgreSQL, result)
 }
 
 func TestNewDatabaseType_Invalid(t *testing.T) {
 	result, err := templates.NewDatabaseType("invalid")
-	
+
 	require.Error(t, err)
 	assert.Empty(t, result)
 	assert.True(t, errors.Is(err, errors.ErrInvalidType))
@@ -102,7 +102,7 @@ func TestMicroserviceTemplate_Description(t *testing.T) {
 func TestMicroserviceTemplate_DefaultData(t *testing.T) {
 	template := &templates.MicroserviceTemplate{}
 	data := template.DefaultData()
-	
+
 	// Verify defaults
 	assert.Equal(t, generated.ProjectTypeMicroservice, data.ProjectType)
 	assert.Equal(t, "db", data.Package.Name)
@@ -117,15 +117,15 @@ func TestMicroserviceTemplate_Generate_Basic(t *testing.T) {
 	template := &templates.MicroserviceTemplate{}
 	data := template.DefaultData()
 	data.ProjectName = "test-service"
-	
+
 	result, err := template.Generate(data)
-	
+
 	require.NoError(t, err)
 	require.NotNil(t, result)
-	
+
 	assert.Equal(t, "2", result.Version)
 	assert.Len(t, result.SQL, 1)
-	
+
 	sqlConfig := result.SQL[0]
 	assert.Equal(t, "test-service", sqlConfig.Name)
 	assert.Equal(t, "postgresql", sqlConfig.Engine)

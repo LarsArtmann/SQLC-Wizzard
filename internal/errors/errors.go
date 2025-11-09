@@ -12,11 +12,11 @@ type ErrorCode string
 
 // Error represents a standardized application error
 type Error struct {
-	Code      ErrorCode                 `json:"code"`
-	Message   string                    `json:"message"`
-	Cause     error                     `json:"cause,omitempty"`
-	Details   map[string]interface{}     `json:"details,omitempty"`
-	Stack     []string                  `json:"stack,omitempty"`
+	Code    ErrorCode      `json:"code"`
+	Message string         `json:"message"`
+	Cause   error          `json:"cause,omitempty"`
+	Details map[string]any `json:"details,omitempty"`
+	Stack   []string       `json:"stack,omitempty"`
 }
 
 // Error implements the error interface
@@ -35,22 +35,22 @@ func (e *Error) Unwrap() error {
 // WithCaller adds caller information to the error
 func (e *Error) WithCaller() *Error {
 	if e.Details == nil {
-		e.Details = make(map[string]interface{})
+		e.Details = make(map[string]any)
 	}
-	
+
 	if _, file, line, ok := runtime.Caller(1); ok {
 		e.Details["file"] = file
 		e.Details["line"] = line
 		e.Details["function"] = functionName(file, line)
 	}
-	
+
 	return e
 }
 
 // WithDetails adds details to the error
-func (e *Error) WithDetails(key string, value interface{}) *Error {
+func (e *Error) WithDetails(key string, value any) *Error {
 	if e.Details == nil {
-		e.Details = make(map[string]interface{})
+		e.Details = make(map[string]any)
 	}
 	e.Details[key] = value
 	return e
@@ -67,7 +67,7 @@ func New(code ErrorCode, message string) *Error {
 	return &Error{
 		Code:    code,
 		Message: message,
-		Details: make(map[string]interface{}),
+		Details: make(map[string]any),
 	}
 }
 
@@ -76,12 +76,12 @@ func Wrap(err error, code ErrorCode, message string) *Error {
 	if err == nil {
 		return nil
 	}
-	
+
 	e := &Error{
 		Code:    code,
 		Message: message,
 		Cause:   err,
-		Details: make(map[string]interface{}),
+		Details: make(map[string]any),
 	}
 	return e.WithCaller()
 }
@@ -116,11 +116,11 @@ func GetMessage(err error) string {
 }
 
 // GetDetails extracts details from error
-func GetDetails(err error) map[string]interface{} {
+func GetDetails(err error) map[string]any {
 	if appErr, ok := err.(*Error); ok {
 		return appErr.Details
 	}
-	return make(map[string]interface{})
+	return make(map[string]any)
 }
 
 // functionName extracts function name from file and line
@@ -138,49 +138,49 @@ const (
 	// File system errors
 	ErrFileNotFound     ErrorCode = "FILE_NOT_FOUND"
 	ErrPermissionDenied ErrorCode = "PERMISSION_DENIED"
-	ErrDirectoryExists ErrorCode = "DIRECTORY_EXISTS"
-	
+	ErrDirectoryExists  ErrorCode = "DIRECTORY_EXISTS"
+
 	// Validation errors
-	ErrInvalidConfig   ErrorCode = "INVALID_CONFIG"
-	ErrMissingField    ErrorCode = "MISSING_FIELD"
-	ErrInvalidType     ErrorCode = "INVALID_TYPE"
-	ErrInvalidState    ErrorCode = "INVALID_STATE"
-	ErrInvalidValue    ErrorCode = "INVALID_VALUE"
-	
+	ErrInvalidConfig ErrorCode = "INVALID_CONFIG"
+	ErrMissingField  ErrorCode = "MISSING_FIELD"
+	ErrInvalidType   ErrorCode = "INVALID_TYPE"
+	ErrInvalidState  ErrorCode = "INVALID_STATE"
+	ErrInvalidValue  ErrorCode = "INVALID_VALUE"
+
 	// Internal errors
-	ErrInternal        ErrorCode = "INTERNAL"
+	ErrInternal         ErrorCode = "INTERNAL"
 	ErrExecution        ErrorCode = "EXECUTION"
 	ErrValidationFailed ErrorCode = "VALIDATION_FAILED"
-	
+
 	// SQLC errors
 	ErrSQLCNotFound   ErrorCode = "SQLC_NOT_FOUND"
 	ErrSQLCVersion    ErrorCode = "SQLC_VERSION"
 	ErrSQLCValidation ErrorCode = "SQLC_VALIDATION"
-	
+
 	// Template errors
 	ErrTemplateNotFound ErrorCode = "TEMPLATE_NOT_FOUND"
 	ErrTemplateInvalid  ErrorCode = "TEMPLATE_INVALID"
-	ErrTemplateRender  ErrorCode = "TEMPLATE_RENDER"
-	
+	ErrTemplateRender   ErrorCode = "TEMPLATE_RENDER"
+
 	// CLI errors
 	ErrInvalidCommand ErrorCode = "INVALID_COMMAND"
-	ErrInvalidFlag   ErrorCode = "INVALID_FLAG"
-	
+	ErrInvalidFlag    ErrorCode = "INVALID_FLAG"
+
 	// Domain errors
-	ErrDomainViolation    ErrorCode = "DOMAIN_VIOLATION"
-	ErrAggregateNotFound  ErrorCode = "AGGREGATE_NOT_FOUND"
-	ErrCommandRejected    ErrorCode = "COMMAND_REJECTED"
+	ErrDomainViolation   ErrorCode = "DOMAIN_VIOLATION"
+	ErrAggregateNotFound ErrorCode = "AGGREGATE_NOT_FOUND"
+	ErrCommandRejected   ErrorCode = "COMMAND_REJECTED"
 )
 
 // Formatting helpers (preserve from original)
-func Newf(code ErrorCode, format string, args ...interface{}) *Error {
+func Newf(code ErrorCode, format string, args ...any) *Error {
 	return New(code, fmt.Sprintf(format, args...))
 }
 
-func Wrapf(err error, code ErrorCode, format string, args ...interface{}) *Error {
+func Wrapf(err error, code ErrorCode, format string, args ...any) *Error {
 	if err == nil {
 		return nil
 	}
-	
+
 	return Wrap(err, code, fmt.Sprintf(format, args...))
 }

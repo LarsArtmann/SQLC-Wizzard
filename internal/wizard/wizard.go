@@ -9,7 +9,6 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/utils"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/charmbracelet/huh"
-	"github.com/charmbracelet/lipgloss"
 )
 
 // WizardResult contains the output of running the wizard
@@ -54,7 +53,7 @@ func (w *Wizard) Run() (*WizardResult, error) {
 		},
 		Validation: generated.ValidationConfig{
 			EmitOptions: generated.DefaultEmitOptions(),
-			SafetyRules:  generated.DefaultSafetyRules(),
+			SafetyRules: generated.DefaultSafetyRules(),
 		},
 	}
 
@@ -98,20 +97,6 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	w.result.TemplateData = data
 
 	return w.result, nil
-}
-
-func (w *Wizard) showWelcome() {
-	titleStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("99")).
-		Padding(1, 0)
-
-	descStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("240")).
-		Padding(0, 0, 1, 0)
-
-	fmt.Println(titleStyle.Render("🧙‍♂️  SQLC Configuration Wizard"))
-	fmt.Println(descStyle.Render("Let's create the perfect sqlc setup for your project!\n"))
 }
 
 func (w *Wizard) selectProjectType(data *templates.TemplateData) error {
@@ -278,5 +263,3 @@ func (w *Wizard) outputConfiguration(data *templates.TemplateData) error {
 
 	return form.Run()
 }
-
-

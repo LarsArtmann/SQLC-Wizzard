@@ -7,8 +7,8 @@ import (
 
 // Additional file system error codes (unique to this file)
 const (
-	ErrFileRead    ErrorCode = "FILE_READ"
-	ErrFileWrite   ErrorCode = "FILE_WRITE"
+	ErrFileRead  ErrorCode = "FILE_READ"
+	ErrFileWrite ErrorCode = "FILE_WRITE"
 )
 
 // Error helpers for file system (unique functions)

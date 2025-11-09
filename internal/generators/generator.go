@@ -67,7 +67,7 @@ func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey
 	// Determine directory
 	var dir string
 	var templateContent func(templates.DatabaseType) string
-	
+
 	switch templateType {
 	case "queries":
 		dir = data.Output.QueriesDir

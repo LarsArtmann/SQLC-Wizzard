@@ -32,19 +32,19 @@ type DoctorCheck struct {
 
 // DoctorResult represents the result of a diagnostic check
 type DoctorResult struct {
-	Status    string // "PASS", "FAIL", "WARN"
-	Message   string
-	Solution  string
-	Error     error
+	Status   string // "PASS", "FAIL", "WARN"
+	Message  string
+	Solution string
+	Error    error
 }
 
 // runDoctor executes the diagnostic checks
 func runDoctor(cmd *cobra.Command, args []string) error {
 	ctx := context.Background()
-	
+
 	fmt.Println("🩺 SQLC-Wizard Health Check")
 	fmt.Println("============================")
-	
+
 	checks := []DoctorCheck{
 		{
 			Name:        "go-version",
@@ -72,13 +72,13 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 			Checker:     checkMemoryAvailability,
 		},
 	}
-	
+
 	var failed, warned int
-	
+
 	for _, check := range checks {
 		fmt.Printf("\n🔍 %s\n", check.Description)
 		result := check.Checker(ctx)
-		
+
 		switch result.Status {
 		case "PASS":
 			fmt.Printf("   ✅ %s\n", result.Message)
@@ -95,16 +95,16 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 			}
 			failed++
 		}
-		
+
 		if result.Error != nil {
 			fmt.Printf("   🐛 Error: %v\n", result.Error)
 		}
 	}
-	
+
 	// Summary
 	fmt.Println("\n" + "============================")
 	fmt.Println("🏁 Health Check Summary")
-	
+
 	switch {
 	case failed == 0 && warned == 0:
 		fmt.Println("🎉 All checks passed! Your environment is ready for SQLC-Wizard.")
@@ -121,7 +121,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 // checkGoVersion checks Go version compatibility
 func checkGoVersion(ctx context.Context) *DoctorResult {
 	goVersion := runtime.Version()
-	
+
 	// Check minimum Go version (simplified check)
 	minVersion := "go1.21"
 	if goVersion < minVersion {
@@ -131,7 +131,7 @@ func checkGoVersion(ctx context.Context) *DoctorResult {
 			Solution: fmt.Sprintf("Please upgrade to Go %s or later", minVersion),
 		}
 	}
-	
+
 	return &DoctorResult{
 		Status:  "PASS",
 		Message: fmt.Sprintf("Go version %s is compatible", goVersion),
@@ -142,7 +142,7 @@ func checkGoVersion(ctx context.Context) *DoctorResult {
 func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	sqlcAdapter := adapters.NewRealSQLCAdapter()
 	err := sqlcAdapter.CheckInstallation(ctx)
-	
+
 	if err != nil {
 		return &DoctorResult{
 			Status:   "FAIL",
@@ -151,7 +151,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 			Error:    err,
 		}
 	}
-	
+
 	// Try to get version
 	_, err = sqlcAdapter.Version(ctx)
 	if err != nil {
@@ -162,7 +162,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 			Error:    err,
 		}
 	}
-	
+
 	return &DoctorResult{
 		Status:  "PASS",
 		Message: "sqlc is installed and working",
@@ -172,13 +172,13 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 // checkDatabaseDrivers checks database driver availability
 func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 	dbAdapter := adapters.NewRealDatabaseAdapter()
-	
+
 	// Check connection to SQLite (most common for development)
 	sqliteConfig := &config.DatabaseConfig{
 		URI:     ":memory:",
 		Managed: false,
 	}
-	
+
 	err := dbAdapter.TestConnection(ctx, sqliteConfig)
 	if err != nil {
 		return &DoctorResult{
@@ -188,7 +188,7 @@ func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 			Error:    err,
 		}
 	}
-	
+
 	return &DoctorResult{
 		Status:  "PASS",
 		Message: "SQLite driver is available",
@@ -198,11 +198,11 @@ func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 // checkFileSystemPermissions checks filesystem permissions
 func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	fsAdapter := adapters.NewRealFileSystemAdapter()
-	
+
 	// Try to create a temporary file
 	testContent := []byte("test")
 	testFile := "/tmp/sqlc-wizard-test"
-	
+
 	err := fsAdapter.WriteFile(ctx, testFile, testContent, 0644)
 	if err != nil {
 		return &DoctorResult{
@@ -212,7 +212,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 			Error:    err,
 		}
 	}
-	
+
 	// Try to read it back
 	_, err = fsAdapter.ReadFile(ctx, testFile)
 	if err != nil {
@@ -223,10 +223,10 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 			Error:    err,
 		}
 	}
-	
+
 	// Clean up
 	_ = os.Remove(testFile)
-	
+
 	return &DoctorResult{
 		Status:  "PASS",
 		Message: "Filesystem permissions are OK",
@@ -237,11 +237,11 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 func checkMemoryAvailability(ctx context.Context) *DoctorResult {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	
+
 	// Convert bytes to MB
 	availableMB := int(m.Sys / 1024 / 1024)
 	minMemoryMB := 512 // 512MB minimum recommended
-	
+
 	if availableMB < minMemoryMB {
 		return &DoctorResult{
 			Status:   "WARN",
@@ -249,7 +249,7 @@ func checkMemoryAvailability(ctx context.Context) *DoctorResult {
 			Solution: "Consider closing other applications or increasing available memory",
 		}
 	}
-	
+
 	return &DoctorResult{
 		Status:  "PASS",
 		Message: fmt.Sprintf("Memory is sufficient (%d MB available)", availableMB),

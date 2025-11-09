@@ -13,7 +13,7 @@ import (
 func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 	projectTypePtr := new(string)
 	*projectTypePtr = string(data.ProjectType)
-	
+
 	return huh.NewSelect[string]().
 		Title("Select Project Type").
 		Description("Choose the type of project you want to create").
@@ -40,7 +40,7 @@ func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 	databasePtr := new(string)
 	*databasePtr = string(data.Database.Engine)
-	
+
 	return huh.NewSelect[string]().
 		Title("Select Database Engine").
 		Description("Choose the database engine for your project").

@@ -8,12 +8,12 @@ import (
 
 // Type aliases for generated types - PROHIBIT DIRECT STRING USAGE!
 type (
-	ProjectType = generated.ProjectType
+	ProjectType  = generated.ProjectType
 	DatabaseType = generated.DatabaseType
 	TemplateData = generated.TemplateData
-	EmitOptions = generated.EmitOptions
+	EmitOptions  = generated.EmitOptions
 	SafetyRule   = generated.SafetyRule
-	SafetyRules = generated.SafetyRules
+	SafetyRules  = generated.SafetyRules
 )
 
 // Helper functions for validation
@@ -78,7 +78,7 @@ const (
 	ProjectTypeTesting      = ProjectType(generated.ProjectTypeTesting)
 	ProjectTypeMultiTenant  = ProjectType(generated.ProjectTypeMultiTenant)
 	ProjectTypeLibrary      = ProjectType(generated.ProjectTypeLibrary)
-	
+
 	DatabaseTypePostgreSQL = DatabaseType(generated.DatabaseTypePostgreSQL)
 	DatabaseTypeMySQL      = DatabaseType(generated.DatabaseTypeMySQL)
 	DatabaseTypeSQLite     = DatabaseType(generated.DatabaseTypeSQLite)

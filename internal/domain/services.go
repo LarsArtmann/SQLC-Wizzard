@@ -8,10 +8,10 @@ import (
 type EventBus interface {
 	// Publish publishes an event to all subscribers
 	Publish(event Event) error
-	
+
 	// Subscribe subscribes to events of a specific type
 	Subscribe(eventType string, handler EventHandler) error
-	
+
 	// Unsubscribe unsubscribes from events of a specific type
 	Unsubscribe(eventType string, handler EventHandler) error
 }
@@ -38,14 +38,14 @@ func (bus *SimpleEventBus) Publish(event Event) error {
 	if !exists {
 		return nil // No handlers for this event type
 	}
-	
+
 	// In a real implementation, this would be async
 	for _, handler := range handlers {
 		if err := handler(event); err != nil {
 			return err
 		}
 	}
-	
+
 	return nil
 }
 
@@ -54,7 +54,7 @@ func (bus *SimpleEventBus) Subscribe(eventType string, handler EventHandler) err
 	if bus.handlers[eventType] == nil {
 		bus.handlers[eventType] = []EventHandler{}
 	}
-	
+
 	bus.handlers[eventType] = append(bus.handlers[eventType], handler)
 	return nil
 }
@@ -65,7 +65,7 @@ func (bus *SimpleEventBus) Unsubscribe(eventType string, handler EventHandler) e
 	if !exists {
 		return nil
 	}
-	
+
 	// Find and remove the handler
 	for i, h := range handlers {
 		// Note: In Go, we can't directly compare functions, so this is simplified
@@ -74,21 +74,21 @@ func (bus *SimpleEventBus) Unsubscribe(eventType string, handler EventHandler) e
 		_ = h
 		break
 	}
-	
+
 	return nil
 }
 
 // DomainServices provides domain-level services
 type DomainServices struct {
 	EventStore EventStore
-	EventBus  EventBus
+	EventBus   EventBus
 }
 
 // NewDomainServices creates a new domain services instance
 func NewDomainServices(eventStore EventStore, eventBus EventBus) *DomainServices {
 	return &DomainServices{
 		EventStore: eventStore,
-		EventBus:  eventBus,
+		EventBus:   eventBus,
 	}
 }
 

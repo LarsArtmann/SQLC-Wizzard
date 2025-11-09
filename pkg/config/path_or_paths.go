@@ -39,11 +39,14 @@ func (p PathOrPaths) Strings() []string {
 
 // UnmarshalYAML implements yaml.Unmarshaler to handle both string and []string.
 // This allows sqlc.yaml to use either:
-//   queries: "path/to/queries"
+//
+//	queries: "path/to/queries"
+//
 // or:
-//   queries:
-//     - "path/to/queries1"
-//     - "path/to/queries2"
+//
+//	queries:
+//	  - "path/to/queries1"
+//	  - "path/to/queries2"
 func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 	// Try to unmarshal as a slice of strings first
 	var paths []string
@@ -67,7 +70,7 @@ func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 
 // MarshalYAML implements yaml.Marshaler to output as []string.
 // We always output as an array for consistency, even if there's only one path.
-func (p PathOrPaths) MarshalYAML() (interface{}, error) {
+func (p PathOrPaths) MarshalYAML() (any, error) {
 	return p.paths, nil
 }
 

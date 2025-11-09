@@ -4,17 +4,17 @@ import (
 	"testing"
 	"time"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
-	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 )
 
 var _ = Describe("Domain Events", func() {
 	var (
 		eventStore domain.EventStore
-		eventBus  domain.EventBus
-		services  *domain.DomainServices
+		eventBus   domain.EventBus
+		services   *domain.DomainServices
 	)
 
 	BeforeEach(func() {
@@ -136,7 +136,7 @@ var _ = Describe("Domain Events", func() {
 			eventData := domain.ConfigValidated{
 				ProjectID:        "proj-123",
 				IsValid:          true,
-				ValidationErrors:  []string{},
+				ValidationErrors: []string{},
 				ValidatedAt:      "2023-01-01T00:00:00Z",
 			}
 

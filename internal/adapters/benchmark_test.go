@@ -12,15 +12,14 @@ func BenchmarkRealFileSystemAdapter_ReadWriteFile(b *testing.B) {
 	fs := adapters.NewRealFileSystemAdapter()
 	content := []byte("test content for benchmarking")
 	ctx := context.Background()
-	
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		// Write file
 		err := fs.WriteFile(ctx, "/tmp/benchmark-test.txt", content, 0644)
 		if err != nil {
 			b.Fatal(err)
 		}
-		
+
 		// Read file
 		_, err = fs.ReadFile(ctx, "/tmp/benchmark-test.txt")
 		if err != nil {
@@ -33,9 +32,8 @@ func BenchmarkRealFileSystemAdapter_ReadWriteFile(b *testing.B) {
 func BenchmarkRealFileSystemAdapter_Exists(b *testing.B) {
 	fs := adapters.NewRealFileSystemAdapter()
 	ctx := context.Background()
-	
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		_, _ = fs.Exists(ctx, "/tmp")
 	}
 }
@@ -44,9 +42,8 @@ func BenchmarkRealFileSystemAdapter_Exists(b *testing.B) {
 func BenchmarkRealSQLCAdapter_CheckInstallation(b *testing.B) {
 	sqlcAdapter := adapters.NewRealSQLCAdapter()
 	ctx := context.Background()
-	
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		_ = sqlcAdapter.CheckInstallation(ctx)
 	}
 }
@@ -55,9 +52,8 @@ func BenchmarkRealSQLCAdapter_CheckInstallation(b *testing.B) {
 func BenchmarkRealCLIAdapter_RunCommand(b *testing.B) {
 	cliAdapter := adapters.NewRealCLIAdapter()
 	ctx := context.Background()
-	
-	b.ResetTimer()
-	for i := 0; i < b.N; i++ {
+
+	for b.Loop() {
 		_, _ = cliAdapter.RunCommand(ctx, "echo", "benchmark")
 	}
 }

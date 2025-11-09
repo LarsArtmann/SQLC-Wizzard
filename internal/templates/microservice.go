@@ -36,7 +36,7 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 		packageConfig.Path = "db"
 		data.Package = packageConfig
 	}
-	
+
 	outputConfig := data.Output
 	if outputConfig.BaseDir == "" {
 		outputConfig.BaseDir = "internal/db"
@@ -50,7 +50,7 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 		outputConfig.SchemaDir = "internal/db/schema"
 		data.Output = outputConfig
 	}
-	
+
 	databaseConfig := data.Database
 	if databaseConfig.URL == "" {
 		databaseConfig.URL = "${DATABASE_URL}"
@@ -81,10 +81,10 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 			},
 		},
 	}
-	
+
 	// Apply emit options (eliminates field-by-field copying!)
 	data.Validation.EmitOptions.ApplyToGoGenConfig(&cfg.SQL[0].Gen.Go)
-	
+
 	// Convert rule types
 	rules := data.Validation.SafetyRules.ToRuleConfigs()
 	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
@@ -104,12 +104,12 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 	return generated.TemplateData{
 		ProjectName: "",
 		ProjectType: MustNewProjectType("microservice"),
-		
+
 		Package: generated.PackageConfig{
 			Name: "db",
 			Path: "internal/db",
 		},
-		
+
 		Database: generated.DatabaseConfig{
 			Engine:      MustNewDatabaseType("postgresql"),
 			URL:         "${DATABASE_URL}",
@@ -119,17 +119,17 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 			UseArrays:   false,
 			UseFullText: false,
 		},
-		
+
 		Output: generated.OutputConfig{
 			BaseDir:    "internal/db",
-			QueriesDir:  "internal/db/queries",
-			SchemaDir:   "internal/db/schema",
+			QueriesDir: "internal/db/queries",
+			SchemaDir:  "internal/db/schema",
 		},
-		
+
 		Validation: generated.ValidationConfig{
 			StrictFunctions: false,
 			StrictOrderBy:   false,
-			EmitOptions:    generated.DefaultEmitOptions(),
+			EmitOptions:     generated.DefaultEmitOptions(),
 			SafetyRules:     generated.DefaultSafetyRules(),
 		},
 	}
@@ -237,4 +237,3 @@ func (t *MicroserviceTemplate) getRenameRules() map[string]string {
 		"db":   "DB",
 	}
 }
-

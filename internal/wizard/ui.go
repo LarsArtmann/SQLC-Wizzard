@@ -9,6 +9,14 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
+// toTitle converts a string to title case without using deprecated strings.Title
+func toTitle(s string) string {
+	if s == "" {
+		return s
+	}
+	return strings.ToUpper(s[:1]) + strings.ToLower(s[1:])
+}
+
 // ShowWelcome displays welcome message
 func ShowWelcome() {
 	style := lipgloss.NewStyle().
@@ -20,13 +28,13 @@ func ShowWelcome() {
 		MarginBottom(1)
 
 	title := style.Render("🧙 SQLC-Wizard")
-	
+
 	subtitleStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("251")).
 		Width(80).
 		Align(lipgloss.Center).
 		MarginBottom(2)
-		
+
 	subtitle := subtitleStyle.Render("Perfect sqlc configurations in minutes, not hours")
 
 	description := lipgloss.NewStyle().
@@ -42,7 +50,7 @@ func ShowWelcome() {
 }
 
 // ShowCompletion displays completion message
-func ShowCompletion(config interface{}, data generated.TemplateData) {
+func ShowCompletion(config any, data generated.TemplateData) {
 	successStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("48")).
 		Bold(true).
@@ -59,8 +67,8 @@ func ShowCompletion(config interface{}, data generated.TemplateData) {
 		MarginBottom(1)
 
 	details := []string{
-		fmt.Sprintf("Project Type: %s", strings.Title(string(data.ProjectType))),
-		fmt.Sprintf("Database: %s", strings.Title(string(data.Database.Engine))),
+		fmt.Sprintf("Project Type: %s", toTitle(string(data.ProjectType))),
+		fmt.Sprintf("Database: %s", toTitle(string(data.Database.Engine))),
 		fmt.Sprintf("Output: %s", data.Output.BaseDir),
 		fmt.Sprintf("Package: %s", data.Package.Name),
 	}
@@ -76,7 +84,7 @@ func ShowCompletion(config interface{}, data generated.TemplateData) {
 
 	nextSteps := []string{
 		"📝 Write your SQL queries in the queries directory",
-		"🗄️  Add your schema files to the schema directory", 
+		"🗄️  Add your schema files to the schema directory",
 		"🚀 Run 'sqlc generate' to create type-safe Go code",
 		"🧪 Import and use the generated database types",
 	}

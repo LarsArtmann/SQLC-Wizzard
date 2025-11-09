@@ -14,7 +14,7 @@ import (
 type GenerateOptions struct {
 	configPath string
 	outputDir  string
-	force     bool
+	force      bool
 }
 
 // NewGenerateCommand creates the generate command
@@ -53,25 +53,25 @@ func generateExampleFiles(outputDir string, force bool) error {
 	templateData := generated.TemplateData{
 		ProjectName: "generated-project",
 		ProjectType: templates.MustNewProjectType("microservice"),
-		
+
 		Package: generated.PackageConfig{
 			Name: "db",
 			Path: "db",
 		},
-		
+
 		Database: generated.DatabaseConfig{
-			Engine:     templates.MustNewDatabaseType("postgresql"),
-			UseUUIDs:   false,
-			UseJSON:    true,
-			UseArrays:  false,
+			Engine:    templates.MustNewDatabaseType("postgresql"),
+			UseUUIDs:  false,
+			UseJSON:   true,
+			UseArrays: false,
 		},
-		
+
 		Output: generated.OutputConfig{
 			BaseDir:    outputDir,
-			QueriesDir:  "queries",
-			SchemaDir:   "schema",
+			QueriesDir: "queries",
+			SchemaDir:  "schema",
 		},
-		
+
 		Validation: generated.ValidationConfig{
 			StrictFunctions: true,
 			StrictOrderBy:   true,

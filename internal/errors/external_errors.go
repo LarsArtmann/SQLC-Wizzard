@@ -3,10 +3,10 @@ package errors
 
 // External system error codes
 const (
-	ErrExternalNotFound     ErrorCode = "EXTERNAL_NOT_FOUND"
+	ErrExternalNotFound    ErrorCode = "EXTERNAL_NOT_FOUND"
 	ErrExternalUnavailable ErrorCode = "EXTERNAL_UNAVAILABLE"
 	ErrExternalTimeout     ErrorCode = "EXTERNAL_TIMEOUT"
-	ErrExternalPermission ErrorCode = "EXTERNAL_PERMISSION"
+	ErrExternalPermission  ErrorCode = "EXTERNAL_PERMISSION"
 )
 
 // Error helpers for external systems

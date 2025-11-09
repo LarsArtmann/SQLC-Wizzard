@@ -26,7 +26,7 @@ func NewRealSQLCAdapter() *RealSQLCAdapter {
 func (a *RealSQLCAdapter) Generate(ctx context.Context, cfg *config.SqlcConfig) error {
 	cmd := exec.CommandContext(ctx, "sqlc", "generate")
 	cmd.Dir = filepath.Dir(".")
-	
+
 	return cmd.Run()
 }
 
@@ -34,7 +34,7 @@ func (a *RealSQLCAdapter) Generate(ctx context.Context, cfg *config.SqlcConfig) 
 func (a *RealSQLCAdapter) Validate(ctx context.Context, cfg *config.SqlcConfig) error {
 	cmd := exec.CommandContext(ctx, "sqlc", "validate")
 	cmd.Dir = filepath.Dir(".")
-	
+
 	return cmd.Run()
 }
 
@@ -45,7 +45,7 @@ func (a *RealSQLCAdapter) Version(ctx context.Context) (string, error) {
 	if err != nil {
 		return "", err
 	}
-	
+
 	return string(output), nil
 }
 
@@ -86,7 +86,7 @@ func (a *RealDatabaseAdapter) DropDatabase(ctx context.Context, cfg *config.Data
 }
 
 // GetSchema returns database schema information
-func (a *RealDatabaseAdapter) GetSchema(ctx context.Context, cfg *config.DatabaseConfig) (interface{}, error) {
+func (a *RealDatabaseAdapter) GetSchema(ctx context.Context, cfg *config.DatabaseConfig) (any, error) {
 	// Implementation would query database schema
 	return nil, fmt.Errorf("schema retrieval not yet implemented")
 }
@@ -112,7 +112,7 @@ func (a *RealCLIAdapter) RunCommand(ctx context.Context, cmd string, args ...str
 	if err != nil {
 		return "", err
 	}
-	
+
 	return string(output), nil
 }
 
@@ -129,7 +129,7 @@ func (a *RealCLIAdapter) GetVersion(ctx context.Context, cmd string) (string, er
 	if err != nil {
 		return "", err
 	}
-	
+
 	return string(output), nil
 }
 
@@ -162,7 +162,7 @@ func (a *RealTemplateAdapter) GenerateConfig(ctx context.Context, data generated
 	if err != nil {
 		return nil, err
 	}
-	
+
 	return template.Generate(data)
 }
 
@@ -178,17 +178,17 @@ func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data gen
 	if !data.ProjectType.IsValid() {
 		return fmt.Errorf("invalid project type: %s", data.ProjectType)
 	}
-	
+
 	// Validate database type
 	if !data.Database.Engine.IsValid() {
 		return fmt.Errorf("invalid database type: %s", data.Database.Engine)
 	}
-	
+
 	// Validate required fields
 	if data.Package.Name == "" {
 		return fmt.Errorf("package name is required")
 	}
-	
+
 	return nil
 }
 
@@ -239,14 +239,14 @@ func (a *RealFileSystemAdapter) ListFiles(ctx context.Context, dir string) ([]st
 	if err != nil {
 		return nil, err
 	}
-	
+
 	var files []string
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			files = append(files, entry.Name())
 		}
 	}
-	
+
 	return files, nil
 }
 
@@ -261,7 +261,7 @@ func (a *RealFileSystemAdapter) Copy(ctx context.Context, src, dst string) error
 	if err != nil {
 		return err
 	}
-	
+
 	return os.WriteFile(dst, data, 0644)
 }
 
