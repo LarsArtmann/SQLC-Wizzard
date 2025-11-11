@@ -125,6 +125,8 @@ type SafetyRules struct {
 }
 
 // ToRuleConfigs converts safety rules to configuration format
+// DEPRECATED: This method maintains backward compatibility but should be replaced
+// with internal/validation/rule_transformer.TransformSafetyRules in new code
 func (s *SafetyRules) ToRuleConfigs() []RuleConfig {
 	var rules []RuleConfig
 	
