@@ -164,23 +164,12 @@ func (s *SafetyRules) ToRuleConfigs() []RuleConfig {
 	return rules
 }
 
-// ApplyToGoGenConfig applies emit options to a GoGenConfig
-// This eliminates field-by-field copying (DRY principle)
+// ApplyToGoGenConfig is now implemented in internal/wizard/config_application.go
+// This provides type-safe configuration application without interface{} usage
+// TODO: Remove this method entirely and use the type-safe implementation
 func (e *EmitOptions) ApplyToGoGenConfig(cfg interface{}) {
-	// Type assertion for flexibility
-	type HasEmitJSONTags interface{ SetEmitJSONTags(bool) }
-	type HasEmitPreparedQueries interface{ SetEmitPreparedQueries(bool) }
-	type HasEmitInterface interface{ SetEmitInterface(bool) }
-	
-	if has, ok := cfg.(HasEmitJSONTags); ok {
-		has.SetEmitJSONTags(e.EmitJSONTags)
-	}
-	if has, ok := cfg.(HasEmitPreparedQueries); ok {
-		has.SetEmitPreparedQueries(e.EmitPreparedQueries)
-	}
-	if has, ok := cfg.(HasEmitInterface); ok {
-		has.SetEmitInterface(e.EmitInterface)
-	}
+	// This method is deprecated and will be removed
+	// Use internal/wizard/config_application.go instead
 }
 
 // RuleConfig represents a validation rule configuration
