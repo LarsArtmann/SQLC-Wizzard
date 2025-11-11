@@ -1,0 +1,174 @@
+# Improved SQLC-Wizard Architecture
+
+```mermaid
+graph TB
+    %% CLI Entry Point
+    CLI[main.go<br/>cmd/sqlc-wizard] --> CommandRegistry
+    
+    %% Command Registry (Centralized Command Management)
+    CommandRegistry[commands/registry.go] --> WizardCommand
+    CommandRegistry --> MigrationCommand
+    CommandRegistry --> HealthCommand
+    CommandRegistry --> GenerateCommand
+    
+    %% Command Layer (Separated by Concern)
+    subgraph CommandLayer [Command Layer]
+        WizardCommand[commands/wizard.go]
+        MigrationCommand[commands/migration.go]
+        HealthCommand[commands/health.go]
+        GenerateCommand[commands/generate.go]
+    end
+    
+    %% Application Service Layer (Business Logic)
+    subgraph ServiceLayer [Application Services]
+        WizardService[wizard/service.go]
+        MigrationService[migration/service.go]
+        HealthService[health/service.go]
+        GenerateService[generate/service.go]
+    end
+    
+    %% Wizard Orchestration
+    WizardCommand --> WizardService
+    WizardService --> WorkflowOrchestrator[workflow/orchestrator.go]
+    WizardService --> StepExecutor[steps/executor.go]
+    WizardService --> StateManager[state/manager.go]
+    
+    %% Migration Orchestration
+    MigrationCommand --> MigrationService
+    MigrationService --> DatabaseMigration[database/migration.go]
+    MigrationService --> ConfigMigration[config/migration.go]
+    MigrationService --> ValidationService[validation/service.go]
+    
+    %% Health Orchestration
+    HealthCommand --> HealthService
+    HealthService --> ComponentChecker[components/checker.go]
+    HealthService --> SystemMetrics[metrics/collector.go]
+    
+    %% Template Generation
+    GenerateCommand --> GenerateService
+    GenerateService --> TemplateEngine[templates/engine.go]
+    GenerateService --> TypeSpecGenerator[typespec/generator.go]
+    
+    %% Domain Layer (Pure Business Logic)
+    subgraph DomainLayer [Domain Layer]
+        Project[domain/project.go]
+        Configuration[domain/configuration.go]
+        Validation[domain/validation.go]
+        Rules[domain/rules.go]
+    end
+    
+    %% Adapter Layer (External Dependencies)
+    subgraph AdapterLayer [Adapter Layer]
+        SQLCAdapter[adapters/sqlc.go]
+        DatabaseAdapter[adapters/database.go]
+        FileSystemAdapter[adapters/filesystem.go]
+        GitAdapter[adapters/git.go]
+        MigrationAdapter[adapters/migration.go]
+    end
+    
+    %% Infrastructure Layer (External Tools)
+    subgraph InfrastructureLayer [Infrastructure Layer]
+        SQLC[sqlc binary]
+        Databases[SQLite/PostgreSQL/MySQL]
+        FileSystem[os/filesystem]
+        Git[git commands]
+        MigrationLib[golang-migrate/migrate]
+    end
+    
+    %% Type System (Generated from TypeSpec)
+    subgraph TypeSystem [Type System]
+        GeneratedTypes[generated/ package]
+        Enums[enums.go]
+        ConfigurationTypes[configuration.go]
+        RuleTypes[rules.go]
+        EventTypes[events.go]
+    end
+    
+    %% Event System (Domain Events)
+    subgraph EventSystem [Event System]
+        EventBus[events/bus.go]
+        EventHandlers[events/handlers.go]
+        EventTypes --> EventBus
+    end
+    
+    %% Configuration Management
+    subgraph ConfigSystem [Configuration System]
+        ConfigLoader[config/loader.go]
+        ConfigValidator[config/validator.go]
+        ConfigTransformer[config/transformer.go]
+    end
+    
+    %% Validation System (Consolidated)
+    subgraph ValidationSystem [Validation System]
+        RuleValidator[validation/rule_validator.go]
+        TypeValidator[validation/type_validator.go]
+        ConfigValidator[validation/config_validator.go]
+    end
+    
+    %% Testing Infrastructure
+    subgraph TestingLayer [Testing Infrastructure]
+        TestFixtures[test/fixtures/]
+        TestUtils[test/utils/]
+        IntegrationTests[test/integration/]
+        EndToEndTests[test/e2e/]
+    end
+    
+    %% Service Dependencies
+    ServiceLayer --> DomainLayer
+    ServiceLayer --> AdapterLayer
+    ServiceLayer --> TypeSystem
+    ServiceLayer --> EventBus
+    
+    %% Adapter Dependencies
+    AdapterLayer --> InfrastructureLayer
+    AdapterLayer --> TypeSystem
+    
+    %% Domain Dependencies
+    DomainLayer --> TypeSystem
+    DomainLayer --> EventBus
+    
+    %% Configuration Dependencies
+    ConfigSystem --> TypeSystem
+    ConfigSystem --> ValidationSystem
+    
+    %% Validation Dependencies
+    ValidationSystem --> TypeSystem
+    
+    %% Testing Dependencies
+    TestingLayer --> ServiceLayer
+    TestingLayer --> AdapterLayer
+    TestingLayer --> DomainLayer
+    
+    %% Event Flow
+    DomainLayer --> EventBus
+    EventBus --> EventHandlers
+    EventHandlers --> ServiceLayer
+    
+    %% Configuration Flow
+    Configuration --> ConfigSystem
+    ConfigSystem --> ServiceLayer
+    ConfigSystem --> ValidationSystem
+    
+    %% Type System Integration
+    TypeSystem --> ServiceLayer
+    TypeSystem --> DomainLayer
+    TypeSystem --> AdapterLayer
+    TypeSystem --> ValidationSystem
+    
+    %% Error Handling Flow
+    ErrorSystem[errors/system.go]
+    ServiceLayer --> ErrorSystem
+    AdapterLayer --> ErrorSystem
+    DomainLayer --> ErrorSystem
+    ValidationSystem --> ErrorSystem
+```
+
+%% Improved Architecture Benefits:
+%% 1. Clear Separation of Concerns: Each layer has single responsibility
+%% 2. No Split Brain: Single rule transformation system in ValidationSystem
+%% 3. Event-Driven: Proper domain event handling
+%% 4. Testable: Complete testing infrastructure
+%% 5. Extensible: Plugin architecture through adapters
+%% 6. Type-Safe: Generated types used consistently
+%% 7. Configuration Management: Centralized config system
+%% 8. Error Handling: Consistent error system across all layers

@@ -1,0 +1,110 @@
+# Current SQLC-Wizard Architecture
+
+```mermaid
+graph TB
+    %% CLI Layer
+    CLI[main.go<br/>cmd/sqlc-wizard] --> Commands
+    
+    %% Commands Layer
+    Commands[commands/ package] --> WizardCmd
+    Commands --> MigrateCmd
+    Commands --> HealthCmd
+    Commands --> GenerateCmd
+    
+    %% Wizard Layer
+    WizardCmd[wizard command] --> Wizard[wizard/ package]
+    Wizard --> Steps[wizard_steps.go]
+    Wizard --> Templates[internal/templates/]
+    Wizard --> Validation[generated/]
+    
+    %% Migration System
+    MigrateCmd[migrate command] --> MigrationAdapter[adapters/migration.go]
+    MigrationAdapter --> RealMigration[adapters/migration_real.go]
+    MigrateCmd --> ConfigMigration[config parsing + transformation]
+    
+    %% Template Generation
+    GenerateCmd[generate command] --> Templates
+    Templates --> MicroserviceTemplate
+    Templates --> Validation
+    
+    %% Health Check
+    HealthCmd[health command] --> Adapters[internal/adapters/]
+    HealthCmd --> SQLCAdapter
+    HealthCmd --> DatabaseAdapter
+    HealthCmd --> CLIAdapter
+    HealthCmd --> FileSystemAdapter
+    HealthCmd --> TemplateAdapter
+    
+    %% Adapters Layer (External Dependencies)
+    Adapters --> External[External Tools]
+    External --> SQLC[sqlc binary]
+    External --> FileSystem[os/filesystem]
+    External --> Database[SQLite/PostgreSQL/MySQL]
+    External --> Git[git commands]
+    
+    %% Domain Layer
+    Domain[internal/domain/] --> GeneratedTypes
+    Domain --> SafetyRules
+    Domain --> EmitOptions
+    Domain --> ValidationError
+    
+    %% Generated Types (TypeSpec)
+    GeneratedTypes[generated/ package] --> Enums[ProjectType/DatabaseType]
+    GeneratedTypes --> RuleConfig
+    GeneratedTypes --> EmitOptions
+    GeneratedTypes --> SafetyRules
+    
+    %% Config Layer
+    Config[pkg/config/] --> SqlcConfig
+    Config --> GenConfig
+    Config --> GoGenConfig
+    Config --> RuleConfig
+    Config --> PathOrPaths
+    
+    %% Validation Layer
+    Validation[internal/validation/] --> RuleTransformer
+    Validation --> RuleConfig
+    
+    %% Error Handling
+    Errors[internal/errors/] --> ValidationError
+    Errors --> FileNotFoundError
+    Errors --> TemplateNotFoundError
+    
+    %% Utils Layer
+    Utils[internal/utils/] --> HelperFunctions
+    Utils --> CommonUtilities
+    
+    %% File I/O
+    FileSystemAdapter --> FileSystem
+    Templates --> FileSystem
+    MigrateCmd --> FileSystem
+    
+    %% Type Dependencies
+    Wizard --> GeneratedTypes
+    Templates --> GeneratedTypes
+    Validation --> GeneratedTypes
+    Domain --> GeneratedTypes
+    
+    %% Configuration Flow
+    Templates --> Config
+    MigrateCmd --> Config
+    Wizard --> Config
+    
+    %% Error Flow
+    Wizard --> Errors
+    Templates --> Errors
+    MigrateCmd --> Errors
+    Commands --> Errors
+    
+    %% Split Brain Issues (Current Architecture Problems)
+    RuleTransform1[Generated.SafetyRules.ToRuleConfigs<br/>generated/types.go] -.-> SplitBrain1[Rule Transformation Duplication]
+    RuleTransform2[Domain.SafetyRules.ToRuleConfigs<br/>internal/domain/domain.go] -.-> SplitBrain1
+    Validation -.-> SplitBrain1
+```
+
+%% Current Architecture Issues:
+%% 1. Split Brain: Rule transformation logic duplicated between generated/types.go and internal/domain/domain.go
+%% 2. Ghost System: Migration command was placeholder ("migration tool coming soon!")
+%% 3. Mixed Error Patterns: Different error handling approaches across packages
+%% 4. Large Files: wizard.go and implementations.go approaching 300-line limit
+%% 5. Circular Dependencies: wizard → templates → wizard (recently fixed)

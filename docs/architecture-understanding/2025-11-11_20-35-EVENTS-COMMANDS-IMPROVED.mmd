@@ -1,0 +1,243 @@
+# Improved Events & Commands Architecture
+
+```mermaid
+graph TB
+    %% CLI Entry Point
+    CLI[main.go<br/>cmd/sqlc-wizard] --> CommandRegistry
+    
+    %% Command Registry (Event-Driven)
+    CommandRegistry[commands/registry.go<br/>Event-Driven Registry] --> EventBus
+    CommandRegistry --> CommandMapper
+    
+    %% Command Mapping
+    CommandMapper[commands/mapper.go<br/>Command → Event Mapping] --> WizardCommand
+    CommandMapper --> MigrationCommand
+    CommandMapper --> HealthCommand
+    CommandMapper --> GenerateCommand
+    
+    %% Central Event Bus
+    EventBus[events/bus.go<br/>Central Event Bus] --> EventStore
+    EventBus --> EventDispatcher
+    EventBus --> EventMiddleware
+    
+    %% Event Store (Persistence)
+    EventStore[events/store.go<br/>Event Persistence] --> EventRepository
+    EventRepository --> EventDatabase[SQLite/PostgreSQL]
+    EventRepository --> EventReplay[events/replay.go<br/>Event Replay System]
+    
+    %% Event Dispatcher
+    EventDispatcher[events/dispatcher.go<br/>Async Event Dispatch] --> EventHandlers
+    EventDispatcher --> EventAggregators
+    EventDispatcher --> EventProjectors
+    
+    %% Event Middleware
+    EventMiddleware[events/middleware.go<br/>Event Pipeline] --> LoggingMiddleware
+    EventMiddleware --> MetricsMiddleware
+    EventMiddleware --> ValidationMiddleware
+    EventMiddleware --> ErrorHandlingMiddleware
+    
+    %% Command Layer (Event Sourcing)
+    subgraph CommandLayer [Command Layer - Event Sourced]
+        WizardCommand[commands/wizard.go<br/>Wizard Command Handler]
+        MigrationCommand[commands/migration.go<br/>Migration Command Handler]
+        HealthCommand[commands/health.go<br/>Health Command Handler]
+        GenerateCommand[commands/generate.go<br/>Generate Command Handler]
+    end
+    
+    %% Wizard Events (Rich Domain Events)
+    subgraph WizardEvents [Wizard Domain Events]
+        WizardInitiated[wizard.initiated<br/>{userId, sessionId, startTime}]
+        StepStarted[wizard.step.started<br/>{stepId, stepType, startTime}]
+        StepCompleted[wizard.step.completed<br/>{stepId, result, duration}]
+        StepFailed[wizard.step.failed<br/>{stepId, error, failureType}]
+        StepSkipped[wizard.step.skipped<br/>{stepId, reason}]
+        WizardConfigurationChanged[wizard.config.changed<br/>{oldConfig, newConfig, changes}]
+        WizardTemplateSelected[wizard.template.selected<br/>{templateId, templateType}]
+        WizardCompleted[wizard.completed<br/>{sessionId, result, duration}]
+        WizardAborted[wizard.aborted<br/>{sessionId, reason, abortedAt}]
+    end
+    
+    %% Migration Events (Rich Domain Events)
+    subgraph MigrationEvents [Migration Domain Events]
+        MigrationStarted[migration.started<br/>{migrationId, source, target}]
+        MigrationProgress[migration.progress<br/>{migrationId, currentStep, totalSteps}]
+        MigrationStepCompleted[migration.step.completed<br/>{migrationId, stepId, result}]
+        MigrationStepFailed[migration.step.failed<br/>{migrationId, stepId, error}]
+        MigrationDatabaseConnected[migration.db.connected<br/>{migrationId, database, connectionString}]
+        MigrationDatabaseDisconnected[migration.db.disconnected<br/>{migrationId, database}]
+        MigrationCompleted[migration.completed<br/>{migrationId, result, duration}]
+        MigrationFailed[migration.failed<br/>{migrationId, error, failurePoint}]
+        MigrationRolledBack[migration.rolledback<br/>{migrationId, rollbackSteps, finalState}]
+    end
+    
+    %% Health Check Events
+    subgraph HealthEvents [Health Domain Events]
+        HealthCheckInitiated[health.initiated<br/>{checkId, components}]
+        ComponentCheckStarted[health.component.started<br/>{checkId, component, type}]
+        ComponentCheckCompleted[health.component.completed<br/>{checkId, component, status, metrics}]
+        ComponentCheckFailed[health.component.failed<br/>{checkId, component, error, severity}]
+        HealthCheckCompleted[health.completed<br/>{checkId, overallStatus, results}]
+        HealthCritical[health.critical<br/>{checkId, criticalComponents, alertLevel}]
+    end
+    
+    %% Generation Events
+    subgraph GenerationEvents [Generation Domain Events]
+        GenerationStarted[generation.started<br/>{generationId, config, template}]
+        TemplateProcessingStarted[generation.template.started<br/>{generationId, template, files}]
+        FileGenerationStarted[generation.file.started<br/>{generationId, file, template}]
+        FileGenerationCompleted[generation.file.completed<br/>{generationId, file, size, duration}]
+        FileGenerationFailed[generation.file.failed<br/>{generationId, file, error}]
+        TemplateProcessingCompleted[generation.template.completed<br/>{generationId, template, fileCount}]
+        GenerationCompleted[generation.completed<br/>{generationId, result, fileCount, duration}]
+        GenerationFailed[generation.failed<br/>{generationId, error, failurePoint}]
+    end
+    
+    %% Configuration Events (Domain Events)
+    subgraph ConfigurationEvents [Configuration Domain Events]
+        ConfigurationLoaded[config.loaded<br/>{source, config, timestamp}]
+        ConfigurationValidated[config.validated<br/>{configId, validationResult, issues}]
+        ConfigurationTransformed[config.transformed<br/>{configId, transformation, result}]
+        ConfigurationSaved[config.saved<br/>{configId, destination, checksum}]
+        ConfigurationError[config.error<br/>{configId, error, severity}]
+    end
+    
+    %% Event Handlers (Specialized)
+    subgraph EventHandlers [Event Handlers]
+        LoggingHandler[logging.handler<br/>Structured Logging]
+        MetricsHandler[metrics.handler<br/>OpenTelemetry Metrics]
+        ProgressHandler[progress.handler<br/>CLI Progress Display]
+        NotificationHandler[notification.handler<br/>User Notifications]
+        StateHandler[state.handler<br/>State Management]
+        AuditHandler[audit.handler<br/>Audit Logging]
+    end
+    
+    %% Event Aggregators
+    subgraph EventAggregators [Event Aggregators]
+        SessionAggregator[session.aggregator<br/>Session State Aggregation]
+        PerformanceAggregator[performance.aggregator<br/>Performance Metrics]
+        UsageAggregator[usage.aggregator<br/>Usage Statistics]
+        ErrorAggregator[error.aggregator<br/>Error Analysis]
+    end
+    
+    %% Event Projectors
+    subgraph EventProjectors [Event Projectors]
+        ConfigurationProjector[config.projector<br/>Configuration Views]
+        HealthProjector[health.projector<br/>Health Status Views]
+        MigrationProjector[migration.projector<br/>Migration History Views]
+        UsageProjector[usage.projector<br/>Usage Analytics Views]
+    end
+    
+    %% Command → Event Flow
+    CommandLayer --> EventBus
+    
+    %% Event Types Flow
+    WizardEvents --> EventBus
+    MigrationEvents --> EventBus
+    HealthEvents --> EventBus
+    GenerationEvents --> EventBus
+    ConfigurationEvents --> EventBus
+    
+    %% Event Bus → Processing Chain
+    EventBus --> EventMiddleware
+    EventMiddleware --> EventStore
+    EventMiddleware --> EventDispatcher
+    
+    %% Event Dispatcher → Consumers
+    EventDispatcher --> EventHandlers
+    EventDispatcher --> EventAggregators
+    EventDispatcher --> EventProjectors
+    
+    %% Event Store → Replay System
+    EventStore --> EventReplay
+    
+    %% Event Replay → State Reconstruction
+    EventReplay --> StateReconstruction[state/reconstruction.go<br/>State Recovery]
+    
+    %% Event Metadata Structure
+    subgraph EventMetadata [Event Metadata Structure]
+        EventID[event.id<br/>UUID]
+        EventType[event.type<br/>String]
+        AggregateID[aggregate.id<br/>UUID]
+        AggregateType[aggregate.type<br/>String]
+        EventVersion[event.version<br/>Integer]
+        Timestamp[timestamp<br/>ISO8601]
+        CausationID[causation.id<br/>UUID]
+        CorrelationID[correlation.id<br/>UUID]
+        EventData[data<br/>JSON]
+        EventMetadata[metadata<br/>Map[string]interface{}]
+    end
+    
+    %% Event Pipeline Flow
+    subgraph EventPipeline [Event Processing Pipeline]
+        EventValidation[1. Validation<br/>Schema & Rules]
+        EventEnrichment[2. Enrichment<br/>Add Metadata]
+        EventPersistence[3. Persistence<br/>Store in Database]
+        EventDispatching[4. Dispatching<br/>Route to Handlers]
+        EventAggregation[5. Aggregation<br/>Update Aggregates]
+        EventProjection[6. Projection<br/>Update Views]
+    end
+    
+    %% Middleware Chain
+    EventMiddleware --> EventPipeline
+    
+    %% Error Handling & Recovery
+    subgraph ErrorHandling [Error Handling & Recovery]
+        EventRetry[retry.mechanism<br/>Failed Event Retry]
+        DeadLetterQueue[deadletter.queue<br/>Poison Pill Storage]
+        ErrorRecovery[error.recovery<br/>Error State Recovery]
+        EventSag[compensation.sagas<br/>Compensation Patterns]
+    end
+    
+    %% Event Bus Error Handling
+    EventBus --> ErrorHandling
+    
+    %% Performance & Monitoring
+    subgraph Monitoring [Performance & Monitoring]
+        EventMetrics[event.metrics<br/>Event Processing Metrics]
+        LatencyTracking[latency.tracking<br/>Event Latency]
+        ThroughputMonitoring[throughput.monitoring<br/>Event Throughput]
+        HealthChecking[health.checking<br/>System Health]
+    end
+    
+    %% Middleware Monitoring
+    EventMiddleware --> Monitoring
+    
+    %% Event Store Integration
+    EventStore --> DatabaseAdapter[adapters/database.go]
+    EventStore --> FileSystemAdapter[adapters/filesystem.go]
+    EventStore --> CacheAdapter[adapters/cache.go]
+    
+    %% Replay System Integration
+    EventReplay --> DatabaseAdapter
+    EventReplay --> FileSystemAdapter
+    
+    %% Handler Integration
+    EventHandlers --> LoggerAdapter[adapters/logger.go]
+    EventHandlers --> MetricsAdapter[adapters/metrics.go]
+    EventHandlers --> CLIAdapter[adapters/cli.go]
+    
+    %% Aggregator Integration
+    EventAggregators --> InMemoryStore[internal/store/memory.go]
+    EventAggregators --> DatabaseAdapter
+    
+    %% Projector Integration
+    EventProjectors --> FileSystemAdapter
+    EventProjectors --> CacheAdapter
+    
+    %% External Integration
+    CLIAdapter --> CharmbraceletUI[charmbracelet/huh<br/>CLI Framework]
+    MetricsAdapter --> OpenTelemetry[OpenTelemetry<br/>Observability]
+    LoggerAdapter --> StructuredLogging[charmbracelet/log<br/>Structured Logging]
+```
+
+%% Improved Architecture Benefits:
+%% 1. CENTRAL EVENT BUS: Single source of truth for event processing
+%% 2. RICH DOMAIN EVENTS: Business events with comprehensive metadata
+%% 3. EVENT SOURCING: Complete event persistence and replay capability
+%% 4. EVENT PIPELINE: Structured processing with middleware chain
+%% 5. ASYNC PROCESSING: Non-blocking event dispatch and handling
+%% 6. EVENT AGGREGATION: Real-time state aggregation and analytics
+%% 7. EVENT PROJECTION: Optimized read models and views
+%% 8. ERROR RECOVERY: Retry mechanisms and dead letter queue
+%% 9. PERFORMANCE MONITORING: Event processing metrics and latency tracking
+%% 10. LOOSE COUPLING: Commands emit events, handlers respond via bus

@@ -1,0 +1,122 @@
+# Current Events & Commands Architecture
+
+```mermaid
+graph TB
+    %% CLI Entry Point
+    CLI[main.go<br/>cmd/sqlc-wizard] --> CommandDispatcher
+    
+    %% Command Dispatcher
+    CommandDispatcher[commands/root.go] --> CommandRegistry
+    
+    %% Commands Layer
+    subgraph Commands [Commands Layer]
+        WizardCommand[commands/wizard.go<br/>wizard command]
+        MigrateCommand[commands/migrate.go<br/>migrate command]
+        HealthCommand[commands/health.go<br/>health command]
+        GenerateCommand[commands/generate.go<br/>generate command]
+    end
+    
+    CommandRegistry --> Commands
+    
+    %% Wizard Command Events
+    subgraph WizardEvents [Wizard Events]
+        WizardStarted[wizard.started]
+        StepCompleted[wizard.step.completed]
+        StepFailed[wizard.step.failed]
+        WizardCompleted[wizard.completed]
+        WizardCancelled[wizard.cancelled]
+    end
+    
+    %% Migration Command Events
+    subgraph MigrationEvents [Migration Events]
+        MigrationStarted[migration.started]
+        MigrationProgress[migration.progress]
+        MigrationCompleted[migration.completed]
+        MigrationFailed[migration.failed]
+        MigrationRolledBack[migration.rolledback]
+    end
+    
+    %% Health Check Events
+    subgraph HealthEvents [Health Events]
+        HealthCheckStarted[health.started]
+        ComponentChecked[health.component.checked]
+        HealthCheckCompleted[health.completed]
+    end
+    
+    %% Generation Events
+    subgraph GenerationEvents [Generation Events]
+        GenerationStarted[generation.started]
+        FileGenerated[generation.file.generated]
+        GenerationCompleted[generation.completed]
+        GenerationFailed[generation.failed]
+    end
+    
+    %% Event Emission from Commands
+    WizardCommand --> WizardStarted
+    WizardCommand --> StepCompleted
+    WizardCommand --> StepFailed
+    WizardCommand --> WizardCompleted
+    WizardCommand --> WizardCancelled
+    
+    MigrateCommand --> MigrationStarted
+    MigrateCommand --> MigrationProgress
+    MigrateCommand --> MigrationCompleted
+    MigrateCommand --> MigrationFailed
+    MigrateCommand --> MigrationRolledBack
+    
+    HealthCommand --> HealthCheckStarted
+    HealthCommand --> ComponentChecked
+    HealthCommand --> HealthCheckCompleted
+    
+    GenerateCommand --> GenerationStarted
+    GenerateCommand --> FileGenerated
+    GenerateCommand --> GenerationCompleted
+    GenerateCommand --> GenerationFailed
+    
+    %% Domain Events (Currently Minimal)
+    subgraph DomainEvents [Domain Events]
+        ConfigurationChanged[config.changed]
+        TemplateSelected[template.selected]
+        ValidationCompleted[validation.completed]
+    end
+    
+    %% Event Handlers (Currently Minimal)
+    subgraph EventHandlers [Event Handlers]
+        LoggerHandler[logger.handler]
+        ProgressHandler[progress.handler]
+        ErrorHandler[error.handler]
+    end
+    
+    %% Event Flow to Handlers
+    WizardEvents --> LoggerHandler
+    WizardEvents --> ProgressHandler
+    WizardEvents --> ErrorHandler
+    
+    MigrationEvents --> LoggerHandler
+    MigrationEvents --> ProgressHandler
+    MigrationEvents --> ErrorHandler
+    
+    HealthEvents --> LoggerHandler
+    GenerationEvents --> LoggerHandler
+    GenerationEvents --> ProgressHandler
+    GenerationEvents --> ErrorHandler
+    
+    %% Current Issues with Event Architecture
+    %% 1. No Central Event Bus - Events are handled locally
+    %% 2. Limited Event Types - Only basic progress events
+    %% 3. No Domain Events - Business logic events missing
+    %% 4. Weak Event Metadata - Events carry minimal data
+    %% 5. No Event Persistence - Events are not stored
+    %% 6. No Event Replay - Cannot replay events for debugging
+    %% 7. No Event Aggregation - No complex event processing
+```
+
+%% Current Event Architecture Issues:
+%% 1. NO CENTRAL EVENT BUS - Each command handles its own events
+%% 2. LIMITED EVENT TYPES - Only basic progress events defined
+%% 3. NO DOMAIN EVENTS - Business logic events are missing
+%% 4. WEAK EVENT METADATA - Events carry minimal context
+%% 5. NO EVENT PERSISTENCE - Events are lost after emission
+%% 6. NO EVENT REPLAY - Cannot replay for debugging or recovery
+%% 7. NO EVENT AGGREGATION - No complex event processing pipelines
+%% 8. TIGHT COUPLING - Commands directly call handlers
