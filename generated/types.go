@@ -164,14 +164,6 @@ func (s *SafetyRules) ToRuleConfigs() []RuleConfig {
 	return rules
 }
 
-// ApplyToGoGenConfig is now implemented in internal/wizard/config_application.go
-// This provides type-safe configuration application without interface{} usage
-// TODO: Remove this method entirely and use the type-safe implementation
-func (e *EmitOptions) ApplyToGoGenConfig(cfg interface{}) {
-	// This method is deprecated and will be removed
-	// Use internal/wizard/config_application.go instead
-}
-
 // RuleConfig represents a validation rule configuration
 // TypeSpec: model RuleConfig { ... }
 type RuleConfig struct {

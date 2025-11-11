@@ -82,8 +82,8 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 		},
 	}
 
-	// Apply emit options (eliminates field-by-field copying!)
-	data.Validation.EmitOptions.ApplyToGoGenConfig(&cfg.SQL[0].Gen.Go)
+	// Apply emit options using type-safe helper function
+	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
 
 	// Convert rule types
 	rules := data.Validation.SafetyRules.ToRuleConfigs()

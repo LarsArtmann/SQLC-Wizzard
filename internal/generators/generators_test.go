@@ -1,6 +1,7 @@
 package generators_test
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -215,7 +216,12 @@ var _ = Describe("Error Handling", func() {
 		// Make directory read-only
 		err := os.Chmod(tempDir, 0444)
 		Expect(err).NotTo(HaveOccurred())
-		defer os.Chmod(tempDir, 0755) // Restore permissions
+		defer func() {
+			if err := os.Chmod(tempDir, 0755); err != nil {
+				// Log error but don't fail test
+				fmt.Printf("Warning: failed to restore permissions: %v\n", err)
+			}
+		}()
 
 		templateData := createTemplateData(generated.DatabaseTypeSQLite, tempDir)
 
