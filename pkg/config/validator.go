@@ -2,9 +2,8 @@ package config
 
 import (
 	"fmt"
+	"slices"
 	"strings"
-
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/utils"
 )
 
 // ValidationError represents a configuration validation error
@@ -69,7 +68,7 @@ func validateSQLConfig(cfg *SQLConfig, index int, result *ValidationResult) {
 	validEngines := []string{"postgresql", "mysql", "sqlite"}
 	if cfg.Engine == "" {
 		result.AddError(prefix+".engine", "engine is required")
-	} else if !utils.Contains(validEngines, cfg.Engine) {
+	} else if !slices.Contains(validEngines, cfg.Engine) {
 		result.AddError(prefix+".engine", fmt.Sprintf("invalid engine: %s (must be one of: %s)", cfg.Engine, strings.Join(validEngines, ", ")))
 	}
 
@@ -107,7 +106,7 @@ func validateGoGenConfig(cfg *GoGenConfig, prefix string, result *ValidationResu
 	// Validate json_tags_case_style if set
 	if cfg.JSONTagsCaseStyle != "" {
 		validStyles := []string{"camel", "pascal", "snake"}
-		if !utils.Contains(validStyles, cfg.JSONTagsCaseStyle) {
+		if !slices.Contains(validStyles, cfg.JSONTagsCaseStyle) {
 			result.AddError(prefix+".json_tags_case_style", fmt.Sprintf("invalid case style: %s (must be one of: %s)", cfg.JSONTagsCaseStyle, strings.Join(validStyles, ", ")))
 		}
 	}

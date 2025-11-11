@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestWizard(t *testing.T) {
+func TestWizardSuite(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Wizard Suite")
 }

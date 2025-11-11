@@ -2,11 +2,11 @@ package wizard
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/utils"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/charmbracelet/huh"
 )
@@ -36,6 +36,11 @@ func NewWizard() *Wizard {
 		theme: huh.ThemeBase(),
 		ui:    NewUIHelper(),
 	}
+}
+
+// GetResult returns the current wizard result
+func (w *Wizard) GetResult() *WizardResult {
+	return w.result
 }
 
 // Run executes the interactive wizard
@@ -208,10 +213,10 @@ func (w *Wizard) selectFeatures(data *templates.TemplateData) error {
 	}
 
 	// Update features based on selection
-	data.Database.UseUUIDs = utils.Contains(features, "uuid")
-	data.Database.UseJSON = utils.Contains(features, "json")
-	data.Database.UseArrays = utils.Contains(features, "arrays")
-	data.Database.UseFullText = utils.Contains(features, "fts")
+	data.Database.UseUUIDs = slices.Contains(features, "uuid")
+	data.Database.UseJSON = slices.Contains(features, "json")
+	data.Database.UseArrays = slices.Contains(features, "arrays")
+	data.Database.UseFullText = slices.Contains(features, "fts")
 
 	return nil
 }
