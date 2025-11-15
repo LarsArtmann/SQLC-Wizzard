@@ -1,8 +1,10 @@
 package wizard
 
 import (
+	"fmt"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 )
 
 // ShowCompletion displays final configuration summary with typed schema
@@ -32,6 +34,12 @@ func ShowError(err error) {
 		return
 	}
 	
+	// Check if it's our typed error
+	if appErr, ok := err.(*errors.Error); ok {
+		ui.showErrorWithTypedDetails(appErr)
+		return
+	}
+	
 	// Handle as generic error
 	ui.ShowSection("❌ Error Occurred")
 	ui.ShowInfo(err.Error())
@@ -48,10 +56,7 @@ func ShowProgress(current, total int, operation string) {
 // ValidateConfiguration validates configuration using schema
 func ValidateConfiguration(cfg *schema.Schema) error {
 	if cfg == nil {
-		return &schema.SchemaError{
-			Code:    "NULL_SCHEMA",
-			Message: "Schema cannot be null",
-		}
+		return errors.NewError(errors.ErrorCodeInternalServer, "Schema cannot be null")
 	}
 	
 	// Validate schema using typed validation
@@ -61,10 +66,7 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 	
 	// Additional business logic validation
 	if len(cfg.Tables) > 100 {
-		return &schema.SchemaError{
-			Code:    "TOO_MANY_TABLES",
-			Message: "Schema exceeds maximum allowed tables",
-		}
+		return errors.NewError(errors.ErrorCodeSchemaValidation, "Schema exceeds maximum allowed tables")
 	}
 	
 	return nil

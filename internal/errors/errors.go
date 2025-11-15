@@ -7,7 +7,6 @@ import (
 )
 
 // ErrorCode represents strongly-typed error codes
-// Replaces string-based error codes with type safety
 type ErrorCode string
 
 const (
@@ -40,20 +39,6 @@ const (
 	ErrorCodeNotFound          ErrorCode = "NOT_FOUND"
 )
 
-// IsValid returns true if ErrorCode is valid
-func (ec ErrorCode) IsValid() bool {
-	switch ec {
-	case ErrorCodeMigrationFailed, ErrorCodeMigrationNotFound, ErrorCodeTooManyMigrations,
-		 ErrorCodeSchemaNotFound, ErrorCodeSchemaValidation, ErrorCodeTableNotFound, ErrorCodeColumnNotFound,
-		 ErrorCodeEventValidation, ErrorCodeEventNotFound, ErrorCodeInvalidEventType, ErrorCodeEmptyAggregateID,
-		 ErrorCodeConfigValidation, ErrorCodeConfigNotFound, ErrorCodeInvalidProjectType,
-		 ErrorCodeInternalServer, ErrorCodeTimeout, ErrorCodePermissionDenied, ErrorCodeNotFound:
-		return true
-	default:
-		return false
-	}
-}
-
 // ErrorSeverity represents error severity levels
 type ErrorSeverity string
 
@@ -64,18 +49,7 @@ const (
 	ErrorSeverityCritical ErrorSeverity = "critical"
 )
 
-// IsValid returns true if ErrorSeverity is valid
-func (es ErrorSeverity) IsValid() bool {
-	switch es {
-	case ErrorSeverityInfo, ErrorSeverityWarning, ErrorSeverityError, ErrorSeverityCritical:
-		return true
-	default:
-		return false
-	}
-}
-
 // ErrorDetails represents structured error details
-// Replaces map[string]any with typed fields
 type ErrorDetails struct {
 	Field       string      `json:"field,omitempty"`
 	Value       interface{} `json:"value,omitempty"`
@@ -88,7 +62,6 @@ type ErrorDetails struct {
 }
 
 // Error represents a structured application error
-// Replaces any type usage with strongly typed structure
 type Error struct {
 	Code        ErrorCode    `json:"code"`
 	Message     string       `json:"message"`
@@ -103,31 +76,7 @@ type Error struct {
 }
 
 // NewError creates a new error with validation
-func NewError(code ErrorCode, message string) (*Error, error) {
-	if !code.IsValid() {
-		return nil, &Error{
-			Code:        ErrorCodeInternalServer,
-			Message:     "Invalid error code provided",
-			Description: fmt.Sprintf("Error code '%s' is not a valid error code", string(code)),
-			Timestamp:   time.Now().Unix(),
-			Component:   "errors",
-			Retryable:   false,
-			Severity:    ErrorSeverityCritical,
-		}
-	}
-	
-	if message == "" {
-		return nil, &Error{
-			Code:        ErrorCodeEventValidation,
-			Message:     "Error message cannot be empty",
-			Description: "Error messages must provide meaningful information",
-			Timestamp:   time.Now().Unix(),
-			Component:   "errors",
-			Retryable:   false,
-			Severity:    ErrorSeverityError,
-		}
-	}
-	
+func NewError(code ErrorCode, message string) *Error {
 	return &Error{
 		Code:        code,
 		Message:     message,
@@ -135,12 +84,11 @@ func NewError(code ErrorCode, message string) (*Error, error) {
 		Component:   "application",
 		Retryable:   false,
 		Severity:    ErrorSeverityError,
-	}, nil
+	}
 }
 
 // Newf creates a new error with formatted message
-// Replaces any type variadic parameters with type-safe formatting
-func Newf(code ErrorCode, format string, args ...interface{}) (*Error, error) {
+func Newf(code ErrorCode, format string, args ...interface{}) *Error {
 	message := fmt.Sprintf(format, args...)
 	return NewError(code, message)
 }
@@ -192,9 +140,7 @@ func (e *Error) WithRetryable(retryable bool) *Error {
 
 // WithSeverity sets error severity
 func (e *Error) WithSeverity(severity ErrorSeverity) *Error {
-	if severity.IsValid() {
-		e.Severity = severity
-	}
+	e.Severity = severity
 	return e
 }
 
@@ -231,20 +177,6 @@ func (e *Error) ToJSON() (string, error) {
 	return string(data), nil
 }
 
-// FromJSON creates error from JSON string
-func FromJSON(jsonStr string) (*Error, error) {
-	var err Error
-	if parseErr := json.Unmarshal([]byte(jsonStr), &err); parseErr != nil {
-		return nil, fmt.Errorf("failed to parse error from JSON: %w", parseErr)
-	}
-	
-	if !err.Code.IsValid() {
-		return nil, fmt.Errorf("invalid error code in JSON: %s", err.Code)
-	}
-	
-	return &err, nil
-}
-
 // ErrorList represents multiple errors
 type ErrorList struct {
 	Errors []*Error `json:"errors"`
@@ -257,7 +189,7 @@ func NewErrorList() *ErrorList {
 	}
 }
 
-// Add adds an error to the list
+// Add adds an error to list
 func (el *ErrorList) Add(err *Error) {
 	if err != nil {
 		el.Errors = append(el.Errors, err)
@@ -265,13 +197,8 @@ func (el *ErrorList) Add(err *Error) {
 }
 
 // AddError adds an error using NewError
-func (el *ErrorList) AddError(code ErrorCode, message string) error {
-	err, createErr := NewError(code, message)
-	if createErr != nil {
-		return createErr
-	}
-	el.Add(err)
-	return nil
+func (el *ErrorList) AddError(code ErrorCode, message string) {
+	el.Add(NewError(code, message))
 }
 
 // HasErrors returns true if list contains errors
@@ -282,28 +209,6 @@ func (el *ErrorList) HasErrors() bool {
 // GetCount returns number of errors
 func (el *ErrorList) GetCount() int {
 	return len(el.Errors)
-}
-
-// GetByCode returns errors with specific code
-func (el *ErrorList) GetByCode(code ErrorCode) []*Error {
-	var matching []*Error
-	for _, err := range el.Errors {
-		if err.Code == code {
-			matching = append(matching, err)
-		}
-	}
-	return matching
-}
-
-// GetCritical returns all critical errors
-func (el *ErrorList) GetCritical() []*Error {
-	var critical []*Error
-	for _, err := range el.Errors {
-		if err.IsCritical() {
-			critical = append(critical, err)
-		}
-	}
-	return critical
 }
 
 // Error implements error interface for ErrorList
@@ -319,47 +224,26 @@ func (el *ErrorList) Error() string {
 	return fmt.Sprintf("%d errors occurred (first: %s)", len(el.Errors), el.Errors[0].Error())
 }
 
-// ToJSON returns error list as JSON
-func (el *ErrorList) ToJSON() (string, error) {
-	data, err := json.MarshalIndent(el, "", "  ")
-	if err != nil {
-		return "", fmt.Errorf("failed to marshal error list to JSON: %w", err)
-	}
-	return string(data), nil
-}
-
 // Wrap wraps an existing error with additional context
-func Wrap(original error, code ErrorCode, component string) (*Error, error) {
+func Wrap(original error, code ErrorCode, component string) *Error {
 	if original == nil {
-		return nil, NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
+		return NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
 	}
 	
-	err, createErr := NewError(code, original.Error())
-	if createErr != nil {
-		return nil, createErr
-	}
-	
-	return err.WithComponent(component).WithDescription(fmt.Sprintf("Wrapped error: %v", original)), nil
+	err := NewError(code, original.Error())
+	return err.WithComponent(component).WithDescription(fmt.Sprintf("Wrapped error: %v", original))
 }
 
 // WrapWithRequestID wraps an error with request ID tracking
-func WrapWithRequestID(original error, code ErrorCode, requestID, component string) (*Error, error) {
-	err, wrapErr := Wrap(original, code, component)
-	if wrapErr != nil {
-		return nil, wrapErr
-	}
-	
-	return err.WithRequestID(requestID), nil
+func WrapWithRequestID(original error, code ErrorCode, requestID, component string) *Error {
+	err := Wrap(original, code, component)
+	return err.WithRequestID(requestID)
 }
 
 // WrapWithUserID wraps an error with user ID tracking
-func WrapWithUserID(original error, code ErrorCode, userID, component string) (*Error, error) {
-	err, wrapErr := Wrap(original, code, component)
-	if wrapErr != nil {
-		return nil, wrapErr
-	}
-	
-	return err.WithUserID(userID), nil
+func WrapWithUserID(original error, code ErrorCode, userID, component string) *Error {
+	err := Wrap(original, code, component)
+	return err.WithUserID(userID)
 }
 
 // Combine combines multiple errors into an ErrorList
@@ -379,7 +263,7 @@ func CombineErrors(errs ...error) *ErrorList {
 			errorList.Add(appErr)
 		} else {
 			// Wrap non-application errors
-			wrapped, _ := NewInternal("unknown", "error handling", err)
+			wrapped := Wrap(err, ErrorCodeInternalServer, "unknown")
 			errorList.Add(wrapped)
 		}
 	}
@@ -387,39 +271,29 @@ func CombineErrors(errs ...error) *ErrorList {
 }
 
 // NewInternal creates an internal server error with context
-func NewInternal(component, operation string, cause error) (*Error, error) {
+func NewInternal(component, operation string, cause error) *Error {
 	message := fmt.Sprintf("Internal error in %s during %s", component, operation)
-	err, createErr := NewError(ErrorCodeInternalServer, message)
-	if createErr != nil {
-		return nil, createErr
-	}
-	
+	err := NewError(ErrorCodeInternalServer, message)
 	if cause != nil {
 		err = err.WithDescription(cause.Error())
 	}
-	
-	return err.WithComponent(component), nil
+	return err.WithComponent(component)
 }
 
 // NewNotFound creates a not found error with context
-func NewNotFound(resource, id string) (*Error, error) {
+func NewNotFound(resource, id string) *Error {
 	message := fmt.Sprintf("%s with ID '%s' not found", resource, id)
 	return NewError(ErrorCodeNotFound, message)
 }
 
 // NewPermissionDenied creates a permission denied error
-func NewPermissionDenied(resource, operation string) (*Error, error) {
+func NewPermissionDenied(resource, operation string) *Error {
 	message := fmt.Sprintf("Permission denied for %s on resource: %s", operation, resource)
 	return NewError(ErrorCodePermissionDenied, message)
 }
 
 // NewTimeout creates a timeout error
-func NewTimeout(operation string, timeoutMs int64) (*Error, error) {
+func NewTimeout(operation string, timeoutMs int64) *Error {
 	message := fmt.Sprintf("Operation '%s' timed out after %dms", operation, timeoutMs)
-	err, createErr := NewError(ErrorCodeTimeout, message)
-	if createErr != nil {
-		return nil, createErr
-	}
-	
-	return err.WithRetryable(false), nil
+	return NewError(ErrorCodeTimeout, message).WithRetryable(false)
 }
