@@ -4,7 +4,6 @@ import (
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/charmbracelet/huh"
 )
 

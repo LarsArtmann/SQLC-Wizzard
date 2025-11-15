@@ -124,3 +124,45 @@ func (ui *UIHelper) ShowError(err error) {
 
 	fmt.Println(errorStyle.Render("❌ Error: " + err.Error()))
 }
+
+// ShowStepHeader displays a step header
+func (ui *UIHelper) ShowStepHeader(stepName string) {
+	headerStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("99")).
+		Padding(1, 0).
+		MarginBottom(1)
+
+	fmt.Println(headerStyle.Render(fmt.Sprintf("📍 %s", stepName)))
+}
+
+// ShowStepComplete displays step completion message
+func (ui *UIHelper) ShowStepComplete(stepName, result string) {
+	completeStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("#00FF00")).
+		PaddingLeft(2)
+
+	fmt.Println(completeStyle.Render(fmt.Sprintf("✅ %s: %s", stepName, result)))
+}
+
+// ShowInfo displays informational message
+func (ui *UIHelper) ShowInfo(message string) {
+	infoStyle := lipgloss.NewStyle().
+		Foreground(lipgloss.Color("240")).
+		PaddingLeft(2).
+		MarginBottom(1)
+
+	fmt.Println(infoStyle.Render(message))
+}
+
+// ShowSection displays a section header
+func (ui *UIHelper) ShowSection(title string) {
+	sectionStyle := lipgloss.NewStyle().
+		Bold(true).
+		Foreground(lipgloss.Color("#7D56F4")).
+		Padding(1, 0).
+		MarginTop(1).
+		MarginBottom(1)
+
+	fmt.Println(sectionStyle.Render(title))
+}

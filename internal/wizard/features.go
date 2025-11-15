@@ -73,9 +73,9 @@ func (s *FeaturesStep) configureCodeGeneration(data *generated.TemplateData) err
 		return fmt.Errorf("code generation configuration failed: %w", err)
 	}
 
-	data.Validation.EmitOptions.Interface = emitInterface
-	data.Validation.EmitOptions.PreparedQueries = emitPreparedQueries
-	data.Validation.EmitOptions.JSONTags = emitJSONTags
+	data.Validation.EmitOptions.EmitInterface = emitInterface
+	data.Validation.EmitOptions.EmitPreparedQueries = emitPreparedQueries
+	data.Validation.EmitOptions.EmitJSONTags = emitJSONTags
 
 	return nil
 }
@@ -118,62 +118,37 @@ func (s *FeaturesStep) configureSafetyRules(data *generated.TemplateData) error 
 
 // configureDatabaseFeatures configures database-specific features
 func (s *FeaturesStep) configureDatabaseFeatures(data *generated.TemplateData) error {
-	// Only show database-specific features if they're supported
-	if !data.Database.Engine.SupportsFeature("uuids") && !data.Database.Engine.SupportsFeature("json") {
-		return nil
-	}
+	var useUUIDs, useJSON, useArrays, useFullText bool
 
-	var useUUIDs, useJSON bool
-	var features []huh.Field
-
-	if data.Database.Engine.SupportsFeature("uuids") {
-		features = append(features, 
+	form := huh.NewForm(
+		huh.NewGroup(
 			huh.NewConfirm().
 				Title("Use UUID primary keys?").
 				Description("Generate UUID primary keys instead of auto-increment integers").
 				Value(&useUUIDs),
-		)
-	}
-
-	if data.Database.Engine.SupportsFeature("json") {
-		features = append(features,
 			huh.NewConfirm().
 				Title("Use JSON columns?").
 				Description("Enable JSON column support for flexible data storage").
 				Value(&useJSON),
-		)
-	}
-
-	if len(features) == 0 {
-		return nil
-	}
-
-	form := huh.NewForm(huh.NewGroup(features...)).WithTheme(s.theme)
+			huh.NewConfirm().
+				Title("Use array columns?").
+				Description("Enable array column support (PostgreSQL only)").
+				Value(&useArrays),
+			huh.NewConfirm().
+				Title("Use full-text search?").
+				Description("Enable full-text search capabilities").
+				Value(&useFullText),
+		),
+	).WithTheme(s.theme)
 
 	if err := form.Run(); err != nil {
 		return fmt.Errorf("database features configuration failed: %w", err)
 	}
 
-	if data.Database.Engine.SupportsFeature("uuids") {
-		data.Database.UseUUIDs = useUUIDs
-	}
-	if data.Database.Engine.SupportsFeature("json") {
-		data.Database.UseJSON = useJSON
-	}
+	data.Database.UseUUIDs = useUUIDs
+	data.Database.UseJSON = useJSON
+	data.Database.UseArrays = useArrays
+	data.Database.UseFullText = useFullText
 
 	return nil
-}
-
-// SupportsFeature checks if database engine supports specific features
-func (dt generated.DatabaseType) SupportsFeature(feature string) bool {
-	switch dt {
-	case generated.DatabaseTypePostgreSQL:
-		return feature == "uuids" || feature == "json" || feature == "arrays" || feature == "fulltext"
-	case generated.DatabaseTypeMySQL:
-		return feature == "uuids" || feature == "json" || feature == "fulltext"
-	case generated.DatabaseTypeSQLite:
-		return feature == "json" // SQLite has JSON support via extension
-	default:
-		return false
-	}
 }
