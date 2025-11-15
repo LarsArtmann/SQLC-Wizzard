@@ -2,8 +2,6 @@ package wizard
 
 import (
 	"fmt"
-	"slices"
-	"strings"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
@@ -24,17 +22,34 @@ type Wizard struct {
 	result *WizardResult
 	theme  *huh.Theme
 	ui     *UIHelper
+	
+	// Step handlers
+	projectTypeStep *ProjectTypeStep
+	databaseStep    *DatabaseStep
+	projectDetails  *ProjectDetailsStep
+	featuresStep    *FeaturesStep
+	outputStep      *OutputStep
 }
 
 // NewWizard creates a new wizard instance
 func NewWizard() *Wizard {
+	theme := huh.ThemeBase()
+	ui := NewUIHelper()
+	
 	return &Wizard{
 		result: &WizardResult{
 			GenerateQueries: true,
 			GenerateSchema:  true,
 		},
-		theme: huh.ThemeBase(),
-		ui:    NewUIHelper(),
+		theme: theme,
+		ui:    ui,
+		
+		// Initialize step handlers
+		projectTypeStep: NewProjectTypeStep(theme, ui),
+		databaseStep:    NewDatabaseStep(theme, ui),
+		projectDetails:  NewProjectDetailsStep(theme, ui),
+		featuresStep:    NewFeaturesStep(theme, ui),
+		outputStep:      NewOutputStep(theme, ui),
 	}
 }
 
@@ -50,11 +65,20 @@ func (w *Wizard) Run() (*WizardResult, error) {
 
 	// Initialize template data with defaults
 	data := generated.TemplateData{
+		Package: generated.PackageConfig{
+			Name: "myproject",
+			Path: "github.com/myorg/myproject",
+		},
 		Database: generated.DatabaseConfig{
 			UseUUIDs:    true,
 			UseJSON:     true,
 			UseArrays:   false,
 			UseFullText: false,
+		},
+		Output: generated.OutputConfig{
+			BaseDir: "./internal/db",
+			QueriesDir: "./sql/queries",
+			SchemaDir: "./sql/schema",
 		},
 		Validation: generated.ValidationConfig{
 			EmitOptions: generated.DefaultEmitOptions(),
@@ -62,209 +86,107 @@ func (w *Wizard) Run() (*WizardResult, error) {
 		},
 	}
 
-	// Step 1: Project Type
-	if err := w.selectProjectType(&data); err != nil {
-		return nil, err
+	// Execute wizard steps in order
+	steps := []struct {
+		name    string
+		execute func(*generated.TemplateData) error
+	}{
+		{"Project Type", w.projectTypeStep.Execute},
+		{"Database", w.databaseStep.Execute},
+		{"Project Details", w.projectDetails.Execute},
+		{"Features", w.featuresStep.Execute},
+		{"Output Configuration", w.outputStep.Execute},
 	}
 
-	// Step 2: Database
-	if err := w.selectDatabase(&data); err != nil {
-		return nil, err
-	}
-
-	// Step 3: Project Details
-	if err := w.projectDetails(&data); err != nil {
-		return nil, err
-	}
-
-	// Step 4: Features
-	if err := w.selectFeatures(&data); err != nil {
-		return nil, err
-	}
-
-	// Step 5: Output Configuration
-	if err := w.outputConfiguration(&data); err != nil {
-		return nil, err
+	for _, step := range steps {
+		w.ui.ShowStepHeader(step.name)
+		
+		if err := step.execute(&data); err != nil {
+			return nil, fmt.Errorf("step '%s' failed: %w", step.name, err)
+		}
+		
+		w.ui.ShowStepComplete(step.name, "Completed successfully")
 	}
 
 	// Generate config from template
-	tmpl, err := templates.GetTemplate(data.ProjectType)
-	if err != nil {
-		return nil, fmt.Errorf("failed to get template: %w", err)
+	if err := w.generateConfig(&data); err != nil {
+		return nil, fmt.Errorf("config generation failed: %w", err)
 	}
 
-	cfg, err := tmpl.Generate(data)
-	if err != nil {
-		return nil, fmt.Errorf("failed to generate config: %w", err)
-	}
-
-	w.result.Config = cfg
-	w.result.TemplateData = data
+	// Show final summary
+	w.showSummary(&data)
 
 	return w.result, nil
 }
 
-func (w *Wizard) selectProjectType(data *templates.TemplateData) error {
-	var projectType string
-
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewSelect[string]().
-				Title("What type of project are you building?").
-				Options(
-					huh.NewOption("🏠 Hobby - Simple SQLite setup", string(templates.ProjectTypeHobby)),
-					huh.NewOption("⚡ Microservice - Single DB, container-optimized", string(templates.ProjectTypeMicroservice)),
-					huh.NewOption("🏢 Enterprise - Multi-DB, comprehensive", string(templates.ProjectTypeEnterprise)),
-					huh.NewOption("🔧 API-First - JSON-focused, REST-friendly", string(templates.ProjectTypeAPIFirst)),
-					huh.NewOption("📦 Library - Embeddable, minimal deps", string(templates.ProjectTypeLibrary)),
-				).
-				Value(&projectType),
-		),
-	)
-
-	if err := form.Run(); err != nil {
-		return err
+// generateConfig generates the final sqlc configuration
+func (w *Wizard) generateConfig(data *generated.TemplateData) error {
+	// Validate output configuration
+	if err := w.outputStep.ValidateConfiguration(data); err != nil {
+		return fmt.Errorf("invalid output configuration: %w", err)
 	}
 
-	data.ProjectType = templates.ProjectType(projectType)
-	return nil
-}
-
-func (w *Wizard) selectDatabase(data *templates.TemplateData) error {
-	var database string
-
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewSelect[string]().
-				Title("Which database will you use?").
-				Options(
-					huh.NewOption("🐘 PostgreSQL - Full-featured, recommended", string(templates.DatabaseTypePostgreSQL)),
-					huh.NewOption("🗄️  SQLite - Lightweight, embedded", string(templates.DatabaseTypeSQLite)),
-					huh.NewOption("🐬 MySQL - Popular, widely supported", string(templates.DatabaseTypeMySQL)),
-				).
-				Value(&database),
-		),
-	)
-
-	if err := form.Run(); err != nil {
-		return err
+	// Get appropriate template
+	tmpl, err := templates.GetTemplate(data.ProjectType)
+	if err != nil {
+		return fmt.Errorf("failed to get template: %w", err)
 	}
 
-	data.Database.Engine = templates.DatabaseType(database)
-	return nil
-}
-
-func (w *Wizard) projectDetails(data *templates.TemplateData) error {
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewInput().
-				Title("Project Name").
-				Description("Used for naming the SQL configuration").
-				Placeholder("my-awesome-service").
-				Value(&data.ProjectName).
-				Validate(func(s string) error {
-					if strings.TrimSpace(s) == "" {
-						return fmt.Errorf("project name is required")
-					}
-					return nil
-				}),
-
-			huh.NewInput().
-				Title("Go Package Path").
-				Description("The full import path for your project").
-				Placeholder("github.com/user/project").
-				Value(&data.Package.Path).
-				Validate(func(s string) error {
-					if strings.TrimSpace(s) == "" {
-						return fmt.Errorf("package path is required")
-					}
-					if !strings.Contains(s, "/") {
-						return fmt.Errorf("package path should be a full import path (e.g., github.com/user/project)")
-					}
-					return nil
-				}),
-		),
-	)
-
-	return form.Run()
-}
-
-func (w *Wizard) selectFeatures(data *templates.TemplateData) error {
-	var features []string
-
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewMultiSelect[string]().
-				Title("Select database features to enable").
-				Description("Choose features your project will use").
-				Options(
-					huh.NewOption("UUID support", "uuid"),
-					huh.NewOption("JSON/JSONB columns", "json"),
-					huh.NewOption("Array types", "arrays"),
-					huh.NewOption("Full-text search", "fts"),
-				).
-				Value(&features).
-				Limit(4),
-		),
-	)
-
-	if err := form.Run(); err != nil {
-		return err
+	// Generate configuration
+	cfg, err := tmpl.Generate(*data)
+	if err != nil {
+		return fmt.Errorf("failed to generate config: %w", err)
 	}
 
-	// Update features based on selection
-	data.Database.UseUUIDs = slices.Contains(features, "uuid")
-	data.Database.UseJSON = slices.Contains(features, "json")
-	data.Database.UseArrays = slices.Contains(features, "arrays")
-	data.Database.UseFullText = slices.Contains(features, "fts")
+	w.result.Config = cfg
+	w.result.TemplateData = *data
 
 	return nil
 }
 
-func (w *Wizard) outputConfiguration(data *templates.TemplateData) error {
-	// Set defaults if not already set
-	if data.Output.BaseDir == "" {
-		data.Output.BaseDir = "internal/db"
-	}
-	if data.Package.Name == "" {
-		data.Package.Name = "db"
-	}
+// showSummary displays the final configuration summary
+func (w *Wizard) showSummary(data *generated.TemplateData) {
+	w.ui.ShowSection("🎉 Configuration Complete")
 
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewInput().
-				Title("Output Directory").
-				Description("Where generated Go code will be placed").
-				Value(&data.Output.BaseDir).
-				Validate(func(s string) error {
-					if strings.TrimSpace(s) == "" {
-						return fmt.Errorf("output directory is required")
-					}
-					return nil
-				}),
+	summary := fmt.Sprintf(`
+Project: %s
+Package: %s
+Type: %s
+Database: %s
+Output: %s
 
-			huh.NewInput().
-				Title("Go Package Name").
-				Description("Package name for generated code").
-				Value(&data.Package.Name).
-				Validate(func(s string) error {
-					if strings.TrimSpace(s) == "" {
-						return fmt.Errorf("package name is required")
-					}
-					return nil
-				}),
+Features:
+- Interfaces: %t
+- Prepared Queries: %t
+- JSON Tags: %t
 
-			huh.NewConfirm().
-				Title("Generate example queries?").
-				Description("Create starter CRUD queries").
-				Value(&w.result.GenerateQueries),
+Safety Rules:
+- No SELECT *: %t
+- Require WHERE: %t
+- Require LIMIT: %t
 
-			huh.NewConfirm().
-				Title("Generate example schema?").
-				Description("Create a sample database schema").
-				Value(&w.result.GenerateSchema),
-		),
+Database Features:
+- UUIDs: %t
+- JSON: %t
+- Arrays: %t
+- Full-text: %t
+`,
+		data.ProjectName,
+		data.Package.Name,
+		data.ProjectType,
+		data.Database.Engine,
+		data.Output.BaseDir,
+		data.Validation.EmitOptions.EmitInterface,
+		data.Validation.EmitOptions.EmitPreparedQueries,
+		data.Validation.EmitOptions.EmitJSONTags,
+		data.Validation.SafetyRules.NoSelectStar,
+		data.Validation.SafetyRules.RequireWhere,
+		data.Validation.SafetyRules.RequireLimit,
+		data.Database.UseUUIDs,
+		data.Database.UseJSON,
+		data.Database.UseArrays,
+		data.Database.UseFullText,
 	)
 
-	return form.Run()
+	w.ui.ShowInfo(summary)
 }
