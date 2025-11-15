@@ -2,6 +2,7 @@ package validation
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 )
 
 // RuleTransformer consolidates rule transformation logic from duplicate implementations
@@ -60,15 +61,9 @@ func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []
 
 // TransformDomainSafetyRules converts domain safety rules to configuration format
 // Provides compatibility with domain package while using consolidated logic
-func (rt *RuleTransformer) TransformDomainSafetyRules(rules interface{}) []generated.RuleConfig {
-	// This method provides compatibility with the domain package structure
-	// while using the consolidated transformation logic
-	
-	// TODO: Remove this method once domain package uses generated types directly
-	// This is a transitional compatibility method
-	
-	// For now, return empty slice to break compilation
-	// The real implementation would convert domain rules to generated types
-	// then call TransformSafetyRules
-	return []generated.RuleConfig{}
+func (rt *RuleTransformer) TransformDomainSafetyRules(rules *domain.SafetyRules) []generated.RuleConfig {
+	// Since domain.SafetyRules is an alias for generated.SafetyRules,
+	// we can directly use the consolidated transformation logic
+	generatedRules := (*generated.SafetyRules)(rules)
+	return rt.TransformSafetyRules(generatedRules)
 }
