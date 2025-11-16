@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/migration"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/charmbracelet/log"
 	"github.com/golang-migrate/migrate/v4"
@@ -92,7 +93,7 @@ func (r *RealMigrationAdapter) Rollback(ctx context.Context, source string, data
 }
 
 // Status checks migration status
-func (r *RealMigrationAdapter) Status(ctx context.Context, source string, databaseURL string) (map[string]interface{}, error) {
+func (r *RealMigrationAdapter) Status(ctx context.Context, source string, databaseURL string) (*migration.MigrationStatus, error) {
 	log.Info("Checking migration status", "source", source, "database", databaseURL)
 	
 	m, err := migrate.New(source, databaseURL)
@@ -108,20 +109,21 @@ func (r *RealMigrationAdapter) Status(ctx context.Context, source string, databa
 		return nil, fmt.Errorf("failed to get migration version: %w", err)
 	}
 
-	status := map[string]interface{}{
-		"current_version": nil,
-		"dirty":          false,
-		"migrations":      []interface{}{},
+	// Create typed migration status
+	status, err := migration.NewMigrationStatus(source, databaseURL)
+	if err != nil {
+		return nil, fmt.Errorf("failed to create migration status: %w", err)
 	}
 
 	if err == migrate.ErrNilVersion {
-		status["current_version"] = nil
+		// No migrations applied yet
+		log.Info("No migrations applied yet")
 	} else {
-		status["current_version"] = version
-		status["dirty"] = dirty
+		status.WithVersion(version)
+		status.WithDirty(dirty)
 	}
 
-	log.Info("Migration status retrieved", "version", status["current_version"], "dirty", status["dirty"])
+	log.Info("Migration status retrieved", "version", status.GetCurrentVersion(), "dirty", status.IsDirty())
 	return status, nil
 }
 

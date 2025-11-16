@@ -1,82 +1,100 @@
 package migration
 
-import (
-	"time"
-)
+import "time"
 
-// MigrationStatus represents the current status of database migrations
-// Type-safe replacement for map[string]interface{}
+// MigrationStatus represents a strongly-typed migration status
+// This eliminates map[string]interface{} usage and provides type safety
 type MigrationStatus struct {
-	CurrentVersion *string    `json:"current_version,omitempty"`
-	Dirty          bool        `json:"dirty"`
+	CurrentVersion *uint      `json:"current_version,omitempty"`
+	Dirty          bool       `json:"dirty"`
 	Migrations     []Migration `json:"migrations"`
-	LastRun        *time.Time  `json:"last_run,omitempty"`
-	NextRun        *time.Time  `json:"next_run,omitempty"`
+	CheckedAt      time.Time  `json:"checked_at"`
+	Source         string     `json:"source"`
+	DatabaseURL    string     `json:"database_url,omitempty"`
 }
 
-// Migration represents an individual migration entry
+// Migration represents a single migration with type safety
 type Migration struct {
-	Version     string    `json:"version"`
-	Description string    `json:"description"`
-	AppliedAt   *time.Time `json:"applied_at,omitempty"`
-	Dirty       bool      `json:"dirty"`
+	Version    uint       `json:"version"`
+	Applied    bool       `json:"applied"`
+	AppliedAt  *time.Time `json:"applied_at,omitempty"`
+	Name       string     `json:"name"`
+	Dirty      bool       `json:"dirty"`
+	UpFile     string     `json:"up_file"`
+	DownFile   string     `json:"down_file,omitempty"`
 }
 
 // NewMigrationStatus creates a new MigrationStatus with validation
-// Prevents invalid states through constructor validation
-func NewMigrationStatus(currentVersion *string, dirty bool, migrations []Migration) (*MigrationStatus, error) {
-	if len(migrations) > 1000 {
-		return nil, &MigrationError{
-			Code:    "TOO_MANY_MIGRATIONS",
-			Message: "Migration count exceeds reasonable limit of 1000",
+func NewMigrationStatus(source, databaseURL string) (*MigrationStatus, error) {
+	if source == "" {
+		return nil, &ValidationError{
+			Field:   "source",
+			Message: "source cannot be empty",
 		}
 	}
 	
 	return &MigrationStatus{
-		CurrentVersion: currentVersion,
-		Dirty:          dirty,
-		Migrations:     migrations,
+		CurrentVersion: nil,
+		Dirty:          false,
+		Migrations:     []Migration{},
+		CheckedAt:      time.Now(),
+		Source:         source,
+		DatabaseURL:    databaseURL,
 	}, nil
 }
 
-// IsDirty returns true if migration state is dirty
+// WithVersion sets the current version
+func (ms *MigrationStatus) WithVersion(version uint) {
+	ms.CurrentVersion = &version
+}
+
+// WithDirty sets the dirty status
+func (ms *MigrationStatus) WithDirty(dirty bool) {
+	ms.Dirty = dirty
+}
+
+// WithMigrations sets the migrations list
+func (ms *MigrationStatus) WithMigrations(migrations []Migration) {
+	ms.Migrations = migrations
+}
+
+// IsDirty returns whether the database is in a dirty state
 func (ms *MigrationStatus) IsDirty() bool {
 	return ms.Dirty
 }
 
-// GetCurrentVersion safely returns current version
-func (ms *MigrationStatus) GetCurrentVersion() *string {
+// GetCurrentVersion returns the current migration version
+func (ms *MigrationStatus) GetCurrentVersion() *uint {
 	return ms.CurrentVersion
 }
 
-// GetAppliedMigrations returns only applied migrations
-func (ms *MigrationStatus) GetAppliedMigrations() []Migration {
-	var applied []Migration
-	for _, migration := range ms.Migrations {
-		if migration.AppliedAt != nil {
-			applied = append(applied, migration)
-		}
-	}
-	return applied
+// GetMigrationCount returns the total number of migrations
+func (ms *MigrationStatus) GetMigrationCount() int {
+	return len(ms.Migrations)
 }
 
-// GetPendingMigrations returns only pending migrations
-func (ms *MigrationStatus) GetPendingMigrations() []Migration {
-	var pending []Migration
-	for _, migration := range ms.Migrations {
-		if migration.AppliedAt == nil {
-			pending = append(pending, migration)
+// GetAppliedMigrations returns count of applied migrations
+func (ms *MigrationStatus) GetAppliedMigrations() int {
+	count := 0
+	for _, mig := range ms.Migrations {
+		if mig.Applied {
+			count++
 		}
 	}
-	return pending
+	return count
 }
 
-// MigrationError represents migration-specific errors
-type MigrationError struct {
-	Code    string `json:"code"`
+// GetPendingMigrations returns count of pending migrations
+func (ms *MigrationStatus) GetPendingMigrations() int {
+	return ms.GetMigrationCount() - ms.GetAppliedMigrations()
+}
+
+// ValidationError represents migration-specific validation errors
+type ValidationError struct {
+	Field   string `json:"field"`
 	Message string `json:"message"`
 }
 
-func (e *MigrationError) Error() string {
+func (e *ValidationError) Error() string {
 	return e.Message
 }

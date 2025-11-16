@@ -6,6 +6,7 @@ import (
 	"io/fs"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
@@ -39,7 +40,7 @@ type DatabaseAdapter interface {
 	DropDatabase(ctx context.Context, cfg *config.DatabaseConfig) error
 
 	// GetSchema returns database schema information
-	GetSchema(ctx context.Context, cfg *config.DatabaseConfig) (any, error)
+	GetSchema(ctx context.Context, cfg *config.DatabaseConfig) (*schema.Schema, error)
 
 	// GenerateMigrations generates database migrations
 	GenerateMigrations(ctx context.Context, cfg *config.DatabaseConfig) ([]string, error)

@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"context"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/migration"
 )
 
 // MigrationAdapter defines the interface for database migration operations
@@ -14,7 +15,7 @@ type MigrationAdapter interface {
 	Rollback(ctx context.Context, source string, databaseURL string, steps int) error
 	
 	// Status checks migration status
-	Status(ctx context.Context, source string, databaseURL string) (map[string]interface{}, error)
+	Status(ctx context.Context, source string, databaseURL string) (*migration.MigrationStatus, error)
 	
 	// Validate validates migration files
 	Validate(ctx context.Context, source string) error

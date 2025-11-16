@@ -63,7 +63,7 @@ func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 	}
 
 	return errors.Newf(
-		errors.ErrInvalidValue,
+		errors.ErrorCodeInvalidValue,
 		"path_or_paths must be either a string or array of strings, got: %v", value.Kind,
 	)
 }

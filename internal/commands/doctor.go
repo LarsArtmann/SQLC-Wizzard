@@ -114,7 +114,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		return nil
 	default:
 		fmt.Printf("❌ %d error(s) and %d warning(s) found. Please fix errors before continuing.\n", failed, warned)
-		return errors.New("health_check_failed", "environment issues detected")
+		return errors.NewError(errors.ErrorCodeInternalServer, "health_check_failed").WithDescription("environment issues detected")
 	}
 }
 

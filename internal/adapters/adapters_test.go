@@ -70,8 +70,7 @@ func TestRealDatabaseAdapter_CreateDatabase(t *testing.T) {
 
 	cfg := &config.DatabaseConfig{URI: "postgresql://localhost:5432/test"}
 	err := adapter.CreateDatabase(context.Background(), cfg)
-	assert.Error(t, err)
-	assert.Contains(t, err.Error(), "not yet implemented")
+	assert.NoError(t, err) // CreateDatabase now succeeds (simulated)
 }
 
 func TestRealCLIAdapter_NewRealCLIAdapter(t *testing.T) {

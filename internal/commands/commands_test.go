@@ -246,7 +246,7 @@ func generateExampleFiles(outputDir string, force bool) error {
 		if _, err := os.Stat(outputDir); err == nil {
 			files, err := os.ReadDir(outputDir)
 			if err == nil && len(files) > 0 {
-				return errors.New("directory_not_empty", "output directory is not empty")
+				return errors.NewError(errors.ErrorCodeInternalServer, "directory_not_empty").WithDescription("output directory is not empty")
 			}
 		}
 	}

@@ -229,3 +229,94 @@ type SchemaError struct {
 func (e *SchemaError) Error() string {
 	return e.Message
 }
+
+// Validate validates the entire schema
+func (s *Schema) Validate() error {
+	if s == nil {
+		return &SchemaError{
+			Code:    "NULL_SCHEMA",
+			Message: "Schema cannot be null",
+		}
+	}
+	
+	if strings.TrimSpace(s.Name) == "" {
+		return &SchemaError{
+			Code:    "EMPTY_SCHEMA_NAME",
+			Message: "Schema name cannot be empty",
+		}
+	}
+	
+	if len(s.Tables) == 0 {
+		return &SchemaError{
+			Code:    "NO_TABLES",
+			Message: "Schema must contain at least one table",
+		}
+	}
+	
+	if len(s.Tables) > 1000 {
+		return &SchemaError{
+			Code:    "TOO_MANY_TABLES",
+			Message: "Schema exceeds reasonable limit of 1000 tables",
+		}
+	}
+	
+	// Validate each table
+	for i, table := range s.Tables {
+		if err := table.Validate(); err != nil {
+			return &SchemaError{
+				Code:    fmt.Sprintf("TABLE_VALIDATION_%d_%s", i, table.Name),
+				Message: fmt.Sprintf("Table %s validation failed: %s", table.Name, err.Error()),
+			}
+		}
+	}
+	
+	return nil
+}
+
+// Validate validates a table
+func (t *Table) Validate() error {
+	if strings.TrimSpace(t.Name) == "" {
+		return &SchemaError{
+			Code:    "EMPTY_TABLE_NAME",
+			Message: "Table name cannot be empty",
+		}
+	}
+	
+	if len(t.Columns) == 0 {
+		return &SchemaError{
+			Code:    "NO_COLUMNS",
+			Message: fmt.Sprintf("Table %s must contain at least one column", t.Name),
+		}
+	}
+	
+	// Validate each column
+	for i, column := range t.Columns {
+		if err := column.Validate(); err != nil {
+			return &SchemaError{
+				Code:    fmt.Sprintf("COLUMN_VALIDATION_%d_%s", i, column.Name),
+				Message: fmt.Sprintf("Column %s validation failed: %s", column.Name, err.Error()),
+			}
+		}
+	}
+	
+	return nil
+}
+
+// Validate validates a column
+func (c *Column) Validate() error {
+	if strings.TrimSpace(c.Name) == "" {
+		return &SchemaError{
+			Code:    "EMPTY_COLUMN_NAME",
+			Message: "Column name cannot be empty",
+		}
+	}
+	
+	if !c.Type.IsValid() {
+		return &SchemaError{
+			Code:    "INVALID_COLUMN_TYPE",
+			Message: fmt.Sprintf("Column %s has invalid type: %s", c.Name, string(c.Type)),
+		}
+	}
+	
+	return nil
+}

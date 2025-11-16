@@ -30,7 +30,17 @@ const (
 	// Configuration Errors
 	ErrorCodeConfigValidation    ErrorCode = "CONFIG_VALIDATION"
 	ErrorCodeConfigNotFound     ErrorCode = "CONFIG_NOT_FOUND"
+	ErrorCodeConfigParseFailed  ErrorCode = "CONFIG_PARSE_FAILED"
 	ErrorCodeInvalidProjectType ErrorCode = "INVALID_PROJECT_TYPE"
+	ErrorCodeInvalidValue        ErrorCode = "INVALID_VALUE"
+	
+	// File Errors
+	ErrorCodeFileNotFound     ErrorCode = "FILE_NOT_FOUND"
+	ErrorCodeFileReadError    ErrorCode = "FILE_READ_ERROR"
+	ErrorCodeTemplateNotFound ErrorCode = "TEMPLATE_NOT_FOUND"
+	
+	// Validation Errors
+	ErrorCodeValidationError ErrorCode = "VALIDATION_ERROR"
 	
 	// System Errors
 	ErrorCodeInternalServer     ErrorCode = "INTERNAL_SERVER"
@@ -297,3 +307,77 @@ func NewTimeout(operation string, timeoutMs int64) *Error {
 	message := fmt.Sprintf("Operation '%s' timed out after %dms", operation, timeoutMs)
 	return NewError(ErrorCodeTimeout, message).WithRetryable(false)
 }
+
+// FileNotFoundError creates a file not found error
+func FileNotFoundError(path string) *Error {
+	message := fmt.Sprintf("File not found: %s", path)
+	return NewError(ErrorCodeFileNotFound, message).WithComponent("filesystem")
+}
+
+// FileReadError creates a file read error
+func FileReadError(path string, err error) *Error {
+	message := fmt.Sprintf("Failed to read file: %s", path)
+	appErr := NewError(ErrorCodeFileReadError, message).WithComponent("filesystem")
+	if err != nil {
+		appErr = appErr.WithDescription(err.Error())
+	}
+	return appErr
+}
+
+// ConfigParseError creates a config parse error
+func ConfigParseError(path string, err error) *Error {
+	message := fmt.Sprintf("Failed to parse config file: %s", path)
+	appErr := NewError(ErrorCodeConfigParseFailed, message).WithComponent("config")
+	if err != nil {
+		appErr = appErr.WithDescription(err.Error())
+	}
+	return appErr
+}
+
+// ErrConfigParseFailed is a base error for config parsing failures
+var ErrConfigParseFailed = NewError(ErrorCodeConfigParseFailed, "Config parse failed")
+
+// ErrInvalidValue is a base error for invalid values
+var ErrInvalidValue = NewError(ErrorCodeInvalidValue, "Invalid value")
+
+// Wrapf wraps an error with formatted message and base error
+func Wrapf(err error, baseErr *Error, format string, args ...interface{}) *Error {
+	if err == nil {
+		return NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
+	}
+	
+	message := fmt.Sprintf(format, args...)
+	wrapped := NewError(baseErr.Code, message).WithComponent(baseErr.Component)
+	if baseErr.Description != "" {
+		wrapped = wrapped.WithDescription(baseErr.Description)
+	}
+	return wrapped.WithDescription(fmt.Sprintf("Original error: %v", err))
+}
+
+// TemplateNotFoundError creates a template not found error
+func TemplateNotFoundError(template string) *Error {
+	message := fmt.Sprintf("Template not found: %s", template)
+	return NewError(ErrorCodeTemplateNotFound, message).WithComponent("templates")
+}
+
+// ValidationError creates a validation error
+func ValidationError(field, message string) *Error {
+	errMsg := fmt.Sprintf("Validation failed for field '%s': %s", field, message)
+	return NewError(ErrorCodeValidationError, errMsg).WithComponent("validation")
+}
+
+// Is checks if an error matches a specific error type
+func Is(err, target error) bool {
+	if appErr, ok := err.(*Error); ok {
+		if targetErr, ok := target.(*Error); ok {
+			return appErr.Code == targetErr.Code
+		}
+	}
+	return false
+}
+
+// ErrFileNotFound is a base error for file not found
+var ErrFileNotFound = NewError(ErrorCodeFileNotFound, "File not found")
+
+// ErrInvalidType is a base error for invalid type errors
+var ErrInvalidType = NewError(ErrorCodeValidationError, "Invalid type")

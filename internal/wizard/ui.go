@@ -5,6 +5,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
 // ShowCompletion displays final configuration summary with typed schema
@@ -86,4 +87,34 @@ func GenerateConfiguration(schema *schema.Schema, data generated.TemplateData) (
 	}
 	
 	return config, nil
+}
+
+// generateConfigFromSchema generates sqlc configuration from schema and template data
+func generateConfigFromSchema(s *schema.Schema, data generated.TemplateData) (string, error) {
+	// Create a basic SQLC config from schema
+	sqlcConfig := &config.SqlcConfig{
+		Version: "2",
+		SQL: []config.SQLConfig{
+			{
+				Engine: "postgresql", // Default to postgresql
+				Schema: config.NewPathOrPaths([]string{"schema.sql"}),
+				Queries: config.NewPathOrPaths([]string{"query.sql"}),
+				Gen: config.GenConfig{
+					Go: &config.GoGenConfig{
+						Out:       "internal/db",
+						Package:   "db",
+						Overrides: []config.Override{},
+					},
+				},
+			},
+		},
+	}
+	
+	// Convert to YAML string
+	yamlData, err := config.Marshal(sqlcConfig)
+	if err != nil {
+		return "", errors.ConfigParseError("generated config", err)
+	}
+	
+	return string(yamlData), nil
 }
