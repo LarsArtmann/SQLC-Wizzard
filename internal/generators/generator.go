@@ -50,7 +50,7 @@ func (g *Generator) GenerateSqlcConfig(cfg *config.SqlcConfig) error {
 	path := filepath.Join(g.outputDir, "sqlc.yaml")
 
 	// Ensure directory exists
-	if err := os.MkdirAll(g.outputDir, 0755); err != nil {
+	if err := os.MkdirAll(g.outputDir, 0o755); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
@@ -91,7 +91,7 @@ func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey
 	}
 
 	// Ensure directory exists
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("failed to create %s directory: %w", templateType, err)
 	}
 
@@ -103,7 +103,7 @@ func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey
 
 	// Write to output
 	outputPath := filepath.Join(dir, filename)
-	if err := os.WriteFile(outputPath, []byte(content), 0644); err != nil {
+	if err := os.WriteFile(outputPath, []byte(content), 0o644); err != nil {
 		return fmt.Errorf("failed to write %s file: %w", templateType, err)
 	}
 

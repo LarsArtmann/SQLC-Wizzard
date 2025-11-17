@@ -20,7 +20,7 @@ func TestCommands(t *testing.T) {
 var _ = Describe("NewDoctorCommand", func() {
 	It("should create a valid doctor command", func() {
 		cmd := commands.NewDoctorCommand()
-		
+
 		Expect(cmd.Use).To(Equal("doctor"))
 		Expect(cmd.Short).To(ContainSubstring("🩺 Diagnose"))
 		Expect(cmd.Long).To(ContainSubstring("health check"))
@@ -29,7 +29,7 @@ var _ = Describe("NewDoctorCommand", func() {
 
 	It("should have correct command structure", func() {
 		cmd := commands.NewDoctorCommand()
-		
+
 		// Verify it's a proper cobra command
 		Expect(cmd.ValidArgsFunction).To(BeNil())
 		Expect(cmd.Args).To(BeNil())
@@ -39,7 +39,7 @@ var _ = Describe("NewDoctorCommand", func() {
 var _ = Describe("NewGenerateCommand", func() {
 	It("should create a valid generate command", func() {
 		cmd := commands.NewGenerateCommand()
-		
+
 		Expect(cmd.Use).To(Equal("generate"))
 		Expect(cmd.Short).To(Equal("Generate SQL files and configurations"))
 		Expect(cmd.Long).To(ContainSubstring("scaffold"))
@@ -49,16 +49,16 @@ var _ = Describe("NewGenerateCommand", func() {
 
 	It("should have correct flags", func() {
 		cmd := commands.NewGenerateCommand()
-		
+
 		// Check that flags exist
 		flag := cmd.Flags().Lookup("config")
 		Expect(flag).NotTo(BeNil())
 		Expect(flag.Shorthand).To(Equal("c"))
-		
+
 		flag = cmd.Flags().Lookup("output")
 		Expect(flag).NotTo(BeNil())
 		Expect(flag.Shorthand).To(Equal("o"))
-		
+
 		flag = cmd.Flags().Lookup("force")
 		Expect(flag).NotTo(BeNil())
 		Expect(flag.Shorthand).To(Equal("f"))
@@ -68,7 +68,7 @@ var _ = Describe("NewGenerateCommand", func() {
 var _ = Describe("NewValidateCommand", func() {
 	It("should create a valid validate command", func() {
 		cmd := commands.NewValidateCommand()
-		
+
 		Expect(cmd.Use).To(Equal("validate [file]"))
 		Expect(cmd.Short).To(ContainSubstring("Validate"))
 		Expect(cmd.RunE).NotTo(BeNil())
@@ -78,7 +78,7 @@ var _ = Describe("NewValidateCommand", func() {
 var _ = Describe("NewInitCommand", func() {
 	It("should create a valid init command", func() {
 		cmd := commands.NewInitCommand()
-		
+
 		Expect(cmd.Use).To(Equal("init"))
 		Expect(cmd.Short).To(ContainSubstring("Initialize"))
 		Expect(cmd.RunE).NotTo(BeNil())
@@ -105,7 +105,7 @@ var _ = Describe("Generate Command Execution", func() {
 	It("should fail when output directory is not empty", func() {
 		// Create a file in temp directory
 		testFile := filepath.Join(tempDir, "existing.txt")
-		err := os.WriteFile(testFile, []byte("test"), 0644)
+		err := os.WriteFile(testFile, []byte("test"), 0o644)
 		Expect(err).NotTo(HaveOccurred())
 
 		// Try to generate (should fail)
@@ -118,11 +118,11 @@ var _ = Describe("Generate Command Execution", func() {
 		// Generate in empty directory
 		err = generateExampleFiles(tempDir, false)
 		Expect(err).NotTo(HaveOccurred())
-		
+
 		// Check files were created
 		schemaFile := filepath.Join(tempDir, "schema", "001_users_table.sql")
 		queriesFile := filepath.Join(tempDir, "queries", "users.sql")
-		
+
 		Expect(schemaFile).To(BeARegularFile())
 		Expect(queriesFile).To(BeARegularFile())
 	})
@@ -130,13 +130,13 @@ var _ = Describe("Generate Command Execution", func() {
 	It("should succeed with force flag even when directory not empty", func() {
 		// Create a file in temp directory
 		testFile := filepath.Join(tempDir, "existing.txt")
-		err := os.WriteFile(testFile, []byte("test"), 0644)
+		err := os.WriteFile(testFile, []byte("test"), 0o644)
 		Expect(err).NotTo(HaveOccurred())
 
 		// Generate with force flag
 		err = generateExampleFiles(tempDir, true)
 		Expect(err).NotTo(HaveOccurred())
-		
+
 		// Check files were created
 		schemaFile := filepath.Join(tempDir, "schema", "001_users_table.sql")
 		Expect(schemaFile).To(BeARegularFile())
@@ -148,7 +148,7 @@ var _ = Describe("Doctor Command Checks", func() {
 		It("should return PASS for compatible Go version", func() {
 			// This test assumes the current Go version is compatible
 			result := checkGoVersion(context.Background())
-			
+
 			Expect(result.Status).To(Equal("PASS"))
 			Expect(result.Message).To(ContainSubstring("compatible"))
 			Expect(result.Error).To(BeNil())
@@ -158,7 +158,7 @@ var _ = Describe("Doctor Command Checks", func() {
 	Context("checkFileSystemPermissions", func() {
 		It("should return PASS when filesystem is writable", func() {
 			result := checkFileSystemPermissions(context.Background())
-			
+
 			Expect(result.Status).To(Equal("PASS"))
 			Expect(result.Message).To(ContainSubstring("OK"))
 			Expect(result.Error).To(BeNil())
@@ -168,7 +168,7 @@ var _ = Describe("Doctor Command Checks", func() {
 	Context("checkMemoryAvailability", func() {
 		It("should return PASS or WARN based on available memory", func() {
 			result := checkMemoryAvailability(context.Background())
-			
+
 			Expect(result.Status).To(BeElementOf("PASS", "WARN"))
 			Expect(result.Error).To(BeNil())
 		})
@@ -178,7 +178,7 @@ var _ = Describe("Doctor Command Checks", func() {
 var _ = Describe("Error Handling", func() {
 	It("should handle doctor command errors gracefully", func() {
 		cmd := commands.NewDoctorCommand()
-		
+
 		// Test with invalid arguments (should not panic)
 		err := cmd.RunE(cmd, []string{})
 		Expect(err).To(SatisfyAny(
@@ -254,22 +254,22 @@ func generateExampleFiles(outputDir string, force bool) error {
 	// Create directories and files
 	schemaDir := filepath.Join(outputDir, "schema")
 	queriesDir := filepath.Join(outputDir, "queries")
-	
-	if err := os.MkdirAll(schemaDir, 0755); err != nil {
+
+	if err := os.MkdirAll(schemaDir, 0o755); err != nil {
 		return err
 	}
-	
-	if err := os.MkdirAll(queriesDir, 0755); err != nil {
+
+	if err := os.MkdirAll(queriesDir, 0o755); err != nil {
 		return err
 	}
 
 	// Create dummy files
 	schemaFile := filepath.Join(schemaDir, "001_users_table.sql")
 	queriesFile := filepath.Join(queriesDir, "users.sql")
-	
-	if err := os.WriteFile(schemaFile, []byte("-- Schema file"), 0644); err != nil {
+
+	if err := os.WriteFile(schemaFile, []byte("-- Schema file"), 0o644); err != nil {
 		return err
 	}
-	
-	return os.WriteFile(queriesFile, []byte("-- Query file"), 0644)
+
+	return os.WriteFile(queriesFile, []byte("-- Query file"), 0o644)
 }

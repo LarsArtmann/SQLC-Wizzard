@@ -4,10 +4,10 @@ package adapters
 
 // Re-export all adapter constructors for convenience
 var (
-	NewSQLCAdapterFunc         = NewRealSQLCAdapter
-	NewDatabaseAdapterFunc     = NewRealDatabaseAdapter
-	NewCLIAdapterFunc         = NewRealCLIAdapter
-	NewTemplateAdapterFunc    = NewRealTemplateAdapter
-	NewFileSystemAdapterFunc  = NewRealFileSystemAdapter
-	NewMigrationAdapterFunc   = NewRealMigrationAdapter
+	NewSQLCAdapterFunc       = NewRealSQLCAdapter
+	NewDatabaseAdapterFunc   = NewRealDatabaseAdapter
+	NewCLIAdapterFunc        = NewRealCLIAdapter
+	NewTemplateAdapterFunc   = NewRealTemplateAdapter
+	NewFileSystemAdapterFunc = NewRealFileSystemAdapter
+	NewMigrationAdapterFunc  = NewRealMigrationAdapter
 )

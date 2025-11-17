@@ -10,7 +10,7 @@ func StringToCamelCase(s string) string {
 	if s == "" {
 		return ""
 	}
-	
+
 	words := strings.Split(s, "_")
 	for i, word := range words {
 		if word == "" {
@@ -20,7 +20,7 @@ func StringToCamelCase(s string) string {
 			words[i] = strings.ToUpper(word[:1]) + strings.ToLower(word[1:])
 		}
 	}
-	
+
 	return strings.Join(words, "")
 }
 
@@ -29,7 +29,7 @@ func StringToSnakeCase(s string) string {
 	if s == "" {
 		return ""
 	}
-	
+
 	var result []rune
 	for i, r := range s {
 		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
@@ -37,7 +37,7 @@ func StringToSnakeCase(s string) string {
 		}
 		result = append(result, unicode.ToLower(r))
 	}
-	
+
 	return string(result)
 }
 
@@ -46,7 +46,7 @@ func StringToKebabCase(s string) string {
 	if s == "" {
 		return ""
 	}
-	
+
 	var result []rune
 	for i, r := range s {
 		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
@@ -54,7 +54,7 @@ func StringToKebabCase(s string) string {
 		}
 		result = append(result, unicode.ToLower(r))
 	}
-	
+
 	return string(result)
 }
 
@@ -63,7 +63,7 @@ func Pluralize(word string) string {
 	if word == "" {
 		return ""
 	}
-	
+
 	// Handle common irregular nouns
 	switch strings.ToLower(word) {
 	case "person":
@@ -83,23 +83,23 @@ func Pluralize(word string) string {
 	case "data":
 		return "data" // Already plural or irregular
 	}
-	
+
 	// Handle words ending in specific patterns
 	lowered := strings.ToLower(word)
 	if strings.HasSuffix(lowered, "s") {
 		return word // Already plural
 	}
-	
+
 	if strings.HasSuffix(lowered, "y") {
 		return word[:len(word)-1] + "ies"
 	}
-	
-	if strings.HasSuffix(lowered, "s") || strings.HasSuffix(lowered, "sh") || 
-	   strings.HasSuffix(lowered, "ch") || strings.HasSuffix(lowered, "x") || 
-	   strings.HasSuffix(lowered, "z") {
+
+	if strings.HasSuffix(lowered, "s") || strings.HasSuffix(lowered, "sh") ||
+		strings.HasSuffix(lowered, "ch") || strings.HasSuffix(lowered, "x") ||
+		strings.HasSuffix(lowered, "z") {
 		return word + "es"
 	}
-	
+
 	return word + "s"
 }
 
@@ -108,9 +108,9 @@ func Singularize(word string) string {
 	if word == "" {
 		return ""
 	}
-	
+
 	lowered := strings.ToLower(word)
-	
+
 	// Handle common irregular nouns
 	switch lowered {
 	case "people":
@@ -130,20 +130,20 @@ func Singularize(word string) string {
 	case "sheep":
 		return "sheep"
 	}
-	
+
 	// Handle words ending in specific patterns
 	if strings.HasSuffix(lowered, "ies") {
 		return word[:len(word)-3] + "y"
 	}
-	
+
 	if strings.HasSuffix(lowered, "es") {
 		return word[:len(word)-2]
 	}
-	
+
 	if strings.HasSuffix(lowered, "s") {
 		return word[:len(word)-1]
 	}
-	
+
 	return word
 }
 
@@ -152,7 +152,7 @@ func IsValidIdentifier(s string) bool {
 	if s == "" {
 		return false
 	}
-	
+
 	for i, r := range s {
 		if i == 0 {
 			if !unicode.IsLetter(r) && r != '_' {
@@ -164,7 +164,7 @@ func IsValidIdentifier(s string) bool {
 			}
 		}
 	}
-	
+
 	return true
 }
 
@@ -179,7 +179,7 @@ func GetFileExtension(path string) string {
 	if dot == -1 || dot == len(path)-1 {
 		return ""
 	}
-	
+
 	return path[dot:]
 }
 
@@ -188,7 +188,7 @@ func HasExtension(path, ext string) bool {
 	if !strings.HasPrefix(ext, ".") {
 		ext = "." + ext
 	}
-	
+
 	return strings.HasSuffix(strings.ToLower(path), strings.ToLower(ext))
 }
 
@@ -197,11 +197,11 @@ func TruncateString(s string, length int) string {
 	if len(s) <= length {
 		return s
 	}
-	
+
 	if length <= 3 {
 		return s[:length]
 	}
-	
+
 	return s[:length-3] + "..."
 }
 
@@ -210,11 +210,11 @@ func PadString(s string, length int, char string) string {
 	if len(s) >= length {
 		return s
 	}
-	
+
 	if char == "" {
 		char = " "
 	}
-	
+
 	padding := strings.Repeat(char, length-len(s))
 	return s + padding
 }

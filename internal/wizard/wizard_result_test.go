@@ -9,9 +9,7 @@ import (
 )
 
 var _ = Describe("Wizard Result", func() {
-	var (
-		result *wizard.WizardResult
-	)
+	var result *wizard.WizardResult
 
 	BeforeEach(func() {
 		result = &wizard.WizardResult{
@@ -31,7 +29,7 @@ var _ = Describe("Wizard Result", func() {
 	It("should allow modification of result", func() {
 		result.GenerateQueries = false
 		result.GenerateSchema = false
-		
+
 		Expect(result.GenerateQueries).To(BeFalse())
 		Expect(result.GenerateSchema).To(BeFalse())
 	})

@@ -23,7 +23,6 @@ func TestRealSQLCAdapter_CheckInstallation(t *testing.T) {
 	adapter := adapters.NewRealSQLCAdapter()
 
 	err := adapter.CheckInstallation(context.Background())
-
 	// sqlc might not be installed in test environment
 	if err != nil {
 		assert.Contains(t, err.Error(), "which: sqlc")
@@ -34,7 +33,6 @@ func TestRealSQLCAdapter_Version(t *testing.T) {
 	adapter := adapters.NewRealSQLCAdapter()
 
 	version, err := adapter.Version(context.Background())
-
 	// sqlc might not be installed
 	if err != nil {
 		assert.Contains(t, err.Error(), "sqlc")
@@ -199,7 +197,7 @@ func TestRealFileSystemAdapter_ReadWriteFile(t *testing.T) {
 	tempDir := t.TempDir()
 	filePath := tempDir + "/test.txt"
 
-	err := adapter.WriteFile(ctx, filePath, testData, 0644)
+	err := adapter.WriteFile(ctx, filePath, testData, 0o644)
 	require.NoError(t, err)
 
 	data, err := adapter.ReadFile(ctx, filePath)

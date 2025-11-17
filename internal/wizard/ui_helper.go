@@ -2,13 +2,14 @@ package wizard
 
 import (
 	"fmt"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/charmbracelet/huh"
-	"github.com/charmbracelet/lipgloss"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+	"github.com/charmbracelet/huh"
+	"github.com/charmbracelet/lipgloss"
 )
 
 // UIHelper manages UI styling and display
@@ -139,7 +140,6 @@ func (ui *UIHelper) GetConfirmation() (bool, error) {
 				Value(&confirmed),
 		),
 	).WithTheme(ui.theme).Run()
-
 	if err != nil {
 		return false, err
 	}
@@ -162,7 +162,7 @@ func (ui *UIHelper) formatConfigurationSummary(cfg *schema.Schema, data generate
 	summary += "\n" + fmt.Sprintf("Project: %s (%s)", data.ProjectName, data.ProjectType)
 	summary += "\n" + fmt.Sprintf("Database: %s", data.Database.Engine)
 	summary += "\n" + fmt.Sprintf("Output: %s", data.Output.BaseDir)
-	
+
 	return summary
 }
 
@@ -176,7 +176,7 @@ func (ui *UIHelper) formatCompletionDetails(cfg *schema.Schema, data generated.T
 	details += "\n" + fmt.Sprintf("- sqlc.yaml configuration")
 	details += "\n" + fmt.Sprintf("- Database schema (%d tables)", len(cfg.Tables))
 	details += "\n" + fmt.Sprintf("- Query files (based on schema)")
-	
+
 	return details
 }
 
@@ -210,7 +210,7 @@ func (ui *UIHelper) showErrorWithTypedDetails(err *errors.Error) {
 	fmt.Println(errorStyle.Render("❌ Error"))
 	fmt.Println(detailStyle.Render(fmt.Sprintf("Code: %s", string(err.Code))))
 	fmt.Println(detailStyle.Render(fmt.Sprintf("Message: %s", err.Message)))
-	
+
 	if err.Description != "" {
 		fmt.Println(detailStyle.Render(fmt.Sprintf("Description: %s", err.Description)))
 	}

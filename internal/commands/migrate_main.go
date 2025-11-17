@@ -25,12 +25,12 @@ or from one database type to another. This tool helps upgrade your
 existing SQLC projects to latest version.`,
 		Run: func(cmd *cobra.Command, args []string) {
 			migrationConfig := &MigrationConfig{
-				Source:       source,
-				Destination:  destination,
-				Database:     database,
-				SQLCVersion:  sqlcVersion,
-				Force:        force,
-				DryRun:       dryRun,
+				Source:      source,
+				Destination: destination,
+				Database:    database,
+				SQLCVersion: sqlcVersion,
+				Force:       force,
+				DryRun:      dryRun,
 			}
 
 			if err := runMigration(migrationConfig); err != nil {
@@ -58,12 +58,12 @@ existing SQLC projects to latest version.`,
 
 // MigrationConfig represents migration configuration
 type MigrationConfig struct {
-	Source       string
-	Destination  string
-	Database     string
-	SQLCVersion  string
-	Force        bool
-	DryRun       bool
+	Source      string
+	Destination string
+	Database    string
+	SQLCVersion string
+	Force       bool
+	DryRun      bool
 }
 
 // runMigration executes the migration process
@@ -122,6 +122,6 @@ func runMigration(config *MigrationConfig) error {
 	if config.SQLCVersion != "" {
 		fmt.Printf("SQLC Version upgrade: -> %s\n", config.SQLCVersion)
 	}
-	
+
 	return nil
 }

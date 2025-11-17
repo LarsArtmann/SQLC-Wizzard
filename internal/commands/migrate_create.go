@@ -11,14 +11,14 @@ import (
 // newMigrateDBCreateCommand creates migration creation command
 func newMigrateDBCreateCommand() *cobra.Command {
 	var name string
-	
+
 	cmd := &cobra.Command{
 		Use:   "create",
 		Short: "Create a new migration file",
 		Long:  "Create a new up/down migration file pair with a specified name.",
 		Run: func(cmd *cobra.Command, args []string) {
 			migrationConfig := &CreateConfig{
-				Name:        name,
+				Name:           name,
 				MigrationsPath: cmd.Flag("path").Value.String(),
 			}
 
@@ -36,7 +36,7 @@ func newMigrateDBCreateCommand() *cobra.Command {
 
 // CreateConfig represents migration creation configuration
 type CreateConfig struct {
-	Name        string
+	Name           string
 	MigrationsPath string
 }
 
@@ -48,11 +48,11 @@ func runMigrationCreate(config *CreateConfig) error {
 			Message: "Please specify migration name",
 		}
 	}
-	
+
 	fmt.Printf("📝 Creating migration: %s\n", config.Name)
-	
+
 	migrationAdapter := adapters.NewRealMigrationAdapter()
-	
+
 	filename, err := migrationAdapter.CreateMigration(context.Background(), config.Name, config.MigrationsPath)
 	if err != nil {
 		return &MigrationError{
@@ -60,7 +60,7 @@ func runMigrationCreate(config *CreateConfig) error {
 			Message: fmt.Sprintf("Migration creation failed: %v", err),
 		}
 	}
-	
+
 	fmt.Printf("✅ Migration created: %s\n", filename)
 	return nil
 }

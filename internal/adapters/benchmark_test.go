@@ -15,7 +15,7 @@ func BenchmarkRealFileSystemAdapter_ReadWriteFile(b *testing.B) {
 
 	for b.Loop() {
 		// Write file
-		err := fs.WriteFile(ctx, "/tmp/benchmark-test.txt", content, 0644)
+		err := fs.WriteFile(ctx, "/tmp/benchmark-test.txt", content, 0o644)
 		if err != nil {
 			b.Fatal(err)
 		}

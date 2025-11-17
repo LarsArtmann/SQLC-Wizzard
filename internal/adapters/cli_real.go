@@ -35,14 +35,14 @@ func (a *RealCLIAdapter) CheckCommand(ctx context.Context, cmd string) error {
 func (a *RealCLIAdapter) GetVersion(ctx context.Context, cmd string) (string, error) {
 	// Try common version flags
 	versionFlags := []string{"--version", "-v", "version"}
-	
+
 	for _, flag := range versionFlags {
 		output, err := exec.CommandContext(ctx, cmd, flag).Output()
 		if err == nil {
 			return string(output), nil
 		}
 	}
-	
+
 	return "", fmt.Errorf("could not determine version for %s", cmd)
 }
 

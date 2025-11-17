@@ -11,7 +11,7 @@ import (
 var _ = Describe("Configuration Generation", func() {
 	It("should generate valid sqlc configuration", func() {
 		wiz := wizard.NewWizard()
-		
+
 		templateData := generated.TemplateData{
 			ProjectName: "test-project",
 			ProjectType: generated.ProjectTypeMicroservice,
@@ -40,14 +40,14 @@ var _ = Describe("Configuration Generation", func() {
 					Schema:  config.NewSinglePath("schema"),
 					Gen: config.GenConfig{
 						Go: &config.GoGenConfig{
-							Package:    "db",
-							Out:        "internal/db",
-							SQLPackage: "pgx/v5",
-							EmitJSONTags:                true,
-							EmitPreparedQueries:         true,
-							EmitInterface:              true,
-							EmitEmptySlices:            true,
-							JSONTagsCaseStyle:          "camel",
+							Package:             "db",
+							Out:                 "internal/db",
+							SQLPackage:          "pgx/v5",
+							EmitJSONTags:        true,
+							EmitPreparedQueries: true,
+							EmitInterface:       true,
+							EmitEmptySlices:     true,
+							JSONTagsCaseStyle:   "camel",
 						},
 					},
 				},

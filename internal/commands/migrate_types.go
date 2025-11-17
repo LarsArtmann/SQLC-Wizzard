@@ -16,10 +16,10 @@ func (e *MigrationError) Error() string {
 
 // MigrationResult represents the result of a migration operation
 type MigrationResult struct {
-	Success     bool   `json:"success"`
-	Message     string `json:"message"`
-	Source      string `json:"source,omitempty"`
-	Destination string `json:"destination,omitempty"`
+	Success     bool     `json:"success"`
+	Message     string   `json:"message"`
+	Source      string   `json:"source,omitempty"`
+	Destination string   `json:"destination,omitempty"`
 	Changes     []string `json:"changes,omitempty"`
 }
 

@@ -19,34 +19,34 @@ func NewRuleTransformer() *RuleTransformer {
 // This is the single source of truth for rule transformation logic
 func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []generated.RuleConfig {
 	var configRules []generated.RuleConfig
-	
+
 	// Transform NoSelectStar rule
 	if rules.NoSelectStar {
 		configRules = append(configRules, generated.RuleConfig{
-			Name:  "no-select-star",
-			Rule:  "!query.contains('SELECT *')",
+			Name:    "no-select-star",
+			Rule:    "!query.contains('SELECT *')",
 			Message: "SELECT * is not allowed",
 		})
 	}
-	
+
 	// Transform RequireWhere rule
 	if rules.RequireWhere {
 		configRules = append(configRules, generated.RuleConfig{
-			Name:  "require-where", 
-			Rule:  "query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
+			Name:    "require-where",
+			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
 			Message: "WHERE clause is required for this query type",
 		})
 	}
-	
+
 	// Transform RequireLimit rule
 	if rules.RequireLimit {
 		configRules = append(configRules, generated.RuleConfig{
-			Name:  "require-limit",
-			Rule:  "query.type == 'SELECT' && !query.hasLimitClause()",
+			Name:    "require-limit",
+			Rule:    "query.type == 'SELECT' && !query.hasLimitClause()",
 			Message: "LIMIT clause is required for SELECT queries",
 		})
 	}
-	
+
 	// Transform additional rules
 	for _, customRule := range rules.Rules {
 		configRules = append(configRules, generated.RuleConfig{
@@ -55,7 +55,7 @@ func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []
 			Message: customRule.Message,
 		})
 	}
-	
+
 	return configRules
 }
 

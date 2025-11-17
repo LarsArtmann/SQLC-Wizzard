@@ -83,9 +83,9 @@ func (s *FeaturesStep) configureCodeGeneration(data *generated.TemplateData) err
 // configureSafetyRules configures safety rules
 func (s *FeaturesStep) configureSafetyRules(data *generated.TemplateData) error {
 	var (
-		noSelectStar  bool
-		requireWhere  bool
-		requireLimit  bool
+		noSelectStar bool
+		requireWhere bool
+		requireLimit bool
 	)
 
 	form := huh.NewForm(

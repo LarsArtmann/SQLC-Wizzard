@@ -1,6 +1,7 @@
 package events
 
 import (
+	"maps"
 	"time"
 )
 
@@ -10,7 +11,7 @@ type EventData interface {
 	EventType() string
 	OccurredAt() time.Time
 	AggregateID() string
-	Data() map[string]interface{} // Safe map for JSON serialization
+	Data() map[string]any // Safe map for JSON serialization
 	Validate() error
 }
 
@@ -19,29 +20,29 @@ type BaseEventData struct {
 	eventType   string
 	occurredAt  time.Time
 	aggregateID string
-	data        map[string]interface{}
+	data        map[string]any
 }
 
 // NewBaseEventData creates a new base event data with validation
-func NewBaseEventData(eventType, aggregateID string, data map[string]interface{}) (*BaseEventData, error) {
+func NewBaseEventData(eventType, aggregateID string, data map[string]any) (*BaseEventData, error) {
 	if eventType == "" {
 		return nil, &EventValidationError{
 			Code:    "EMPTY_EVENT_TYPE",
 			Message: "Event type cannot be empty",
 		}
 	}
-	
+
 	if aggregateID == "" {
 		return nil, &EventValidationError{
 			Code:    "EMPTY_AGGREGATE_ID",
 			Message: "Aggregate ID cannot be empty",
 		}
 	}
-	
+
 	if data == nil {
-		data = make(map[string]interface{})
+		data = make(map[string]any)
 	}
-	
+
 	return &BaseEventData{
 		eventType:   eventType,
 		occurredAt:  time.Now(),
@@ -66,12 +67,10 @@ func (bed *BaseEventData) AggregateID() string {
 }
 
 // Data returns the event data as a safe map
-func (bed *BaseEventData) Data() map[string]interface{} {
+func (bed *BaseEventData) Data() map[string]any {
 	// Return a copy to prevent mutation
-	copy := make(map[string]interface{})
-	for k, v := range bed.data {
-		copy[k] = v
-	}
+	copy := make(map[string]any)
+	maps.Copy(copy, bed.data)
 	return copy
 }
 
@@ -83,21 +82,21 @@ func (bed *BaseEventData) Validate() error {
 			Message: "Event type is required",
 		}
 	}
-	
+
 	if bed.aggregateID == "" {
 		return &EventValidationError{
 			Code:    "INVALID_AGGREGATE_ID",
 			Message: "Aggregate ID is required",
 		}
 	}
-	
+
 	if bed.occurredAt.IsZero() {
 		return &EventValidationError{
 			Code:    "INVALID_OCCURRED_AT",
 			Message: "Occurred at time is required",
 		}
 	}
-	
+
 	return nil
 }
 

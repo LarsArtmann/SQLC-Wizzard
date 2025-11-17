@@ -29,7 +29,7 @@ func (a *RealFileSystemAdapter) ReadFile(ctx context.Context, path string) ([]by
 func (a *RealFileSystemAdapter) WriteFile(ctx context.Context, path string, data []byte, perm fs.FileMode) error {
 	// Create directory if needed
 	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0755); err != nil {
+	if err := os.MkdirAll(dir, 0o755); err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", dir, err)
 	}
 

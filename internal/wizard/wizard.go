@@ -22,7 +22,7 @@ type Wizard struct {
 	result *WizardResult
 	theme  *huh.Theme
 	ui     *UIHelper
-	
+
 	// Step handlers
 	projectTypeStep *ProjectTypeStep
 	databaseStep    *DatabaseStep
@@ -35,7 +35,7 @@ type Wizard struct {
 func NewWizard() *Wizard {
 	theme := huh.ThemeBase()
 	ui := NewUIHelper()
-	
+
 	return &Wizard{
 		result: &WizardResult{
 			GenerateQueries: true,
@@ -43,7 +43,7 @@ func NewWizard() *Wizard {
 		},
 		theme: theme,
 		ui:    ui,
-		
+
 		// Initialize step handlers
 		projectTypeStep: NewProjectTypeStep(theme, ui),
 		databaseStep:    NewDatabaseStep(theme, ui),
@@ -76,9 +76,9 @@ func (w *Wizard) Run() (*WizardResult, error) {
 			UseFullText: false,
 		},
 		Output: generated.OutputConfig{
-			BaseDir: "./internal/db",
+			BaseDir:    "./internal/db",
 			QueriesDir: "./sql/queries",
-			SchemaDir: "./sql/schema",
+			SchemaDir:  "./sql/schema",
 		},
 		Validation: generated.ValidationConfig{
 			EmitOptions: generated.DefaultEmitOptions(),
@@ -100,11 +100,11 @@ func (w *Wizard) Run() (*WizardResult, error) {
 
 	for _, step := range steps {
 		w.ui.ShowStepHeader(step.name)
-		
+
 		if err := step.execute(&data); err != nil {
 			return nil, fmt.Errorf("step '%s' failed: %w", step.name, err)
 		}
-		
+
 		w.ui.ShowStepComplete(step.name, "Completed successfully")
 	}
 

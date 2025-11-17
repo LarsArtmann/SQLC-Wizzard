@@ -44,7 +44,7 @@ type truncateTestCase struct {
 func runTruncateTests(testFunc func(string, int) string, testCases []truncateTestCase) {
 	for _, tc := range testCases {
 		result := testFunc(tc.input, tc.length)
-		Expect(result).To(Equal(tc.expected), 
+		Expect(result).To(Equal(tc.expected),
 			"for input: %s, length: %d", tc.input, tc.length)
 	}
 }
@@ -65,7 +65,7 @@ var _ = Describe("StringToCamelCase", func() {
 
 	It("should handle edge cases", func() {
 		testEdgeCases(utils.StringToCamelCase, "", "A")
-		
+
 		Expect(utils.StringToCamelCase("_leading_underscore")).To(Equal("LeadingUnderscore"))
 		Expect(utils.StringToCamelCase("trailing_underscore_")).To(Equal("TrailingUnderscore"))
 		Expect(utils.StringToCamelCase("__multiple___underscores__")).To(Equal("MultipleUnderscores"))
@@ -90,7 +90,7 @@ var _ = Describe("StringToSnakeCase", func() {
 
 	It("should handle edge cases", func() {
 		testEdgeCases(utils.StringToSnakeCase, "", "a")
-		
+
 		Expect(utils.StringToSnakeCase("-Leading")).To(Equal("-_leading"))
 		Expect(utils.StringToSnakeCase("Trailing_")).To(Equal("trailing_"))
 	})
@@ -114,7 +114,7 @@ var _ = Describe("StringToKebabCase", func() {
 
 	It("should handle edge cases", func() {
 		testEdgeCases(utils.StringToKebabCase, "", "a")
-		
+
 		Expect(utils.StringToKebabCase("-Leading")).To(Equal("--leading"))
 		Expect(utils.StringToKebabCase("Trailing-")).To(Equal("trailing-"))
 	})
@@ -156,13 +156,13 @@ var _ = Describe("Pluralize and Singularize", func() {
 
 	It("should handle edge cases for pluralization", func() {
 		Expect(utils.Pluralize("")).To(Equal(""))
-		Expect(utils.Pluralize("data")).To(Equal("data")) // Already plural
+		Expect(utils.Pluralize("data")).To(Equal("data"))   // Already plural
 		Expect(utils.Pluralize("sheep")).To(Equal("sheep")) // Irregular plural
 	})
 
 	It("should handle edge cases for singularization", func() {
 		Expect(utils.Singularize("")).To(Equal(""))
-		Expect(utils.Singularize("data")).To(Equal("data")) // Already singular
+		Expect(utils.Singularize("data")).To(Equal("data"))   // Already singular
 		Expect(utils.Singularize("sheep")).To(Equal("sheep")) // Irregular plural
 	})
 })
@@ -250,7 +250,7 @@ var _ = Describe("Error Handling", func() {
 		testEdgeCases(utils.StringToCamelCase, "", "A")
 		testEdgeCases(utils.StringToSnakeCase, "", "a")
 		testEdgeCases(utils.StringToKebabCase, "", "a")
-		
+
 		Expect(utils.IsValidIdentifier("")).To(BeFalse())
 		Expect(utils.EscapeSQLIdentifier("")).To(Equal(`""`))
 	})
@@ -260,7 +260,7 @@ var _ = Describe("Performance", func() {
 	It("should handle large strings efficiently", func() {
 		largeSnake := "this_is_a_very_long_snake_case_string_with_many_words"
 		largeCamel := "thisIsAVeryLongCamelCaseStringWithManyWords"
-		
+
 		// These should complete quickly and not panic
 		Expect(utils.StringToCamelCase(largeSnake)).NotTo(BeEmpty())
 		Expect(utils.StringToSnakeCase(largeCamel)).NotTo(BeEmpty())

@@ -11,7 +11,7 @@ var _ = Describe("Context Handling", func() {
 		// Test that wizard can handle context without crashing
 		wiz := wizard.NewWizard()
 		result := wiz.GetResult()
-		
+
 		// Should still be able to access result
 		Expect(result).NotTo(BeNil())
 	})

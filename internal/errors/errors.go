@@ -11,73 +11,73 @@ type ErrorCode string
 
 const (
 	// Migration Errors
-	ErrorCodeMigrationFailed    ErrorCode = "MIGRATION_FAILED"
-	ErrorCodeMigrationNotFound  ErrorCode = "MIGRATION_NOT_FOUND"
+	ErrorCodeMigrationFailed   ErrorCode = "MIGRATION_FAILED"
+	ErrorCodeMigrationNotFound ErrorCode = "MIGRATION_NOT_FOUND"
 	ErrorCodeTooManyMigrations ErrorCode = "TOO_MANY_MIGRATIONS"
-	
+
 	// Schema Errors
-	ErrorCodeSchemaNotFound      ErrorCode = "SCHEMA_NOT_FOUND"
-	ErrorCodeSchemaValidation   ErrorCode = "SCHEMA_VALIDATION"
-	ErrorCodeTableNotFound      ErrorCode = "TABLE_NOT_FOUND"
-	ErrorCodeColumnNotFound     ErrorCode = "COLUMN_NOT_FOUND"
-	
+	ErrorCodeSchemaNotFound   ErrorCode = "SCHEMA_NOT_FOUND"
+	ErrorCodeSchemaValidation ErrorCode = "SCHEMA_VALIDATION"
+	ErrorCodeTableNotFound    ErrorCode = "TABLE_NOT_FOUND"
+	ErrorCodeColumnNotFound   ErrorCode = "COLUMN_NOT_FOUND"
+
 	// Event Errors
-	ErrorCodeEventValidation     ErrorCode = "EVENT_VALIDATION"
-	ErrorCodeEventNotFound       ErrorCode = "EVENT_NOT_FOUND"
-	ErrorCodeInvalidEventType    ErrorCode = "INVALID_EVENT_TYPE"
-	ErrorCodeEmptyAggregateID   ErrorCode = "EMPTY_AGGREGATE_ID"
-	
+	ErrorCodeEventValidation  ErrorCode = "EVENT_VALIDATION"
+	ErrorCodeEventNotFound    ErrorCode = "EVENT_NOT_FOUND"
+	ErrorCodeInvalidEventType ErrorCode = "INVALID_EVENT_TYPE"
+	ErrorCodeEmptyAggregateID ErrorCode = "EMPTY_AGGREGATE_ID"
+
 	// Configuration Errors
-	ErrorCodeConfigValidation    ErrorCode = "CONFIG_VALIDATION"
+	ErrorCodeConfigValidation   ErrorCode = "CONFIG_VALIDATION"
 	ErrorCodeConfigNotFound     ErrorCode = "CONFIG_NOT_FOUND"
 	ErrorCodeConfigParseFailed  ErrorCode = "CONFIG_PARSE_FAILED"
 	ErrorCodeInvalidProjectType ErrorCode = "INVALID_PROJECT_TYPE"
-	ErrorCodeInvalidValue        ErrorCode = "INVALID_VALUE"
-	
+	ErrorCodeInvalidValue       ErrorCode = "INVALID_VALUE"
+
 	// File Errors
 	ErrorCodeFileNotFound     ErrorCode = "FILE_NOT_FOUND"
 	ErrorCodeFileReadError    ErrorCode = "FILE_READ_ERROR"
 	ErrorCodeTemplateNotFound ErrorCode = "TEMPLATE_NOT_FOUND"
-	
+
 	// Validation Errors
 	ErrorCodeValidationError ErrorCode = "VALIDATION_ERROR"
-	
+
 	// System Errors
-	ErrorCodeInternalServer     ErrorCode = "INTERNAL_SERVER"
-	ErrorCodeTimeout           ErrorCode = "TIMEOUT"
-	ErrorCodePermissionDenied   ErrorCode = "PERMISSION_DENIED"
-	ErrorCodeNotFound          ErrorCode = "NOT_FOUND"
+	ErrorCodeInternalServer   ErrorCode = "INTERNAL_SERVER"
+	ErrorCodeTimeout          ErrorCode = "TIMEOUT"
+	ErrorCodePermissionDenied ErrorCode = "PERMISSION_DENIED"
+	ErrorCodeNotFound         ErrorCode = "NOT_FOUND"
 )
 
 // ErrorSeverity represents error severity levels
 type ErrorSeverity string
 
 const (
-	ErrorSeverityInfo    ErrorSeverity = "info"
-	ErrorSeverityWarning ErrorSeverity = "warning"
-	ErrorSeverityError   ErrorSeverity = "error"
+	ErrorSeverityInfo     ErrorSeverity = "info"
+	ErrorSeverityWarning  ErrorSeverity = "warning"
+	ErrorSeverityError    ErrorSeverity = "error"
 	ErrorSeverityCritical ErrorSeverity = "critical"
 )
 
 // ErrorDetails represents structured error details
 type ErrorDetails struct {
-	Field       string      `json:"field,omitempty"`
-	Value       interface{} `json:"value,omitempty"`
-	Expected    interface{} `json:"expected,omitempty"`
-	Actual      interface{} `json:"actual,omitempty"`
-	Message     string      `json:"message,omitempty"`
-	Component   string      `json:"component,omitempty"`
-	Rule        string      `json:"rule,omitempty"`
-	Context     string      `json:"context,omitempty"`
+	Field     string `json:"field,omitempty"`
+	Value     any    `json:"value,omitempty"`
+	Expected  any    `json:"expected,omitempty"`
+	Actual    any    `json:"actual,omitempty"`
+	Message   string `json:"message,omitempty"`
+	Component string `json:"component,omitempty"`
+	Rule      string `json:"rule,omitempty"`
+	Context   string `json:"context,omitempty"`
 }
 
 // Error represents a structured application error
 type Error struct {
-	Code        ErrorCode    `json:"code"`
-	Message     string       `json:"message"`
-	Description string       `json:"description,omitempty"`
+	Code        ErrorCode     `json:"code"`
+	Message     string        `json:"message"`
+	Description string        `json:"description,omitempty"`
 	Details     *ErrorDetails `json:"details,omitempty"`
-	Timestamp   int64        `json:"timestamp"`
+	Timestamp   int64         `json:"timestamp"`
 	RequestID   string        `json:"request_id,omitempty"`
 	UserID      string        `json:"user_id,omitempty"`
 	Component   string        `json:"component,omitempty"`
@@ -88,28 +88,28 @@ type Error struct {
 // NewError creates a new error with validation
 func NewError(code ErrorCode, message string) *Error {
 	return &Error{
-		Code:        code,
-		Message:     message,
-		Timestamp:   time.Now().Unix(),
-		Component:   "application",
-		Retryable:   false,
-		Severity:    ErrorSeverityError,
+		Code:      code,
+		Message:   message,
+		Timestamp: time.Now().Unix(),
+		Component: "application",
+		Retryable: false,
+		Severity:  ErrorSeverityError,
 	}
 }
 
 // Newf creates a new error with formatted message
-func Newf(code ErrorCode, format string, args ...interface{}) *Error {
+func Newf(code ErrorCode, format string, args ...any) *Error {
 	message := fmt.Sprintf(format, args...)
 	return NewError(code, message)
 }
 
 // WithDetails adds typed details to error
-func (e *Error) WithDetails(field string, value, expected, actual interface{}) *Error {
+func (e *Error) WithDetails(field string, value, expected, actual any) *Error {
 	e.Details = &ErrorDetails{
-		Field:    field,
-		Value:    value,
-		Expected: expected,
-		Actual:   actual,
+		Field:     field,
+		Value:     value,
+		Expected:  expected,
+		Actual:    actual,
 		Component: e.Component,
 	}
 	return e
@@ -226,11 +226,11 @@ func (el *ErrorList) Error() string {
 	if !el.HasErrors() {
 		return "no errors"
 	}
-	
+
 	if len(el.Errors) == 1 {
 		return el.Errors[0].Error()
 	}
-	
+
 	return fmt.Sprintf("%d errors occurred (first: %s)", len(el.Errors), el.Errors[0].Error())
 }
 
@@ -239,7 +239,7 @@ func Wrap(original error, code ErrorCode, component string) *Error {
 	if original == nil {
 		return NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
 	}
-	
+
 	err := NewError(code, original.Error())
 	return err.WithComponent(component).WithDescription(fmt.Sprintf("Wrapped error: %v", original))
 }
@@ -341,11 +341,11 @@ var ErrConfigParseFailed = NewError(ErrorCodeConfigParseFailed, "Config parse fa
 var ErrInvalidValue = NewError(ErrorCodeInvalidValue, "Invalid value")
 
 // Wrapf wraps an error with formatted message and base error
-func Wrapf(err error, baseErr *Error, format string, args ...interface{}) *Error {
+func Wrapf(err error, baseErr *Error, format string, args ...any) *Error {
 	if err == nil {
 		return NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
 	}
-	
+
 	message := fmt.Sprintf(format, args...)
 	wrapped := NewError(baseErr.Code, message).WithComponent(baseErr.Component)
 	if baseErr.Description != "" {

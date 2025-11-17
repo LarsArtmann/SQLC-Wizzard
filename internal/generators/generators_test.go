@@ -97,7 +97,7 @@ var _ = Describe("Generator Schema Generation", func() {
 	var (
 		gen     *generators.Generator
 		tempDir string
-		cleanup  func()
+		cleanup func()
 		err     error
 	)
 
@@ -128,7 +128,7 @@ var _ = Describe("Generator Schema Generation", func() {
 			content, err := os.ReadFile(schemaFile)
 			Expect(err).NotTo(HaveOccurred())
 			contentStr := string(content)
-			
+
 			verifySchemaContent(contentStr, expectedEngine)
 		},
 		Entry("PostgreSQL", generated.DatabaseTypePostgreSQL, "postgresql"),
@@ -141,7 +141,7 @@ var _ = Describe("Generator Query Generation", func() {
 	var (
 		gen     *generators.Generator
 		tempDir string
-		cleanup  func()
+		cleanup func()
 		err     error
 	)
 
@@ -172,7 +172,7 @@ var _ = Describe("Generator Query Generation", func() {
 			content, err := os.ReadFile(queryFile)
 			Expect(err).NotTo(HaveOccurred())
 			contentStr := string(content)
-			
+
 			verifyQueryContent(contentStr)
 		},
 		Entry("PostgreSQL", generated.DatabaseTypePostgreSQL),
@@ -185,7 +185,7 @@ var _ = Describe("Error Handling", func() {
 	var (
 		gen     *generators.Generator
 		tempDir string
-		cleanup  func()
+		cleanup func()
 		err     error
 	)
 
@@ -214,10 +214,10 @@ var _ = Describe("Error Handling", func() {
 
 	It("should handle read-only directory", func() {
 		// Make directory read-only
-		err := os.Chmod(tempDir, 0444)
+		err := os.Chmod(tempDir, 0o444)
 		Expect(err).NotTo(HaveOccurred())
 		defer func() {
-			if err := os.Chmod(tempDir, 0755); err != nil {
+			if err := os.Chmod(tempDir, 0o755); err != nil {
 				// Log error but don't fail test
 				fmt.Printf("Warning: failed to restore permissions: %v\n", err)
 			}
@@ -252,7 +252,7 @@ var _ = Describe("Template Data Integration", func() {
 		// Check files exist
 		schemaFile := filepath.Join(tempDir, "schema", "001_users_table.sql")
 		queryFile := filepath.Join(tempDir, "queries", "users.sql")
-		
+
 		Expect(schemaFile).To(BeARegularFile())
 		Expect(queryFile).To(BeARegularFile())
 	})
@@ -262,7 +262,7 @@ var _ = Describe("File Structure", func() {
 	var (
 		gen     *generators.Generator
 		tempDir string
-		cleanup  func()
+		cleanup func()
 		err     error
 	)
 
@@ -290,7 +290,7 @@ var _ = Describe("File Structure", func() {
 		// Check directories exist
 		schemaDir := filepath.Join(tempDir, "schema")
 		queriesDir := filepath.Join(tempDir, "queries")
-		
+
 		Expect(schemaDir).To(BeADirectory())
 		Expect(queriesDir).To(BeADirectory())
 	})

@@ -89,12 +89,12 @@ func (s *ProjectDetailsStep) generatePackageName(projectName string) string {
 	packageName := projectName
 	packageName = s.replaceInvalidChars(packageName)
 	packageName = s.lowerCaseFirst(packageName)
-	
+
 	// Ensure it's a valid Go identifier
 	if s.isGoKeyword(packageName) {
 		packageName += "pkg"
 	}
-	
+
 	return packageName
 }
 

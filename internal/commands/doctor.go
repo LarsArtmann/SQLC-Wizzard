@@ -142,7 +142,6 @@ func checkGoVersion(ctx context.Context) *DoctorResult {
 func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	sqlcAdapter := adapters.NewRealSQLCAdapter()
 	err := sqlcAdapter.CheckInstallation(ctx)
-
 	if err != nil {
 		return &DoctorResult{
 			Status:   "FAIL",
@@ -203,7 +202,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	testContent := []byte("test")
 	testFile := "/tmp/sqlc-wizard-test"
 
-	err := fsAdapter.WriteFile(ctx, testFile, testContent, 0644)
+	err := fsAdapter.WriteFile(ctx, testFile, testContent, 0o644)
 	if err != nil {
 		return &DoctorResult{
 			Status:   "FAIL",

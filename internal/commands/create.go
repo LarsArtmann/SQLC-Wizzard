@@ -15,13 +15,13 @@ import (
 
 // CreateOptions contains options for the create command
 type CreateOptions struct {
-	ProjectType    string
-	Database       string
-	OutputDir      string
-	IncludeAuth    bool
+	ProjectType     string
+	Database        string
+	OutputDir       string
+	IncludeAuth     bool
 	IncludeFrontend bool
-	NonInteractive bool
-	Force          bool
+	NonInteractive  bool
+	Force           bool
 }
 
 // NewCreateCommand creates the create command for complete project generation
@@ -84,7 +84,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 
 	// Create output directory if needed
 	outputPath := filepath.Join(opts.OutputDir, projectName)
-	if err := os.MkdirAll(outputPath, 0755); err != nil {
+	if err := os.MkdirAll(outputPath, 0o755); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
@@ -131,17 +131,17 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	// Create project creator with real adapters
 	fs := adapters.NewRealFileSystem()
 	cli := adapters.NewRealCLI()
-	
+
 	creator := creators.NewProjectCreator(fs, cli)
 	createConfig := &creators.CreateConfig{
-		ProjectName:    projectName,
-		ProjectType:    projectType,
-		Database:       databaseType,
-		TemplateData:   templateData,
-		Config:        config,
-		IncludeAuth:    opts.IncludeAuth,
+		ProjectName:     projectName,
+		ProjectType:     projectType,
+		Database:        databaseType,
+		TemplateData:    templateData,
+		Config:          config,
+		IncludeAuth:     opts.IncludeAuth,
 		IncludeFrontend: opts.IncludeFrontend,
-		Force:         opts.Force,
+		Force:           opts.Force,
 	}
 
 	// Create the complete project

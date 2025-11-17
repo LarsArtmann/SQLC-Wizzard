@@ -10,7 +10,7 @@ import (
 var _ = Describe("Error Handling", func() {
 	It("should handle invalid project types gracefully", func() {
 		wiz := wizard.NewWizard()
-		
+
 		templateData := generated.TemplateData{
 			ProjectName: "test",
 			ProjectType: generated.ProjectType("invalid"),
@@ -19,13 +19,13 @@ var _ = Describe("Error Handling", func() {
 		// Should not panic when setting invalid template data
 		result := wiz.GetResult()
 		result.TemplateData = templateData
-		
+
 		Expect(result.TemplateData.ProjectType.IsValid()).To(BeFalse())
 	})
 
 	It("should handle invalid database types gracefully", func() {
 		wiz := wizard.NewWizard()
-		
+
 		templateData := generated.TemplateData{
 			ProjectName: "test",
 			Database: generated.DatabaseConfig{
@@ -35,14 +35,14 @@ var _ = Describe("Error Handling", func() {
 
 		result := wiz.GetResult()
 		result.TemplateData = templateData
-		
+
 		Expect(result.TemplateData.Database.Engine.IsValid()).To(BeFalse())
 	})
 
 	It("should handle empty configuration", func() {
 		result := wizard.NewWizard().GetResult()
 		result.TemplateData = generated.TemplateData{}
-		
+
 		// Should not panic
 		Expect(result.TemplateData.ProjectName).To(Equal(""))
 		Expect(result.TemplateData.ProjectType.IsValid()).To(BeFalse())

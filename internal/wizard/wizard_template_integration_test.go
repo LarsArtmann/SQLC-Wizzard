@@ -23,9 +23,9 @@ var _ = Describe("Integration with Templates", func() {
 					Path: "github.com/example/testdb",
 				},
 				Database: generated.DatabaseConfig{
-					Engine:    generated.DatabaseTypePostgreSQL,
-					UseUUIDs:  true,
-					UseJSON:   true,
+					Engine:   generated.DatabaseTypePostgreSQL,
+					UseUUIDs: true,
+					UseJSON:  true,
 				},
 			}
 

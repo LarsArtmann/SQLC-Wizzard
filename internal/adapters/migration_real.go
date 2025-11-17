@@ -26,9 +26,9 @@ func NewRealMigrationAdapter() *RealMigrationAdapter {
 }
 
 // Migrate runs database migrations from a source
-func (r *RealMigrationAdapter) Migrate(ctx context.Context, source string, databaseURL string) error {
+func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL string) error {
 	log.Info("Starting database migration", "source", source, "database", databaseURL)
-	
+
 	m, err := migrate.New(source, databaseURL)
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
@@ -62,9 +62,9 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source string, datab
 }
 
 // Rollback rolls back database migrations
-func (r *RealMigrationAdapter) Rollback(ctx context.Context, source string, databaseURL string, steps int) error {
+func (r *RealMigrationAdapter) Rollback(ctx context.Context, source, databaseURL string, steps int) error {
 	log.Info("Rolling back database migrations", "source", source, "database", databaseURL, "steps", steps)
-	
+
 	m, err := migrate.New(source, databaseURL)
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
@@ -72,7 +72,7 @@ func (r *RealMigrationAdapter) Rollback(ctx context.Context, source string, data
 	}
 	defer m.Close()
 
-	for i := 0; i < steps; i++ {
+	for i := range steps {
 		if err := m.Steps(-1); err != nil && err != migrate.ErrNoChange {
 			log.Error("Rollback step failed", "step", i+1, "error", err)
 			return fmt.Errorf("rollback step %d failed: %w", i+1, err)
@@ -93,9 +93,9 @@ func (r *RealMigrationAdapter) Rollback(ctx context.Context, source string, data
 }
 
 // Status checks migration status
-func (r *RealMigrationAdapter) Status(ctx context.Context, source string, databaseURL string) (*migration.MigrationStatus, error) {
+func (r *RealMigrationAdapter) Status(ctx context.Context, source, databaseURL string) (*migration.MigrationStatus, error) {
 	log.Info("Checking migration status", "source", source, "database", databaseURL)
-	
+
 	m, err := migrate.New(source, databaseURL)
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
@@ -130,7 +130,7 @@ func (r *RealMigrationAdapter) Status(ctx context.Context, source string, databa
 // Validate validates migration files
 func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) error {
 	log.Info("Validating migration files", "source", source)
-	
+
 	m, err := migrate.New(source, "file://tmp")
 	if err != nil {
 		log.Error("Failed to create migration instance for validation", "error", err)
@@ -149,10 +149,10 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 }
 
 // CreateMigration creates a new migration file
-func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name string, directory string) (string, error) {
+func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name, directory string) (string, error) {
 	log.Info("Creating migration", "name", name, "directory", directory)
-	
-	if err := os.MkdirAll(directory, 0755); err != nil {
+
+	if err := os.MkdirAll(directory, 0o755); err != nil {
 		log.Error("Failed to create migrations directory", "directory", directory, "error", err)
 		return "", fmt.Errorf("failed to create migrations directory: %w", err)
 	}
@@ -170,7 +170,7 @@ func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name string,
 
 `, name, timestamp)
 
-	if err := os.WriteFile(upFile, []byte(upContent), 0644); err != nil {
+	if err := os.WriteFile(upFile, []byte(upContent), 0o644); err != nil {
 		log.Error("Failed to create up migration file", "file", upFile, "error", err)
 		return "", fmt.Errorf("failed to create up migration file: %w", err)
 	}
@@ -183,7 +183,7 @@ func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name string,
 
 `, name, timestamp)
 
-	if err := os.WriteFile(downFile, []byte(downContent), 0644); err != nil {
+	if err := os.WriteFile(downFile, []byte(downContent), 0o644); err != nil {
 		log.Error("Failed to create down migration file", "file", downFile, "error", err)
 		return "", fmt.Errorf("failed to create down migration file: %w", err)
 	}
@@ -195,16 +195,16 @@ func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name string,
 // MigrateSQLCConfig migrates SQLC configuration from one version/database to another
 func (r *RealMigrationAdapter) MigrateSQLCConfig(ctx context.Context, sourceConfig *config.SqlcConfig, targetDatabase generated.DatabaseType, targetVersion string) (*config.SqlcConfig, error) {
 	log.Info("Migrating SQLC configuration", "target_database", targetDatabase, "target_version", targetVersion)
-	
+
 	// Create a copy of the source config
 	newConfig := *sourceConfig
-	
+
 	// Update SQLC version if needed
 	if targetVersion != "" {
 		newConfig.Version = targetVersion
 		log.Info("Updated SQLC version", "from", sourceConfig.Version, "to", targetVersion)
 	}
-	
+
 	// Update database engine if needed
 	if targetDatabase != "" && len(newConfig.SQL) > 0 {
 		for i := range newConfig.SQL {
@@ -212,12 +212,12 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(ctx context.Context, sourceConf
 		}
 		log.Info("Updated database engine", "to", targetDatabase)
 	}
-	
+
 	// Update database configuration based on target database type
 	if err := r.updateDatabaseConfig(&newConfig, targetDatabase); err != nil {
 		return nil, fmt.Errorf("failed to update database config: %w", err)
 	}
-	
+
 	log.Info("SQLC configuration migration completed")
 	return &newConfig, nil
 }
@@ -226,7 +226,7 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(ctx context.Context, sourceConf
 func (r *RealMigrationAdapter) updateDatabaseConfig(config *config.SqlcConfig, targetDatabase generated.DatabaseType) error {
 	for i := range config.SQL {
 		sqlConfig := &config.SQL[i]
-		
+
 		switch targetDatabase {
 		case generated.DatabaseTypePostgreSQL:
 			// PostgreSQL-specific settings
@@ -238,7 +238,7 @@ func (r *RealMigrationAdapter) updateDatabaseConfig(config *config.SqlcConfig, t
 					sqlConfig.Database.URI = "postgres://user:password@localhost:5432/dbname?sslmode=disable"
 				}
 			}
-			
+
 		case generated.DatabaseTypeMySQL:
 			// MySQL-specific settings
 			if sqlConfig.Database != nil {
@@ -249,7 +249,7 @@ func (r *RealMigrationAdapter) updateDatabaseConfig(config *config.SqlcConfig, t
 					sqlConfig.Database.URI = "user:password@tcp(localhost:3306)/dbname"
 				}
 			}
-			
+
 		case generated.DatabaseTypeSQLite:
 			// SQLite-specific settings
 			if sqlConfig.Database != nil {
@@ -262,6 +262,6 @@ func (r *RealMigrationAdapter) updateDatabaseConfig(config *config.SqlcConfig, t
 			}
 		}
 	}
-	
+
 	return nil
 }

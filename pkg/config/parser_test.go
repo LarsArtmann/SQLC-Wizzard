@@ -122,7 +122,7 @@ sql:
         package: "db"
         out: "internal/db"
 `)
-				err := os.WriteFile(configPath, configContent, 0644)
+				err := os.WriteFile(configPath, configContent, 0o644)
 				Expect(err).ToNot(HaveOccurred())
 
 				cfg, err := config.ParseFile(configPath)
@@ -153,7 +153,7 @@ version: "2"
 sql:
   - name: [this is invalid yaml
 `)
-				err := os.WriteFile(configPath, invalidContent, 0644)
+				err := os.WriteFile(configPath, invalidContent, 0o644)
 				Expect(err).ToNot(HaveOccurred())
 
 				_, err = config.ParseFile(configPath)
@@ -174,7 +174,7 @@ sql:
   - name: "loaded"
     engine: "postgresql"
 `)
-				err := os.WriteFile(configPath, configContent, 0644)
+				err := os.WriteFile(configPath, configContent, 0o644)
 				Expect(err).ToNot(HaveOccurred())
 
 				cfg, err := config.LoadOrDefault(configPath)

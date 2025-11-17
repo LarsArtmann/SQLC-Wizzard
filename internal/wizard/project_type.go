@@ -57,6 +57,6 @@ func (s *ProjectTypeStep) Execute(data *generated.TemplateData) error {
 
 	data.ProjectType = pt
 	s.ui.ShowStepComplete("Project Type", string(data.ProjectType))
-	
+
 	return nil
 }

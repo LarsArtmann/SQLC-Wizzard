@@ -9,7 +9,7 @@ import (
 type FilesGeneratedEventData struct {
 	ProjectID      string    `json:"project_id"`
 	TemplateType   string    `json:"template_type"`
-	GeneratedFiles []string   `json:"generated_files"`
+	GeneratedFiles []string  `json:"generated_files"`
 	OutputDir      string    `json:"output_dir"`
 	FileCount      int       `json:"file_count"`
 	TotalSize      int64     `json:"total_size"`
@@ -33,8 +33,8 @@ func (fged *FilesGeneratedEventData) AggregateID() string {
 }
 
 // Data returns the event data as a safe map for JSON serialization
-func (fged *FilesGeneratedEventData) Data() map[string]interface{} {
-	return map[string]interface{}{
+func (fged *FilesGeneratedEventData) Data() map[string]any {
+	return map[string]any{
 		"project_id":      fged.ProjectID,
 		"template_type":   fged.TemplateType,
 		"generated_files": fged.GeneratedFiles,
@@ -54,42 +54,42 @@ func (fged *FilesGeneratedEventData) Validate() error {
 			Message: "Project ID is required for files generated event",
 		}
 	}
-	
+
 	if fged.TemplateType == "" {
 		return &EventValidationError{
 			Code:    "MISSING_TEMPLATE_TYPE",
 			Message: "Template type is required for files generated event",
 		}
 	}
-	
+
 	if len(fged.GeneratedFiles) == 0 {
 		return &EventValidationError{
 			Code:    "NO_GENERATED_FILES",
 			Message: "At least one generated file is required",
 		}
 	}
-	
+
 	if fged.OutputDir == "" {
 		return &EventValidationError{
 			Code:    "MISSING_OUTPUT_DIR",
 			Message: "Output directory is required for files generated event",
 		}
 	}
-	
+
 	if fged.FileCount <= 0 {
 		return &EventValidationError{
 			Code:    "INVALID_FILE_COUNT",
 			Message: "File count must be greater than zero",
 		}
 	}
-	
+
 	if fged.GeneratedAt.IsZero() {
 		return &EventValidationError{
 			Code:    "INVALID_GENERATED_AT",
 			Message: "Generated at time is required for files generated event",
 		}
 	}
-	
+
 	return nil
 }
 
@@ -101,14 +101,14 @@ func NewFilesGeneratedEventData(projectID, templateType, outputDir, generatedBy 
 			Message: "Generated files list cannot be empty",
 		}
 	}
-	
+
 	if totalSize < 0 {
 		return nil, &EventValidationError{
 			Code:    "NEGATIVE_TOTAL_SIZE",
 			Message: "Total size cannot be negative",
 		}
 	}
-	
+
 	event := &FilesGeneratedEventData{
 		ProjectID:      projectID,
 		TemplateType:   templateType,
@@ -119,10 +119,10 @@ func NewFilesGeneratedEventData(projectID, templateType, outputDir, generatedBy 
 		GeneratedBy:    generatedBy,
 		GeneratedAt:    time.Now(),
 	}
-	
+
 	if err := event.Validate(); err != nil {
 		return nil, err
 	}
-	
+
 	return event, nil
 }

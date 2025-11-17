@@ -71,7 +71,7 @@ func (a *RealDatabaseAdapter) GetSchema(ctx context.Context, cfg *config.Databas
 		Tables: []schema.Table{},
 		Metadata: schema.SchemaMetadata{
 			DatabaseEngine: "unknown",
-			Version:       "1.0.0",
+			Version:        "1.0.0",
 		},
 	}, nil
 }

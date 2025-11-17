@@ -5,23 +5,23 @@ import "time"
 // MigrationStatus represents a strongly-typed migration status
 // This eliminates map[string]interface{} usage and provides type safety
 type MigrationStatus struct {
-	CurrentVersion *uint      `json:"current_version,omitempty"`
-	Dirty          bool       `json:"dirty"`
+	CurrentVersion *uint       `json:"current_version,omitempty"`
+	Dirty          bool        `json:"dirty"`
 	Migrations     []Migration `json:"migrations"`
-	CheckedAt      time.Time  `json:"checked_at"`
-	Source         string     `json:"source"`
-	DatabaseURL    string     `json:"database_url,omitempty"`
+	CheckedAt      time.Time   `json:"checked_at"`
+	Source         string      `json:"source"`
+	DatabaseURL    string      `json:"database_url,omitempty"`
 }
 
 // Migration represents a single migration with type safety
 type Migration struct {
-	Version    uint       `json:"version"`
-	Applied    bool       `json:"applied"`
-	AppliedAt  *time.Time `json:"applied_at,omitempty"`
-	Name       string     `json:"name"`
-	Dirty      bool       `json:"dirty"`
-	UpFile     string     `json:"up_file"`
-	DownFile   string     `json:"down_file,omitempty"`
+	Version   uint       `json:"version"`
+	Applied   bool       `json:"applied"`
+	AppliedAt *time.Time `json:"applied_at,omitempty"`
+	Name      string     `json:"name"`
+	Dirty     bool       `json:"dirty"`
+	UpFile    string     `json:"up_file"`
+	DownFile  string     `json:"down_file,omitempty"`
 }
 
 // NewMigrationStatus creates a new MigrationStatus with validation
@@ -32,7 +32,7 @@ func NewMigrationStatus(source, databaseURL string) (*MigrationStatus, error) {
 			Message: "source cannot be empty",
 		}
 	}
-	
+
 	return &MigrationStatus{
 		CurrentVersion: nil,
 		Dirty:          false,

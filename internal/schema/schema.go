@@ -8,32 +8,32 @@ import (
 // Schema represents a database schema with proper type safety
 // Eliminates interface{} returns from adapter methods
 type Schema struct {
-	Name        string             `json:"name"`
-	Tables      []Table           `json:"tables"`
-	Views       []View            `json:"views,omitempty"`
-	Indexes     []Index           `json:"indexes,omitempty"`
-	Constraints []Constraint      `json:"constraints,omitempty"`
-	Enums       []Enum            `json:"enums,omitempty"`
-	Metadata    SchemaMetadata    `json:"metadata"`
+	Name        string         `json:"name"`
+	Tables      []Table        `json:"tables"`
+	Views       []View         `json:"views,omitempty"`
+	Indexes     []Index        `json:"indexes,omitempty"`
+	Constraints []Constraint   `json:"constraints,omitempty"`
+	Enums       []Enum         `json:"enums,omitempty"`
+	Metadata    SchemaMetadata `json:"metadata"`
 }
 
 // Table represents a database table with typed columns
 type Table struct {
-	Name       string    `json:"name"`
-	Columns    []Column  `json:"columns"`
-	PrimaryKey *Index    `json:"primary_key,omitempty"`
-	Indexes    []Index   `json:"indexes,omitempty"`
+	Name        string       `json:"name"`
+	Columns     []Column     `json:"columns"`
+	PrimaryKey  *Index       `json:"primary_key,omitempty"`
+	Indexes     []Index      `json:"indexes,omitempty"`
 	ForeignKeys []ForeignKey `json:"foreign_keys,omitempty"`
 }
 
 // Column represents a database column with type safety
 type Column struct {
-	Name       string      `json:"name"`
-	Type       ColumnType  `json:"type"`
-	Nullable   bool        `json:"nullable"`
-	Default    *string     `json:"default,omitempty"`
-	PrimaryKey bool        `json:"primary_key"`
-	Unique     bool        `json:"unique"`
+	Name       string     `json:"name"`
+	Type       ColumnType `json:"type"`
+	Nullable   bool       `json:"nullable"`
+	Default    *string    `json:"default,omitempty"`
+	PrimaryKey bool       `json:"primary_key"`
+	Unique     bool       `json:"unique"`
 }
 
 // ColumnType represents strongly-typed column types
@@ -59,8 +59,8 @@ const (
 func (ct ColumnType) IsValid() bool {
 	switch ct {
 	case ColumnTypeString, ColumnTypeInteger, ColumnTypeBigInt, ColumnTypeFloat,
-		 ColumnTypeDouble, ColumnTypeBoolean, ColumnTypeDate, ColumnTypeDateTime,
-		 ColumnTypeTimestamp, ColumnTypeJSON, ColumnTypeUUID, ColumnTypeText, ColumnTypeBlob:
+		ColumnTypeDouble, ColumnTypeBoolean, ColumnTypeDate, ColumnTypeDateTime,
+		ColumnTypeTimestamp, ColumnTypeJSON, ColumnTypeUUID, ColumnTypeText, ColumnTypeBlob:
 		return true
 	default:
 		return false
@@ -69,17 +69,17 @@ func (ct ColumnType) IsValid() bool {
 
 // View represents a database view
 type View struct {
-	Name       string `json:"name"`
-	Definition string `json:"definition"`
+	Name       string   `json:"name"`
+	Definition string   `json:"definition"`
 	Columns    []Column `json:"columns"`
 }
 
 // Index represents a database index
 type Index struct {
-	Name    string   `json:"name"`
-	Table   string   `json:"table"`
-	Columns []string `json:"columns"`
-	Unique  bool     `json:"unique"`
+	Name    string    `json:"name"`
+	Table   string    `json:"table"`
+	Columns []string  `json:"columns"`
+	Unique  bool      `json:"unique"`
 	Type    IndexType `json:"type"`
 }
 
@@ -87,11 +87,11 @@ type Index struct {
 type IndexType string
 
 const (
-	IndexTypeBTree    IndexType = "btree"
-	IndexTypeHash     IndexType = "hash"
-	IndexTypeGin      IndexType = "gin"
-	IndexTypeGiST     IndexType = "gist"
-	IndexTypeBRIN     IndexType = "brin"
+	IndexTypeBTree IndexType = "btree"
+	IndexTypeHash  IndexType = "hash"
+	IndexTypeGin   IndexType = "gin"
+	IndexTypeGiST  IndexType = "gist"
+	IndexTypeBRIN  IndexType = "brin"
 )
 
 // ForeignKey represents a foreign key constraint
@@ -107,12 +107,12 @@ type ForeignKey struct {
 
 // Constraint represents a database constraint
 type Constraint struct {
-	Name        string           `json:"name"`
-	Type        ConstraintType   `json:"type"`
-	Table       string          `json:"table"`
-	Columns     []string        `json:"columns"`
-	Definition  string          `json:"definition,omitempty"`
-	Check       *CheckConstraint `json:"check,omitempty"`
+	Name       string           `json:"name"`
+	Type       ConstraintType   `json:"type"`
+	Table      string           `json:"table"`
+	Columns    []string         `json:"columns"`
+	Definition string           `json:"definition,omitempty"`
+	Check      *CheckConstraint `json:"check,omitempty"`
 }
 
 // ConstraintType represents constraint types
@@ -139,10 +139,10 @@ type Enum struct {
 
 // SchemaMetadata contains metadata about the schema
 type SchemaMetadata struct {
-	DatabaseEngine string    `json:"database_engine"`
-	Version       string    `json:"version"`
-	CreatedAt     string    `json:"created_at"`
-	UpdatedAt     string    `json:"updated_at"`
+	DatabaseEngine string `json:"database_engine"`
+	Version        string `json:"version"`
+	CreatedAt      string `json:"created_at"`
+	UpdatedAt      string `json:"updated_at"`
 }
 
 // NewSchema creates a new Schema with validation
@@ -153,21 +153,21 @@ func NewSchema(name string, tables []Table) (*Schema, error) {
 			Message: "Schema name cannot be empty",
 		}
 	}
-	
+
 	if len(tables) == 0 {
 		return nil, &SchemaError{
 			Code:    "NO_TABLES",
 			Message: "Schema must contain at least one table",
 		}
 	}
-	
+
 	if len(tables) > 1000 {
 		return nil, &SchemaError{
 			Code:    "TOO_MANY_TABLES",
 			Message: "Schema exceeds reasonable limit of 1000 tables",
 		}
 	}
-	
+
 	// Validate each table
 	for i, table := range tables {
 		if strings.TrimSpace(table.Name) == "" {
@@ -176,7 +176,7 @@ func NewSchema(name string, tables []Table) (*Schema, error) {
 				Message: fmt.Sprintf("Table at index %d has empty name", i),
 			}
 		}
-		
+
 		if len(table.Columns) == 0 {
 			return nil, &SchemaError{
 				Code:    fmt.Sprintf("NO_COLUMNS_%s", table.Name),
@@ -184,13 +184,13 @@ func NewSchema(name string, tables []Table) (*Schema, error) {
 			}
 		}
 	}
-	
+
 	return &Schema{
-		Name:     name,
-		Tables:   tables,
+		Name:   name,
+		Tables: tables,
 		Metadata: SchemaMetadata{
 			DatabaseEngine: "unknown",
-			Version:       "1.0.0",
+			Version:        "1.0.0",
 		},
 	}, nil
 }
@@ -211,7 +211,7 @@ func (s *Schema) GetColumn(tableName, columnName string) (*Column, bool) {
 	if !found {
 		return nil, false
 	}
-	
+
 	for _, column := range table.Columns {
 		if column.Name == columnName {
 			return &column, true
@@ -238,28 +238,28 @@ func (s *Schema) Validate() error {
 			Message: "Schema cannot be null",
 		}
 	}
-	
+
 	if strings.TrimSpace(s.Name) == "" {
 		return &SchemaError{
 			Code:    "EMPTY_SCHEMA_NAME",
 			Message: "Schema name cannot be empty",
 		}
 	}
-	
+
 	if len(s.Tables) == 0 {
 		return &SchemaError{
 			Code:    "NO_TABLES",
 			Message: "Schema must contain at least one table",
 		}
 	}
-	
+
 	if len(s.Tables) > 1000 {
 		return &SchemaError{
 			Code:    "TOO_MANY_TABLES",
 			Message: "Schema exceeds reasonable limit of 1000 tables",
 		}
 	}
-	
+
 	// Validate each table
 	for i, table := range s.Tables {
 		if err := table.Validate(); err != nil {
@@ -269,7 +269,7 @@ func (s *Schema) Validate() error {
 			}
 		}
 	}
-	
+
 	return nil
 }
 
@@ -281,14 +281,14 @@ func (t *Table) Validate() error {
 			Message: "Table name cannot be empty",
 		}
 	}
-	
+
 	if len(t.Columns) == 0 {
 		return &SchemaError{
 			Code:    "NO_COLUMNS",
 			Message: fmt.Sprintf("Table %s must contain at least one column", t.Name),
 		}
 	}
-	
+
 	// Validate each column
 	for i, column := range t.Columns {
 		if err := column.Validate(); err != nil {
@@ -298,7 +298,7 @@ func (t *Table) Validate() error {
 			}
 		}
 	}
-	
+
 	return nil
 }
 
@@ -310,13 +310,13 @@ func (c *Column) Validate() error {
 			Message: "Column name cannot be empty",
 		}
 	}
-	
+
 	if !c.Type.IsValid() {
 		return &SchemaError{
 			Code:    "INVALID_COLUMN_TYPE",
 			Message: fmt.Sprintf("Column %s has invalid type: %s", c.Name, string(c.Type)),
 		}
 	}
-	
+
 	return nil
 }

@@ -61,7 +61,7 @@ func runStatusCheck(config *StatusConfig) error {
 
 	// Create migration adapter and check status
 	migrationAdapter := adapters.NewRealMigrationAdapter()
-	
+
 	status, err := migrationAdapter.Status(context.Background(), config.Source, config.Database)
 	if err != nil {
 		return &MigrationError{
@@ -69,11 +69,11 @@ func runStatusCheck(config *StatusConfig) error {
 			Message: fmt.Sprintf("Failed to check migration status: %v", err),
 		}
 	}
-	
+
 	fmt.Printf("📊 Migration Status:\n")
 	fmt.Printf("  Current Version: %v\n", status.GetCurrentVersion())
 	fmt.Printf("  Dirty State: %v\n", status.IsDirty())
 	fmt.Printf("  Total Migrations: %v\n", status.GetMigrationCount())
-	
+
 	return nil
 }
