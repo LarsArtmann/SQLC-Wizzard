@@ -2,8 +2,6 @@ package creators
 
 import (
 	"fmt"
-	"os"
-	"path/filepath"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
@@ -16,10 +14,10 @@ type CreateConfig struct {
 	ProjectType     generated.ProjectType
 	Database        generated.DatabaseType
 	TemplateData    generated.TemplateData
-	Config         *config.SqlcConfig
-	IncludeAuth    bool
+	Config          *config.SqlcConfig
+	IncludeAuth     bool
 	IncludeFrontend bool
-	Force          bool
+	Force           bool
 }
 
 // ProjectCreator handles creating complete project structures
@@ -125,7 +123,7 @@ func (pc *ProjectCreator) createDirectoryStructure(config *CreateConfig) error {
 	}
 
 	for _, dir := range dirs {
-		if err := pc.fs.MkdirAll(dir, 0755); err != nil {
+		if err := pc.fs.MkdirAll(dir, 0o755); err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", dir, err)
 		}
 	}
@@ -136,14 +134,14 @@ func (pc *ProjectCreator) createDirectoryStructure(config *CreateConfig) error {
 // generateSQLCConfig generates the sqlc.yaml file
 func (pc *ProjectCreator) generateSQLCConfig(config *CreateConfig) error {
 	pc.cli.Println("⚙️  Generating sqlc.yaml...")
-	
+
 	// Convert config to YAML and write
 	yamlContent, err := config.Config.ToYAML()
 	if err != nil {
 		return fmt.Errorf("failed to convert config to YAML: %w", err)
 	}
 
-	return pc.fs.WriteFile("sqlc.yaml", []byte(yamlContent), 0644)
+	return pc.fs.WriteFile("sqlc.yaml", []byte(yamlContent), 0o644)
 }
 
 // generateSchemas generates database schema files
@@ -152,14 +150,14 @@ func (pc *ProjectCreator) generateSchemas(config *CreateConfig) error {
 
 	// Generate users table schema
 	usersSchema := pc.generateUsersSchema(config.Database)
-	if err := pc.fs.WriteFile("db/schema/001_users.sql", []byte(usersSchema), 0644); err != nil {
+	if err := pc.fs.WriteFile("db/schema/001_users.sql", []byte(usersSchema), 0o644); err != nil {
 		return err
 	}
 
 	// Add project-specific schemas
 	if config.ProjectType == generated.ProjectTypeMicroservice || config.ProjectType == generated.ProjectTypeFullstack {
 		postsSchema := pc.generatePostsSchema(config.Database)
-		if err := pc.fs.WriteFile("db/schema/002_posts.sql", []byte(postsSchema), 0644); err != nil {
+		if err := pc.fs.WriteFile("db/schema/002_posts.sql", []byte(postsSchema), 0o644); err != nil {
 			return err
 		}
 	}
@@ -173,7 +171,7 @@ func (pc *ProjectCreator) generateQueries(config *CreateConfig) error {
 
 	// Generate users queries
 	usersQueries := pc.generateUsersQueries(config.Database)
-	if err := pc.fs.WriteFile("internal/db/queries/users.sql", []byte(usersQueries), 0644); err != nil {
+	if err := pc.fs.WriteFile("internal/db/queries/users.sql", []byte(usersQueries), 0o644); err != nil {
 		return err
 	}
 
@@ -186,13 +184,13 @@ func (pc *ProjectCreator) generateMigrations(config *CreateConfig) error {
 
 	// Generate up migration
 	upMigration := pc.generateUpMigration(config.Database)
-	if err := pc.fs.WriteFile("db/migrations/001_create_tables.up.sql", []byte(upMigration), 0644); err != nil {
+	if err := pc.fs.WriteFile("db/migrations/001_create_tables.up.sql", []byte(upMigration), 0o644); err != nil {
 		return err
 	}
 
 	// Generate down migration
 	downMigration := pc.generateDownMigration(config.Database)
-	if err := pc.fs.WriteFile("db/migrations/001_create_tables.down.sql", []byte(downMigration), 0644); err != nil {
+	if err := pc.fs.WriteFile("db/migrations/001_create_tables.down.sql", []byte(downMigration), 0o644); err != nil {
 		return err
 	}
 
@@ -221,13 +219,13 @@ require (
 	golang.org/x/text v0.9.0 // indirect
 )`, config.ProjectName)
 
-	if err := pc.fs.WriteFile("go.mod", []byte(goMod), 0644); err != nil {
+	if err := pc.fs.WriteFile("go.mod", []byte(goMod), 0o644); err != nil {
 		return err
 	}
 
 	// Generate main.go for server
 	mainGo := pc.generateMainGo(config)
-	if err := pc.fs.WriteFile("cmd/server/main.go", []byte(mainGo), 0644); err != nil {
+	if err := pc.fs.WriteFile("cmd/server/main.go", []byte(mainGo), 0o644); err != nil {
 		return err
 	}
 
@@ -240,13 +238,13 @@ func (pc *ProjectCreator) generateDockerConfig(config *CreateConfig) error {
 
 	// Generate Dockerfile
 	dockerfile := pc.generateDockerfile(config)
-	if err := pc.fs.WriteFile("Dockerfile", []byte(dockerfile), 0644); err != nil {
+	if err := pc.fs.WriteFile("Dockerfile", []byte(dockerfile), 0o644); err != nil {
 		return err
 	}
 
 	// Generate docker-compose.yml
 	dockerCompose := pc.generateDockerCompose(config)
-	if err := pc.fs.WriteFile("docker-compose.yml", []byte(dockerCompose), 0644); err != nil {
+	if err := pc.fs.WriteFile("docker-compose.yml", []byte(dockerCompose), 0o644); err != nil {
 		return err
 	}
 
@@ -258,7 +256,7 @@ func (pc *ProjectCreator) generateMakefile(config *CreateConfig) error {
 	pc.cli.Println("🔨 Generating Makefile...")
 
 	makefile := pc.generateMakefileContent(config)
-	return pc.fs.WriteFile("Makefile", []byte(makefile), 0644)
+	return pc.fs.WriteFile("Makefile", []byte(makefile), 0o644)
 }
 
 // generateDevScripts generates development scripts
@@ -267,13 +265,13 @@ func (pc *ProjectCreator) generateDevScripts(config *CreateConfig) error {
 
 	// Generate dev.sh
 	devScript := pc.generateDevScript(config)
-	if err := pc.fs.WriteFile("scripts/dev.sh", []byte(devScript), 0755); err != nil {
+	if err := pc.fs.WriteFile("scripts/dev.sh", []byte(devScript), 0o755); err != nil {
 		return err
 	}
 
 	// Generate migrate.sh
 	migrateScript := pc.generateMigrateScript(config)
-	if err := pc.fs.WriteFile("scripts/migrate.sh", []byte(migrateScript), 0755); err != nil {
+	if err := pc.fs.WriteFile("scripts/migrate.sh", []byte(migrateScript), 0o755); err != nil {
 		return err
 	}
 
@@ -285,7 +283,7 @@ func (pc *ProjectCreator) generateREADME(config *CreateConfig) error {
 	pc.cli.Println("📖 Generating README...")
 
 	readme := pc.generateReadmeContent(config)
-	return pc.fs.WriteFile("README.md", []byte(readme), 0644)
+	return pc.fs.WriteFile("README.md", []byte(readme), 0o644)
 }
 
 // generateProjectSpecificFiles generates project-specific additional files
