@@ -124,47 +124,8 @@ type SafetyRules struct {
 	Rules        []SafetyRule `json:"rules"`
 }
 
-// ToRuleConfigs converts safety rules to configuration format
-// DEPRECATED: This method maintains backward compatibility but should be replaced
-// with internal/validation/rule_transformer.TransformSafetyRules in new code
-func (s *SafetyRules) ToRuleConfigs() []RuleConfig {
-	var rules []RuleConfig
-
-	if s.NoSelectStar {
-		rules = append(rules, RuleConfig{
-			Name:    "no-select-star",
-			Rule:    "!query.contains('SELECT *')",
-			Message: "SELECT * is not allowed",
-		})
-	}
-
-	if s.RequireWhere {
-		rules = append(rules, RuleConfig{
-			Name:    "require-where",
-			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
-			Message: "WHERE clause is required for this query type",
-		})
-	}
-
-	if s.RequireLimit {
-		rules = append(rules, RuleConfig{
-			Name:    "require-limit",
-			Rule:    "query.type == 'SELECT' && !query.hasLimitClause()",
-			Message: "LIMIT clause is required for SELECT queries",
-		})
-	}
-
-	// Add custom rules
-	for _, rule := range s.Rules {
-		rules = append(rules, RuleConfig{
-			Name:    rule.Name,
-			Rule:    rule.Rule,
-			Message: rule.Message,
-		})
-	}
-
-	return rules
-}
+// NOTE: ToRuleConfigs method removed - use internal/validation/rule_transformer.TransformSafetyRules instead
+// This eliminates the split brain and provides a single source of truth for rule transformation
 
 // RuleConfig represents a validation rule configuration
 // TypeSpec: model RuleConfig { ... }
