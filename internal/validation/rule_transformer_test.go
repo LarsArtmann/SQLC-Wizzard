@@ -386,4 +386,266 @@ var _ = Describe("RuleTransformer", func() {
 			Expect(configRules[3].Name).To(Equal("max-limit-1000"))
 		})
 	})
+
+	Context("TransformTypeSafeSafetyRules", func() {
+		It("should transform style rules correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					NoSelectStar:           true,
+					RequireExplicitColumns: false,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					RequireWhere:        false,
+					RequireLimit:        false,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("no-select-star"))
+			Expect(configRules[0].Message).To(ContainSubstring("explicit column names"))
+		})
+
+		It("should transform RequireExplicitColumns rule (new feature)", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					NoSelectStar:           false,
+					RequireExplicitColumns: true,
+				},
+				SafetyRules:    domain.QuerySafetyRules{},
+				DestructiveOps: domain.DestructiveAllowed,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("require-explicit-columns"))
+			Expect(configRules[0].Rule).To(ContainSubstring("hasExplicitColumns"))
+		})
+
+		It("should transform safety rules correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{},
+				SafetyRules: domain.QuerySafetyRules{
+					RequireWhere:        true,
+					RequireLimit:        true,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(2))
+			Expect(configRules[0].Name).To(Equal("require-where"))
+			Expect(configRules[1].Name).To(Equal("require-limit"))
+		})
+
+		It("should transform MaxRowsWithoutLimit rule (new feature)", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{},
+				SafetyRules: domain.QuerySafetyRules{
+					RequireWhere:        false,
+					RequireLimit:        false,
+					MaxRowsWithoutLimit: 1000,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("max-rows-without-limit"))
+			Expect(configRules[0].Rule).To(ContainSubstring("1000"))
+			Expect(configRules[0].Message).To(ContainSubstring("1000"))
+		})
+
+		It("should not create MaxRowsWithoutLimit rule when set to 0", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{},
+				SafetyRules: domain.QuerySafetyRules{
+					RequireWhere:        true,
+					RequireLimit:        false,
+					MaxRowsWithoutLimit: 0, // 0 means unlimited
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			// Should only have require-where, not max-rows-without-limit
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("require-where"))
+		})
+
+		It("should transform DestructiveForbidden policy correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules:     domain.QueryStyleRules{},
+				SafetyRules:    domain.QuerySafetyRules{},
+				DestructiveOps: domain.DestructiveForbidden,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(2))
+			Expect(configRules[0].Name).To(Equal("no-drop-table"))
+			Expect(configRules[0].Message).To(ContainSubstring("forbidden"))
+			Expect(configRules[1].Name).To(Equal("no-truncate"))
+			Expect(configRules[1].Message).To(ContainSubstring("forbidden"))
+		})
+
+		It("should transform DestructiveWithConfirmation policy correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules:     domain.QueryStyleRules{},
+				SafetyRules:    domain.QuerySafetyRules{},
+				DestructiveOps: domain.DestructiveWithConfirmation,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(2))
+			Expect(configRules[0].Name).To(Equal("drop-table-requires-confirmation"))
+			Expect(configRules[0].Rule).To(ContainSubstring("CONFIRMED"))
+			Expect(configRules[0].Message).To(ContainSubstring("confirmation"))
+			Expect(configRules[1].Name).To(Equal("truncate-requires-confirmation"))
+		})
+
+		It("should not create destructive rules when DestructiveAllowed", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules:     domain.QueryStyleRules{NoSelectStar: true},
+				SafetyRules:    domain.QuerySafetyRules{},
+				DestructiveOps: domain.DestructiveAllowed,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			// Should only have no-select-star, no destructive rules
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("no-select-star"))
+		})
+
+		It("should transform custom rules", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules:     domain.QueryStyleRules{},
+				SafetyRules:    domain.QuerySafetyRules{},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules: []generated.SafetyRule{
+					{
+						Name:    "no-complex-joins",
+						Rule:    "query.joins().count() <= 3",
+						Message: "Maximum 3 joins allowed",
+					},
+				},
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("no-complex-joins"))
+			Expect(configRules[0].Rule).To(Equal("query.joins().count() <= 3"))
+		})
+
+		It("should combine all rule types in correct order", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					NoSelectStar:           true,
+					RequireExplicitColumns: true,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					RequireWhere:        true,
+					RequireLimit:        true,
+					MaxRowsWithoutLimit: 500,
+				},
+				DestructiveOps: domain.DestructiveForbidden,
+				CustomRules: []generated.SafetyRule{
+					{
+						Name:    "custom-1",
+						Rule:    "custom.rule()",
+						Message: "Custom rule",
+					},
+				},
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			// 2 style + 3 safety + 2 destructive + 1 custom = 8 rules
+			Expect(configRules).To(HaveLen(8))
+
+			// Verify order: style → safety → destructive → custom
+			Expect(configRules[0].Name).To(Equal("no-select-star"))
+			Expect(configRules[1].Name).To(Equal("require-explicit-columns"))
+			Expect(configRules[2].Name).To(Equal("require-where"))
+			Expect(configRules[3].Name).To(Equal("require-limit"))
+			Expect(configRules[4].Name).To(Equal("max-rows-without-limit"))
+			Expect(configRules[5].Name).To(Equal("no-drop-table"))
+			Expect(configRules[6].Name).To(Equal("no-truncate"))
+			Expect(configRules[7].Name).To(Equal("custom-1"))
+		})
+
+		It("should use production-safe defaults", func() {
+			rules := domain.NewTypeSafeSafetyRules()
+			configRules := transformer.TransformTypeSafeSafetyRules(&rules)
+
+			// Default: NoSelectStar=true, RequireWhere=true, MaxRowsWithoutLimit=1000, DestructiveForbidden
+			Expect(configRules).To(HaveLen(5))
+
+			ruleNames := make([]string, len(configRules))
+			for i, rule := range configRules {
+				ruleNames[i] = rule.Name
+			}
+
+			Expect(ruleNames).To(ContainElement("no-select-star"))
+			Expect(ruleNames).To(ContainElement("require-where"))
+			Expect(ruleNames).To(ContainElement("max-rows-without-limit"))
+			Expect(ruleNames).To(ContainElement("no-drop-table"))
+			Expect(ruleNames).To(ContainElement("no-truncate"))
+		})
+
+		It("should use development-friendly presets", func() {
+			rules := domain.NewDevelopmentSafetyRules()
+			configRules := transformer.TransformTypeSafeSafetyRules(&rules)
+
+			// Dev mode: all rules disabled
+			Expect(configRules).To(BeEmpty())
+		})
+
+		It("should use strict production presets", func() {
+			rules := domain.NewProductionSafetyRules()
+			configRules := transformer.TransformTypeSafeSafetyRules(&rules)
+
+			// Production: NoSelectStar, RequireExplicitColumns, RequireWhere, RequireLimit, MaxRows=100, DestructiveForbidden
+			Expect(configRules).To(HaveLen(7))
+
+			ruleNames := make([]string, len(configRules))
+			for i, rule := range configRules {
+				ruleNames[i] = rule.Name
+			}
+
+			Expect(ruleNames).To(ContainElement("no-select-star"))
+			Expect(ruleNames).To(ContainElement("require-explicit-columns"))
+			Expect(ruleNames).To(ContainElement("require-where"))
+			Expect(ruleNames).To(ContainElement("require-limit"))
+			Expect(ruleNames).To(ContainElement("max-rows-without-limit"))
+			Expect(ruleNames).To(ContainElement("no-drop-table"))
+			Expect(ruleNames).To(ContainElement("no-truncate"))
+		})
+
+		It("should verify uint type safety for MaxRowsWithoutLimit", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{},
+				SafetyRules: domain.QuerySafetyRules{
+					MaxRowsWithoutLimit: 999, // uint can't be negative
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Rule).To(ContainSubstring("999"))
+		})
+	})
 })
