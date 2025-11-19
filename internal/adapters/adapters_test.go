@@ -23,9 +23,14 @@ func TestRealSQLCAdapter_CheckInstallation(t *testing.T) {
 	adapter := adapters.NewRealSQLCAdapter()
 
 	err := adapter.CheckInstallation(context.Background())
-	// sqlc might not be installed in test environment
+	// sqlc might not be installed in test environment - that's OK for unit tests
+	// We just verify the method doesn't panic
 	if err != nil {
-		assert.Contains(t, err.Error(), "which: sqlc")
+		// Error message varies by system ("which: sqlc" or "exec: ... not found")
+		assert.Contains(t, err.Error(), "sqlc")
+	} else {
+		// If sqlc is installed, check should pass
+		assert.NoError(t, err)
 	}
 }
 
