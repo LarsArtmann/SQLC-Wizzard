@@ -49,54 +49,23 @@ func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfi
 		return fmt.Errorf("failed to generate sqlc.yaml: %w", err)
 	}
 
-	// TODO: Complete implementation of project scaffolding
-	// The following methods are not yet implemented
-	_ = ctx // Use ctx to avoid unused variable error
-
-	// Generate database schemas
-	// if err := pc.generateSchemas(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate schemas: %w", err)
-	// }
-
-	// Generate query files
-	// if err := pc.generateQueries(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate queries: %w", err)
-	// }
-
-	// Generate migration files
-	// if err := pc.generateMigrations(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate migrations: %w", err)
-	// }
-
-	// Generate Go module and basic structure
-	// if err := pc.generateGoStructure(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate Go structure: %w", err)
-	// }
-
-	// Generate Docker configuration
-	// if err := pc.generateDockerConfig(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate Docker configuration: %w", err)
-	// }
-
-	// Generate Makefile
-	// if err := pc.generateMakefile(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate Makefile: %w", err)
-	// }
-
-	// Generate development scripts
-	// if err := pc.generateDevScripts(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate development scripts: %w", err)
-	// }
-
-	// Generate README
-	// if err := pc.generateREADME(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate README: %w", err)
-	// }
-
-	// Generate project-specific files
-	// if err := pc.generateProjectSpecificFiles(ctx, config); err != nil {
-	// 	return fmt.Errorf("failed to generate project-specific files: %w", err)
-	// }
+	// TODO: Full project scaffolding is not yet implemented
+	// See GitHub issues for roadmap:
+	// - Database schema generation
+	// - Query file generation
+	// - Migration file generation
+	// - Go module structure
+	// - Docker configuration
+	// - Makefile generation
+	// - Development scripts
+	// - README generation
+	// - Project-specific files
+	//
+	// For now, ProjectCreator only generates:
+	// 1. Directory structure
+	// 2. sqlc.yaml configuration file
+	//
+	// Additional scaffolding will be added based on user feedback and demand.
 
 	return nil
 }
@@ -153,68 +122,5 @@ func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateCon
 	return pc.fs.WriteFile(ctx, "sqlc.yaml", yamlContent, 0o644)
 }
 
-// TODO: The following methods are not yet implemented
-// They are commented out to allow the project to build
-// Uncomment and implement when ready
-
-// generateSchemas generates database schema files
-// func (pc *ProjectCreator) generateSchemas(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("🗄️  Generating database schemas...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateQueries generates SQL query files
-// func (pc *ProjectCreator) generateQueries(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("🔍 Generating query files...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateMigrations generates migration files
-// func (pc *ProjectCreator) generateMigrations(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("🔄 Generating migration files...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateGoStructure generates Go module and basic structure
-// func (pc *ProjectCreator) generateGoStructure(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("🐹 Generating Go structure...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateDockerConfig generates Docker configuration
-// func (pc *ProjectCreator) generateDockerConfig(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("🐳 Generating Docker configuration...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateMakefile generates Makefile with common tasks
-// func (pc *ProjectCreator) generateMakefile(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("🔨 Generating Makefile...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateDevScripts generates development scripts
-// func (pc *ProjectCreator) generateDevScripts(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("📜 Generating development scripts...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateREADME generates README.md
-// func (pc *ProjectCreator) generateREADME(ctx context.Context, config *CreateConfig) error {
-// 	pc.cli.Println("📖 Generating README...")
-// 	// Implementation needed
-// 	return nil
-// }
-
-// generateProjectSpecificFiles generates project-specific additional files
-// func (pc *ProjectCreator) generateProjectSpecificFiles(ctx context.Context, config *CreateConfig) error {
-// 	// Implementation needed
-// 	return nil
-// }
+// NOTE: Additional scaffolding methods will be implemented based on demand
+// See the TODO in CreateProject for planned features
