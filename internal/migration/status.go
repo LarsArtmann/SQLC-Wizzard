@@ -59,8 +59,22 @@ func (ms *MigrationStatus) WithMigrations(migrations []Migration) {
 }
 
 // IsDirty returns whether the database is in a dirty state
+// This checks BOTH the database-level dirty flag AND any per-migration dirty flags
+// to prevent split brain where flags are inconsistent
 func (ms *MigrationStatus) IsDirty() bool {
-	return ms.Dirty
+	// Check database-level dirty flag
+	if ms.Dirty {
+		return true
+	}
+
+	// Check if any individual migration is dirty
+	for _, mig := range ms.Migrations {
+		if mig.Dirty {
+			return true
+		}
+	}
+
+	return false
 }
 
 // GetCurrentVersion returns the current migration version
