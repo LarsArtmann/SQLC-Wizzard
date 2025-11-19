@@ -1,6 +1,7 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -129,8 +130,8 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	}
 
 	// Create project creator with real adapters
-	fs := adapters.NewRealFileSystem()
-	cli := adapters.NewRealCLI()
+	fs := adapters.NewRealFileSystemAdapter()
+	cli := adapters.NewRealCLIAdapter()
 
 	creator := creators.NewProjectCreator(fs, cli)
 	createConfig := &creators.CreateConfig{
@@ -145,7 +146,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	}
 
 	// Create the complete project
-	if err := creator.CreateProject(createConfig); err != nil {
+	if err := creator.CreateProject(context.Background(), createConfig); err != nil {
 		return fmt.Errorf("failed to create project: %w", err)
 	}
 

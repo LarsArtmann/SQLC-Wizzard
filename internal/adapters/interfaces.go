@@ -60,6 +60,9 @@ type CLIAdapter interface {
 
 	// Install installs a CLI tool
 	Install(ctx context.Context, cmd string) error
+
+	// Println prints a message to output
+	Println(message string) error
 }
 
 // TemplateAdapter defines interface for template operations
@@ -92,6 +95,9 @@ type FileSystemAdapter interface {
 
 	// CreateDirectory creates a directory
 	CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error
+
+	// MkdirAll creates a directory and all parent directories
+	MkdirAll(ctx context.Context, path string, perm fs.FileMode) error
 
 	// Exists checks if a path exists
 	Exists(ctx context.Context, path string) (bool, error)

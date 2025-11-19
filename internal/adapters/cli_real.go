@@ -50,3 +50,9 @@ func (a *RealCLIAdapter) GetVersion(ctx context.Context, cmd string) (string, er
 func (a *RealCLIAdapter) Install(ctx context.Context, cmd string) error {
 	return fmt.Errorf("auto-install not implemented for: %s", cmd)
 }
+
+// Println prints a message to output
+func (a *RealCLIAdapter) Println(message string) error {
+	fmt.Println(message)
+	return nil
+}

@@ -49,6 +49,11 @@ func (a *RealFileSystemAdapter) CreateDirectory(ctx context.Context, path string
 	return nil
 }
 
+// MkdirAll creates a directory and all parent directories (alias for CreateDirectory)
+func (a *RealFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm fs.FileMode) error {
+	return a.CreateDirectory(ctx, path, perm)
+}
+
 // Exists checks if a path exists
 func (a *RealFileSystemAdapter) Exists(ctx context.Context, path string) (bool, error) {
 	_, err := os.Stat(path)
