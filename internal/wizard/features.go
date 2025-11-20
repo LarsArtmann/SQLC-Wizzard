@@ -54,61 +54,99 @@ type confirmationConfig struct {
 	assign      fieldAssignment
 }
 
-// Pre-defined configuration sets for different feature types
-var (
-	// codeGenerationConfigs defines options for code generation features
-	codeGenerationConfigs = []confirmationConfig{
-		{
+// Feature configuration interface to handle different config types generically
+type FeatureConfig interface {
+	GetTitle() string
+	GetDescription() string
+	Assign(data *generated.TemplateData, value bool)
+}
+
+// Code generation config implementation
+type codeGenerationConfig struct {
+	title       string
+	description string
+	assign      func(data *generated.TemplateData, value bool)
+}
+
+func (c codeGenerationConfig) GetTitle() string { return c.title }
+func (c codeGenerationConfig) GetDescription() string { return c.description }
+func (c codeGenerationConfig) Assign(data *generated.TemplateData, value bool) { c.assign(data, value) }
+
+// Safety rule config implementation
+type safetyRuleConfig struct {
+	title       string
+	description string
+	assign      func(data *generated.TemplateData, value bool)
+}
+
+func (c safetyRuleConfig) GetTitle() string { return c.title }
+func (c safetyRuleConfig) GetDescription() string { return c.description }
+func (c safetyRuleConfig) Assign(data *generated.TemplateData, value bool) { c.assign(data, value) }
+
+// Pre-defined configuration sets with completely different structures
+
+// Code generation configs using struct literal approach
+var codeGenerationConfigs = []FeatureConfig{
+	func() FeatureConfig {
+		cfg := codeGenerationConfig{
 			title:       "Generate Go interfaces?",
 			description: "Create interfaces for query methods",
-			assign: func(data *generated.TemplateData, value bool) {
-				data.Validation.EmitOptions.EmitInterface = value
-			},
-		},
-		{
-			title:       "Generate prepared queries?",
+			assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitInterface = val },
+		}
+		return &cfg
+	}(),
+	func() FeatureConfig {
+		cfg := codeGenerationConfig{
+			title:       "Generate prepared queries?", 
 			description: "Create prepared query methods for better performance",
-			assign: func(data *generated.TemplateData, value bool) {
-				data.Validation.EmitOptions.EmitPreparedQueries = value
-			},
-		},
-		{
+			assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitPreparedQueries = val },
+		}
+		return &cfg
+	}(),
+	func() FeatureConfig {
+		cfg := codeGenerationConfig{
 			title:       "Add JSON tags?",
 			description: "Add JSON struct tags to generated models",
-			assign: func(data *generated.TemplateData, value bool) {
-				data.Validation.EmitOptions.EmitJSONTags = value
-			},
+			assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitJSONTags = val },
+		}
+		return &cfg
+	}(),
+}
+
+// Safety rule configs using map and slice conversion
+var safetyRuleConfigs = func() []FeatureConfig {
+	configMaps := []map[string]interface{}{
+		{
+			"title": "Forbid SELECT *?",
+			"desc":  "Prevent SELECT * queries for better performance and explicitness",
+			"assign": func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.NoSelectStar = val },
+		},
+		{
+			"title": "Require WHERE clause?",
+			"desc":  "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification", 
+			"assign": func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireWhere = val },
+		},
+		{
+			"title": "Require LIMIT on SELECT?",
+			"desc":  "Force LIMIT clauses on SELECT queries to prevent large result sets",
+			"assign": func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireLimit = val },
 		},
 	}
-
-	// safetyRuleConfigs defines options for safety rule configuration
-	safetyRuleConfigs = []confirmationConfig{
-		{
-			title:       "Forbid SELECT *?",
-			description: "Prevent SELECT * queries for better performance and explicitness",
-			assign: func(data *generated.TemplateData, value bool) {
-				data.Validation.SafetyRules.NoSelectStar = value
-			},
-		},
-		{
-			title:       "Require WHERE clause?",
-			description: "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification",
-			assign: func(data *generated.TemplateData, value bool) {
-				data.Validation.SafetyRules.RequireWhere = value
-			},
-		},
-		{
-			title:       "Require LIMIT on SELECT?",
-			description: "Force LIMIT clauses on SELECT queries to prevent large result sets",
-			assign: func(data *generated.TemplateData, value bool) {
-				data.Validation.SafetyRules.RequireLimit = value
-			},
-		},
+	
+	var result []FeatureConfig
+	for _, m := range configMaps {
+		cfg := safetyRuleConfig{
+			title:       m["title"].(string),
+			description: m["desc"].(string),
+			assign:      m["assign"].(func(*generated.TemplateData, bool)),
+		}
+		result = append(result, &cfg)
 	}
-)
+	return result
+}()
 
-// runConfirmationWithAssignment runs a confirmation form and applies assignments
-func (s *FeaturesStep) runConfirmationWithAssignment(data *generated.TemplateData, configs []confirmationConfig, errorContext string) error {
+// runFeatureConfigForm runs confirmation form for any feature configuration
+func (s *FeaturesStep) runFeatureConfigForm(data *generated.TemplateData, configs []FeatureConfig, errorContext string) error {
 	// Create boolean values for each field
 	values := make([]bool, len(configs))
 	valuePtrs := make([]*bool, len(configs))
@@ -121,8 +159,8 @@ func (s *FeaturesStep) runConfirmationWithAssignment(data *generated.TemplateDat
 	for i, config := range configs {
 		formFields = append(formFields,
 			huh.NewConfirm().
-				Title(config.title).
-				Description(config.description).
+				Title(config.GetTitle()).
+				Description(config.GetDescription()).
 				Value(valuePtrs[i]),
 		)
 	}
@@ -137,7 +175,7 @@ func (s *FeaturesStep) runConfirmationWithAssignment(data *generated.TemplateDat
 
 	// Apply assignments
 	for i, config := range configs {
-		config.assign(data, values[i])
+		config.Assign(data, values[i])
 	}
 
 	return nil
@@ -145,12 +183,12 @@ func (s *FeaturesStep) runConfirmationWithAssignment(data *generated.TemplateDat
 
 // configureCodeGeneration configures code generation options
 func (s *FeaturesStep) configureCodeGeneration(data *generated.TemplateData) error {
-	return s.runConfirmationWithAssignment(data, codeGenerationConfigs, "code generation")
+	return s.runFeatureConfigForm(data, codeGenerationConfigs, "code generation")
 }
 
 // configureSafetyRules configures safety rules
 func (s *FeaturesStep) configureSafetyRules(data *generated.TemplateData) error {
-	return s.runConfirmationWithAssignment(data, safetyRuleConfigs, "safety rules")
+	return s.runFeatureConfigForm(data, safetyRuleConfigs, "safety rules")
 }
 
 // configureDatabaseFeatures configures database-specific features

@@ -9,33 +9,113 @@ import (
 // Test cases for TypeSafeEmitOptions and related enums
 // Run via TestDomain in domain_test.go
 
-var _ = Describe("NullHandlingMode", func() {
-	Context("IsValid", func() {
-		It("should validate all defined modes", func() {
-			validModes := []domain.NullHandlingMode{
-				domain.NullHandlingPointers,
-				domain.NullHandlingEmptySlices,
-				domain.NullHandlingExplicitNull,
-				domain.NullHandlingMixed,
-			}
+// ValidationTestSuite defines interface for types that need validation testing
+type ValidationTestSuite[T interface {
+	IsValid() bool
+	String() string
+}] interface {
+	GetValidValues() []T
+	GetInvalidValues() []T
+	GetTypeName() string
+}
 
-			for _, mode := range validModes {
-				Expect(mode.IsValid()).To(BeTrue(), "Mode %s should be valid", mode)
+// testValidationSuite runs generic validation tests for any type implementing ValidationTestSuite
+func testValidationSuite[T interface {
+	IsValid() bool
+	String() string
+}](suite ValidationTestSuite[T]) {
+	Context("IsValid", func() {
+		It("should validate all defined "+suite.GetTypeName(), func() {
+			validValues := suite.GetValidValues()
+			for _, value := range validValues {
+				Expect(value.IsValid()).To(BeTrue(), "%s %s should be valid", suite.GetTypeName(), value)
 			}
 		})
 
-		It("should reject invalid modes", func() {
-			invalidModes := []domain.NullHandlingMode{
-				"invalid",
-				"",
-				"pointer",
-			}
-
-			for _, mode := range invalidModes {
-				Expect(mode.IsValid()).To(BeFalse(), "Mode %s should be invalid", mode)
+		It("should reject invalid "+suite.GetTypeName(), func() {
+			invalidValues := suite.GetInvalidValues()
+			for _, value := range invalidValues {
+				Expect(value.IsValid()).To(BeFalse(), "%s %s should be invalid", suite.GetTypeName(), value)
 			}
 		})
 	})
+}
+
+// NullHandlingMode validation test suite
+type NullHandlingModeTestSuite struct{}
+
+func (NullHandlingModeTestSuite) GetValidValues() []domain.NullHandlingMode {
+	return []domain.NullHandlingMode{
+		domain.NullHandlingPointers,
+		domain.NullHandlingEmptySlices,
+		domain.NullHandlingExplicitNull,
+		domain.NullHandlingMixed,
+	}
+}
+
+func (NullHandlingModeTestSuite) GetInvalidValues() []domain.NullHandlingMode {
+	return []domain.NullHandlingMode{
+		"invalid",
+		"",
+		"pointer",
+	}
+}
+
+func (NullHandlingModeTestSuite) GetTypeName() string {
+	return "NullHandlingMode"
+}
+
+// StructPointerMode validation test suite
+type StructPointerModeTestSuite struct{}
+
+func (StructPointerModeTestSuite) GetValidValues() []domain.StructPointerMode {
+	return []domain.StructPointerMode{
+		domain.StructPointerNever,
+		domain.StructPointerResults,
+		domain.StructPointerParams,
+		domain.StructPointerAlways,
+	}
+}
+
+func (StructPointerModeTestSuite) GetInvalidValues() []domain.StructPointerMode {
+	return []domain.StructPointerMode{
+		"invalid",
+		"",
+		"sometimes",
+	}
+}
+
+func (StructPointerModeTestSuite) GetTypeName() string {
+	return "StructPointerMode"
+}
+
+// JSONTagStyle validation test suite
+type JSONTagStyleTestSuite struct{}
+
+func (JSONTagStyleTestSuite) GetValidValues() []domain.JSONTagStyle {
+	return []domain.JSONTagStyle{
+		domain.JSONTagStyleCamel,
+		domain.JSONTagStyleSnake,
+		domain.JSONTagStylePascal,
+		domain.JSONTagStyleKebab,
+	}
+}
+
+func (JSONTagStyleTestSuite) GetInvalidValues() []domain.JSONTagStyle {
+	return []domain.JSONTagStyle{
+		"invalid",
+		"",
+		"UPPER",
+	}
+}
+
+func (JSONTagStyleTestSuite) GetTypeName() string {
+	return "JSONTagStyle"
+}
+
+var _ = Describe("NullHandlingMode", func() {
+	// Use generic validation test suite
+testValidationSuite(NullHandlingModeTestSuite{})
 
 	Context("UsePointers", func() {
 		It("should return true for pointer modes", func() {
@@ -130,32 +210,8 @@ var _ = Describe("EnumGenerationMode", func() {
 })
 
 var _ = Describe("StructPointerMode", func() {
-	Context("IsValid", func() {
-		It("should validate all defined modes", func() {
-			validModes := []domain.StructPointerMode{
-				domain.StructPointerNever,
-				domain.StructPointerResults,
-				domain.StructPointerParams,
-				domain.StructPointerAlways,
-			}
-
-			for _, mode := range validModes {
-				Expect(mode.IsValid()).To(BeTrue(), "Mode %s should be valid", mode)
-			}
-		})
-
-		It("should reject invalid modes", func() {
-			invalidModes := []domain.StructPointerMode{
-				"invalid",
-				"",
-				"sometimes",
-			}
-
-			for _, mode := range invalidModes {
-				Expect(mode.IsValid()).To(BeFalse(), "Mode %s should be invalid", mode)
-			}
-		})
-	})
+	// Use generic validation test suite
+testValidationSuite(StructPointerModeTestSuite{})
 
 	Context("UseResultPointers", func() {
 		It("should return true for modes with result pointers", func() {
@@ -192,32 +248,8 @@ var _ = Describe("StructPointerMode", func() {
 })
 
 var _ = Describe("JSONTagStyle", func() {
-	Context("IsValid", func() {
-		It("should validate all defined styles", func() {
-			validStyles := []domain.JSONTagStyle{
-				domain.JSONTagStyleCamel,
-				domain.JSONTagStyleSnake,
-				domain.JSONTagStylePascal,
-				domain.JSONTagStyleKebab,
-			}
-
-			for _, style := range validStyles {
-				Expect(style.IsValid()).To(BeTrue(), "Style %s should be valid", style)
-			}
-		})
-
-		It("should reject invalid styles", func() {
-			invalidStyles := []domain.JSONTagStyle{
-				"invalid",
-				"",
-				"UPPER",
-			}
-
-			for _, style := range invalidStyles {
-				Expect(style.IsValid()).To(BeFalse(), "Style %s should be invalid", style)
-			}
-		})
-	})
+	// Use generic validation test suite
+testValidationSuite(JSONTagStyleTestSuite{})
 
 	Context("String", func() {
 		It("should return correct string representation", func() {

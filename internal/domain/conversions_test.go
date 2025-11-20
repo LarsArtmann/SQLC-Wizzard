@@ -10,6 +10,26 @@ import (
 // Test cases for bidirectional conversions between old and new types
 // Run via TestDomain in domain_test.go
 
+// emitOptionsTestCase represents a test case for EmitOptions conversion
+type emitOptionsTestCase struct {
+	description         string
+	input              generated.EmitOptions
+	expectedNullHandling domain.NullHandlingMode
+	expectedPointers    domain.StructPointerMode
+	expectedJSONStyle  domain.JSONTagStyle
+}
+
+// runEmitOptionsTest runs conversion test with given input and expected values
+func runEmitOptionsTest(testCase emitOptionsTestCase) {
+	It("should convert "+testCase.description+" correctly", func() {
+		typeSafe := domain.EmitOptionsToTypeSafe(testCase.input)
+
+		Expect(typeSafe.NullHandling).To(Equal(testCase.expectedNullHandling))
+		Expect(typeSafe.StructPointers).To(Equal(testCase.expectedPointers))
+		Expect(typeSafe.JSONTagStyle).To(Equal(testCase.expectedJSONStyle))
+	})
+}
+
 var _ = Describe("EmitOptions Conversions", func() {
 	Context("EmitOptionsToTypeSafe", func() {
 		It("should convert empty_slices mode correctly", func() {
@@ -57,45 +77,41 @@ var _ = Describe("EmitOptions Conversions", func() {
 			Expect(typeSafe.JSONTagStyle).To(Equal(domain.JSONTagStyleSnake))
 		})
 
-		It("should convert explicit_null mode correctly", func() {
-			old := generated.EmitOptions{
-				EmitJSONTags:             false,
-				EmitPreparedQueries:      false,
-				EmitInterface:            false,
-				EmitEmptySlices:          false,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        false,
-				JSONTagsCaseStyle:        "pascal",
-			}
+		runEmitOptionsTest(emitOptionsTestCase{
+		description: "explicit_null mode",
+		input: generated.EmitOptions{
+			EmitJSONTags:             false,
+			EmitPreparedQueries:      false,
+			EmitInterface:            false,
+			EmitEmptySlices:          false,
+			EmitResultStructPointers: false,
+			EmitParamsStructPointers: false,
+			EmitEnumValidMethod:      true,
+			EmitAllEnumValues:        false,
+			JSONTagsCaseStyle:        "pascal",
+		},
+		expectedNullHandling: domain.NullHandlingExplicitNull,
+		expectedPointers:    domain.StructPointerNever,
+		expectedJSONStyle:  domain.JSONTagStylePascal,
+	})
 
-			typeSafe := domain.EmitOptionsToTypeSafe(old)
-
-			Expect(typeSafe.NullHandling).To(Equal(domain.NullHandlingExplicitNull))
-			Expect(typeSafe.EnumMode).To(Equal(domain.EnumGenerationWithValidation))
-			Expect(typeSafe.JSONTagStyle).To(Equal(domain.JSONTagStylePascal))
-		})
-
-		It("should convert mixed mode correctly", func() {
-			old := generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      true,
-				EmitInterface:            true,
-				EmitEmptySlices:          false,
-				EmitResultStructPointers: true,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "kebab",
-			}
-
-			typeSafe := domain.EmitOptionsToTypeSafe(old)
-
-			Expect(typeSafe.NullHandling).To(Equal(domain.NullHandlingMixed))
-			Expect(typeSafe.StructPointers).To(Equal(domain.StructPointerResults))
-			Expect(typeSafe.JSONTagStyle).To(Equal(domain.JSONTagStyleKebab))
-		})
+		runEmitOptionsTest(emitOptionsTestCase{
+		description: "mixed mode",
+		input: generated.EmitOptions{
+			EmitJSONTags:             true,
+			EmitPreparedQueries:      true,
+			EmitInterface:            true,
+			EmitEmptySlices:          false,
+			EmitResultStructPointers: true,
+			EmitParamsStructPointers: false,
+			EmitEnumValidMethod:      true,
+			EmitAllEnumValues:        true,
+			JSONTagsCaseStyle:        "kebab",
+		},
+		expectedNullHandling: domain.NullHandlingMixed,
+		expectedPointers:    domain.StructPointerResults,
+		expectedJSONStyle:  domain.JSONTagStyleKebab,
+	})
 
 		It("should handle invalid JSON tag style with fallback", func() {
 			old := generated.EmitOptions{

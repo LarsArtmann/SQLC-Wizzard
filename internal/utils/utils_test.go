@@ -49,6 +49,33 @@ func runTruncateTests(testFunc func(string, int) string, testCases []truncateTes
 	}
 }
 
+// caseConversionTestCase represents a test case for string case conversion functions
+type caseConversionTestCase struct {
+	testCases     []stringTestCase
+	edgeCaseFunc  func(string) string
+	edgeExpected  string
+	edgeLeading   string
+	edgeTrailing  string
+}
+
+// runCaseConversionTests runs comprehensive tests for case conversion functions
+func runCaseConversionTests(testFunc func(string) string, description string, testCase caseConversionTestCase) {
+	It("should convert CamelCase to "+description, func() {
+		runStringTests(testFunc, testCase.testCases)
+	})
+
+	It("should handle edge cases", func() {
+		testEdgeCases(testFunc, testCase.edgeExpected, "a")
+
+		if testCase.edgeLeading != "" {
+			Expect(testFunc("-Leading")).To(Equal(testCase.edgeLeading))
+		}
+		if testCase.edgeTrailing != "" {
+			Expect(testFunc("Trailing"+testCase.edgeTrailing[8:])).To(Equal(testCase.edgeTrailing))
+		}
+	})
+}
+
 var _ = Describe("StringToCamelCase", func() {
 	It("should convert snake_case to CamelCase", func() {
 		testCases := []stringTestCase{
@@ -73,8 +100,8 @@ var _ = Describe("StringToCamelCase", func() {
 })
 
 var _ = Describe("StringToSnakeCase", func() {
-	It("should convert CamelCase to snake_case", func() {
-		testCases := []stringTestCase{
+	testCase := caseConversionTestCase{
+		testCases: []stringTestCase{
 			{"CamelCase", "camel_case"},
 			{"Simple", "simple"},
 			{"MultipleWordsHere", "multiple_words_here"},
@@ -83,22 +110,19 @@ var _ = Describe("StringToSnakeCase", func() {
 			{"Single", "single"},
 			{"XMLHttpRequest", "xmlhttp_request"},
 			{"UserID", "user_id"},
-		}
+		},
+		edgeCaseFunc: utils.StringToSnakeCase,
+		edgeExpected: "",
+		edgeLeading: "-_leading",
+		edgeTrailing: "trailing_",
+	}
 
-		runStringTests(utils.StringToSnakeCase, testCases)
-	})
-
-	It("should handle edge cases", func() {
-		testEdgeCases(utils.StringToSnakeCase, "", "a")
-
-		Expect(utils.StringToSnakeCase("-Leading")).To(Equal("-_leading"))
-		Expect(utils.StringToSnakeCase("Trailing_")).To(Equal("trailing_"))
-	})
+	runCaseConversionTests(utils.StringToSnakeCase, "snake_case", testCase)
 })
 
 var _ = Describe("StringToKebabCase", func() {
-	It("should convert CamelCase to kebab-case", func() {
-		testCases := []stringTestCase{
+	testCase := caseConversionTestCase{
+		testCases: []stringTestCase{
 			{"CamelCase", "camel-case"},
 			{"Simple", "simple"},
 			{"MultipleWordsHere", "multiple-words-here"},
@@ -107,17 +131,14 @@ var _ = Describe("StringToKebabCase", func() {
 			{"Single", "single"},
 			{"XMLHttpRequest", "xmlhttp-request"},
 			{"UserID", "user-id"},
-		}
+		},
+		edgeCaseFunc: utils.StringToKebabCase,
+		edgeExpected: "",
+		edgeLeading: "--leading",
+		edgeTrailing: "trailing-",
+	}
 
-		runStringTests(utils.StringToKebabCase, testCases)
-	})
-
-	It("should handle edge cases", func() {
-		testEdgeCases(utils.StringToKebabCase, "", "a")
-
-		Expect(utils.StringToKebabCase("-Leading")).To(Equal("--leading"))
-		Expect(utils.StringToKebabCase("Trailing-")).To(Equal("trailing-"))
-	})
+	runCaseConversionTests(utils.StringToKebabCase, "kebab-case", testCase)
 })
 
 var _ = Describe("Pluralize and Singularize", func() {
