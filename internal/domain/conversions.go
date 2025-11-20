@@ -68,21 +68,9 @@ func EmitOptionsToTypeSafe(old generated.EmitOptions) TypeSafeEmitOptions {
 	}
 }
 
-// ToLegacy converts new TypeSafeEmitOptions back to old generated.EmitOptions
-// This enables backward compatibility with existing code
-func (opts TypeSafeEmitOptions) ToLegacy() generated.EmitOptions {
-	return generated.EmitOptions{
-		EmitJSONTags:             opts.Features.GenerateJSONTags,
-		EmitPreparedQueries:      opts.Features.GeneratePreparedQueries,
-		EmitInterface:            opts.Features.GenerateInterface,
-		EmitEmptySlices:          opts.NullHandling.UseEmptySlices(),
-		EmitResultStructPointers: opts.StructPointers.UseResultPointers(),
-		EmitParamsStructPointers: opts.StructPointers.UseParamPointers(),
-		EmitEnumValidMethod:      opts.EnumMode.IncludesValidation(),
-		EmitAllEnumValues:        opts.EnumMode.IncludesAllValues(),
-		JSONTagsCaseStyle:        opts.JSONTagStyle.String(),
-	}
-}
+// NOTE: ToLegacy method moved to emit_modes.go as ToTemplateData()
+// This eliminates split brain and provides single source of truth for conversion
+// Use: opts.ToTemplateData() instead of opts.ToLegacy()
 
 // ParseJSONTagStyle converts string to JSONTagStyle enum
 func ParseJSONTagStyle(s string) JSONTagStyle {
