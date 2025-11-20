@@ -94,32 +94,32 @@ var _ = Describe("QuerySafetyRules", func() {
 	})
 })
 
+// DestructiveOperationPolicy validation test suite
+type DestructiveOperationPolicyTestSuite struct{}
+
+func (DestructiveOperationPolicyTestSuite) GetValidValues() []domain.DestructiveOperationPolicy {
+	return []domain.DestructiveOperationPolicy{
+		domain.DestructiveAllowed,
+		domain.DestructiveWithConfirmation,
+		domain.DestructiveForbidden,
+	}
+}
+
+func (DestructiveOperationPolicyTestSuite) GetInvalidValues() []domain.DestructiveOperationPolicy {
+	return []domain.DestructiveOperationPolicy{
+		"invalid",
+		"",
+		"sometimes",
+	}
+}
+
+func (DestructiveOperationPolicyTestSuite) GetTypeName() string {
+	return "DestructiveOperationPolicy"
+}
+
 var _ = Describe("DestructiveOperationPolicy", func() {
-	Context("IsValid", func() {
-		It("should validate all defined policies", func() {
-			validPolicies := []domain.DestructiveOperationPolicy{
-				domain.DestructiveAllowed,
-				domain.DestructiveWithConfirmation,
-				domain.DestructiveForbidden,
-			}
-
-			for _, policy := range validPolicies {
-				Expect(policy.IsValid()).To(BeTrue(), "Policy %s should be valid", policy)
-			}
-		})
-
-		It("should reject invalid policies", func() {
-			invalidPolicies := []domain.DestructiveOperationPolicy{
-				"invalid",
-				"",
-				"sometimes",
-			}
-
-			for _, policy := range invalidPolicies {
-				Expect(policy.IsValid()).To(BeFalse(), "Policy %s should be invalid", policy)
-			}
-		})
-	})
+	// Use generic validation test suite
+testValidationSuite(DestructiveOperationPolicyTestSuite{})
 
 	Context("AllowsDropTable", func() {
 		It("should allow DROP TABLE only when policy is 'allowed'", func() {

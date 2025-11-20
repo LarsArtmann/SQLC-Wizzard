@@ -18,6 +18,31 @@ func TestCreators(t *testing.T) {
 	RunSpecs(t, "Creators Suite")
 }
 
+// createBaseConfig generates a base project configuration with standard defaults
+func createBaseConfig(projectName string) *creators.CreateConfig {
+	return &creators.CreateConfig{
+		ProjectName: projectName,
+		ProjectType: generated.ProjectTypeMicroservice,
+		Database:    generated.DatabaseTypePostgreSQL,
+		Config: &config.SqlcConfig{
+			Version: "2",
+			SQL: []config.SQLConfig{
+				{
+					Engine:  "postgresql",
+					Queries: config.NewPathOrPaths([]string{"queries/"}),
+					Schema:  config.NewPathOrPaths([]string{"schema/"}),
+					Gen: config.GenConfig{
+						Go: &config.GoGenConfig{
+							Package: "db",
+							Out:     "internal/db",
+						},
+					},
+				},
+			},
+		},
+	}
+}
+
 // Mock adapters for testing
 type MockFileSystemAdapter struct {
 	mkdirAllCalls []MkdirAllCall
@@ -135,27 +160,7 @@ var _ = Describe("ProjectCreator", func() {
 		var cfg *creators.CreateConfig
 
 		BeforeEach(func() {
-			cfg = &creators.CreateConfig{
-				ProjectName: "test-project",
-				ProjectType: generated.ProjectTypeMicroservice,
-				Database:    generated.DatabaseTypePostgreSQL,
-				Config: &config.SqlcConfig{
-					Version: "2",
-					SQL: []config.SQLConfig{
-						{
-							Engine:  "postgresql",
-							Queries: config.NewPathOrPaths([]string{"queries/"}),
-							Schema:  config.NewPathOrPaths([]string{"schema/"}),
-							Gen: config.GenConfig{
-								Go: &config.GoGenConfig{
-									Package: "db",
-									Out:     "internal/db",
-								},
-							},
-						},
-					},
-				},
-			}
+			cfg = createBaseConfig("test-project")
 		})
 
 		It("should create project successfully", func() {
@@ -332,27 +337,7 @@ var _ = Describe("ProjectCreator", func() {
 
 	Context("Integration", func() {
 		It("should create complete project structure in correct order", func() {
-			cfg := &creators.CreateConfig{
-				ProjectName: "integration-test",
-				ProjectType: generated.ProjectTypeMicroservice,
-				Database:    generated.DatabaseTypePostgreSQL,
-				Config: &config.SqlcConfig{
-					Version: "2",
-					SQL: []config.SQLConfig{
-						{
-							Engine:  "postgresql",
-							Queries: config.NewPathOrPaths([]string{"queries/"}),
-							Schema:  config.NewPathOrPaths([]string{"schema/"}),
-							Gen: config.GenConfig{
-								Go: &config.GoGenConfig{
-									Package: "db",
-									Out:     "internal/db",
-								},
-							},
-						},
-					},
-				},
-			}
+			cfg := createBaseConfig("integration-test")
 
 			err := creator.CreateProject(ctx, cfg)
 

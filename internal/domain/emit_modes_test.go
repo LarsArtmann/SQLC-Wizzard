@@ -113,21 +113,30 @@ func (JSONTagStyleTestSuite) GetTypeName() string {
 	return "JSONTagStyle"
 }
 
+// runBooleanMethodTest runs generic tests for boolean methods
+func runBooleanMethodTest(context string, trueModes []string, falseModes []string, method func(string) bool, methodDisplay string) {
+	It("should return true for "+context, func() {
+		for _, mode := range trueModes {
+			Expect(method(mode)).To(BeTrue(), "Mode %s should return true for "+context, mode)
+		}
+	})
+
+	It("should return false for modes without "+context, func() {
+		for _, mode := range falseModes {
+			Expect(method(mode)).To(BeFalse(), "Mode %s should return false for "+context, mode)
+		}
+	})
+}
+
 var _ = Describe("NullHandlingMode", func() {
 	// Use generic validation test suite
 testValidationSuite(NullHandlingModeTestSuite{})
 
-	Context("UsePointers", func() {
-		It("should return true for pointer modes", func() {
-			Expect(domain.NullHandlingPointers.UsePointers()).To(BeTrue())
-			Expect(domain.NullHandlingMixed.UsePointers()).To(BeTrue())
-		})
-
-		It("should return false for non-pointer modes", func() {
-			Expect(domain.NullHandlingEmptySlices.UsePointers()).To(BeFalse())
-			Expect(domain.NullHandlingExplicitNull.UsePointers()).To(BeFalse())
-		})
-	})
+	runBooleanMethodTest("pointer modes", 
+	[]string{"pointers", "mixed"}, 
+	[]string{"empty_slices", "explicit_null"}, 
+	func(mode string) bool { return domain.NullHandlingMode(mode).UsePointers() }, 
+	"UsePointers")
 
 	Context("UseEmptySlices", func() {
 		It("should return true only for empty slices mode", func() {
@@ -213,29 +222,17 @@ var _ = Describe("StructPointerMode", func() {
 	// Use generic validation test suite
 testValidationSuite(StructPointerModeTestSuite{})
 
-	Context("UseResultPointers", func() {
-		It("should return true for modes with result pointers", func() {
-			Expect(domain.StructPointerResults.UseResultPointers()).To(BeTrue())
-			Expect(domain.StructPointerAlways.UseResultPointers()).To(BeTrue())
-		})
+	runBooleanMethodTest("modes with result pointers", 
+	[]string{"results", "always"}, 
+	[]string{"never", "params"}, 
+	func(mode string) bool { return domain.StructPointerMode(mode).UseResultPointers() }, 
+	"UseResultPointers")
 
-		It("should return false for modes without result pointers", func() {
-			Expect(domain.StructPointerNever.UseResultPointers()).To(BeFalse())
-			Expect(domain.StructPointerParams.UseResultPointers()).To(BeFalse())
-		})
-	})
-
-	Context("UseParamPointers", func() {
-		It("should return true for modes with param pointers", func() {
-			Expect(domain.StructPointerParams.UseParamPointers()).To(BeTrue())
-			Expect(domain.StructPointerAlways.UseParamPointers()).To(BeTrue())
-		})
-
-		It("should return false for modes without param pointers", func() {
-			Expect(domain.StructPointerNever.UseParamPointers()).To(BeFalse())
-			Expect(domain.StructPointerResults.UseParamPointers()).To(BeFalse())
-		})
-	})
+	runBooleanMethodTest("param pointers",
+	[]string{"params", "always"},
+	[]string{"never", "results"},
+	func(mode string) bool { return domain.StructPointerMode(mode).UseParamPointers() },
+	"UseParamPointers")
 
 	Context("String", func() {
 		It("should return correct string representation", func() {
