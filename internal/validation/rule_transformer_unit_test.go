@@ -10,6 +10,17 @@ import (
 	. "github.com/onsi/gomega"
 )
 
+// runRuleTransformationTest runs a generic test for safety rule transformation
+func runRuleTransformationTest(transformer *validation.RuleTransformer, ruleName, expectedRule, expectedMessage string, setupRules func() *generated.SafetyRules) {
+	rules := setupRules()
+	configRules := transformer.TransformSafetyRules(rules)
+
+	Expect(configRules).To(HaveLen(1))
+	Expect(configRules[0].Name).To(Equal(ruleName))
+	Expect(configRules[0].Rule).To(Equal(expectedRule))
+	Expect(configRules[0].Message).To(Equal(expectedMessage))
+}
+
 func TestValidation(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Validation Unit Suite")
@@ -42,42 +53,39 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should transform NoSelectStar rule", func() {
-			rules := &generated.SafetyRules{
-				NoSelectStar: true,
-			}
-
-			configRules := transformer.TransformSafetyRules(rules)
-
-			Expect(configRules).To(HaveLen(1))
-			Expect(configRules[0].Name).To(Equal("no-select-star"))
-			Expect(configRules[0].Rule).To(Equal("!query.contains('SELECT *')"))
-			Expect(configRules[0].Message).To(Equal("SELECT * is not allowed"))
+			runRuleTransformationTest(
+				transformer,
+				"no-select-star",
+				"!query.contains('SELECT *')",
+				"SELECT * is not allowed",
+				func() *generated.SafetyRules {
+					return &generated.SafetyRules{NoSelectStar: true}
+				},
+			)
 		})
 
 		It("should transform RequireWhere rule", func() {
-			rules := &generated.SafetyRules{
-				RequireWhere: true,
-			}
-
-			configRules := transformer.TransformSafetyRules(rules)
-
-			Expect(configRules).To(HaveLen(1))
-			Expect(configRules[0].Name).To(Equal("require-where"))
-			Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()"))
-			Expect(configRules[0].Message).To(Equal("WHERE clause is required for this query type"))
+			runRuleTransformationTest(
+				transformer,
+				"require-where",
+				"query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
+				"WHERE clause is required for this query type",
+				func() *generated.SafetyRules {
+					return &generated.SafetyRules{RequireWhere: true}
+				},
+			)
 		})
 
 		It("should transform RequireLimit rule", func() {
-			rules := &generated.SafetyRules{
-				RequireLimit: true,
-			}
-
-			configRules := transformer.TransformSafetyRules(rules)
-
-			Expect(configRules).To(HaveLen(1))
-			Expect(configRules[0].Name).To(Equal("require-limit"))
-			Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && !query.hasLimitClause()"))
-			Expect(configRules[0].Message).To(Equal("LIMIT clause is required for SELECT queries"))
+			runRuleTransformationTest(
+				transformer,
+				"require-limit",
+				"query.type == 'SELECT' && !query.hasLimitClause()",
+				"LIMIT clause is required for SELECT queries",
+				func() *generated.SafetyRules {
+					return &generated.SafetyRules{RequireLimit: true}
+				},
+			)
 		})
 
 		It("should transform multiple rules", func() {

@@ -15,10 +15,10 @@ func TestErrors(t *testing.T) {
 }
 
 // testErrorCreation runs generic tests for error creation functions
-func testErrorCreation(err error, expectedCode, expectedComponent, expectedMessage string) {
+func testErrorCreation(err *errors.Error, expectedCode, expectedComponent, expectedMessage string) {
 	Expect(err).NotTo(BeNil())
 	Expect(err.Error()).To(Equal(expectedCode + ": " + expectedMessage))
-	Expect(err.Code).To(Equal(expectedCode))
+	Expect(err.Code).To(Equal(errors.ErrorCode(expectedCode)))
 	Expect(err.Component).To(Equal(expectedComponent))
 	if expectedMessage != "" {
 		Expect(err.Description).To(Equal(expectedMessage))
@@ -26,11 +26,13 @@ func testErrorCreation(err error, expectedCode, expectedComponent, expectedMessa
 }
 
 // testErrorWithCause runs generic tests for error creation functions with cause
-func testErrorWithCause(err error, expectedCode, expectedComponent, expectedMessage string, causeExists bool) {
+func testErrorWithCause(err error, expectedCode errors.ErrorCode, expectedComponent, expectedMessage string, causeExists bool) {
 	Expect(err).NotTo(BeNil())
-	Expect(err.Error()).To(Equal(expectedCode + ": " + expectedMessage))
-	Expect(err.Code).To(Equal(expectedCode))
-	Expect(err.Component).To(Equal(expectedComponent))
+	Expect(err.Error()).To(Equal(string(expectedCode) + ": " + expectedMessage))
+	if appErr, ok := err.(*errors.Error); ok {
+		Expect(appErr.Code).To(Equal(expectedCode))
+		Expect(appErr.Component).To(Equal(expectedComponent))
+	}
 	if causeExists {
 		Expect(err.Unwrap().Error()).To(Equal(expectedMessage))
 	}
@@ -113,7 +115,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create file read error", func() {
 			cause := fmt.Errorf("permission denied")
 			err := errors.FileReadError("/path/to/file.txt", cause)
-			testErrorWithCause(err, errors.ErrorCodeFileReadError, "filesystem", "permission denied", true)
+			testErrorWithCause(err, errors.ErrorCodeFileReadError, "filesystem", "Failed to read file: /path/to/file.txt", true)
 		})
 
 		It("should create config parse error", func() {

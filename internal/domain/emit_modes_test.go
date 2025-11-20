@@ -2,44 +2,13 @@ package domain_test
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 // Test cases for TypeSafeEmitOptions and related enums
 // Run via TestDomain in domain_test.go
-
-// ValidationTestSuite defines interface for types that need validation testing
-type ValidationTestSuite[T interface {
-	IsValid() bool
-	String() string
-}] interface {
-	GetValidValues() []T
-	GetInvalidValues() []T
-	GetTypeName() string
-}
-
-// testValidationSuite runs generic validation tests for any type implementing ValidationTestSuite
-func testValidationSuite[T interface {
-	IsValid() bool
-	String() string
-}](suite ValidationTestSuite[T]) {
-	Context("IsValid", func() {
-		It("should validate all defined "+suite.GetTypeName(), func() {
-			validValues := suite.GetValidValues()
-			for _, value := range validValues {
-				Expect(value.IsValid()).To(BeTrue(), "%s %s should be valid", suite.GetTypeName(), value)
-			}
-		})
-
-		It("should reject invalid "+suite.GetTypeName(), func() {
-			invalidValues := suite.GetInvalidValues()
-			for _, value := range invalidValues {
-				Expect(value.IsValid()).To(BeFalse(), "%s %s should be invalid", suite.GetTypeName(), value)
-			}
-		})
-	})
-}
 
 // NullHandlingMode validation test suite
 type NullHandlingModeTestSuite struct{}
@@ -113,30 +82,19 @@ func (JSONTagStyleTestSuite) GetTypeName() string {
 	return "JSONTagStyle"
 }
 
-// runBooleanMethodTest runs generic tests for boolean methods
-func runBooleanMethodTest(context string, trueModes []string, falseModes []string, method func(string) bool, methodDisplay string) {
-	It("should return true for "+context, func() {
-		for _, mode := range trueModes {
-			Expect(method(mode)).To(BeTrue(), "Mode %s should return true for "+context, mode)
-		}
-	})
-
-	It("should return false for modes without "+context, func() {
-		for _, mode := range falseModes {
-			Expect(method(mode)).To(BeFalse(), "Mode %s should return false for "+context, mode)
-		}
-	})
+// Use generic helpers from centralized testing package
+	}
 }
 
 var _ = Describe("NullHandlingMode", func() {
 	// Use generic validation test suite
-testValidationSuite(NullHandlingModeTestSuite{})
+	testing.TestValidationSuite(NullHandlingModeTestSuite{})
 
-	runBooleanMethodTest("pointer modes", 
-	[]string{"pointers", "mixed"}, 
-	[]string{"empty_slices", "explicit_null"}, 
-	func(mode string) bool { return domain.NullHandlingMode(mode).UsePointers() }, 
-	"UsePointers")
+	testing.RunBooleanMethodTest("pointer modes", 
+		[]string{"pointers", "mixed"}, 
+		[]string{"empty_slices", "explicit_null"}, 
+		func(mode string) bool { return domain.NullHandlingMode(mode).UsePointers() }, 
+		"UsePointers")
 
 	Context("UseEmptySlices", func() {
 		It("should return true only for empty slices mode", func() {
@@ -149,13 +107,24 @@ testValidationSuite(NullHandlingModeTestSuite{})
 			Expect(domain.NullHandlingMixed.UseEmptySlices()).To(BeFalse())
 		})
 	})
+})
 
+// runStringRepresentationTest runs generic tests for String() method of enums
+func runStringRepresentationTest(testCases map[string]string) {
+	for enumValue, expectedString := range testCases {
+		Expect(enumValue.String()).To(Equal(expectedString))
+	}
+}
+
+var _ = Describe("NullHandlingMode", func() {
 	Context("String", func() {
 		It("should return correct string representation", func() {
-			Expect(domain.NullHandlingPointers.String()).To(Equal("pointers"))
-			Expect(domain.NullHandlingEmptySlices.String()).To(Equal("empty_slices"))
-			Expect(domain.NullHandlingExplicitNull.String()).To(Equal("explicit_null"))
-			Expect(domain.NullHandlingMixed.String()).To(Equal("mixed"))
+			runStringRepresentationTest(map[string]string{
+				domain.NullHandlingPointers.String():    "pointers",
+				domain.NullHandlingEmptySlices.String(): "empty_slices",
+				domain.NullHandlingExplicitNull.String(): "explicit_null",
+				domain.NullHandlingMixed.String():       "mixed",
+			})
 		})
 	})
 })
@@ -211,9 +180,11 @@ var _ = Describe("EnumGenerationMode", func() {
 
 	Context("String", func() {
 		It("should return correct string representation", func() {
-			Expect(domain.EnumGenerationBasic.String()).To(Equal("basic"))
-			Expect(domain.EnumGenerationWithValidation.String()).To(Equal("with_validation"))
-			Expect(domain.EnumGenerationComplete.String()).To(Equal("complete"))
+			runStringRepresentationTest(map[string]string{
+				domain.EnumGenerationBasic.String():          "basic",
+				domain.EnumGenerationWithValidation.String(): "with_validation",
+				domain.EnumGenerationComplete.String():       "complete",
+			})
 		})
 	})
 })
@@ -236,10 +207,12 @@ testValidationSuite(StructPointerModeTestSuite{})
 
 	Context("String", func() {
 		It("should return correct string representation", func() {
-			Expect(domain.StructPointerNever.String()).To(Equal("never"))
-			Expect(domain.StructPointerResults.String()).To(Equal("results"))
-			Expect(domain.StructPointerParams.String()).To(Equal("params"))
-			Expect(domain.StructPointerAlways.String()).To(Equal("always"))
+			runStringRepresentationTest(map[string]string{
+				domain.StructPointerNever.String():   "never",
+				domain.StructPointerResults.String(): "results",
+				domain.StructPointerParams.String():  "params",
+				domain.StructPointerAlways.String():  "always",
+			})
 		})
 	})
 })
@@ -250,10 +223,12 @@ testValidationSuite(JSONTagStyleTestSuite{})
 
 	Context("String", func() {
 		It("should return correct string representation", func() {
-			Expect(domain.JSONTagStyleCamel.String()).To(Equal("camel"))
-			Expect(domain.JSONTagStyleSnake.String()).To(Equal("snake"))
-			Expect(domain.JSONTagStylePascal.String()).To(Equal("pascal"))
-			Expect(domain.JSONTagStyleKebab.String()).To(Equal("kebab"))
+			runStringRepresentationTest(map[string]string{
+				domain.JSONTagStyleCamel.String():  "camel",
+				domain.JSONTagStyleSnake.String():  "snake",
+				domain.JSONTagStylePascal.String(): "pascal",
+				domain.JSONTagStyleKebab.String():  "kebab",
+			})
 		})
 	})
 })
