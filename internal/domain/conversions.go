@@ -110,13 +110,12 @@ func SafetyRulesToTypeSafe(old generated.SafetyRules) TypeSafeSafetyRules {
 
 	return TypeSafeSafetyRules{
 		StyleRules: QueryStyleRules{
-			NoSelectStar: old.NoSelectStar,
-			// RequireExplicitColumns not present in old structure
-			RequireExplicitColumns: false,
+			SelectStarPolicy:    convertNoSelectStarPolicy(old.NoSelectStar),
+			ColumnExplicitness:  ColumnExplicitnessDefault, // Not present in old structure
 		},
 		SafetyRules: QuerySafetyRules{
-			RequireWhere: old.RequireWhere,
-			RequireLimit: old.RequireLimit,
+			WhereRequirement:     convertWhereRequirement(old.RequireWhere),
+			LimitRequirement:     convertLimitRequirement(old.RequireLimit),
 			// MaxRowsWithoutLimit not present in old structure, use safe default
 			MaxRowsWithoutLimit: 1000,
 		},
@@ -125,16 +124,40 @@ func SafetyRulesToTypeSafe(old generated.SafetyRules) TypeSafeSafetyRules {
 	}
 }
 
+// convertNoSelectStarPolicy converts old boolean to new SelectStarPolicy
+func convertNoSelectStarPolicy(noSelectStar bool) SelectStarPolicy {
+	if noSelectStar {
+		return SelectStarForbidden
+	}
+	return SelectStarAllowed
+}
+
+// convertWhereRequirement converts old boolean to new WhereClauseRequirement
+func convertWhereRequirement(requireWhere bool) WhereClauseRequirement {
+	if requireWhere {
+		return WhereClauseOnDestructive
+	}
+	return WhereClauseNever
+}
+
+// convertLimitRequirement converts old boolean to new LimitClauseRequirement
+func convertLimitRequirement(requireLimit bool) LimitClauseRequirement {
+	if requireLimit {
+		return LimitClauseOnSelect
+	}
+	return LimitClauseNever
+}
+
 // Legacy Conversion - DEPRECATED
 // This method exists for backward compatibility but should not be used in new code
 // Use: opts.ToTemplateData() instead of opts.ToLegacy()
 func (rules TypeSafeSafetyRules) ToLegacy() generated.SafetyRules {
 	return generated.SafetyRules{
-		NoSelectStar: rules.StyleRules.NoSelectStar,
-		RequireWhere: rules.SafetyRules.RequireWhere,
+		NoSelectStar: rules.StyleRules.SelectStarPolicy.ForbidsSelectStar(),
+		RequireWhere: rules.SafetyRules.WhereRequirement.RequiresOnDestructive(),
 		NoDropTable:  !rules.DestructiveOps.AllowsDropTable(),
 		NoTruncate:   !rules.DestructiveOps.AllowsTruncate(),
-		RequireLimit: rules.SafetyRules.RequireLimit,
+		RequireLimit: rules.SafetyRules.LimitRequirement.RequiresOnSelect(),
 		Rules:        rules.CustomRules,
 	}
 }
