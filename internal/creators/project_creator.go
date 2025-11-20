@@ -113,6 +113,11 @@ func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *
 func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateConfig) error {
 	pc.cli.Println("⚙️  Generating sqlc.yaml...")
 
+	// Defensive check: ensure config is not nil before marshalling
+	if cfg.Config == nil {
+		return fmt.Errorf("sqlc config is nil: cannot marshal empty configuration to yaml")
+	}
+
 	// Convert config to YAML using the marshaller
 	yamlContent, err := config.Marshal(cfg.Config)
 	if err != nil {

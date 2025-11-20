@@ -144,19 +144,13 @@ var _ = Describe("Error Builder Pattern", func() {
 	})
 
 	Context("WithMessage", func() {
-		It("should add message to error details", func() {
-			err := errors.NewError(errors.ErrorCodeValidationError, "invalid input").
-				WithMessage("Age must be between 1 and 120")
-
-			Expect(err.Details).NotTo(BeNil())
-			Expect(err.Details.Message).To(Equal("Age must be between 1 and 120"))
-		})
-
-		It("should create details if nil", func() {
+		It("should create details when nil and set message", func() {
 			err := errors.NewError(errors.ErrorCodeValidationError, "test")
 
+			// Initially details should be nil
 			Expect(err.Details).To(BeNil())
 
+			// WithMessage should create details and set message
 			err = err.WithMessage("test message")
 
 			Expect(err.Details).NotTo(BeNil())
@@ -409,6 +403,8 @@ var _ = Describe("Error Wrapping", func() {
 
 			Expect(wrapped).NotTo(BeNil())
 			Expect(wrapped.Message).To(ContainSubstring("Cannot wrap nil error"))
+			Expect(wrapped.Code).To(Equal(errors.ErrorCodeInternalServer))
+			Expect(wrapped.Component).To(Equal("application")) // Default component from NewError
 		})
 	})
 
@@ -492,7 +488,19 @@ var _ = Describe("Error Combination", func() {
 
 			Expect(list.GetCount()).To(Equal(2))
 			Expect(list.Errors[0].Code).To(Equal(errors.ErrorCodeInternalServer))
+			Expect(list.Errors[0].Component).To(Equal("unknown"))
+			Expect(list.Errors[0].Message).To(ContainSubstring("standard error"))
 			Expect(list.Errors[1].Code).To(Equal(errors.ErrorCodeValidationError))
+		})
+
+		It("should skip nil errors", func() {
+			appErr := errors.NewError(errors.ErrorCodeValidationError, "app error")
+			
+			list := errors.CombineErrors(nil, appErr, nil)
+
+			Expect(list.GetCount()).To(Equal(1))
+			Expect(list.Errors[0].Code).To(Equal(errors.ErrorCodeValidationError))
+			Expect(list.Errors[0].Message).To(Equal("app error"))
 		})
 	})
 })
@@ -526,20 +534,24 @@ var _ = Describe("Base Errors", func() {
 	It("should have ErrConfigParseFailed", func() {
 		Expect(errors.ErrConfigParseFailed).NotTo(BeNil())
 		Expect(errors.ErrConfigParseFailed.Code).To(Equal(errors.ErrorCodeConfigParseFailed))
+		Expect(errors.ErrConfigParseFailed.Message).To(Equal("Config parse failed"))
 	})
 
 	It("should have ErrInvalidValue", func() {
 		Expect(errors.ErrInvalidValue).NotTo(BeNil())
 		Expect(errors.ErrInvalidValue.Code).To(Equal(errors.ErrorCodeInvalidValue))
+		Expect(errors.ErrInvalidValue.Message).To(Equal("Invalid value"))
 	})
 
 	It("should have ErrFileNotFound", func() {
 		Expect(errors.ErrFileNotFound).NotTo(BeNil())
 		Expect(errors.ErrFileNotFound.Code).To(Equal(errors.ErrorCodeFileNotFound))
+		Expect(errors.ErrFileNotFound.Message).To(Equal("File not found"))
 	})
 
 	It("should have ErrInvalidType", func() {
 		Expect(errors.ErrInvalidType).NotTo(BeNil())
 		Expect(errors.ErrInvalidType.Code).To(Equal(errors.ErrorCodeValidationError))
+		Expect(errors.ErrInvalidType.Message).To(Equal("Invalid type"))
 	})
 })

@@ -1,6 +1,9 @@
 package domain
 
-import "github.com/LarsArtmann/SQLC-Wizzard/generated"
+import (
+	"strconv"
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+)
 
 // This file contains type-safe safety policy configuration
 // Replaces the boolean-heavy SafetyRules from generated/types.go with
@@ -109,7 +112,7 @@ func (t *TypeSafeSafetyRules) IsValid() error {
 		if rule.Name == "" {
 			return &DomainValidationError{
 				Field:   "CustomRules",
-				Message: "Custom rule at index " + string(rune(i)) + " has empty name",
+				Message: "Custom rule at index " + strconv.Itoa(i) + " has empty name",
 			}
 		}
 		if rule.Rule == "" {

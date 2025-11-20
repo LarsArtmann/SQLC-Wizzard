@@ -113,17 +113,18 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 	if rules.SafetyRules.RequireLimit {
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "require-limit",
-			Rule:    "query.type == 'SELECT' && query.hasLimitClause()",
+			Rule:    "query.type == 'SELECT' && !query.hasLimitClause()",
 			Message: "LIMIT clause is required for SELECT queries to prevent unbounded result sets",
 		})
 	}
 
 	// Transform MaxRowsWithoutLimit rule (NEW!)
 	if rules.SafetyRules.MaxRowsWithoutLimit > 0 {
+		limitStr := uintToString(rules.SafetyRules.MaxRowsWithoutLimit)
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "max-rows-without-limit",
-			Rule:    "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > " + uintToString(rules.SafetyRules.MaxRowsWithoutLimit) + ")",
-			Message: "SELECT queries without LIMIT or with LIMIT > " + uintToString(rules.SafetyRules.MaxRowsWithoutLimit) + " are not allowed",
+			Rule:    "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > " + limitStr + ")",
+			Message: "SELECT queries without LIMIT or with LIMIT > " + limitStr + " are not allowed",
 		})
 	}
 

@@ -269,6 +269,9 @@ func Combine(errors ...*Error) *ErrorList {
 func CombineErrors(errs ...error) *ErrorList {
 	errorList := NewErrorList()
 	for _, err := range errs {
+		if err == nil {
+			continue // Skip nil errors
+		}
 		if appErr, ok := err.(*Error); ok {
 			errorList.Add(appErr)
 		} else {
@@ -348,10 +351,16 @@ func Wrapf(err error, baseErr *Error, format string, args ...any) *Error {
 
 	message := fmt.Sprintf(format, args...)
 	wrapped := NewError(baseErr.Code, message).WithComponent(baseErr.Component)
+	
+	// Merge descriptions instead of clobbering
+	var finalDesc string
 	if baseErr.Description != "" {
-		wrapped = wrapped.WithDescription(baseErr.Description)
+		finalDesc = baseErr.Description + " | " + fmt.Sprintf("Original error: %v", err)
+	} else {
+		finalDesc = fmt.Sprintf("Original error: %v", err)
 	}
-	return wrapped.WithDescription(fmt.Sprintf("Original error: %v", err))
+	
+	return wrapped.WithDescription(finalDesc)
 }
 
 // TemplateNotFoundError creates a template not found error

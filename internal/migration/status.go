@@ -103,7 +103,15 @@ func (ms *MigrationStatus) GetAppliedMigrations() uint {
 // GetPendingMigrations returns count of pending migrations
 // Returns uint because migration counts cannot be negative
 func (ms *MigrationStatus) GetPendingMigrations() uint {
-	return ms.GetMigrationCount() - ms.GetAppliedMigrations()
+	total := ms.GetMigrationCount()
+	applied := ms.GetAppliedMigrations()
+	
+	// Defensive check: prevent uint underflow if applied > total (inconsistent state)
+	if applied >= total {
+		return 0 // Inconsistent state: no pending migrations possible
+	}
+	
+	return total - applied
 }
 
 // ValidationError represents migration-specific validation errors

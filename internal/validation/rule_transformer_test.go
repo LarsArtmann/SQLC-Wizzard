@@ -269,9 +269,9 @@ var _ = Describe("RuleTransformer", func() {
 	})
 
 	Context("Edge Cases", func() {
-		It("should handle nil rules gracefully", func() {
-			// Note: This would panic in real usage, but demonstrates defensive programming need
-			// In production, callers should ensure rules are not nil
+		It("should handle empty rules struct gracefully", func() {
+			// Test with all-zero/empty struct to ensure no panics
+			// Real nil case should be handled at caller level
 
 			rules := &generated.SafetyRules{}
 			configRules := transformer.TransformSafetyRules(rules)
