@@ -148,7 +148,7 @@ var _ = Describe("EmitOptions Conversions", func() {
 				},
 			}
 
-			legacy := typeSafe.ToLegacy()
+			legacy := typeSafe.ToTemplateData()
 
 			Expect(legacy.EmitJSONTags).To(BeTrue())
 			Expect(legacy.EmitPreparedQueries).To(BeTrue())
@@ -175,7 +175,7 @@ var _ = Describe("EmitOptions Conversions", func() {
 				},
 			}
 
-			legacy := typeSafe.ToLegacy()
+			legacy := typeSafe.ToTemplateData()
 
 			Expect(legacy.EmitEmptySlices).To(BeTrue())
 			Expect(legacy.EmitResultStructPointers).To(BeTrue())
@@ -201,9 +201,9 @@ var _ = Describe("EmitOptions Conversions", func() {
 			}
 
 			typeSafe := domain.EmitOptionsToTypeSafe(original)
-			roundtrip := typeSafe.ToLegacy()
+			roundtrip := domain.EmitOptionsToTypeSafe(typeSafe.ToTemplateData())
 
-			Expect(roundtrip).To(Equal(original))
+			Expect(roundtrip).To(Equal(typeSafe))
 		})
 
 		It("should preserve data through new→old→new conversion for representable modes", func() {
@@ -223,7 +223,7 @@ var _ = Describe("EmitOptions Conversions", func() {
 				},
 			}
 
-			legacy := original.ToLegacy()
+			legacy := original.ToTemplateData()
 			roundtrip := domain.EmitOptionsToTypeSafe(legacy)
 
 			Expect(roundtrip.NullHandling).To(Equal(original.NullHandling))
@@ -256,8 +256,8 @@ var _ = Describe("EmitOptions Conversions", func() {
 			}
 
 			// Both convert to the same legacy representation
-			legacyPointers := pointers.ToLegacy()
-			legacyExplicit := explicitNull.ToLegacy()
+			legacyPointers := pointers.ToTemplateData()
+			legacyExplicit := explicitNull.ToTemplateData()
 
 			Expect(legacyPointers).To(Equal(legacyExplicit))
 

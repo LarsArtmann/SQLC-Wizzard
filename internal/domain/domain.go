@@ -6,7 +6,7 @@ import (
 )
 
 // EmitOptions is a type alias for the generated EmitOptions
-// This ensures we use the single source of truth from TypeSpec generation
+// This ensures we use the single source of truth from the generated types
 //
 // DEPRECATED: This is the OLD boolean-heavy version. For new code, use TypeSafeEmitOptions
 // from emit_modes.go which provides proper type safety with semantic enums.
@@ -36,9 +36,8 @@ type SafetyRules = generated.SafetyRules
 // proper type safety with semantic enums that prevent invalid state combinations.
 //
 // NOTE: This is also defined in generated/types.go (line 139). That version is
-// generated from TypeSpec and should be considered the canonical source for the
-// OLD boolean-based structure. This wrapper exists to provide a domain-layer
-// access point for backward compatibility.
+// the canonical source for the OLD boolean-based structure. This wrapper exists
+// to provide a domain-layer access point for backward compatibility.
 //
 // For new code, use:
 //
@@ -65,7 +64,7 @@ func DefaultEmitOptions() EmitOptions {
 // proper type safety with semantic groupings and enums.
 //
 // NOTE: This is also defined in generated/types.go (line 154). That version is
-// generated from TypeSpec and should be considered the canonical source for the
+// generated and should be considered the canonical source for the
 // OLD boolean-based structure. This wrapper exists to provide a domain-layer
 // access point for backward compatibility.
 //

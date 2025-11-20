@@ -1,6 +1,7 @@
 package errors_test
 
 import (
+	stderrors "errors"
 	"fmt"
 	"testing"
 
@@ -28,13 +29,13 @@ func testErrorCreation(err *errors.Error, expectedCode, expectedComponent, expec
 // testErrorWithCause runs generic tests for error creation functions with cause
 func testErrorWithCause(err error, expectedCode errors.ErrorCode, expectedComponent, expectedMessage string, causeExists bool) {
 	Expect(err).NotTo(BeNil())
-	Expect(err.Error()).To(Equal(string(expectedCode) + ": " + expectedMessage))
+	Expect(err.Error()).To(Equal("[" + string(expectedCode) + "] " + expectedMessage))
 	if appErr, ok := err.(*errors.Error); ok {
 		Expect(appErr.Code).To(Equal(expectedCode))
 		Expect(appErr.Component).To(Equal(expectedComponent))
 	}
 	if causeExists {
-		Expect(err.Unwrap().Error()).To(Equal(expectedMessage))
+		Expect(stderrors.Unwrap(err).Error()).To(Equal(expectedMessage))
 	}
 }
 
@@ -114,8 +115,15 @@ var _ = Describe("Error Creation", func() {
 
 		It("should create file read error", func() {
 			cause := fmt.Errorf("permission denied")
-			err := errors.FileReadError("/path/to/file.txt", cause)
-			testErrorWithCause(err, errors.ErrorCodeFileReadError, "filesystem", "Failed to read file: /path/to/file.txt", true)
+			fileErr := errors.FileReadError("/path/to/file.txt", cause)
+			
+			// Check main error format
+			Expect(fileErr).NotTo(BeNil())
+			Expect(fileErr.Error()).To(Equal("[FILE_READ_ERROR] Failed to read file: /path/to/file.txt"))
+			
+			// Check that error has cause
+			Expect(stderrors.Unwrap(fileErr)).NotTo(BeNil())
+			Expect(stderrors.Unwrap(fileErr).Error()).To(Equal("permission denied"))
 		})
 
 		It("should create config parse error", func() {

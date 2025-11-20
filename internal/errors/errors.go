@@ -76,6 +76,7 @@ type Error struct {
 	Code        ErrorCode     `json:"code"`
 	Message     string        `json:"message"`
 	Description string        `json:"description,omitempty"`
+	cause       error         `json:"-"` // Hidden from JSON, used for Unwrap()
 	Details     *ErrorDetails `json:"details,omitempty"`
 	Timestamp   int64         `json:"timestamp"`
 	RequestID   string        `json:"request_id,omitempty"`
@@ -158,6 +159,17 @@ func (e *Error) WithSeverity(severity ErrorSeverity) *Error {
 func (e *Error) WithDescription(description string) *Error {
 	e.Description = description
 	return e
+}
+
+// WithCause wraps the error with a cause for unwrapping
+func (e *Error) WithCause(cause error) *Error {
+	e.cause = cause
+	return e
+}
+
+// Unwrap returns the underlying cause error
+func (e *Error) Unwrap() error {
+	return e.cause
 }
 
 // Error implements error interface
@@ -322,7 +334,7 @@ func FileReadError(path string, err error) *Error {
 	message := fmt.Sprintf("Failed to read file: %s", path)
 	appErr := NewError(ErrorCodeFileReadError, message).WithComponent("filesystem")
 	if err != nil {
-		appErr = appErr.WithDescription(err.Error())
+		appErr = appErr.WithCause(err)
 	}
 	return appErr
 }

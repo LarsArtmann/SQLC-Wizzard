@@ -171,9 +171,10 @@ var _ = Describe("ProjectCreator", func() {
 			// Verify directories were created
 			Expect(mockFS.mkdirAllCalls).NotTo(BeEmpty())
 
-			// Verify sqlc.yaml was written
-			Expect(mockFS.writeFileCalls).To(HaveLen(1))
+			// Verify sqlc.yaml and schema.sql were written
+			Expect(mockFS.writeFileCalls).To(HaveLen(2))
 			Expect(mockFS.writeFileCalls[0].Path).To(Equal("sqlc.yaml"))
+			Expect(mockFS.writeFileCalls[1].Path).To(Equal("schema.sql"))
 
 			// Verify CLI output
 			Expect(mockCLI.printedLines).NotTo(BeEmpty())
@@ -236,9 +237,10 @@ var _ = Describe("ProjectCreator", func() {
 
 			Expect(err).NotTo(HaveOccurred())
 
-			// Verify sqlc.yaml uses 0644 permissions
-			Expect(mockFS.writeFileCalls).To(HaveLen(1))
+			// Verify sqlc.yaml and schema.sql use 0644 permissions
+			Expect(mockFS.writeFileCalls).To(HaveLen(2))
 			Expect(mockFS.writeFileCalls[0].Perm).To(Equal(fs.FileMode(0o644)))
+			Expect(mockFS.writeFileCalls[1].Perm).To(Equal(fs.FileMode(0o644)))
 		})
 
 		It("should write valid YAML config", func() {
@@ -246,13 +248,18 @@ var _ = Describe("ProjectCreator", func() {
 
 			Expect(err).NotTo(HaveOccurred())
 
-			// Verify YAML was written
-			Expect(mockFS.writeFileCalls).To(HaveLen(1))
+			// Verify YAML and schema were written
+			Expect(mockFS.writeFileCalls).To(HaveLen(2))
 			yamlContent := string(mockFS.writeFileCalls[0].Content)
+			schemaContent := string(mockFS.writeFileCalls[1].Content)
 
 			// Basic YAML validation
 			Expect(yamlContent).To(ContainSubstring("version:"))
 			Expect(yamlContent).To(ContainSubstring("sql:"))
+			
+			// Schema validation
+			Expect(schemaContent).To(ContainSubstring("CREATE TABLE users"))
+			Expect(schemaContent).To(ContainSubstring("Database schema for"))
 		})
 
 		It("should fail when directory creation fails", func() {
@@ -345,7 +352,7 @@ var _ = Describe("ProjectCreator", func() {
 
 			// Verify order: directories first, then files
 			Expect(mockFS.mkdirAllCalls).NotTo(BeEmpty())
-			Expect(mockFS.writeFileCalls).To(HaveLen(1))
+			Expect(mockFS.writeFileCalls).To(HaveLen(2))
 
 			// All directories should be created before files
 			// (This is implicit in the implementation, but good to verify)

@@ -68,7 +68,7 @@ func EmitOptionsToTypeSafe(old generated.EmitOptions) TypeSafeEmitOptions {
 	}
 }
 
-// NOTE: ToLegacy method moved to emit_modes.go as ToTemplateData()
+// DEPRECATED: ToLegacy moved to emit_modes.go as ToTemplateData()
 // This eliminates split brain and provides single source of truth for conversion
 // Use: opts.ToTemplateData() instead of opts.ToLegacy()
 
@@ -125,8 +125,9 @@ func SafetyRulesToTypeSafe(old generated.SafetyRules) TypeSafeSafetyRules {
 	}
 }
 
-// ToLegacy converts new TypeSafeSafetyRules back to old generated.SafetyRules
-// This enables backward compatibility with existing code
+// Legacy Conversion - DEPRECATED
+// This method exists for backward compatibility but should not be used in new code
+// Use: opts.ToTemplateData() instead of opts.ToLegacy()
 func (rules TypeSafeSafetyRules) ToLegacy() generated.SafetyRules {
 	return generated.SafetyRules{
 		NoSelectStar: rules.StyleRules.NoSelectStar,
@@ -142,14 +143,14 @@ func (rules TypeSafeSafetyRules) ToLegacy() generated.SafetyRules {
 // Convenience Constructors with Conversions
 // ============================================================================
 
-// NewTypeSafeEmitOptionsFromLegacy is a convenience constructor that converts
-// old EmitOptions to new TypeSafeEmitOptions. Useful for migration.
+// Convenience Constructor - DEPRECATED
+// This exists for backward compatibility but should not be used in new code
 func NewTypeSafeEmitOptionsFromLegacy(old generated.EmitOptions) TypeSafeEmitOptions {
 	return EmitOptionsToTypeSafe(old)
 }
 
-// NewTypeSafeSafetyRulesFromLegacy is a convenience constructor that converts
-// old SafetyRules to new TypeSafeSafetyRules. Useful for migration.
+// Convenience Constructor - DEPRECATED
+// This exists for backward compatibility but should not be used in new code
 func NewTypeSafeSafetyRulesFromLegacy(old generated.SafetyRules) TypeSafeSafetyRules {
 	return SafetyRulesToTypeSafe(old)
 }

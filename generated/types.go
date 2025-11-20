@@ -1,4 +1,4 @@
-// Package generated contains type-safe enums and models generated from TypeSpec
+// Package generated contains type-safe enums and models for the SQLC-Wizard
 // Generated types ensure compile-time safety and prevent invalid states
 
 package generated
@@ -6,7 +6,6 @@ package generated
 import "time"
 
 // ProjectType represents the type of project template
-// TypeSpec: enum ProjectType { hobby, microservice, enterprise, api-first, analytics, testing, multi-tenant, library }
 type ProjectType string
 
 const (
@@ -34,7 +33,6 @@ func (p ProjectType) IsValid() bool {
 }
 
 // DatabaseType represents the supported database engines
-// TypeSpec: enum DatabaseType { postgresql, mysql, sqlite }
 type DatabaseType string
 
 const (
@@ -75,7 +73,6 @@ type DatabaseConfig struct {
 }
 
 // OutputConfig represents output directory configuration
-// TypeSpec: model OutputConfig { ... }
 type OutputConfig struct {
 	BaseDir    string `json:"base_dir"`
 	QueriesDir string `json:"queries_dir"`
@@ -92,7 +89,6 @@ type ValidationConfig struct {
 }
 
 // EmitOptions defines SQL code generation options
-// TypeSpec: model EmitOptions { ... }
 type EmitOptions struct {
 	EmitJSONTags             bool   `json:"emit_json_tags"`
 	EmitPreparedQueries      bool   `json:"emit_prepared_queries"`
@@ -163,7 +159,6 @@ func DefaultSafetyRules() SafetyRules {
 }
 
 // TemplateData represents the complete data structure for template generation
-// TypeSpec: model TemplateData { ... }
 type TemplateData struct {
 	ProjectName string      `json:"project_name"`
 	ProjectType ProjectType `json:"project_type"`
@@ -175,7 +170,6 @@ type TemplateData struct {
 }
 
 // CreateProjectCommand represents a command to create a new project
-// TypeSpec: model CreateProjectCommand { ... }
 type CreateProjectCommand struct {
 	Name        string       `json:"name"`
 	ProjectType ProjectType  `json:"project_type"`
@@ -184,7 +178,6 @@ type CreateProjectCommand struct {
 }
 
 // ProjectCreated represents a domain event when a project is created
-// TypeSpec: model ProjectCreated { ... }
 type ProjectCreated struct {
 	ID          string       `json:"id"`
 	Name        string       `json:"name"`
@@ -194,7 +187,6 @@ type ProjectCreated struct {
 }
 
 // ValidationResult represents the result of validation
-// TypeSpec: model ValidationResult { ... }
 type ValidationResult struct {
 	IsValid  bool     `json:"is_valid"`
 	Errors   []string `json:"errors"`
@@ -202,14 +194,12 @@ type ValidationResult struct {
 }
 
 // GenerateFilesCommand represents a command to generate files
-// TypeSpec: model GenerateFilesCommand { ... }
 type GenerateFilesCommand struct {
 	TemplateData TemplateData `json:"template_data"`
 	Force        bool         `json:"force"`
 }
 
 // FilesGenerated represents a domain event when files are generated
-// TypeSpec: model FilesGenerated { ... }
 type FilesGenerated struct {
 	TemplateData TemplateData `json:"template_data"`
 	OutputFiles  []string     `json:"output_files"`
