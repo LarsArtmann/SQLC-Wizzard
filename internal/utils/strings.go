@@ -24,8 +24,8 @@ func StringToCamelCase(s string) string {
 	return strings.Join(words, "")
 }
 
-// StringToSnakeCase converts CamelCase to snake_case
-func StringToSnakeCase(s string) string {
+// stringToCase converts CamelCase to specified case with separator
+func stringToCase(s string, separator rune) string {
 	if s == "" {
 		return ""
 	}
@@ -33,7 +33,7 @@ func StringToSnakeCase(s string) string {
 	var result []rune
 	for i, r := range s {
 		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
-			result = append(result, '_')
+			result = append(result, separator)
 		}
 		result = append(result, unicode.ToLower(r))
 	}
@@ -41,21 +41,14 @@ func StringToSnakeCase(s string) string {
 	return string(result)
 }
 
+// StringToSnakeCase converts CamelCase to snake_case
+func StringToSnakeCase(s string) string {
+	return stringToCase(s, '_')
+}
+
 // StringToKebabCase converts CamelCase to kebab-case
 func StringToKebabCase(s string) string {
-	if s == "" {
-		return ""
-	}
-
-	var result []rune
-	for i, r := range s {
-		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
-			result = append(result, '-')
-		}
-		result = append(result, unicode.ToLower(r))
-	}
-
-	return string(result)
+	return stringToCase(s, '-')
 }
 
 // Pluralize converts a noun to its plural form (simplified)
