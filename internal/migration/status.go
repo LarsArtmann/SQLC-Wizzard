@@ -59,8 +59,22 @@ func (ms *MigrationStatus) WithMigrations(migrations []Migration) {
 }
 
 // IsDirty returns whether the database is in a dirty state
+// This checks BOTH the database-level dirty flag AND any per-migration dirty flags
+// to prevent split brain where flags are inconsistent
 func (ms *MigrationStatus) IsDirty() bool {
-	return ms.Dirty
+	// Check database-level dirty flag
+	if ms.Dirty {
+		return true
+	}
+
+	// Check if any individual migration is dirty
+	for _, mig := range ms.Migrations {
+		if mig.Dirty {
+			return true
+		}
+	}
+
+	return false
 }
 
 // GetCurrentVersion returns the current migration version
@@ -69,13 +83,15 @@ func (ms *MigrationStatus) GetCurrentVersion() *uint {
 }
 
 // GetMigrationCount returns the total number of migrations
-func (ms *MigrationStatus) GetMigrationCount() int {
-	return len(ms.Migrations)
+// Returns uint because migration counts cannot be negative
+func (ms *MigrationStatus) GetMigrationCount() uint {
+	return uint(len(ms.Migrations))
 }
 
 // GetAppliedMigrations returns count of applied migrations
-func (ms *MigrationStatus) GetAppliedMigrations() int {
-	count := 0
+// Returns uint because migration counts cannot be negative
+func (ms *MigrationStatus) GetAppliedMigrations() uint {
+	var count uint
 	for _, mig := range ms.Migrations {
 		if mig.Applied {
 			count++
@@ -85,8 +101,17 @@ func (ms *MigrationStatus) GetAppliedMigrations() int {
 }
 
 // GetPendingMigrations returns count of pending migrations
-func (ms *MigrationStatus) GetPendingMigrations() int {
-	return ms.GetMigrationCount() - ms.GetAppliedMigrations()
+// Returns uint because migration counts cannot be negative
+func (ms *MigrationStatus) GetPendingMigrations() uint {
+	total := ms.GetMigrationCount()
+	applied := ms.GetAppliedMigrations()
+	
+	// Defensive check: prevent uint underflow if applied > total (inconsistent state)
+	if applied >= total {
+		return 0 // Inconsistent state: no pending migrations possible
+	}
+	
+	return total - applied
 }
 
 // ValidationError represents migration-specific validation errors

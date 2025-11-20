@@ -44,76 +44,129 @@ func (s *FeaturesStep) Execute(data *generated.TemplateData) error {
 	return nil
 }
 
-// configureCodeGeneration configures code generation options
-func (s *FeaturesStep) configureCodeGeneration(data *generated.TemplateData) error {
-	var (
-		emitInterface       bool
-		emitPreparedQueries bool
-		emitJSONTags        bool
-	)
+// fieldAssignment defines how to assign a boolean value to a data structure
+type fieldAssignment func(data *generated.TemplateData, value bool)
+
+// confirmationConfig represents a complete confirmation field configuration
+type confirmationConfig struct {
+	title       string
+	description string
+	assign      fieldAssignment
+}
+
+// Feature configuration interface to handle different config types generically
+type FeatureConfig interface {
+	GetTitle() string
+	GetDescription() string
+	Assign(data *generated.TemplateData, value bool)
+}
+
+// Code generation config implementation
+type codeGenerationConfig struct {
+	title       string
+	description string
+	assign      func(data *generated.TemplateData, value bool)
+}
+
+func (c codeGenerationConfig) GetTitle() string { return c.title }
+func (c codeGenerationConfig) GetDescription() string { return c.description }
+func (c codeGenerationConfig) Assign(data *generated.TemplateData, value bool) { c.assign(data, value) }
+
+// Safety rule config implementation
+type safetyRuleConfig struct {
+	title       string
+	description string
+	assign      func(data *generated.TemplateData, value bool)
+}
+
+func (c safetyRuleConfig) GetTitle() string { return c.title }
+func (c safetyRuleConfig) GetDescription() string { return c.description }
+func (c safetyRuleConfig) Assign(data *generated.TemplateData, value bool) { c.assign(data, value) }
+
+// Pre-defined configuration sets with completely different structures
+
+// Code generation configs - consolidated approach
+var codeGenerationConfigs = []FeatureConfig{
+	&codeGenerationConfig{
+		title:       "Generate Go interfaces?",
+		description: "Create interfaces for query methods",
+		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitInterface = val },
+	},
+	&codeGenerationConfig{
+		title:       "Generate prepared queries?", 
+		description: "Create prepared query methods for better performance",
+		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitPreparedQueries = val },
+	},
+	&codeGenerationConfig{
+		title:       "Add JSON tags?",
+		description: "Add JSON struct tags to generated models",
+		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitJSONTags = val },
+	},
+}
+
+// Safety rule configs - simplified approach
+var safetyRuleConfigs = []FeatureConfig{
+	&safetyRuleConfig{
+		title:       "Forbid SELECT *?",
+		description: "Prevent SELECT * queries for better performance and explicitness",
+		assign:      func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.NoSelectStar = val },
+	},
+	&safetyRuleConfig{
+		title:       "Require WHERE clause?",
+		description: "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification",
+		assign:      func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireWhere = val },
+	},
+	&safetyRuleConfig{
+		title:       "Require LIMIT on SELECT?",
+		description: "Force LIMIT clauses on SELECT queries to prevent large result sets",
+		assign:      func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireLimit = val },
+	},
+}
+
+// runFeatureConfigForm runs confirmation form for any feature configuration
+func (s *FeaturesStep) runFeatureConfigForm(data *generated.TemplateData, configs []FeatureConfig, errorContext string) error {
+	// Create boolean values for each field
+	values := make([]bool, len(configs))
+	valuePtrs := make([]*bool, len(configs))
+	for i := range values {
+		valuePtrs[i] = &values[i]
+	}
+
+	// Build form fields
+	var formFields []huh.Field
+	for i, config := range configs {
+		formFields = append(formFields,
+			huh.NewConfirm().
+				Title(config.GetTitle()).
+				Description(config.GetDescription()).
+				Value(valuePtrs[i]),
+		)
+	}
 
 	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().
-				Title("Generate Go interfaces?").
-				Description("Create interfaces for query methods").
-				Value(&emitInterface),
-			huh.NewConfirm().
-				Title("Generate prepared queries?").
-				Description("Create prepared query methods for better performance").
-				Value(&emitPreparedQueries),
-			huh.NewConfirm().
-				Title("Add JSON tags?").
-				Description("Add JSON struct tags to generated models").
-				Value(&emitJSONTags),
-		),
+		huh.NewGroup(formFields...),
 	).WithTheme(s.theme)
 
 	if err := form.Run(); err != nil {
-		return fmt.Errorf("code generation configuration failed: %w", err)
+		return fmt.Errorf("%s configuration failed: %w", errorContext, err)
 	}
 
-	data.Validation.EmitOptions.EmitInterface = emitInterface
-	data.Validation.EmitOptions.EmitPreparedQueries = emitPreparedQueries
-	data.Validation.EmitOptions.EmitJSONTags = emitJSONTags
+	// Apply assignments
+	for i, config := range configs {
+		config.Assign(data, values[i])
+	}
 
 	return nil
 }
 
+// configureCodeGeneration configures code generation options
+func (s *FeaturesStep) configureCodeGeneration(data *generated.TemplateData) error {
+	return s.runFeatureConfigForm(data, codeGenerationConfigs, "code generation")
+}
+
 // configureSafetyRules configures safety rules
 func (s *FeaturesStep) configureSafetyRules(data *generated.TemplateData) error {
-	var (
-		noSelectStar bool
-		requireWhere bool
-		requireLimit bool
-	)
-
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().
-				Title("Forbid SELECT *?").
-				Description("Prevent SELECT * queries for better performance and explicitness").
-				Value(&noSelectStar),
-			huh.NewConfirm().
-				Title("Require WHERE clause?").
-				Description("Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification").
-				Value(&requireWhere),
-			huh.NewConfirm().
-				Title("Require LIMIT on SELECT?").
-				Description("Force LIMIT clauses on SELECT queries to prevent large result sets").
-				Value(&requireLimit),
-		),
-	).WithTheme(s.theme)
-
-	if err := form.Run(); err != nil {
-		return fmt.Errorf("safety rules configuration failed: %w", err)
-	}
-
-	data.Validation.SafetyRules.NoSelectStar = noSelectStar
-	data.Validation.SafetyRules.RequireWhere = requireWhere
-	data.Validation.SafetyRules.RequireLimit = requireLimit
-
-	return nil
+	return s.runFeatureConfigForm(data, safetyRuleConfigs, "safety rules")
 }
 
 // configureDatabaseFeatures configures database-specific features

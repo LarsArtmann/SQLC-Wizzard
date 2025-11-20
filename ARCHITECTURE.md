@@ -51,8 +51,7 @@ sqlc-wizard/
 │   │   └── embedded_templates.go  # Embedded SQL templates
 │   │
 │   ├── errors/                     # Error handling (⚠️ EMPTY - TODO)
-│   ├── detectors/                  # Project detection (⚠️ EMPTY - TODO)
-│   └── plugins/                    # Plugin system (⚠️ EMPTY - TODO)
+│   └── detectors/                  # Project detection (⚠️ EMPTY - TODO)
 │
 ├── pkg/                            # Public reusable packages
 │   ├── config/                    # sqlc.yaml config (domain model)
@@ -346,7 +345,7 @@ var projectName string
 
 2. **Event-Driven Architecture**
    - Emit events for extensibility
-   - Plugin system via events
+   - Configuration via events
 
 3. **CQRS**
    - Separate read/write models

@@ -1,0 +1,8 @@
+Finding code duplicates...
+Using dupl tool to find duplicates...
+internal/wizard/config_helpers.go:10-38: duplicate of pkg/config/types.go:133-161
+pkg/config/types.go:133-161: duplicate of internal/wizard/config_helpers.go:10-38
+internal/wizard/features.go:48-81: duplicate of internal/wizard/features.go:84-117
+internal/wizard/features.go:84-117: duplicate of internal/wizard/features.go:48-81
+internal/domain/safety_policy_test.go:216-228: duplicate of internal/domain/safety_policy_test.go:267-279
+internal/domain/safety_policy_test.go:267-279: duplicate of internal/domain/safety_policy_test.go:216-228

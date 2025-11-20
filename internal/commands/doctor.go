@@ -23,6 +23,47 @@ environment to identify potential issues before they cause problems.`,
 	}
 }
 
+// DoctorStatus represents the status of a diagnostic check
+type DoctorStatus string
+
+const (
+	// DoctorStatusPass indicates the check passed successfully
+	DoctorStatusPass DoctorStatus = "PASS"
+	// DoctorStatusFail indicates the check failed critically
+	DoctorStatusFail DoctorStatus = "FAIL"
+	// DoctorStatusWarn indicates the check found a non-critical issue
+	DoctorStatusWarn DoctorStatus = "WARN"
+)
+
+// IsValid checks if the doctor status is valid
+func (d DoctorStatus) IsValid() bool {
+	switch d {
+	case DoctorStatusPass, DoctorStatusFail, DoctorStatusWarn:
+		return true
+	default:
+		return false
+	}
+}
+
+// String returns the string representation of the status
+func (d DoctorStatus) String() string {
+	return string(d)
+}
+
+// Icon returns an appropriate icon for the status
+func (d DoctorStatus) Icon() string {
+	switch d {
+	case DoctorStatusPass:
+		return "✅"
+	case DoctorStatusFail:
+		return "❌"
+	case DoctorStatusWarn:
+		return "⚠️ "
+	default:
+		return "❓"
+	}
+}
+
 // DoctorCheck represents a single diagnostic check
 type DoctorCheck struct {
 	Name        string
@@ -32,7 +73,7 @@ type DoctorCheck struct {
 
 // DoctorResult represents the result of a diagnostic check
 type DoctorResult struct {
-	Status   string // "PASS", "FAIL", "WARN"
+	Status   DoctorStatus // Type-safe status instead of magic strings
 	Message  string
 	Solution string
 	Error    error
@@ -80,15 +121,15 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		result := check.Checker(ctx)
 
 		switch result.Status {
-		case "PASS":
+		case DoctorStatusPass:
 			fmt.Printf("   ✅ %s\n", result.Message)
-		case "WARN":
+		case DoctorStatusWarn:
 			fmt.Printf("   ⚠️  %s\n", result.Message)
 			if result.Solution != "" {
 				fmt.Printf("   💡 Solution: %s\n", result.Solution)
 			}
 			warned++
-		case "FAIL":
+		case DoctorStatusFail:
 			fmt.Printf("   ❌ %s\n", result.Message)
 			if result.Solution != "" {
 				fmt.Printf("   💡 Solution: %s\n", result.Solution)
@@ -126,14 +167,14 @@ func checkGoVersion(ctx context.Context) *DoctorResult {
 	minVersion := "go1.21"
 	if goVersion < minVersion {
 		return &DoctorResult{
-			Status:   "FAIL",
+			Status: DoctorStatusFail,
 			Message:  fmt.Sprintf("Go version %s is too old", goVersion),
 			Solution: fmt.Sprintf("Please upgrade to Go %s or later", minVersion),
 		}
 	}
 
 	return &DoctorResult{
-		Status:  "PASS",
+		Status: DoctorStatusPass,
 		Message: fmt.Sprintf("Go version %s is compatible", goVersion),
 	}
 }
@@ -144,7 +185,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	err := sqlcAdapter.CheckInstallation(ctx)
 	if err != nil {
 		return &DoctorResult{
-			Status:   "FAIL",
+			Status: DoctorStatusFail,
 			Message:  "sqlc is not installed or not in PATH",
 			Solution: "Install sqlc following instructions at https://docs.sqlc.dev",
 			Error:    err,
@@ -155,7 +196,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	_, err = sqlcAdapter.Version(ctx)
 	if err != nil {
 		return &DoctorResult{
-			Status:   "WARN",
+			Status: DoctorStatusWarn,
 			Message:  "sqlc is installed but version check failed",
 			Solution: "Ensure sqlc is properly configured",
 			Error:    err,
@@ -163,7 +204,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	}
 
 	return &DoctorResult{
-		Status:  "PASS",
+		Status: DoctorStatusPass,
 		Message: "sqlc is installed and working",
 	}
 }
@@ -181,7 +222,7 @@ func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 	err := dbAdapter.TestConnection(ctx, sqliteConfig)
 	if err != nil {
 		return &DoctorResult{
-			Status:   "WARN",
+			Status: DoctorStatusWarn,
 			Message:  "SQLite driver may not be available",
 			Solution: "Install SQLite3: brew install sqlite3 (macOS) or apt-get install sqlite3 (Ubuntu)",
 			Error:    err,
@@ -189,7 +230,7 @@ func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 	}
 
 	return &DoctorResult{
-		Status:  "PASS",
+		Status: DoctorStatusPass,
 		Message: "SQLite driver is available",
 	}
 }
@@ -205,7 +246,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	err := fsAdapter.WriteFile(ctx, testFile, testContent, 0o644)
 	if err != nil {
 		return &DoctorResult{
-			Status:   "FAIL",
+			Status: DoctorStatusFail,
 			Message:  "Cannot write to filesystem",
 			Solution: "Check directory permissions and disk space",
 			Error:    err,
@@ -216,7 +257,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	_, err = fsAdapter.ReadFile(ctx, testFile)
 	if err != nil {
 		return &DoctorResult{
-			Status:   "FAIL",
+			Status: DoctorStatusFail,
 			Message:  "Cannot read from filesystem",
 			Solution: "Check file permissions",
 			Error:    err,
@@ -227,7 +268,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	_ = os.Remove(testFile)
 
 	return &DoctorResult{
-		Status:  "PASS",
+		Status: DoctorStatusPass,
 		Message: "Filesystem permissions are OK",
 	}
 }
@@ -243,14 +284,14 @@ func checkMemoryAvailability(ctx context.Context) *DoctorResult {
 
 	if availableMB < minMemoryMB {
 		return &DoctorResult{
-			Status:   "WARN",
+			Status: DoctorStatusWarn,
 			Message:  fmt.Sprintf("Only %d MB memory available", availableMB),
 			Solution: "Consider closing other applications or increasing available memory",
 		}
 	}
 
 	return &DoctorResult{
-		Status:  "PASS",
+		Status: DoctorStatusPass,
 		Message: fmt.Sprintf("Memory is sufficient (%d MB available)", availableMB),
 	}
 }

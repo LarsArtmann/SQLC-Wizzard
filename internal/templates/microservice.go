@@ -2,6 +2,7 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/samber/lo"
 )
@@ -85,8 +86,9 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 	// Apply emit options using type-safe helper function
 	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
 
-	// Convert rule types
-	rules := data.Validation.SafetyRules.ToRuleConfigs()
+	// Convert rule types using the centralized transformer (eliminates split brain)
+	transformer := validation.NewRuleTransformer()
+	rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
 	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
 		return config.RuleConfig{
 			Name:    r.Name,

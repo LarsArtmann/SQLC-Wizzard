@@ -149,7 +149,7 @@ var _ = Describe("Doctor Command Checks", func() {
 			// This test assumes the current Go version is compatible
 			result := checkGoVersion(context.Background())
 
-			Expect(result.Status).To(Equal("PASS"))
+			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
 			Expect(result.Message).To(ContainSubstring("compatible"))
 			Expect(result.Error).To(BeNil())
 		})
@@ -159,7 +159,7 @@ var _ = Describe("Doctor Command Checks", func() {
 		It("should return PASS when filesystem is writable", func() {
 			result := checkFileSystemPermissions(context.Background())
 
-			Expect(result.Status).To(Equal("PASS"))
+			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
 			Expect(result.Message).To(ContainSubstring("OK"))
 			Expect(result.Error).To(BeNil())
 		})
@@ -169,7 +169,10 @@ var _ = Describe("Doctor Command Checks", func() {
 		It("should return PASS or WARN based on available memory", func() {
 			result := checkMemoryAvailability(context.Background())
 
-			Expect(result.Status).To(BeElementOf("PASS", "WARN"))
+			Expect(result.Status).To(Or(
+				Equal(commands.DoctorStatusPass),
+				Equal(commands.DoctorStatusWarn),
+			))
 			Expect(result.Error).To(BeNil())
 		})
 	})
