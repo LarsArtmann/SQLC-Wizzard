@@ -1,5 +1,7 @@
 package domain
 
+import "github.com/LarsArtmann/SQLC-Wizzard/generated"
+
 // This file contains type-safe enums for code generation options
 // Replaces the boolean-heavy EmitOptions from generated/types.go with
 // semantic groupings that prevent invalid state combinations
@@ -44,6 +46,11 @@ func (n NullHandlingMode) UsePointers() bool {
 // UseEmptySlices returns true if this mode prefers empty slices over nil
 func (n NullHandlingMode) UseEmptySlices() bool {
 	return n == NullHandlingEmptySlices
+}
+
+// UseExplicitNull returns true if this mode uses sql.Null* types
+func (n NullHandlingMode) UseExplicitNull() bool {
+	return n == NullHandlingExplicitNull
 }
 
 // EnumGenerationMode defines how database enums are generated in code
@@ -238,6 +245,50 @@ func (e *TypeSafeEmitOptions) IsValid() error {
 	}
 
 	return nil
+}
+
+// ToTemplateData converts TypeSafeEmitOptions to generated.EmitOptions for compatibility
+// This is the NEW type-safe way that converts to OLD boolean-heavy format
+func (e *TypeSafeEmitOptions) ToTemplateData() generated.EmitOptions {
+	return generated.EmitOptions{
+		EmitJSONTags:             e.Features.GenerateJSONTags,
+		EmitPreparedQueries:      e.Features.GeneratePreparedQueries,
+		EmitInterface:            e.Features.GenerateInterface,
+		EmitEmptySlices:          e.NullHandling.UseEmptySlices(),
+		EmitResultStructPointers:  e.StructPointers.UseResultPointers(),
+		EmitParamsStructPointers:  e.StructPointers.UseParamPointers(),
+		EmitEnumValidMethod:      e.EnumMode.IncludesValidation(),
+		EmitAllEnumValues:        e.EnumMode.IncludesAllValues(),
+		JSONTagsCaseStyle:        e.JSONTagStyle.String(),
+	}
+}
+
+// ApplyDefaults sets sensible defaults for any empty configuration options
+// This ensures backward compatibility while maintaining type safety
+func (e *TypeSafeEmitOptions) ApplyDefaults() {
+	if e.NullHandling == "" {
+		e.NullHandling = NullHandlingPointers
+	}
+	if e.EnumMode == "" {
+		e.EnumMode = EnumGenerationBasic
+	}
+	if e.StructPointers == "" {
+		e.StructPointers = StructPointerNever
+	}
+	if e.JSONTagStyle == "" {
+		e.JSONTagStyle = JSONTagStyleCamel
+	}
+	
+	// Apply feature defaults if all are false (empty struct)
+	if !e.Features.GenerateJSONTags && !e.Features.GeneratePreparedQueries && 
+	   !e.Features.GenerateInterface && !e.Features.UseExactTableNames {
+		e.Features = CodeGenerationFeatures{
+			GenerateJSONTags:        true,
+			GeneratePreparedQueries: true,
+			GenerateInterface:       true,
+			UseExactTableNames:      false,
+		}
+	}
 }
 
 // NewTypeSafeEmitOptions returns production-ready defaults for code generation

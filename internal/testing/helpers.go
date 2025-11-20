@@ -1,6 +1,7 @@
 package testing
 
 import (
+	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
@@ -14,8 +15,8 @@ type ValidationTestSuite[T interface {
 	GetTypeName() string
 }
 
-// testValidationSuite runs generic validation tests for any type implementing ValidationTestSuite
-func testValidationSuite[T interface {
+// TestValidationSuite runs generic validation tests for any type implementing ValidationTestSuite
+func TestValidationSuite[T interface {
 	IsValid() bool
 	String() string
 }](suite ValidationTestSuite[T]) {
@@ -36,8 +37,8 @@ func testValidationSuite[T interface {
 	})
 }
 
-// runBooleanMethodTest runs generic tests for boolean methods
-func runBooleanMethodTest(context string, trueModes []string, falseModes []string, method func(string) bool, methodDisplay string) {
+// RunBooleanMethodTest runs generic tests for boolean methods
+func RunBooleanMethodTest(context string, trueModes []string, falseModes []string, method func(string) bool, methodDisplay string) {
 	It("should return true for "+context, func() {
 		for _, mode := range trueModes {
 			Expect(method(mode)).To(BeTrue(), "Mode %s should return true for "+context, mode)
@@ -51,9 +52,15 @@ func runBooleanMethodTest(context string, trueModes []string, falseModes []strin
 	})
 }
 
-// runStringRepresentationTest runs generic tests for String() method of enums
-func runStringRepresentationTest(testCases map[string]string) {
-	for enumValue, expectedString := range testCases {
-		Expect(enumValue.String()).To(Equal(expectedString))
+// RunStringRepresentationTest runs generic tests for String() method of enums
+func RunStringRepresentationTest(enumTestCases []EnumTestCase) {
+	for _, testCase := range enumTestCases {
+		Expect(testCase.EnumValue.String()).To(Equal(testCase.ExpectedString))
 	}
+}
+
+// EnumTestCase represents a test case for enum string representation
+type EnumTestCase struct {
+	EnumValue     interface{ String() string }
+	ExpectedString string
 }

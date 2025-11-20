@@ -3,6 +3,7 @@ package domain_test
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -119,7 +120,7 @@ func (DestructiveOperationPolicyTestSuite) GetTypeName() string {
 
 var _ = Describe("DestructiveOperationPolicy", func() {
 	// Use generic validation test suite
-testValidationSuite(DestructiveOperationPolicyTestSuite{})
+	testing.TestValidationSuite(DestructiveOperationPolicyTestSuite{})
 
 	Context("AllowsDropTable", func() {
 		It("should allow DROP TABLE only when policy is 'allowed'", func() {
