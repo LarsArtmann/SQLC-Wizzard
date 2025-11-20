@@ -10,6 +10,36 @@ import (
 // Test cases for TypeSafeSafetyRules and related types
 // Run via TestDomain in domain_test.go
 
+// safetyRulesExpectations defines the expected values for safety rules testing
+type safetyRulesExpectations struct {
+	description                     string
+	noSelectStar                   bool
+	requireExplicitColumns         bool
+	requireWhere                   bool
+	requireLimit                   bool
+	maxRowsWithoutLimit            uint
+	destructiveOps                 domain.DestructiveOperationPolicy
+}
+
+// assertSafetyRules validates safety rules against expected values
+func assertSafetyRules(rules interface{}, expectations safetyRulesExpectations) {
+	switch r := rules.(type) {
+	case domain.TypeSafeSafetyRules:
+		Expect(r.StyleRules.NoSelectStar).To(Equal(expectations.noSelectStar), expectations.description+": NoSelectStar")
+		Expect(r.StyleRules.RequireExplicitColumns).To(Equal(expectations.requireExplicitColumns), expectations.description+": RequireExplicitColumns")
+		Expect(r.SafetyRules.RequireWhere).To(Equal(expectations.requireWhere), expectations.description+": RequireWhere")
+		Expect(r.SafetyRules.RequireLimit).To(Equal(expectations.requireLimit), expectations.description+": RequireLimit")
+		Expect(r.SafetyRules.MaxRowsWithoutLimit).To(Equal(expectations.maxRowsWithoutLimit), expectations.description+": MaxRowsWithoutLimit")
+		Expect(r.DestructiveOps).To(Equal(expectations.destructiveOps), expectations.description+": DestructiveOps")
+		
+		err := r.IsValid()
+		Expect(err).NotTo(HaveOccurred(), expectations.description+": Should be valid")
+		
+	default:
+		Fail("Unsupported safety rules type")
+	}
+}
+
 var _ = Describe("QueryStyleRules", func() {
 	It("should allow independent configuration of style rules", func() {
 		rules := domain.QueryStyleRules{
@@ -216,15 +246,15 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		It("should return valid default rules", func() {
 			defaults := domain.NewTypeSafeSafetyRules()
 
-			Expect(defaults.StyleRules.NoSelectStar).To(BeTrue())
-			Expect(defaults.StyleRules.RequireExplicitColumns).To(BeFalse())
-			Expect(defaults.SafetyRules.RequireWhere).To(BeTrue())
-			Expect(defaults.SafetyRules.RequireLimit).To(BeFalse())
-			Expect(defaults.SafetyRules.MaxRowsWithoutLimit).To(Equal(uint(1000)))
-			Expect(defaults.DestructiveOps).To(Equal(domain.DestructiveForbidden))
-
-			err := defaults.IsValid()
-			Expect(err).NotTo(HaveOccurred())
+			assertSafetyRules(defaults, safetyRulesExpectations{
+				description:               "Default safety rules",
+				noSelectStar:             true,
+				requireExplicitColumns:   false,
+				requireWhere:             true,
+				requireLimit:             false,
+				maxRowsWithoutLimit:      1000,
+				destructiveOps:           domain.DestructiveForbidden,
+			})
 		})
 
 		It("should have safe production defaults", func() {
@@ -267,15 +297,15 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		It("should return strict rules for production", func() {
 			prodRules := domain.NewProductionSafetyRules()
 
-			Expect(prodRules.StyleRules.NoSelectStar).To(BeTrue())
-			Expect(prodRules.StyleRules.RequireExplicitColumns).To(BeTrue())
-			Expect(prodRules.SafetyRules.RequireWhere).To(BeTrue())
-			Expect(prodRules.SafetyRules.RequireLimit).To(BeTrue())
-			Expect(prodRules.SafetyRules.MaxRowsWithoutLimit).To(Equal(uint(100)))
-			Expect(prodRules.DestructiveOps).To(Equal(domain.DestructiveForbidden))
-
-			err := prodRules.IsValid()
-			Expect(err).NotTo(HaveOccurred())
+			assertSafetyRules(prodRules, safetyRulesExpectations{
+				description:               "Production safety rules",
+				noSelectStar:             true,
+				requireExplicitColumns:   true,
+				requireWhere:             true,
+				requireLimit:             true,
+				maxRowsWithoutLimit:      100,
+				destructiveOps:           domain.DestructiveForbidden,
+			})
 		})
 
 		It("should forbid all destructive operations in production", func() {
