@@ -3,7 +3,7 @@ module github.com/LarsArtmann/SQLC-Wizzard
 go 1.25.4
 
 require (
-	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20251117180336-3079b272411b
+	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20251119163714-fe6172659620
 	github.com/charmbracelet/huh v0.8.0
 	github.com/charmbracelet/lipgloss v1.1.0
 	github.com/charmbracelet/log v0.4.2
