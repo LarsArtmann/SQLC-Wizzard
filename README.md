@@ -60,16 +60,6 @@ $ sqlc-wizard migrate --from sqlite --to postgresql
 ✓ Converted SQLite-specific features to PostgreSQL equivalents
 ```
 
-#### Plugin Management
-```bash
-$ sqlc-wizard plugins list
-✓ Available: python, kotlin, typescript, gleam
-
-$ sqlc-wizard plugins add python
-✓ Downloaded sqlc-gen-python v1.3.0
-✓ Updated sqlc.yaml with WASM plugin
-```
-
 #### Best Practices Assistant
 ```bash
 $ sqlc-wizard doctor
@@ -201,19 +191,6 @@ Flags:
   --backup                  Create backup before migration
 ```
 
-### `sqlc-wizard plugins`
-Manage sqlc plugins and multi-language support.
-
-```bash
-sqlc-wizard plugins [command] [flags]
-
-Available Commands:
-  list                      List available plugins
-  add                       Add a plugin
-  remove                    Remove a plugin
-  update                    Update plugins
-```
-
 ## 🛠️ Template System
 
 ### Template Structure
@@ -286,10 +263,7 @@ sqlc-wizard/
 │   │   ├── queries.go         # Example SQL queries
 │   │   ├── workflows.go       # GitHub Actions workflows
 │   │   └── migrations.go      # Migration templates
-│   └── plugins/                 # Plugin management
-│       ├── manager.go         # Plugin manager
-│       ├── registry.go        # Plugin registry
-│       └── downloader.go      # Plugin downloader
+
 ├── pkg/
 │   ├── config/                  # Config file handling
 │   │   ├── sqlc.go            # sqlc.yaml parser
@@ -321,10 +295,6 @@ default_template: microservice
 author_name: "Your Name"
 author_email: "your.email@example.com"
 
-plugins:
-  registry_url: "https://downloads.sqlc.dev/plugin/"
-  cache_dir: "~/.sqlc-wizard/cache"
-
 templates:
   custom_dir: "~/.sqlc-wizard/templates"
   auto_update: true
@@ -335,7 +305,6 @@ templates:
 export SQLC_WIZARD_CONFIG_HOME="~/.sqlc-wizard"
 export SQLC_WIZARD_TEMPLATE_DIR="~/.sqlc-wizard/templates"
 export SQLC_WIZARD_CACHE_DIR="~/.sqlc-wizard/cache"
-export SQLC_WIZARD_PLUGIN_REGISTRY="https://downloads.sqlc.dev/plugin"
 ```
 
 ## 🧪 Development
@@ -438,7 +407,6 @@ sql:
 $ sqlc-wizard migrate --from v1 --to v2
 ✓ Backing up sqlc.yaml to sqlc.yaml.backup
 ✓ Migrating configuration from v1 to v2
-✓ Updating plugin configurations
 ✓ Migration completed successfully
 ```
 
@@ -507,7 +475,6 @@ jobs:
 ### Phase 2: Advanced Features (In Progress)
 - [ ] MySQL support
 - [x] Multi-database configurations
-- [ ] Plugin management system
 - [ ] Configuration upgrade/migration
 - [x] Doctor/diagnostics system
 
