@@ -20,6 +20,10 @@ func NewRuleTransformer() *RuleTransformer {
 // TransformSafetyRules converts safety rules to configuration format
 // This is the single source of truth for rule transformation logic
 func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []generated.RuleConfig {
+	if rules == nil {
+		return []generated.RuleConfig{}
+	}
+	
 	var configRules []generated.RuleConfig
 
 	// Transform NoSelectStar rule
