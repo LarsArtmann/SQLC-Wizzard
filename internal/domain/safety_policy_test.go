@@ -13,13 +13,13 @@ import (
 
 // safetyRulesExpectations defines the expected values for safety rules testing
 type safetyRulesExpectations struct {
-	description                     string
-	noSelectStar                   bool
-	requireExplicitColumns         bool
-	requireWhere                   bool
-	requireLimit                   bool
-	maxRowsWithoutLimit            uint
-	destructiveOps                 domain.DestructiveOperationPolicy
+	description            string
+	noSelectStar           bool
+	requireExplicitColumns bool
+	requireWhere           bool
+	requireLimit           bool
+	maxRowsWithoutLimit    uint
+	destructiveOps         domain.DestructiveOperationPolicy
 }
 
 // assertSafetyRules validates safety rules against expected values
@@ -32,10 +32,10 @@ func assertSafetyRules(rules interface{}, expectations safetyRulesExpectations) 
 		Expect(r.SafetyRules.RequireLimit).To(Equal(expectations.requireLimit), expectations.description+": RequireLimit")
 		Expect(r.SafetyRules.MaxRowsWithoutLimit).To(Equal(expectations.maxRowsWithoutLimit), expectations.description+": MaxRowsWithoutLimit")
 		Expect(r.DestructiveOps).To(Equal(expectations.destructiveOps), expectations.description+": DestructiveOps")
-		
+
 		err := r.IsValid()
 		Expect(err).NotTo(HaveOccurred(), expectations.description+": Should be valid")
-		
+
 	default:
 		Fail("Unsupported safety rules type")
 	}
@@ -248,13 +248,13 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 			defaults := domain.NewTypeSafeSafetyRules()
 
 			assertSafetyRules(defaults, safetyRulesExpectations{
-				description:               "Default safety rules",
-				noSelectStar:             true,
-				requireExplicitColumns:   false,
-				requireWhere:             true,
-				requireLimit:             false,
-				maxRowsWithoutLimit:      1000,
-				destructiveOps:           domain.DestructiveForbidden,
+				description:            "Default safety rules",
+				noSelectStar:           true,
+				requireExplicitColumns: false,
+				requireWhere:           true,
+				requireLimit:           false,
+				maxRowsWithoutLimit:    1000,
+				destructiveOps:         domain.DestructiveForbidden,
 			})
 		})
 
@@ -299,13 +299,13 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 			prodRules := domain.NewProductionSafetyRules()
 
 			assertSafetyRules(prodRules, safetyRulesExpectations{
-				description:               "Production safety rules",
-				noSelectStar:             true,
-				requireExplicitColumns:   true,
-				requireWhere:             true,
-				requireLimit:             true,
-				maxRowsWithoutLimit:      100,
-				destructiveOps:           domain.DestructiveForbidden,
+				description:            "Production safety rules",
+				noSelectStar:           true,
+				requireExplicitColumns: true,
+				requireWhere:           true,
+				requireLimit:           true,
+				maxRowsWithoutLimit:    100,
+				destructiveOps:         domain.DestructiveForbidden,
 			})
 		})
 

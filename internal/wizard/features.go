@@ -68,8 +68,8 @@ type codeGenerationConfig struct {
 	assign      func(data *generated.TemplateData, value bool)
 }
 
-func (c codeGenerationConfig) GetTitle() string { return c.title }
-func (c codeGenerationConfig) GetDescription() string { return c.description }
+func (c codeGenerationConfig) GetTitle() string                                { return c.title }
+func (c codeGenerationConfig) GetDescription() string                          { return c.description }
 func (c codeGenerationConfig) Assign(data *generated.TemplateData, value bool) { c.assign(data, value) }
 
 // Safety rule config implementation
@@ -79,8 +79,8 @@ type safetyRuleConfig struct {
 	assign      func(data *generated.TemplateData, value bool)
 }
 
-func (c safetyRuleConfig) GetTitle() string { return c.title }
-func (c safetyRuleConfig) GetDescription() string { return c.description }
+func (c safetyRuleConfig) GetTitle() string                                { return c.title }
+func (c safetyRuleConfig) GetDescription() string                          { return c.description }
 func (c safetyRuleConfig) Assign(data *generated.TemplateData, value bool) { c.assign(data, value) }
 
 // Pre-defined configuration sets with completely different structures
@@ -93,7 +93,7 @@ var codeGenerationConfigs = []FeatureConfig{
 		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitInterface = val },
 	},
 	&codeGenerationConfig{
-		title:       "Generate prepared queries?", 
+		title:       "Generate prepared queries?",
 		description: "Create prepared query methods for better performance",
 		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitPreparedQueries = val },
 	},

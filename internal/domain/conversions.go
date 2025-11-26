@@ -110,12 +110,12 @@ func SafetyRulesToTypeSafe(old generated.SafetyRules) TypeSafeSafetyRules {
 
 	return TypeSafeSafetyRules{
 		StyleRules: QueryStyleRules{
-			SelectStarPolicy:    convertNoSelectStarPolicy(old.NoSelectStar),
-			ColumnExplicitness:  ColumnExplicitnessDefault, // Not present in old structure
+			SelectStarPolicy:   convertNoSelectStarPolicy(old.NoSelectStar),
+			ColumnExplicitness: ColumnExplicitnessDefault, // Not present in old structure
 		},
 		SafetyRules: QuerySafetyRules{
-			WhereRequirement:     convertWhereRequirement(old.RequireWhere),
-			LimitRequirement:     convertLimitRequirement(old.RequireLimit),
+			WhereRequirement: convertWhereRequirement(old.RequireWhere),
+			LimitRequirement: convertLimitRequirement(old.RequireLimit),
 			// MaxRowsWithoutLimit not present in old structure, use safe default
 			MaxRowsWithoutLimit: 1000,
 		},

@@ -269,8 +269,8 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 			prodRules := domain.NewProductionSafetyRules()
 
 			// Clear semantic groupings:
-			Expect(prodRules.StyleRules.NoSelectStar).To(BeTrue())           // Code quality
-			Expect(prodRules.SafetyRules.RequireWhere).To(BeTrue())          // Prevent bugs
+			Expect(prodRules.StyleRules.NoSelectStar).To(BeTrue())                  // Code quality
+			Expect(prodRules.SafetyRules.RequireWhere).To(BeTrue())                 // Prevent bugs
 			Expect(prodRules.DestructiveOps).To(Equal(domain.DestructiveForbidden)) // Security policy
 
 			// vs old way: NoSelectStar, RequireWhere, NoDropTable, NoTruncate

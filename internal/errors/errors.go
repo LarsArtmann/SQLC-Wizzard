@@ -363,7 +363,7 @@ func Wrapf(err error, baseErr *Error, format string, args ...any) *Error {
 
 	message := fmt.Sprintf(format, args...)
 	wrapped := NewError(baseErr.Code, message).WithComponent(baseErr.Component)
-	
+
 	// Merge descriptions instead of clobbering
 	var finalDesc string
 	if baseErr.Description != "" {
@@ -371,7 +371,7 @@ func Wrapf(err error, baseErr *Error, format string, args ...any) *Error {
 	} else {
 		finalDesc = fmt.Sprintf("Original error: %v", err)
 	}
-	
+
 	return wrapped.WithDescription(finalDesc)
 }
 

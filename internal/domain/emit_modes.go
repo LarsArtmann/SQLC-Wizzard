@@ -255,8 +255,8 @@ func (e *TypeSafeEmitOptions) ToTemplateData() generated.EmitOptions {
 		EmitPreparedQueries:      e.Features.GeneratePreparedQueries,
 		EmitInterface:            e.Features.GenerateInterface,
 		EmitEmptySlices:          e.NullHandling.UseEmptySlices(),
-		EmitResultStructPointers:  e.StructPointers.UseResultPointers(),
-		EmitParamsStructPointers:  e.StructPointers.UseParamPointers(),
+		EmitResultStructPointers: e.StructPointers.UseResultPointers(),
+		EmitParamsStructPointers: e.StructPointers.UseParamPointers(),
 		EmitEnumValidMethod:      e.EnumMode.IncludesValidation(),
 		EmitAllEnumValues:        e.EnumMode.IncludesAllValues(),
 		JSONTagsCaseStyle:        e.JSONTagStyle.String(),
@@ -278,10 +278,10 @@ func (e *TypeSafeEmitOptions) ApplyDefaults() {
 	if e.JSONTagStyle == "" {
 		e.JSONTagStyle = JSONTagStyleCamel
 	}
-	
+
 	// Apply feature defaults if all are false (empty struct)
-	if !e.Features.GenerateJSONTags && !e.Features.GeneratePreparedQueries && 
-	   !e.Features.GenerateInterface && !e.Features.UseExactTableNames {
+	if !e.Features.GenerateJSONTags && !e.Features.GeneratePreparedQueries &&
+		!e.Features.GenerateInterface && !e.Features.UseExactTableNames {
 		e.Features = CodeGenerationFeatures{
 			GenerateJSONTags:        true,
 			GeneratePreparedQueries: true,

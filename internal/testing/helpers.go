@@ -61,6 +61,6 @@ func RunStringRepresentationTest(enumTestCases []EnumTestCase) {
 
 // EnumTestCase represents a test case for enum string representation
 type EnumTestCase struct {
-	EnumValue     interface{ String() string }
+	EnumValue      interface{ String() string }
 	ExpectedString string
 }

@@ -105,12 +105,12 @@ func (ms *MigrationStatus) GetAppliedMigrations() uint {
 func (ms *MigrationStatus) GetPendingMigrations() uint {
 	total := ms.GetMigrationCount()
 	applied := ms.GetAppliedMigrations()
-	
+
 	// Defensive check: prevent uint underflow if applied > total (inconsistent state)
 	if applied >= total {
 		return 0 // Inconsistent state: no pending migrations possible
 	}
-	
+
 	return total - applied
 }
 

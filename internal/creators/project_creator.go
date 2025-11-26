@@ -96,13 +96,13 @@ func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *
 	switch config.ProjectType {
 	case generated.ProjectTypeMicroservice:
 		dirs = append(dirs, "api", "internal/api", "internal/handlers")
-	// TODO: Add other project types when generated types are complete
-	// case generated.ProjectTypeFullstack:
-	// 	dirs = append(dirs, "web", "web/src", "web/public", "internal/api")
-	// case generated.ProjectTypeAPIFirst:
-	// 	dirs = append(dirs, "api", "internal/api", "internal/handlers")
-	// case generated.ProjectTypeLibrary:
-	// 	dirs = append(dirs, "examples", "internal/testutil")
+		// TODO: Add other project types when generated types are complete
+		// case generated.ProjectTypeFullstack:
+		// 	dirs = append(dirs, "web", "web/src", "web/public", "internal/api")
+		// case generated.ProjectTypeAPIFirst:
+		// 	dirs = append(dirs, "api", "internal/api", "internal/handlers")
+		// case generated.ProjectTypeLibrary:
+		// 	dirs = append(dirs, "examples", "internal/testutil")
 	}
 
 	for _, dir := range dirs {
@@ -138,7 +138,7 @@ func (pc *ProjectCreator) generateDatabaseSchema(ctx context.Context, cfg *Creat
 
 	// Build schema content based on project configuration
 	schemaContent := pc.buildSchemaSQL(cfg.TemplateData)
-	
+
 	return pc.fs.WriteFile(ctx, "schema.sql", []byte(schemaContent), 0o644)
 }
 
@@ -149,7 +149,7 @@ func (pc *ProjectCreator) buildSchemaSQL(data generated.TemplateData) string {
 
 	// Basic user table (common in most projects)
 	schema += pc.createUserTable(data)
-	
+
 	// Add project-specific tables based on project type
 	switch data.ProjectType {
 	case generated.ProjectTypeMicroservice:
@@ -158,12 +158,12 @@ func (pc *ProjectCreator) buildSchemaSQL(data generated.TemplateData) string {
 		schema += pc.createEnterpriseTables(data)
 	case generated.ProjectTypeAPIFirst:
 		schema += pc.createAPIFirstTables(data)
-	// Note: Add more project types as needed
+		// Note: Add more project types as needed
 	}
 
 	schema += "\n-- Indexes for performance\n"
 	schema += pc.createBasicIndexes(data)
-	
+
 	return schema
 }
 

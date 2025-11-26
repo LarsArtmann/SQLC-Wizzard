@@ -119,7 +119,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 				NoSelectStar: false,
 				RequireWhere: false,
 				RequireLimit: false,
-				Rules:      customRules,
+				Rules:        customRules,
 			}
 
 			configRules := transformer.TransformSafetyRules(rules)
@@ -182,7 +182,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 				NoSelectStar: false,
 				RequireWhere: false,
 				RequireLimit: false,
-				Rules:      []generated.SafetyRule{customRule},
+				Rules:        []generated.SafetyRule{customRule},
 			}
 
 			configRules := transformer.TransformDomainSafetyRules(rules)

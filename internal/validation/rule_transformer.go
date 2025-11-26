@@ -23,7 +23,7 @@ func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []
 	if rules == nil {
 		return []generated.RuleConfig{}
 	}
-	
+
 	var configRules []generated.RuleConfig
 
 	// Transform NoSelectStar rule

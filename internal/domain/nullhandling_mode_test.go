@@ -35,10 +35,10 @@ var _ = Describe("NullHandlingMode", func() {
 	// Use generic validation test suite
 	testing.TestValidationSuite(NullHandlingModeTestSuite{})
 
-	testing.RunBooleanMethodTest("pointer modes", 
-		[]string{"pointers", "mixed"}, 
-		[]string{"empty_slices", "explicit_null"}, 
-		func(mode string) bool { return domain.NullHandlingMode(mode).UsePointers() }, 
+	testing.RunBooleanMethodTest("pointer modes",
+		[]string{"pointers", "mixed"},
+		[]string{"empty_slices", "explicit_null"},
+		func(mode string) bool { return domain.NullHandlingMode(mode).UsePointers() },
 		"UsePointers")
 
 	Context("UseEmptySlices", func() {

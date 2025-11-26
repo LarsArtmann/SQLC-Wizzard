@@ -116,11 +116,11 @@ var _ = Describe("Error Creation", func() {
 		It("should create file read error", func() {
 			cause := fmt.Errorf("permission denied")
 			fileErr := errors.FileReadError("/path/to/file.txt", cause)
-			
+
 			// Check main error format
 			Expect(fileErr).NotTo(BeNil())
 			Expect(fileErr.Error()).To(Equal("[FILE_READ_ERROR] Failed to read file: /path/to/file.txt"))
-			
+
 			// Check that error has cause
 			Expect(stderrors.Unwrap(fileErr)).NotTo(BeNil())
 			Expect(stderrors.Unwrap(fileErr).Error()).To(Equal("permission denied"))
@@ -523,7 +523,7 @@ var _ = Describe("Error Combination", func() {
 
 		It("should skip nil errors", func() {
 			appErr := errors.NewError(errors.ErrorCodeValidationError, "app error")
-			
+
 			list := errors.CombineErrors(nil, appErr, nil)
 
 			Expect(list.GetCount()).To(Equal(1))

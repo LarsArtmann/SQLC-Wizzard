@@ -2,18 +2,19 @@ package creators
 
 import (
 	"context"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
+
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 )
 
 // CreatorConfig represents common configuration for all creators
 type CreatorConfig struct {
-	ProjectName    string
-	ProjectType    generated.ProjectType
-	Database       generated.DatabaseType
-	TemplateData    generated.TemplateData
-	OutputPath     string
-	Force          bool
+	ProjectName  string
+	ProjectType  generated.ProjectType
+	Database     generated.DatabaseType
+	TemplateData generated.TemplateData
+	OutputPath   string
+	Force        bool
 }
 
 // Creator defines common interface for all project creators
@@ -21,10 +22,10 @@ type CreatorConfig struct {
 type Creator[T any] interface {
 	// Create executes the creation operation with type-safe config
 	Create(ctx context.Context, config T) error
-	
+
 	// CanHandle returns true if this creator can handle the given config
 	CanHandle(config T) bool
-	
+
 	// Dependencies returns any other creators that must run first
 	Dependencies() []string
 }
@@ -58,10 +59,10 @@ func (r *Result) AddFile(path string) {
 // FileSystemCreator defines interface for creators that work with file system
 type FileSystemCreator interface {
 	Creator[CreatorConfig]
-	
+
 	// FileSystem returns the file system adapter
 	FileSystem() adapters.FileSystemAdapter
-	
+
 	// SetFileSystem sets the file system adapter (for testing)
 	SetFileSystem(fs adapters.FileSystemAdapter)
 }
@@ -69,10 +70,10 @@ type FileSystemCreator interface {
 // TemplateCreator defines interface for creators that generate templates
 type TemplateCreator interface {
 	FileSystemCreator
-	
+
 	// Template returns the template name
 	Template() string
-	
+
 	// SupportedProjectTypes returns project types this creator supports
 	SupportedProjectTypes() []generated.ProjectType
 }
@@ -80,10 +81,10 @@ type TemplateCreator interface {
 // ScaffoldCreator defines interface for high-level scaffolding operations
 type ScaffoldCreator interface {
 	Creator[CreatorConfig]
-	
+
 	// ScaffoldOrder returns the execution order for this creator
 	ScaffoldOrder() int
-	
+
 	// Prerequisites returns any prerequisites for this creator
 	Prerequisites() []string
 }

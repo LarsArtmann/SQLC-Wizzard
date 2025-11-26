@@ -45,8 +45,8 @@ func createBaseConfig(projectName string) *creators.CreateConfig {
 
 // Mock adapters for testing
 type MockFileSystemAdapter struct {
-	mkdirAllCalls []MkdirAllCall
-	writeFileCalls []WriteFileCall
+	mkdirAllCalls   []MkdirAllCall
+	writeFileCalls  []WriteFileCall
 	shouldFailMkdir bool
 	shouldFailWrite bool
 }
@@ -256,7 +256,7 @@ var _ = Describe("ProjectCreator", func() {
 			// Basic YAML validation
 			Expect(yamlContent).To(ContainSubstring("version:"))
 			Expect(yamlContent).To(ContainSubstring("sql:"))
-			
+
 			// Schema validation
 			Expect(schemaContent).To(ContainSubstring("CREATE TABLE users"))
 			Expect(schemaContent).To(ContainSubstring("Database schema for"))

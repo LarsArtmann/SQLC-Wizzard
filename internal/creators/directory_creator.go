@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"path/filepath"
-	
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
+
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 )
 
 // DirectoryCreator handles directory structure creation
@@ -28,9 +28,9 @@ func NewDirectoryCreator(fs adapters.FileSystemAdapter, cli adapters.CLIAdapter)
 // Implements Creator[CreatorConfig] interface
 func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) error {
 	dc.cli.Println("📁 Creating directory structure...")
-	
+
 	dirs := dc.getProjectDirectories(config)
-	
+
 	for _, dir := range dirs {
 		fullPath := filepath.Join(config.OutputPath, dir)
 		if err := dc.fs.MkdirAll(ctx, fullPath, 0o755); err != nil {
@@ -38,7 +38,7 @@ func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) er
 		}
 		dc.cli.Printf("Created directory: %s\n", fullPath)
 	}
-	
+
 	return nil
 }
 
@@ -77,10 +77,10 @@ func (dc *DirectoryCreator) getProjectDirectories(config CreatorConfig) []string
 		"test",
 		"docs",
 	}
-	
+
 	// Add project-type-specific directories
 	projectDirs := dc.getProjectTypeDirectories(config.ProjectType)
-	
+
 	return append(baseDirs, projectDirs...)
 }
 
@@ -91,18 +91,18 @@ func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.Proj
 	case generated.ProjectTypeMicroservice:
 		return []string{
 			"api",
-			"internal/api", 
+			"internal/api",
 			"internal/handlers",
 			"internal/middleware",
 			"pkg/auth",
 			"pkg/logger",
 		}
-		
+
 	case generated.ProjectTypeEnterprise:
 		return []string{
 			"api",
 			"internal/api",
-			"internal/handlers", 
+			"internal/handlers",
 			"internal/middleware",
 			"internal/audit",
 			"pkg/auth",
@@ -110,23 +110,23 @@ func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.Proj
 			"pkg/monitoring",
 			"pkg/security",
 		}
-		
+
 	case generated.ProjectTypeAPIFirst:
 		return []string{
 			"api",
 			"internal/api",
 			"internal/handlers",
-			"internal/middleware", 
+			"internal/middleware",
 			"pkg/auth",
 			"pkg/ratelimiter",
 		}
-		
+
 	case generated.ProjectTypeHobby:
 		return []string{
 			"internal/handlers",
 			"pkg/utils",
 		}
-		
+
 	case generated.ProjectTypeAnalytics:
 		return []string{
 			"internal/analytics",
@@ -134,29 +134,29 @@ func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.Proj
 			"internal/aggregators",
 			"pkg/metrics",
 		}
-		
+
 	case generated.ProjectTypeLibrary:
 		return []string{
 			"examples",
 			"internal/testutil",
 			"pkg/encoding",
 		}
-		
+
 	case generated.ProjectTypeMonolith:
 		return []string{
 			"internal",
 			"internal/users",
-			"internal/orders", 
+			"internal/orders",
 			"internal/products",
 			"internal/payments",
 			"pkg/shared",
 		}
-		
+
 	// TODO: Add remaining project types as they are implemented
 	// case generated.ProjectTypeFullstack:
 	// case generated.ProjectTypeCLI:
 	// case generated.ProjectTypePlugin:
-		
+
 	default:
 		// Fallback to microservice pattern for unknown types
 		return []string{
@@ -172,14 +172,14 @@ func (dc *DirectoryCreator) Validate(config CreatorConfig) error {
 	if config.ProjectName == "" {
 		return fmt.Errorf("project name cannot be empty")
 	}
-	
+
 	if config.OutputPath == "" {
 		return fmt.Errorf("output path cannot be empty")
 	}
-	
+
 	if !config.ProjectType.IsValid() {
 		return fmt.Errorf("invalid project type: %s", string(config.ProjectType))
 	}
-	
+
 	return nil
 }

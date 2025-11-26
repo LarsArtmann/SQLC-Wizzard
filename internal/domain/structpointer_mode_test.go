@@ -34,10 +34,10 @@ var _ = Describe("StructPointerMode", func() {
 	// Use generic validation test suite
 	testing.TestValidationSuite(StructPointerModeTestSuite{})
 
-	testing.RunBooleanMethodTest("modes with result pointers", 
-		[]string{"results", "always"}, 
-		[]string{"never", "params"}, 
-		func(mode string) bool { return domain.StructPointerMode(mode).UseResultPointers() }, 
+	testing.RunBooleanMethodTest("modes with result pointers",
+		[]string{"results", "always"},
+		[]string{"never", "params"},
+		func(mode string) bool { return domain.StructPointerMode(mode).UseResultPointers() },
 		"UseResultPointers")
 
 	testing.RunBooleanMethodTest("param pointers",

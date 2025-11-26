@@ -167,14 +167,14 @@ func checkGoVersion(ctx context.Context) *DoctorResult {
 	minVersion := "go1.21"
 	if goVersion < minVersion {
 		return &DoctorResult{
-			Status: DoctorStatusFail,
+			Status:   DoctorStatusFail,
 			Message:  fmt.Sprintf("Go version %s is too old", goVersion),
 			Solution: fmt.Sprintf("Please upgrade to Go %s or later", minVersion),
 		}
 	}
 
 	return &DoctorResult{
-		Status: DoctorStatusPass,
+		Status:  DoctorStatusPass,
 		Message: fmt.Sprintf("Go version %s is compatible", goVersion),
 	}
 }
@@ -185,7 +185,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	err := sqlcAdapter.CheckInstallation(ctx)
 	if err != nil {
 		return &DoctorResult{
-			Status: DoctorStatusFail,
+			Status:   DoctorStatusFail,
 			Message:  "sqlc is not installed or not in PATH",
 			Solution: "Install sqlc following instructions at https://docs.sqlc.dev",
 			Error:    err,
@@ -196,7 +196,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	_, err = sqlcAdapter.Version(ctx)
 	if err != nil {
 		return &DoctorResult{
-			Status: DoctorStatusWarn,
+			Status:   DoctorStatusWarn,
 			Message:  "sqlc is installed but version check failed",
 			Solution: "Ensure sqlc is properly configured",
 			Error:    err,
@@ -204,7 +204,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	}
 
 	return &DoctorResult{
-		Status: DoctorStatusPass,
+		Status:  DoctorStatusPass,
 		Message: "sqlc is installed and working",
 	}
 }
@@ -222,7 +222,7 @@ func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 	err := dbAdapter.TestConnection(ctx, sqliteConfig)
 	if err != nil {
 		return &DoctorResult{
-			Status: DoctorStatusWarn,
+			Status:   DoctorStatusWarn,
 			Message:  "SQLite driver may not be available",
 			Solution: "Install SQLite3: brew install sqlite3 (macOS) or apt-get install sqlite3 (Ubuntu)",
 			Error:    err,
@@ -230,7 +230,7 @@ func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 	}
 
 	return &DoctorResult{
-		Status: DoctorStatusPass,
+		Status:  DoctorStatusPass,
 		Message: "SQLite driver is available",
 	}
 }
@@ -246,7 +246,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	err := fsAdapter.WriteFile(ctx, testFile, testContent, 0o644)
 	if err != nil {
 		return &DoctorResult{
-			Status: DoctorStatusFail,
+			Status:   DoctorStatusFail,
 			Message:  "Cannot write to filesystem",
 			Solution: "Check directory permissions and disk space",
 			Error:    err,
@@ -257,7 +257,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	_, err = fsAdapter.ReadFile(ctx, testFile)
 	if err != nil {
 		return &DoctorResult{
-			Status: DoctorStatusFail,
+			Status:   DoctorStatusFail,
 			Message:  "Cannot read from filesystem",
 			Solution: "Check file permissions",
 			Error:    err,
@@ -268,7 +268,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	_ = os.Remove(testFile)
 
 	return &DoctorResult{
-		Status: DoctorStatusPass,
+		Status:  DoctorStatusPass,
 		Message: "Filesystem permissions are OK",
 	}
 }
@@ -284,14 +284,14 @@ func checkMemoryAvailability(ctx context.Context) *DoctorResult {
 
 	if availableMB < minMemoryMB {
 		return &DoctorResult{
-			Status: DoctorStatusWarn,
+			Status:   DoctorStatusWarn,
 			Message:  fmt.Sprintf("Only %d MB memory available", availableMB),
 			Solution: "Consider closing other applications or increasing available memory",
 		}
 	}
 
 	return &DoctorResult{
-		Status: DoctorStatusPass,
+		Status:  DoctorStatusPass,
 		Message: fmt.Sprintf("Memory is sufficient (%d MB available)", availableMB),
 	}
 }

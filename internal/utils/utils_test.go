@@ -51,11 +51,11 @@ func runTruncateTests(testFunc func(string, int) string, testCases []truncateTes
 
 // caseConversionTestCase represents a test case for string case conversion functions
 type caseConversionTestCase struct {
-	testCases     []stringTestCase
-	edgeCaseFunc  func(string) string
-	edgeExpected  string
-	edgeLeading   string
-	edgeTrailing  string
+	testCases    []stringTestCase
+	edgeCaseFunc func(string) string
+	edgeExpected string
+	edgeLeading  string
+	edgeTrailing string
 }
 
 // runCaseConversionTests runs comprehensive tests for case conversion functions
@@ -71,7 +71,7 @@ func runCaseConversionTests(testFunc func(string) string, description string, te
 			Expect(testFunc("-Leading")).To(Equal(testCase.edgeLeading))
 		}
 		if testCase.edgeTrailing != "" {
-			Expect(testFunc("Trailing"+testCase.edgeTrailing[8:])).To(Equal(testCase.edgeTrailing))
+			Expect(testFunc("Trailing" + testCase.edgeTrailing[8:])).To(Equal(testCase.edgeTrailing))
 		}
 	})
 }
@@ -113,7 +113,7 @@ var _ = Describe("StringToSnakeCase", func() {
 		},
 		edgeCaseFunc: utils.StringToSnakeCase,
 		edgeExpected: "",
-		edgeLeading: "-_leading",
+		edgeLeading:  "-_leading",
 		edgeTrailing: "trailing_",
 	}
 
@@ -134,7 +134,7 @@ var _ = Describe("StringToKebabCase", func() {
 		},
 		edgeCaseFunc: utils.StringToKebabCase,
 		edgeExpected: "",
-		edgeLeading: "--leading",
+		edgeLeading:  "--leading",
 		edgeTrailing: "trailing-",
 	}
 

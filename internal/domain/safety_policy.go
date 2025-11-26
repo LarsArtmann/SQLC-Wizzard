@@ -2,6 +2,7 @@ package domain
 
 import (
 	"strconv"
+
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 )
 
@@ -16,10 +17,10 @@ type SelectStarPolicy string
 const (
 	// SelectStarAllowed permits SELECT * queries
 	SelectStarAllowed SelectStarPolicy = "allowed"
-	
+
 	// SelectStarForbidden blocks all SELECT * queries
 	SelectStarForbidden SelectStarPolicy = "forbidden"
-	
+
 	// SelectStarExplicit requires explicit column listing in all cases
 	// (stricter than forbidden - affects SELECT col1, col2 too)
 	SelectStarExplicit SelectStarPolicy = "explicit"
@@ -56,11 +57,11 @@ type ColumnExplicitnessPolicy string
 const (
 	// ColumnExplicitnessDefault allows any valid column selection
 	ColumnExplicitnessDefault ColumnExplicitnessPolicy = "default"
-	
+
 	// ColumnExplicitnessRequired requires all columns to be explicitly named
 	// (affects even SELECT col1, col2 queries)
 	ColumnExplicitnessRequired ColumnExplicitnessPolicy = "required"
-	
+
 	// ColumnExplicitnessNamed requires columns to have aliases
 	ColumnExplicitnessNamed ColumnExplicitnessPolicy = "named"
 )
@@ -85,7 +86,7 @@ func (c ColumnExplicitnessPolicy) String() string {
 type QueryStyleRules struct {
 	// SelectStarPolicy defines how SELECT * queries are handled
 	SelectStarPolicy SelectStarPolicy `json:"selectStarPolicy"`
-	
+
 	// ColumnExplicitness defines how explicit column selection is enforced
 	ColumnExplicitness ColumnExplicitnessPolicy `json:"columnExplicitness"`
 }
@@ -97,13 +98,13 @@ type WhereClauseRequirement string
 const (
 	// WhereClauseNever allows queries without WHERE clauses
 	WhereClauseNever WhereClauseRequirement = "never"
-	
+
 	// WhereClauseOnDestructive requires WHERE on UPDATE/DELETE operations only
 	WhereClauseOnDestructive WhereClauseRequirement = "destructive"
-	
+
 	// WhereClauseOnSelect requires WHERE on SELECT queries with no LIMIT
 	WhereClauseOnSelect WhereClauseRequirement = "select_unlimited"
-	
+
 	// WhereClauseAlways requires WHERE clauses on all SELECT/UPDATE/DELETE queries
 	// (strictest setting for production safety)
 	WhereClauseAlways WhereClauseRequirement = "always"
@@ -141,13 +142,13 @@ type LimitClauseRequirement string
 const (
 	// LimitClauseNever allows queries without LIMIT clauses
 	LimitClauseNever LimitClauseRequirement = "never"
-	
+
 	// LimitClauseOnSelect requires LIMIT on SELECT queries
 	LimitClauseOnSelect LimitClauseRequirement = "select"
-	
+
 	// LimitClauseOnSelectWithoutWhere requires LIMIT only when no WHERE clause
 	LimitClauseOnSelectWithoutWhere LimitClauseRequirement = "select_without_where"
-	
+
 	// LimitClauseAlways requires LIMIT clauses on all SELECT queries
 	// (strictest setting for production environments)
 	LimitClauseAlways LimitClauseRequirement = "always"
@@ -183,10 +184,10 @@ func (l LimitClauseRequirement) RequiresWithoutWhere() bool {
 type QuerySafetyRules struct {
 	// WhereRequirement defines when WHERE clauses are required
 	WhereRequirement WhereClauseRequirement `json:"whereRequirement"`
-	
+
 	// LimitRequirement defines when LIMIT clauses are required
 	LimitRequirement LimitClauseRequirement `json:"limitRequirement"`
-	
+
 	// MaxRowsWithoutLimit specifies max rows that can be returned without explicit LIMIT
 	// 0 means no limit, >0 means enforce this limit if no LIMIT clause present
 	MaxRowsWithoutLimit uint `json:"maxRowsWithoutLimit"`
@@ -291,13 +292,13 @@ func (t *TypeSafeSafetyRules) IsValid() error {
 func NewTypeSafeSafetyRules() TypeSafeSafetyRules {
 	return TypeSafeSafetyRules{
 		StyleRules: QueryStyleRules{
-			SelectStarPolicy:    SelectStarForbidden, // Enforce explicit columns
-			ColumnExplicitness:  ColumnExplicitnessDefault, // Not too strict by default
+			SelectStarPolicy:   SelectStarForbidden,       // Enforce explicit columns
+			ColumnExplicitness: ColumnExplicitnessDefault, // Not too strict by default
 		},
 		SafetyRules: QuerySafetyRules{
-			WhereRequirement:     WhereClauseOnDestructive, // Require WHERE on UPDATE/DELETE only
-			LimitRequirement:     LimitClauseNever,        // Not enforced by default (too restrictive)
-			MaxRowsWithoutLimit: 1000,                  // Soft limit when no LIMIT clause
+			WhereRequirement:    WhereClauseOnDestructive, // Require WHERE on UPDATE/DELETE only
+			LimitRequirement:    LimitClauseNever,         // Not enforced by default (too restrictive)
+			MaxRowsWithoutLimit: 1000,                     // Soft limit when no LIMIT clause
 		},
 		DestructiveOps: DestructiveForbidden, // Production-safe default
 		CustomRules:    []generated.SafetyRule{},
@@ -308,13 +309,13 @@ func NewTypeSafeSafetyRules() TypeSafeSafetyRules {
 func NewDevelopmentSafetyRules() TypeSafeSafetyRules {
 	return TypeSafeSafetyRules{
 		StyleRules: QueryStyleRules{
-			SelectStarPolicy:    SelectStarAllowed,   // Allow for rapid prototyping
-			ColumnExplicitness:  ColumnExplicitnessDefault,
+			SelectStarPolicy:   SelectStarAllowed, // Allow for rapid prototyping
+			ColumnExplicitness: ColumnExplicitnessDefault,
 		},
 		SafetyRules: QuerySafetyRules{
-			WhereRequirement:     WhereClauseNever,       // Allow flexible querying
-			LimitRequirement:     LimitClauseNever,       // Not enforced in development
-			MaxRowsWithoutLimit: 0,                     // No limit enforcement
+			WhereRequirement:    WhereClauseNever, // Allow flexible querying
+			LimitRequirement:    LimitClauseNever, // Not enforced in development
+			MaxRowsWithoutLimit: 0,                // No limit enforcement
 		},
 		DestructiveOps: DestructiveAllowed, // Allow migrations and schema changes
 		CustomRules:    []generated.SafetyRule{},
@@ -325,13 +326,13 @@ func NewDevelopmentSafetyRules() TypeSafeSafetyRules {
 func NewProductionSafetyRules() TypeSafeSafetyRules {
 	return TypeSafeSafetyRules{
 		StyleRules: QueryStyleRules{
-			SelectStarPolicy:    SelectStarExplicit,    // Extra strict
-			ColumnExplicitness:  ColumnExplicitnessRequired, // Extra strict
+			SelectStarPolicy:   SelectStarExplicit,         // Extra strict
+			ColumnExplicitness: ColumnExplicitnessRequired, // Extra strict
 		},
 		SafetyRules: QuerySafetyRules{
-			WhereRequirement:     WhereClauseAlways,     // Always require WHERE
-			LimitRequirement:     LimitClauseAlways,     // Always require LIMIT
-			MaxRowsWithoutLimit: 100,                   // Very conservative
+			WhereRequirement:    WhereClauseAlways, // Always require WHERE
+			LimitRequirement:    LimitClauseAlways, // Always require LIMIT
+			MaxRowsWithoutLimit: 100,               // Very conservative
 		},
 		DestructiveOps: DestructiveForbidden, // Never allow destructive ops
 		CustomRules:    []generated.SafetyRule{},
