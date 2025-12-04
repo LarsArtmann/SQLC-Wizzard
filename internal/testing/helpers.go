@@ -38,7 +38,7 @@ func TestValidationSuite[T interface {
 }
 
 // RunBooleanMethodTest runs generic tests for boolean methods
-func RunBooleanMethodTest(context string, trueModes []string, falseModes []string, method func(string) bool, methodDisplay string) {
+func RunBooleanMethodTest(context string, trueModes, falseModes []string, method func(string) bool, methodDisplay string) {
 	It("should return true for "+context, func() {
 		for _, mode := range trueModes {
 			Expect(method(mode)).To(BeTrue(), "Mode %s should return true for "+context, mode)
