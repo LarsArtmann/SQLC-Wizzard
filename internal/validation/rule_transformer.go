@@ -84,8 +84,8 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 
 	// ========== STYLE RULES (Code Quality) ==========
 
-	// Transform NoSelectStar rule
-	if rules.StyleRules.NoSelectStar {
+	// Transform SelectStarPolicy rule
+	if rules.StyleRules.SelectStarPolicy.ForbidsSelectStar() {
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "no-select-star",
 			Rule:    "!query.contains('SELECT *')",
@@ -94,7 +94,7 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 	}
 
 	// Transform RequireExplicitColumns rule (NEW!)
-	if rules.StyleRules.RequireExplicitColumns {
+	if rules.StyleRules.ColumnExplicitness.RequiresExplicitColumns() {
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "require-explicit-columns",
 			Rule:    "query.type == 'SELECT' && query.hasExplicitColumns()",
@@ -105,7 +105,7 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 	// ========== SAFETY RULES (Prevent Bugs) ==========
 
 	// Transform RequireWhere rule
-	if rules.SafetyRules.RequireWhere {
+	if rules.SafetyRules.WhereRequirement.RequiresOnDestructive() {
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "require-where",
 			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
@@ -114,7 +114,7 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 	}
 
 	// Transform RequireLimit rule
-	if rules.SafetyRules.RequireLimit {
+	if rules.SafetyRules.LimitRequirement.RequiresOnSelect() {
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "require-limit",
 			Rule:    "query.type == 'SELECT' && !query.hasLimitClause()",
