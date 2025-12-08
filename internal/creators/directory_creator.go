@@ -36,7 +36,7 @@ func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) er
 		if err := dc.fs.MkdirAll(ctx, fullPath, 0o755); err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", dir, err)
 		}
-		dc.cli.Printf("Created directory: %s\n", fullPath)
+		dc.cli.Println(fmt.Sprintf("Created directory: %s", fullPath))
 	}
 
 	return nil
@@ -136,13 +136,6 @@ func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.Proj
 		}
 
 	case generated.ProjectTypeLibrary:
-		return []string{
-			"examples",
-			"internal/testutil",
-			"pkg/encoding",
-		}
-
-	case generated.ProjectTypeMonolith:
 		return []string{
 			"internal",
 			"internal/users",
