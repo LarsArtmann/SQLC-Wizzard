@@ -81,6 +81,11 @@ func (c ColumnExplicitnessPolicy) String() string {
 	return string(c)
 }
 
+// RequiresExplicitColumns returns true if this policy requires all columns to be explicitly named
+func (c ColumnExplicitnessPolicy) RequiresExplicitColumns() bool {
+	return c == ColumnExplicitnessRequired
+}
+
 // QueryStyleRules defines rules about SQL query style and best practices
 // Uses type-safe enums to prevent invalid state combinations
 type QueryStyleRules struct {
