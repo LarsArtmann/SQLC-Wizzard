@@ -295,10 +295,10 @@ var _ = Describe("SafetyRules Conversions", func() {
 
 			typeSafe := domain.SafetyRulesToTypeSafe(old)
 
-			Expect(typeSafe.StyleRules.NoSelectStar).To(BeTrue())
-			Expect(typeSafe.StyleRules.RequireExplicitColumns).To(BeFalse())
-			Expect(typeSafe.SafetyRules.RequireWhere).To(BeTrue())
-			Expect(typeSafe.SafetyRules.RequireLimit).To(BeFalse())
+			Expect(typeSafe.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
+			Expect(typeSafe.StyleRules.ColumnExplicitness.RequiresExplicitColumns()).To(BeFalse())
+			Expect(typeSafe.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeTrue())
+			Expect(typeSafe.SafetyRules.LimitRequirement.RequiresOnSelect()).To(BeFalse())
 			Expect(typeSafe.SafetyRules.MaxRowsWithoutLimit).To(Equal(uint(1000)))
 			Expect(typeSafe.DestructiveOps).To(Equal(domain.DestructiveForbidden))
 		})
@@ -315,9 +315,9 @@ var _ = Describe("SafetyRules Conversions", func() {
 
 			typeSafe := domain.SafetyRulesToTypeSafe(old)
 
-			Expect(typeSafe.StyleRules.NoSelectStar).To(BeFalse())
-			Expect(typeSafe.SafetyRules.RequireWhere).To(BeFalse())
-			Expect(typeSafe.SafetyRules.RequireLimit).To(BeTrue())
+			Expect(typeSafe.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(BeFalse())
+			Expect(typeSafe.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeFalse())
+			Expect(typeSafe.SafetyRules.LimitRequirement.RequiresOnSelect()).To(BeTrue())
 			Expect(typeSafe.DestructiveOps).To(Equal(domain.DestructiveAllowed))
 		})
 
@@ -373,12 +373,12 @@ var _ = Describe("SafetyRules Conversions", func() {
 		It("should convert back to legacy format correctly", func() {
 			typeSafe := domain.TypeSafeSafetyRules{
 				StyleRules: domain.QueryStyleRules{
-					NoSelectStar:           true,
-					RequireExplicitColumns: true,
+					SelectStarPolicy:   domain.SelectStarForbidden,
+					ColumnExplicitness: domain.ColumnExplicitnessRequired,
 				},
 				SafetyRules: domain.QuerySafetyRules{
-					RequireWhere:        true,
-					RequireLimit:        true,
+					WhereRequirement:    domain.WhereClauseAlways,
+					LimitRequirement:    domain.LimitClauseAlways,
 					MaxRowsWithoutLimit: 100,
 				},
 				DestructiveOps: domain.DestructiveForbidden,
@@ -397,12 +397,12 @@ var _ = Describe("SafetyRules Conversions", func() {
 		It("should convert allowed destructive ops correctly", func() {
 			typeSafe := domain.TypeSafeSafetyRules{
 				StyleRules: domain.QueryStyleRules{
-					NoSelectStar:           false,
-					RequireExplicitColumns: false,
+					SelectStarPolicy:   domain.SelectStarAllowed,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
 				},
 				SafetyRules: domain.QuerySafetyRules{
-					RequireWhere:        false,
-					RequireLimit:        false,
+					WhereRequirement:    domain.WhereClauseNever,
+					LimitRequirement:    domain.LimitClauseNever,
 					MaxRowsWithoutLimit: 0,
 				},
 				DestructiveOps: domain.DestructiveAllowed,
@@ -426,12 +426,12 @@ var _ = Describe("SafetyRules Conversions", func() {
 
 			typeSafe := domain.TypeSafeSafetyRules{
 				StyleRules: domain.QueryStyleRules{
-					NoSelectStar:           true,
-					RequireExplicitColumns: false,
+					SelectStarPolicy:   domain.SelectStarForbidden,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
 				},
 				SafetyRules: domain.QuerySafetyRules{
-					RequireWhere:        true,
-					RequireLimit:        false,
+					WhereRequirement:    domain.WhereClauseAlways,
+					LimitRequirement:    domain.LimitClauseNever,
 					MaxRowsWithoutLimit: 1000,
 				},
 				DestructiveOps: domain.DestructiveForbidden,
@@ -470,12 +470,12 @@ var _ = Describe("SafetyRules Conversions", func() {
 		It("should preserve core data through new→old→new conversion", func() {
 			original := domain.TypeSafeSafetyRules{
 				StyleRules: domain.QueryStyleRules{
-					NoSelectStar:           true,
-					RequireExplicitColumns: false,
+					SelectStarPolicy:   domain.SelectStarForbidden,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
 				},
 				SafetyRules: domain.QuerySafetyRules{
-					RequireWhere:        true,
-					RequireLimit:        false,
+					WhereRequirement:    domain.WhereClauseAlways,
+					LimitRequirement:    domain.LimitClauseNever,
 					MaxRowsWithoutLimit: 1000,
 				},
 				DestructiveOps: domain.DestructiveForbidden,
@@ -485,9 +485,9 @@ var _ = Describe("SafetyRules Conversions", func() {
 			legacy := original.ToLegacy()
 			roundtrip := domain.SafetyRulesToTypeSafe(legacy)
 
-			Expect(roundtrip.StyleRules.NoSelectStar).To(Equal(original.StyleRules.NoSelectStar))
-			Expect(roundtrip.SafetyRules.RequireWhere).To(Equal(original.SafetyRules.RequireWhere))
-			Expect(roundtrip.SafetyRules.RequireLimit).To(Equal(original.SafetyRules.RequireLimit))
+			Expect(roundtrip.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(Equal(original.StyleRules.SelectStarPolicy.ForbidsSelectStar()))
+			Expect(roundtrip.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(Equal(original.SafetyRules.WhereRequirement.RequiresOnDestructive()))
+			Expect(roundtrip.SafetyRules.LimitRequirement.RequiresOnSelect()).To(Equal(original.SafetyRules.LimitRequirement.RequiresOnSelect()))
 			Expect(roundtrip.DestructiveOps).To(Equal(original.DestructiveOps))
 
 			// Note: RequireExplicitColumns and MaxRowsWithoutLimit are not preserved

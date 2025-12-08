@@ -23,13 +23,13 @@ type safetyRulesExpectations struct {
 }
 
 // assertSafetyRules validates safety rules against expected values
-func assertSafetyRules(rules interface{}, expectations safetyRulesExpectations) {
+func assertSafetyRules(rules any, expectations safetyRulesExpectations) {
 	switch r := rules.(type) {
 	case domain.TypeSafeSafetyRules:
-		Expect(r.StyleRules.NoSelectStar).To(Equal(expectations.noSelectStar), expectations.description+": NoSelectStar")
-		Expect(r.StyleRules.RequireExplicitColumns).To(Equal(expectations.requireExplicitColumns), expectations.description+": RequireExplicitColumns")
-		Expect(r.SafetyRules.RequireWhere).To(Equal(expectations.requireWhere), expectations.description+": RequireWhere")
-		Expect(r.SafetyRules.RequireLimit).To(Equal(expectations.requireLimit), expectations.description+": RequireLimit")
+		Expect(r.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(Equal(expectations.noSelectStar), expectations.description+": SelectStarPolicy")
+		Expect(r.StyleRules.ColumnExplicitness.RequiresExplicitColumns()).To(Equal(expectations.requireExplicitColumns), expectations.description+": ColumnExplicitness")
+		Expect(r.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(Equal(expectations.requireWhere), expectations.description+": WhereRequirement")
+		Expect(r.SafetyRules.LimitRequirement.RequiresOnSelect()).To(Equal(expectations.requireLimit), expectations.description+": LimitRequirement")
 		Expect(r.SafetyRules.MaxRowsWithoutLimit).To(Equal(expectations.maxRowsWithoutLimit), expectations.description+": MaxRowsWithoutLimit")
 		Expect(r.DestructiveOps).To(Equal(expectations.destructiveOps), expectations.description+": DestructiveOps")
 
@@ -44,35 +44,35 @@ func assertSafetyRules(rules interface{}, expectations safetyRulesExpectations) 
 var _ = Describe("QueryStyleRules", func() {
 	It("should allow independent configuration of style rules", func() {
 		rules := domain.QueryStyleRules{
-			NoSelectStar:           true,
-			RequireExplicitColumns: false,
+			SelectStarPolicy:   domain.SelectStarForbidden,
+			ColumnExplicitness: domain.ColumnExplicitnessDefault,
 		}
 
-		Expect(rules.NoSelectStar).To(BeTrue())
-		Expect(rules.RequireExplicitColumns).To(BeFalse())
+		Expect(rules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
+		Expect(rules.ColumnExplicitness.RequiresExplicitColumns()).To(BeFalse())
 	})
 
 	It("should support both rules enabled", func() {
 		rules := domain.QueryStyleRules{
-			NoSelectStar:           true,
-			RequireExplicitColumns: true,
+			SelectStarPolicy:   domain.SelectStarForbidden,
+			ColumnExplicitness: domain.ColumnExplicitnessRequired,
 		}
 
-		Expect(rules.NoSelectStar).To(BeTrue())
-		Expect(rules.RequireExplicitColumns).To(BeTrue())
+		Expect(rules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
+		Expect(rules.ColumnExplicitness.RequiresExplicitColumns()).To(BeTrue())
 	})
 })
 
 var _ = Describe("QuerySafetyRules", func() {
 	It("should allow independent configuration of safety rules", func() {
 		rules := domain.QuerySafetyRules{
-			RequireWhere:        true,
-			RequireLimit:        false,
+			WhereRequirement:    domain.WhereClauseAlways,
+			LimitRequirement:    domain.LimitClauseNever,
 			MaxRowsWithoutLimit: 1000,
 		}
 
-		Expect(rules.RequireWhere).To(BeTrue())
-		Expect(rules.RequireLimit).To(BeFalse())
+		Expect(rules.WhereRequirement.RequiresOnDestructive()).To(BeTrue())
+		Expect(rules.LimitRequirement.RequiresOnSelect()).To(BeFalse())
 		Expect(rules.MaxRowsWithoutLimit).To(Equal(uint(1000)))
 	})
 
@@ -169,10 +169,10 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		It("should validate rules with valid policy", func() {
 			rules := domain.TypeSafeSafetyRules{
 				StyleRules: domain.QueryStyleRules{
-					NoSelectStar: true,
+					SelectStarPolicy: domain.SelectStarForbidden,
 				},
 				SafetyRules: domain.QuerySafetyRules{
-					RequireWhere: true,
+					WhereRequirement: domain.WhereClauseAlways,
 				},
 				DestructiveOps: domain.DestructiveForbidden,
 				CustomRules:    []generated.SafetyRule{},
@@ -262,10 +262,10 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 			defaults := domain.NewTypeSafeSafetyRules()
 
 			// Production-safe: No SELECT *
-			Expect(defaults.StyleRules.NoSelectStar).To(BeTrue())
+			Expect(defaults.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
 
 			// Production-safe: Require WHERE
-			Expect(defaults.SafetyRules.RequireWhere).To(BeTrue())
+			Expect(defaults.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeTrue())
 
 			// Production-safe: Block destructive ops
 			Expect(defaults.DestructiveOps).To(Equal(domain.DestructiveForbidden))
@@ -276,9 +276,9 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		It("should return relaxed rules for development", func() {
 			devRules := domain.NewDevelopmentSafetyRules()
 
-			Expect(devRules.StyleRules.NoSelectStar).To(BeFalse())
-			Expect(devRules.SafetyRules.RequireWhere).To(BeFalse())
-			Expect(devRules.SafetyRules.RequireLimit).To(BeFalse())
+			Expect(devRules.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(BeFalse())
+			Expect(devRules.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeFalse())
+			Expect(devRules.SafetyRules.LimitRequirement.RequiresOnSelect()).To(BeFalse())
 			Expect(devRules.SafetyRules.MaxRowsWithoutLimit).To(Equal(uint(0)))
 			Expect(devRules.DestructiveOps).To(Equal(domain.DestructiveAllowed))
 
@@ -319,8 +319,8 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		It("should enforce both WHERE and LIMIT in production", func() {
 			prodRules := domain.NewProductionSafetyRules()
 
-			Expect(prodRules.SafetyRules.RequireWhere).To(BeTrue())
-			Expect(prodRules.SafetyRules.RequireLimit).To(BeTrue())
+			Expect(prodRules.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeTrue())
+			Expect(prodRules.SafetyRules.LimitRequirement.RequiresOnSelect()).To(BeTrue())
 		})
 	})
 })
@@ -342,17 +342,17 @@ var _ = Describe("Type Safety Benefits", func() {
 		It("should group related safety rules semantically", func() {
 			// Style rules (code quality)
 			styleRules := domain.QueryStyleRules{
-				NoSelectStar: true,
+				SelectStarPolicy: domain.SelectStarForbidden,
 			}
 
 			// Safety rules (prevent bugs)
 			safetyRules := domain.QuerySafetyRules{
-				RequireWhere: true,
+				WhereRequirement: domain.WhereClauseAlways,
 			}
 
 			// Clear separation of concerns
-			Expect(styleRules.NoSelectStar).To(BeTrue())
-			Expect(safetyRules.RequireWhere).To(BeTrue())
+			Expect(styleRules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
+			Expect(safetyRules.WhereRequirement.RequiresOnDestructive()).To(BeTrue())
 		})
 	})
 
@@ -363,12 +363,12 @@ var _ = Describe("Type Safety Benefits", func() {
 
 			// Dev is permissive
 			Expect(dev.DestructiveOps).To(Equal(domain.DestructiveAllowed))
-			Expect(dev.SafetyRules.RequireWhere).To(BeFalse())
+			Expect(dev.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeFalse())
 
 			// Prod is strict
 			Expect(prod.DestructiveOps).To(Equal(domain.DestructiveForbidden))
-			Expect(prod.SafetyRules.RequireWhere).To(BeTrue())
-			Expect(prod.SafetyRules.RequireLimit).To(BeTrue())
+			Expect(prod.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeTrue())
+			Expect(prod.SafetyRules.LimitRequirement.RequiresOnSelect()).To(BeTrue())
 		})
 	})
 
