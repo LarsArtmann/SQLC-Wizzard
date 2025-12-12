@@ -41,6 +41,12 @@ func (r *ValidationResult) AddWarning(field, message string) {
 func Validate(cfg *SqlcConfig) *ValidationResult {
 	result := &ValidationResult{}
 
+	// Handle nil configuration
+	if cfg == nil {
+		result.AddError("config", "configuration cannot be nil")
+		return result
+	}
+
 	// Validate version
 	if cfg.Version == "" {
 		result.AddError("version", "version is required")
