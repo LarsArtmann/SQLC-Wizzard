@@ -64,15 +64,15 @@ func (m *MockUI) ShowInfo(message string) {
 
 // MockStep is a mock implementation of StepInterface for testing
 type MockStep struct {
-	ExecuteCalls     int
-	ShouldFail      bool
-	FailError       error
-	LastCallData    *generated.TemplateData
-	ExpectedProject generated.ProjectType
-	ValidateCalls   int
+	ExecuteCalls       int
+	ShouldFail         bool
+	FailError          error
+	LastCallData       *generated.TemplateData
+	ExpectedProject    generated.ProjectType
+	ValidateCalls      int
 	ShouldValidateFail bool
-	ValidateError     error
-	ExecuteFunc     func(data *generated.TemplateData) error
+	ValidateError      error
+	ExecuteFunc        func(data *generated.TemplateData) error
 }
 
 func NewMockStep() *MockStep {
@@ -175,14 +175,13 @@ func (m *MockTemplate) Description() string {
 	return "A mock template for testing"
 }
 
-
 var _ = Describe("Wizard with Dependency Injection", func() {
 	var (
-		mockUI        *MockUI
-		mockSteps     map[string]*MockStep
-		mockTemplate  *MockTemplate
-		wizardDeps    wizard.WizardDependencies
-		wiz           *wizard.Wizard
+		mockUI       *MockUI
+		mockSteps    map[string]*MockStep
+		mockTemplate *MockTemplate
+		wizardDeps   wizard.WizardDependencies
+		wiz          *wizard.Wizard
 	)
 
 	BeforeEach(func() {
@@ -239,7 +238,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 				Expect(len(mockUI.StepHeaders)).To(Equal(5))
 				Expect(mockUI.StepHeaders).To(Equal([]string{
 					"Project Type",
-					"Database", 
+					"Database",
 					"Project Details",
 					"Features",
 					"Output Configuration",
@@ -277,7 +276,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 				// Verify all steps received the same data object
 				originalData := mockSteps["projectType"].LastCallData
 				for stepName, step := range mockSteps {
-					Expect(step.LastCallData).To(Equal(originalData), 
+					Expect(step.LastCallData).To(Equal(originalData),
 						"Step %s should receive same data object", stepName)
 				}
 			})
@@ -376,7 +375,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 			// Create a step that modifies data
 			customStep := NewMockStep()
 			customStep.ExpectedProject = generated.ProjectTypeEnterprise
-			
+
 			wizardDeps.ProjectType = customStep
 			wiz = wizard.NewTestableWizard(wizardDeps)
 
@@ -400,7 +399,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 				data.ProjectType = generated.ProjectTypeEnterprise
 				return nil
 			}
-			
+
 			wizardDeps.ProjectType = customStep
 			wiz = wizard.NewTestableWizard(wizardDeps)
 
@@ -450,7 +449,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 				// Verify that all steps were called exactly once
 				for stepName, step := range mockSteps {
-					Expect(step.ExecuteCalls).To(Equal(1), 
+					Expect(step.ExecuteCalls).To(Equal(1),
 						"Step %s should be called exactly once", stepName)
 					Expect(step.LastCallData).NotTo(BeNil(),
 						"Step %s should receive template data", stepName)
@@ -477,7 +476,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 				// Verify correct step order
 				Expect(mockUI.StepHeaders).To(Equal([]string{
 					"Project Type",
-					"Database", 
+					"Database",
 					"Project Details",
 					"Features",
 					"Output Configuration",
@@ -502,7 +501,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 				for i := 0; i < 3; i++ {
 					result, err := wiz.Run()
 
-					Expect(err).To(BeNil(), 
+					Expect(err).To(BeNil(),
 						fmt.Sprintf("Wizard run %d should succeed", i+1))
 					Expect(result).NotTo(BeNil(),
 						fmt.Sprintf("Wizard run %d should return result", i+1))
@@ -570,7 +569,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 				// All steps should execute but template generation should fail
 				for stepName, step := range mockSteps {
-					Expect(step.ExecuteCalls).To(Equal(1), 
+					Expect(step.ExecuteCalls).To(Equal(1),
 						"Step %s should have been called", stepName)
 				}
 				Expect(mockTemplate.GenerateCalls).To(Equal(0))
@@ -588,7 +587,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 				// All steps should execute but template generation should fail
 				for stepName, step := range mockSteps {
-					Expect(step.ExecuteCalls).To(Equal(1), 
+					Expect(step.ExecuteCalls).To(Equal(1),
 						"Step %s should have been called", stepName)
 				}
 				Expect(mockTemplate.GenerateCalls).To(Equal(1))
@@ -730,7 +729,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 				result, err := wiz.Run()
 
-				Expect(err).To(BeNil(), 
+				Expect(err).To(BeNil(),
 					fmt.Sprintf("Wizard should succeed for project type %s", projectType))
 				Expect(result).NotTo(BeNil(),
 					fmt.Sprintf("Wizard should return result for project type %s", projectType))
@@ -761,7 +760,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 				result, err := wiz.Run()
 
-				Expect(err).To(BeNil(), 
+				Expect(err).To(BeNil(),
 					fmt.Sprintf("Wizard should succeed for database type %s", dbType))
 				Expect(result).NotTo(BeNil(),
 					fmt.Sprintf("Wizard should return result for database type %s", dbType))

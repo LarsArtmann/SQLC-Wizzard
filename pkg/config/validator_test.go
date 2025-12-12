@@ -10,7 +10,7 @@ var _ = Describe("Validator", func() {
 	Context("ValidationResult", func() {
 		It("should initialize with empty errors and warnings", func() {
 			result := &ValidationResult{}
-			
+
 			Expect(result.Errors).To(BeEmpty())
 			Expect(result.Warnings).To(BeEmpty())
 			Expect(result.IsValid()).To(BeTrue())
@@ -18,10 +18,10 @@ var _ = Describe("Validator", func() {
 
 		It("should add errors correctly", func() {
 			result := &ValidationResult{}
-			
+
 			result.AddError("field1", "error message")
 			result.AddError("field2", "another error")
-			
+
 			Expect(len(result.Errors)).To(Equal(2))
 			Expect(result.Errors[0].Field).To(Equal("field1"))
 			Expect(result.Errors[0].Message).To(Equal("error message"))
@@ -32,10 +32,10 @@ var _ = Describe("Validator", func() {
 
 		It("should add warnings correctly", func() {
 			result := &ValidationResult{}
-			
+
 			result.AddWarning("field1", "warning message")
 			result.AddWarning("field2", "another warning")
-			
+
 			Expect(len(result.Warnings)).To(Equal(2))
 			Expect(result.Warnings[0].Field).To(Equal("field1"))
 			Expect(result.Warnings[0].Message).To(Equal("warning message"))
@@ -46,11 +46,11 @@ var _ = Describe("Validator", func() {
 
 		It("should mix errors and warnings correctly", func() {
 			result := &ValidationResult{}
-			
+
 			result.AddError("field1", "error message")
 			result.AddWarning("field2", "warning message")
 			result.AddWarning("field3", "another warning")
-			
+
 			Expect(len(result.Errors)).To(Equal(1))
 			Expect(len(result.Warnings)).To(Equal(2))
 			Expect(result.IsValid()).To(BeFalse()) // Has errors
@@ -63,7 +63,7 @@ var _ = Describe("Validator", func() {
 				Field:   "testField",
 				Message: "test message",
 			}
-			
+
 			Expect(err.Error()).To(Equal("testField: test message"))
 		})
 
@@ -72,7 +72,7 @@ var _ = Describe("Validator", func() {
 				Field:   "",
 				Message: "",
 			}
-			
+
 			Expect(err.Error()).To(Equal(": "))
 		})
 
@@ -81,7 +81,7 @@ var _ = Describe("Validator", func() {
 				Field:   "field.name[0]",
 				Message: "Message with: special characters!",
 			}
-			
+
 			Expect(err.Error()).To(Equal("field.name[0]: Message with: special characters!"))
 		})
 	})
@@ -104,7 +104,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			Expect(result.IsValid()).To(BeTrue())
@@ -127,12 +127,12 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			Expect(result.IsValid()).To(BeFalse())
 			Expect(len(result.Errors)).To(BeNumerically(">", 0))
-			
+
 			// Find version error
 			var versionError *ValidationError
 			for _, err := range result.Errors {
@@ -150,7 +150,7 @@ var _ = Describe("Validator", func() {
 				Version: "2",
 				SQL:     []SQLConfig{},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			Expect(result.IsValid()).To(BeFalse())
@@ -174,7 +174,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			// May or may not be invalid depending on validation logic
@@ -208,7 +208,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			// Should not panic with multiple configurations
@@ -231,7 +231,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			// May have warnings/errors for empty out/package
@@ -251,7 +251,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			// Should handle nil Go config gracefully
@@ -274,7 +274,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			// May have warnings/errors for empty paths
@@ -307,7 +307,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			// Should be valid even with warnings
@@ -318,7 +318,7 @@ var _ = Describe("Validator", func() {
 				Version: "2",
 				SQL: []SQLConfig{
 					{
-						Engine: "postgresql",
+						Engine:  "postgresql",
 						Schema:  NewPathOrPaths([]string{"schema1.sql", "schema2.sql"}),
 						Queries: NewPathOrPaths([]string{"queries1.sql", "queries2.sql"}),
 						Gen: GenConfig{
@@ -340,7 +340,7 @@ var _ = Describe("Validator", func() {
 					},
 				},
 			}
-			
+
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			// Should handle complex configurations

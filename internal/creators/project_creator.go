@@ -190,8 +190,8 @@ func (pc *ProjectCreator) generateGoModuleStructure(ctx context.Context, cfg *Cr
 	}
 
 	// Create main.go for executable projects
-	if cfg.TemplateData.ProjectType == generated.ProjectTypeAPIFirst || 
-	   cfg.TemplateData.ProjectType == generated.ProjectTypeMicroservice {
+	if cfg.TemplateData.ProjectType == generated.ProjectTypeAPIFirst ||
+		cfg.TemplateData.ProjectType == generated.ProjectTypeMicroservice {
 		mainGoContent := pc.buildMainGo(cfg.TemplateData)
 		if err := pc.fs.WriteFile(ctx, "main.go", []byte(mainGoContent), 0o644); err != nil {
 			return fmt.Errorf("failed to write main.go: %w", err)

@@ -38,12 +38,12 @@ func NewWizard() *Wizard {
 	ui := NewUIHelper()
 
 	deps := WizardDependencies{
-		UI:           ui,
-		ProjectType:  NewProjectTypeStep(theme, ui),
-		Database:     NewDatabaseStep(theme, ui),
-		Details:      NewProjectDetailsStep(theme, ui),
-		Features:     NewFeaturesStep(theme, ui),
-		Output:       NewOutputStep(theme, ui),
+		UI:          ui,
+		ProjectType: NewProjectTypeStep(theme, ui),
+		Database:    NewDatabaseStep(theme, ui),
+		Details:     NewProjectDetailsStep(theme, ui),
+		Features:    NewFeaturesStep(theme, ui),
+		Output:      NewOutputStep(theme, ui),
 		TemplateFunc: func(projectType templates.ProjectType) (TemplateInterface, error) {
 			tmpl, err := templates.GetTemplate(projectType)
 			if err != nil {
@@ -202,7 +202,9 @@ func (w *Wizard) showStepComplete(title, message string) {
 func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 	// Validate output configuration
 	if outputStep := w.getOutputStep(); outputStep != nil {
-		if validatableStep, ok := outputStep.(interface{ ValidateConfiguration(*generated.TemplateData) error }); ok {
+		if validatableStep, ok := outputStep.(interface {
+			ValidateConfiguration(*generated.TemplateData) error
+		}); ok {
 			if err := validatableStep.ValidateConfiguration(data); err != nil {
 				return fmt.Errorf("invalid output configuration: %w", err)
 			}
@@ -212,13 +214,13 @@ func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 	// Get appropriate template
 	var tmpl TemplateInterface
 	var err error
-	
+
 	if w.deps != nil && w.deps.TemplateFunc != nil {
 		tmpl, err = w.deps.TemplateFunc(templates.ProjectType(data.ProjectType))
 	} else {
 		tmpl, err = templates.GetTemplate(templates.ProjectType(data.ProjectType))
 	}
-	
+
 	if err != nil {
 		return fmt.Errorf("failed to get template: %w", err)
 	}

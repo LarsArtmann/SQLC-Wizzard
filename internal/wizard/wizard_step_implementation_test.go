@@ -9,9 +9,7 @@ import (
 )
 
 var _ = Describe("Individual Step Implementation Tests", func() {
-	var (
-		theme *huh.Theme
-	)
+	var theme *huh.Theme
 
 	BeforeEach(func() {
 		theme = huh.ThemeBase()
@@ -42,7 +40,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 			}
 
 			for _, projectType := range validTypes {
-				Expect(projectType.IsValid()).To(BeTrue(), 
+				Expect(projectType.IsValid()).To(BeTrue(),
 					"Project type %s should be valid", projectType)
 			}
 		})
@@ -80,7 +78,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 			}
 
 			for _, dbType := range validTypes {
-				Expect(dbType.IsValid()).To(BeTrue(), 
+				Expect(dbType.IsValid()).To(BeTrue(),
 					"Database type %s should be valid", dbType)
 			}
 		})
@@ -163,21 +161,21 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 			emitOptions := []generated.EmitOptions{
 				{
 					EmitInterface:            true,
-					EmitPreparedQueries:     false,
-					EmitJSONTags:           true,
+					EmitPreparedQueries:      false,
+					EmitJSONTags:             true,
 					EmitResultStructPointers: false,
 					EmitParamsStructPointers: false,
-					EmitEnumValidMethod:     true,
-					EmitAllEnumValues:       false,
+					EmitEnumValidMethod:      true,
+					EmitAllEnumValues:        false,
 				},
 				{
 					EmitInterface:            false,
-					EmitPreparedQueries:     true,
-					EmitJSONTags:           false,
+					EmitPreparedQueries:      true,
+					EmitJSONTags:             false,
 					EmitResultStructPointers: true,
 					EmitParamsStructPointers: true,
-					EmitEnumValidMethod:     false,
-					EmitAllEnumValues:       true,
+					EmitEnumValidMethod:      false,
+					EmitAllEnumValues:        true,
 				},
 			}
 
@@ -386,7 +384,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 	Describe("Default Values Testing", func() {
 		It("should handle default emit options", func() {
 			emitOpts := generated.DefaultEmitOptions()
-			
+
 			Expect(emitOpts.EmitInterface).ToNot(BeNil())
 			Expect(emitOpts.EmitPreparedQueries).ToNot(BeNil())
 			Expect(emitOpts.EmitJSONTags).ToNot(BeNil())
@@ -394,7 +392,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 
 		It("should handle default safety rules", func() {
 			safetyRules := generated.DefaultSafetyRules()
-			
+
 			Expect(safetyRules.NoSelectStar).ToNot(BeNil())
 			Expect(safetyRules.RequireWhere).ToNot(BeNil())
 			Expect(safetyRules.RequireLimit).ToNot(BeNil())

@@ -9,9 +9,9 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/spf13/cobra"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/spf13/cobra"
 )
 
 var _ = Describe("Validate Command Enhanced Testing", func() {
@@ -34,7 +34,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 	Context("Command Structure and Interface", func() {
 		It("should create validate command with proper structure", func() {
 			cmd := commands.NewValidateCommand()
-			
+
 			Expect(cmd).NotTo(BeNil())
 			Expect(cmd.Use).To(Equal("validate [file]"))
 			Expect(cmd.Short).To(ContainSubstring("Validate"))
@@ -44,15 +44,15 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 
 		It("should handle command execution via Cobra interface", func() {
 			cmd := commands.NewValidateCommand()
-			
+
 			// Test command with help flag
 			var buf bytes.Buffer
 			cmd.SetOut(&buf)
 			cmd.SetArgs([]string{"--help"})
-			
+
 			err := cmd.Execute()
 			Expect(err).To(BeNil())
-			
+
 			help := buf.String()
 			Expect(strings.ToLower(help)).To(ContainSubstring("usage"))
 			Expect(strings.ToLower(help)).To(ContainSubstring("validate"))
@@ -60,12 +60,12 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 
 		It("should handle missing arguments gracefully", func() {
 			cmd := commands.NewValidateCommand()
-			
+
 			var buf bytes.Buffer
 			cmd.SetOut(&buf)
 			cmd.SetErr(&buf)
 			cmd.SetArgs([]string{})
-			
+
 			err := cmd.Execute()
 			// Should either show help or fail gracefully
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
@@ -73,12 +73,12 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 
 		It("should handle invalid arguments gracefully", func() {
 			cmd := commands.NewValidateCommand()
-			
+
 			var buf bytes.Buffer
 			cmd.SetOut(&buf)
 			cmd.SetErr(&buf)
 			cmd.SetArgs([]string{"--invalid-flag"})
-			
+
 			err := cmd.Execute()
 			Expect(err).To(HaveOccurred())
 		})
@@ -87,15 +87,15 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 	Context("File System Interactions", func() {
 		It("should handle nonexistent files gracefully", func() {
 			cmd := commands.NewValidateCommand()
-			
+
 			args := []string{"nonexistent.yaml"}
 			cmd.SetArgs(args)
-			
+
 			err := cmd.Execute()
 			Expect(err).To(HaveOccurred())
 			// Error message may vary depending on implementation
 			Expect(err.Error()).To(Or(
-				ContainSubstring("no such file"), 
+				ContainSubstring("no such file"),
 				ContainSubstring("does not exist"),
 				ContainSubstring("not found"),
 				ContainSubstring("failed to parse"),
@@ -105,10 +105,10 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 
 		It("should handle directories instead of files", func() {
 			cmd := commands.NewValidateCommand()
-			
+
 			args := []string{tempDir}
 			cmd.SetArgs(args)
-			
+
 			err := cmd.Execute()
 			Expect(err).To(HaveOccurred())
 		})
@@ -117,13 +117,13 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			unreadableFile := filepath.Join(tempDir, "unreadable.yaml")
 			err := os.WriteFile(unreadableFile, []byte("test"), 0o000) // No permissions
 			Expect(err).NotTo(HaveOccurred())
-			
+
 			defer os.Chmod(unreadableFile, 0o644) // Restore permissions for cleanup
 
 			cmd := commands.NewValidateCommand()
 			args := []string{unreadableFile}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			Expect(err).To(HaveOccurred())
 		})
@@ -136,7 +136,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			cmd := commands.NewValidateCommand()
 			args := []string{emptyFile}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
@@ -151,7 +151,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			cmd := commands.NewValidateCommand()
 			args := []string{validYAML}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			// Should handle gracefully
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
@@ -165,7 +165,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			cmd := commands.NewValidateCommand()
 			args := []string{minimalYAML}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
@@ -222,7 +222,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			cmd := commands.NewValidateCommand()
 			args := []string{config1, config2}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
@@ -259,7 +259,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			cmd := commands.NewValidateCommand()
 			args := []string{validConfig, invalidConfig}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
@@ -286,11 +286,11 @@ var _ = Describe("Migrate Command Enhanced Testing", func() {
 	Context("Command Structure and Interface", func() {
 		It("should handle migrate command with help flag", func() {
 			cmd := commands.NewMigrateCommand()
-			
+
 			var buf bytes.Buffer
 			cmd.SetOut(&buf)
 			cmd.SetArgs([]string{"--help"})
-			
+
 			err := cmd.Execute()
 			// Help should work if implemented
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
@@ -298,7 +298,7 @@ var _ = Describe("Migrate Command Enhanced Testing", func() {
 
 		It("should handle migrate subcommands", func() {
 			cmd := commands.NewMigrateCommand()
-			
+
 			// Test that migrate has subcommands (may be empty initially)
 			subcommands := cmd.Commands()
 			// Should not panic regardless of subcommands
@@ -361,9 +361,9 @@ var _ = Describe("Migrate Command Enhanced Testing", func() {
 		It("should handle migration file validation", func() {
 			// Test creating migration files with various content
 			migrationFiles := map[string]string{
-				"valid.sql":           "-- Valid migration\nCREATE TABLE users (id INTEGER);",
-				"empty.sql":           "",
-				"comments_only.sql":   "-- Only comments\n-- No SQL statements",
+				"valid.sql":          "-- Valid migration\nCREATE TABLE users (id INTEGER);",
+				"empty.sql":          "",
+				"comments_only.sql":  "-- Only comments\n-- No SQL statements",
 				"invalid_syntax.sql": "INVALID SQL SYNTAX HERE",
 			}
 
@@ -412,7 +412,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 			cmd := commands.NewValidateCommand()
 			args := []string{configFile}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			Expect(err).To(HaveOccurred())
 		})
@@ -449,7 +449,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 				cmd := commands.NewValidateCommand()
 				args := []string{configFile}
 				cmd.SetArgs(args)
-				
+
 				err = cmd.Execute()
 				Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 			}
@@ -467,7 +467,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 
 			for _, cmdFunc := range commandsToTest {
 				cmd := cmdFunc()
-				
+
 				// Test that all commands have basic help structure
 				Expect(cmd.Use).NotTo(BeEmpty())
 				Expect(cmd.RunE).NotTo(BeNil())
@@ -476,7 +476,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 				var buf bytes.Buffer
 				cmd.SetOut(&buf)
 				cmd.SetArgs([]string{"--help"})
-				
+
 				err := cmd.Execute()
 				// Help should work, but if not implemented, that's ok
 				Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
@@ -507,8 +507,8 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 				Version: "2",
 				SQL: []config.SQLConfig{
 					{
-						Engine: "postgresql",
-						Schema: config.NewPathOrPaths([]string{"sql/migrations"}),
+						Engine:  "postgresql",
+						Schema:  config.NewPathOrPaths([]string{"sql/migrations"}),
 						Queries: config.NewPathOrPaths([]string{"sql/queries/auth"}),
 						Gen: config.GenConfig{
 							Go: &config.GoGenConfig{
@@ -528,8 +528,8 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 						},
 					},
 					{
-						Engine: "postgresql",
-						Schema: config.NewPathOrPaths([]string{"sql/migrations"}),
+						Engine:  "postgresql",
+						Schema:  config.NewPathOrPaths([]string{"sql/migrations"}),
 						Queries: config.NewPathOrPaths([]string{"sql/queries/analytics"}),
 						Gen: config.GenConfig{
 							Go: &config.GoGenConfig{
@@ -557,7 +557,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 			cmd := commands.NewValidateCommand()
 			args := []string{configFile}
 			cmd.SetArgs(args)
-			
+
 			err = cmd.Execute()
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
