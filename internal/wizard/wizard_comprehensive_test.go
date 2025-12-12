@@ -8,9 +8,7 @@ import (
 )
 
 var _ = Describe("Wizard Steps", func() {
-	var (
-		wiz *wizard.Wizard
-	)
+	var wiz *wizard.Wizard
 
 	BeforeEach(func() {
 		wiz = wizard.NewWizard()
@@ -55,10 +53,10 @@ var _ = Describe("Wizard Steps", func() {
 						EmitAllEnumValues:        false,
 					},
 					SafetyRules: generated.SafetyRules{
-						NoSelectStar:    true,
-						RequireWhere:     true,
-						RequireLimit:     false,
-						NoDropTable:      true,
+						NoSelectStar: true,
+						RequireWhere: true,
+						RequireLimit: false,
+						NoDropTable:  true,
 					},
 				},
 			}
@@ -135,9 +133,9 @@ var _ = Describe("Wizard Steps", func() {
 				},
 				Validation: generated.ValidationConfig{
 					SafetyRules: generated.SafetyRules{
-						RequireWhere:     true,
-						RequireLimit:     true,
-						NoDropTable:      true,
+						RequireWhere: true,
+						RequireLimit: true,
+						NoDropTable:  true,
 					},
 				},
 			}
@@ -157,13 +155,13 @@ var _ = Describe("Wizard Steps", func() {
 					BuildTags: "test,inmemory",
 				},
 				Database: generated.DatabaseConfig{
-					Engine:   generated.DatabaseTypeSQLite,
+					Engine:     generated.DatabaseTypeSQLite,
 					UseManaged: false, // Tests typically use in-memory DB
 				},
 				Validation: generated.ValidationConfig{
 					EmitOptions: generated.EmitOptions{
 						EmitPreparedQueries: false, // Tests might not need prepared queries
-						EmitInterface:       true,   // Always useful for testing
+						EmitInterface:       true,  // Always useful for testing
 					},
 				},
 			}
@@ -213,7 +211,7 @@ var _ = Describe("Wizard Steps", func() {
 					Path: "github.com/author/library",
 				},
 				Database: generated.DatabaseConfig{
-					Engine:   generated.DatabaseTypeSQLite, // Libraries often use SQLite for simplicity
+					Engine:     generated.DatabaseTypeSQLite, // Libraries often use SQLite for simplicity
 					UseManaged: false,
 				},
 				Validation: generated.ValidationConfig{
@@ -255,9 +253,9 @@ var _ = Describe("Wizard Steps", func() {
 		It("should handle MySQL configuration", func() {
 			result := wiz.GetResult()
 			result.TemplateData.Database = generated.DatabaseConfig{
-				Engine:    generated.DatabaseTypeMySQL,
-				UseJSON:   true,
-				UseArrays: false, // MySQL arrays are different
+				Engine:     generated.DatabaseTypeMySQL,
+				UseJSON:    true,
+				UseArrays:  false, // MySQL arrays are different
 				UseManaged: true,
 			}
 
@@ -269,8 +267,8 @@ var _ = Describe("Wizard Steps", func() {
 		It("should handle SQLite configuration", func() {
 			result := wiz.GetResult()
 			result.TemplateData.Database = generated.DatabaseConfig{
-				Engine:    generated.DatabaseTypeSQLite,
-				UseArrays: false, // SQLite arrays are limited
+				Engine:     generated.DatabaseTypeSQLite,
+				UseArrays:  false, // SQLite arrays are limited
 				UseManaged: false, // SQLite is typically not managed
 			}
 
@@ -312,34 +310,34 @@ var _ = Describe("Wizard Steps", func() {
 	Describe("Wizard Result Configuration", func() {
 		It("should handle generate flags", func() {
 			result := wiz.GetResult()
-			
+
 			// Test default values
 			Expect(result.GenerateQueries).To(BeTrue())
 			Expect(result.GenerateSchema).To(BeTrue())
-			
+
 			// Test setting values
 			result.GenerateQueries = false
 			result.GenerateSchema = false
-			
+
 			Expect(result.GenerateQueries).To(BeFalse())
 			Expect(result.GenerateSchema).To(BeFalse())
 		})
 
 		It("should handle template data updates", func() {
 			result := wiz.GetResult()
-			
+
 			// Set initial template data
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "initial-project",
 				ProjectType: generated.ProjectTypeHobby,
 			}
-			
+
 			Expect(result.TemplateData.ProjectName).To(Equal("initial-project"))
-			
+
 			// Update template data
 			result.TemplateData.ProjectName = "updated-project"
 			result.TemplateData.ProjectType = generated.ProjectTypeMicroservice
-			
+
 			Expect(result.TemplateData.ProjectName).To(Equal("updated-project"))
 			Expect(result.TemplateData.ProjectType).To(Equal(generated.ProjectTypeMicroservice))
 		})

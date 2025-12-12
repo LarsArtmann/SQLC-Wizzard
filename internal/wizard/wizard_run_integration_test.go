@@ -8,9 +8,7 @@ import (
 )
 
 var _ = Describe("Wizard Run Method Integration", func() {
-	var (
-		wiz *wizard.Wizard
-	)
+	var wiz *wizard.Wizard
 
 	BeforeEach(func() {
 		wiz = wizard.NewWizard()
@@ -19,7 +17,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 	Describe("Wizard Run Method Coverage", func() {
 		It("should test wizard.Run method configuration flow", func() {
 			result := wiz.GetResult()
-			
+
 			// Set up complete template data as Run() method would
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "integration-test-project",
@@ -56,14 +54,14 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 		It("should test wizard.generateConfig method data flow", func() {
 			result := wiz.GetResult()
-			
+
 			// Set up data that generateConfig would process
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "config-generation-test",
 				ProjectType: generated.ProjectTypeEnterprise,
 				Package: generated.PackageConfig{
-					Name: "entdb",
-					Path: "github.com/company/enterprise",
+					Name:      "entdb",
+					Path:      "github.com/company/enterprise",
 					BuildTags: "postgres,pgx,enterprise",
 				},
 				Database: generated.DatabaseConfig{
@@ -95,11 +93,11 @@ var _ = Describe("Wizard Run Method Integration", func() {
 						JSONTagsCaseStyle:        "camel",
 					},
 					SafetyRules: generated.SafetyRules{
-						NoSelectStar:    true,
-						RequireWhere:     true,
-						RequireLimit:     false,
-						NoDropTable:      true,
-						NoTruncate:       true,
+						NoSelectStar: true,
+						RequireWhere: true,
+						RequireLimit: false,
+						NoDropTable:  true,
+						NoTruncate:   true,
 					},
 				},
 			}
@@ -114,7 +112,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 		It("should test wizard.showSummary method data formatting", func() {
 			result := wiz.GetResult()
-			
+
 			// Set up data that showSummary would display
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "summary-test-project",
@@ -127,7 +125,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 					Engine:    generated.DatabaseTypePostgreSQL,
 					UseJSON:   true,
 					UseArrays: true,
-					UseUUIDs: true,
+					UseUUIDs:  true,
 				},
 				Validation: generated.ValidationConfig{
 					EmitOptions: generated.EmitOptions{
@@ -162,7 +160,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 	Describe("Wizard Method Edge Cases", func() {
 		It("should handle minimal template data in Run flow", func() {
 			result := wiz.GetResult()
-			
+
 			// Minimal data that Run() would still need to process
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "minimal",
@@ -188,7 +186,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 		It("should handle complex multi-tenant configuration", func() {
 			result := wiz.GetResult()
-			
+
 			// Complex multi-tenant setup
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "multi-tenant-platform",
@@ -214,10 +212,10 @@ var _ = Describe("Wizard Run Method Integration", func() {
 				Validation: generated.ValidationConfig{
 					StrictFunctions: true,
 					EmitOptions: generated.EmitOptions{
-						EmitInterface:       true,
-						EmitJSONTags:        true,
-						EmitEmptySlices:     true,
-						JSONTagsCaseStyle:   "camel",
+						EmitInterface:     true,
+						EmitJSONTags:      true,
+						EmitEmptySlices:   true,
+						JSONTagsCaseStyle: "camel",
 					},
 					SafetyRules: generated.SafetyRules{
 						NoSelectStar: true,
@@ -237,7 +235,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 		It("should handle analytics project configuration", func() {
 			result := wiz.GetResult()
-			
+
 			// Analytics-focused configuration
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "analytics-engine",
@@ -254,9 +252,9 @@ var _ = Describe("Wizard Run Method Integration", func() {
 				},
 				Validation: generated.ValidationConfig{
 					EmitOptions: generated.EmitOptions{
-						EmitInterface:    true,
-						EmitJSONTags:     true,
-						EmitEmptySlices:  true,
+						EmitInterface:     true,
+						EmitJSONTags:      true,
+						EmitEmptySlices:   true,
 						JSONTagsCaseStyle: "snake",
 					},
 					SafetyRules: generated.SafetyRules{
@@ -276,7 +274,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 		It("should handle testing project configuration", func() {
 			result := wiz.GetResult()
-			
+
 			// Testing-focused configuration
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "testing-framework",
@@ -287,7 +285,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 					BuildTags: "test,inmemory,mock",
 				},
 				Database: generated.DatabaseConfig{
-					Engine:   generated.DatabaseTypeSQLite,
+					Engine:     generated.DatabaseTypeSQLite,
 					UseManaged: false,
 				},
 				Validation: generated.ValidationConfig{
@@ -314,7 +312,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 		It("should handle library project configuration", func() {
 			result := wiz.GetResult()
-			
+
 			// Library-focused configuration
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "go-sql-library",
@@ -324,7 +322,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 					Path: "github.com/author/library",
 				},
 				Database: generated.DatabaseConfig{
-					Engine:   generated.DatabaseTypeSQLite,
+					Engine:     generated.DatabaseTypeSQLite,
 					UseManaged: false,
 				},
 				Validation: generated.ValidationConfig{
@@ -351,7 +349,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 		It("should handle empty project names gracefully", func() {
 			result := wiz.GetResult()
 			result.TemplateData.ProjectName = ""
-			
+
 			// Even with empty project name, other data should be accessible
 			Expect(result.TemplateData.ProjectName).To(Equal(""))
 			Expect(result.TemplateData.ProjectType).To(BeAssignableToTypeOf(generated.ProjectTypeHobby))
@@ -359,16 +357,16 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 		It("should handle invalid project types in template data", func() {
 			result := wiz.GetResult()
-			
+
 			// Even with potentially invalid data, structure should work
 			result.TemplateData.ProjectType = generated.ProjectType("")
-			
+
 			Expect(result.TemplateData.ProjectType).To(BeAssignableToTypeOf(generated.ProjectTypeHobby))
 		})
 
 		It("should handle missing optional configuration fields", func() {
 			result := wiz.GetResult()
-			
+
 			// Minimal configuration with missing optional fields
 			result.TemplateData = generated.TemplateData{
 				ProjectName: "minimal-missing-opts",

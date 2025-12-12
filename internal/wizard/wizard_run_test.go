@@ -8,9 +8,7 @@ import (
 )
 
 var _ = Describe("Wizard Run Method", func() {
-	var (
-		wiz *wizard.Wizard
-	)
+	var wiz *wizard.Wizard
 
 	BeforeEach(func() {
 		wiz = wizard.NewWizard()
@@ -18,7 +16,7 @@ var _ = Describe("Wizard Run Method", func() {
 
 	It("should initialize with proper default template data", func() {
 		result := wiz.GetResult()
-		
+
 		Expect(result).NotTo(BeNil())
 		Expect(result.GenerateQueries).To(BeTrue())
 		Expect(result.GenerateSchema).To(BeTrue())
@@ -91,7 +89,7 @@ var _ = Describe("Wizard Run Method", func() {
 	It("should handle emit options configuration", func() {
 		result := wiz.GetResult()
 		emitOpts := generated.DefaultEmitOptions()
-		
+
 		result.TemplateData.Validation.EmitOptions = emitOpts
 
 		Expect(result.TemplateData.Validation.EmitOptions.EmitJSONTags).To(BeTrue())
@@ -102,7 +100,7 @@ var _ = Describe("Wizard Run Method", func() {
 	It("should handle safety rules configuration", func() {
 		result := wiz.GetResult()
 		safetyRules := generated.DefaultSafetyRules()
-		
+
 		result.TemplateData.Validation.SafetyRules = safetyRules
 
 		Expect(result.TemplateData.Validation.SafetyRules.NoSelectStar).To(BeTrue())
@@ -122,7 +120,7 @@ var _ = Describe("Wizard Run Method", func() {
 		}
 
 		for _, projectType := range validProjectTypes {
-			Expect(projectType.IsValid()).To(BeTrue(), 
+			Expect(projectType.IsValid()).To(BeTrue(),
 				"Project type %s should be valid", projectType)
 		}
 	})
@@ -135,7 +133,7 @@ var _ = Describe("Wizard Run Method", func() {
 		}
 
 		for _, dbType := range validDatabaseTypes {
-			Expect(dbType.IsValid()).To(BeTrue(), 
+			Expect(dbType.IsValid()).To(BeTrue(),
 				"Database type %s should be valid", dbType)
 		}
 	})
@@ -192,9 +190,9 @@ var _ = Describe("Wizard Configuration Generation", func() {
 				Path: "github.com/user/hobbyproject",
 			},
 			Database: generated.DatabaseConfig{
-				Engine: generated.DatabaseTypeSQLite,
+				Engine:   generated.DatabaseTypeSQLite,
 				UseUUIDs: false,
-				UseJSON: false,
+				UseJSON:  false,
 			},
 		}
 
