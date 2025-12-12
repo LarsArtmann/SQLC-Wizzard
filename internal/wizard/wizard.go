@@ -22,6 +22,7 @@ type Wizard struct {
 	result *WizardResult
 	theme  *huh.Theme
 	ui     *UIHelper
+	deps   *WizardDependencies // For dependency injection in tests
 
 	// Step handlers
 	projectTypeStep *ProjectTypeStep
@@ -36,6 +37,22 @@ func NewWizard() *Wizard {
 	theme := huh.ThemeBase()
 	ui := NewUIHelper()
 
+	deps := WizardDependencies{
+		UI:           ui,
+		ProjectType:  NewProjectTypeStep(theme, ui),
+		Database:     NewDatabaseStep(theme, ui),
+		Details:      NewProjectDetailsStep(theme, ui),
+		Features:     NewFeaturesStep(theme, ui),
+		Output:       NewOutputStep(theme, ui),
+		TemplateFunc: func(projectType templates.ProjectType) (TemplateInterface, error) {
+			tmpl, err := templates.GetTemplate(projectType)
+			if err != nil {
+				return nil, err
+			}
+			return tmpl, nil
+		},
+	}
+
 	return &Wizard{
 		result: &WizardResult{
 			GenerateQueries: true,
@@ -43,6 +60,7 @@ func NewWizard() *Wizard {
 		},
 		theme: theme,
 		ui:    ui,
+		deps:  &deps,
 
 		// Initialize step handlers
 		projectTypeStep: NewProjectTypeStep(theme, ui),
@@ -61,7 +79,7 @@ func (w *Wizard) GetResult() *WizardResult {
 // Run executes the interactive wizard
 func (w *Wizard) Run() (*WizardResult, error) {
 	// Display welcome banner
-	w.ui.ShowWelcome()
+	w.showWelcome()
 
 	// Initialize template data with defaults
 	data := generated.TemplateData{
@@ -91,21 +109,21 @@ func (w *Wizard) Run() (*WizardResult, error) {
 		name    string
 		execute func(*generated.TemplateData) error
 	}{
-		{"Project Type", w.projectTypeStep.Execute},
-		{"Database", w.databaseStep.Execute},
-		{"Project Details", w.projectDetails.Execute},
-		{"Features", w.featuresStep.Execute},
-		{"Output Configuration", w.outputStep.Execute},
+		{"Project Type", w.getProjectTypeStep().Execute},
+		{"Database", w.getDatabaseStep().Execute},
+		{"Project Details", w.getProjectDetailsStep().Execute},
+		{"Features", w.getFeaturesStep().Execute},
+		{"Output Configuration", w.getOutputStep().Execute},
 	}
 
 	for _, step := range steps {
-		w.ui.ShowStepHeader(step.name)
+		w.showStepHeader(step.name)
 
 		if err := step.execute(&data); err != nil {
 			return nil, fmt.Errorf("step '%s' failed: %w", step.name, err)
 		}
 
-		w.ui.ShowStepComplete(step.name, "Completed successfully")
+		w.showStepComplete(step.name, "Completed successfully")
 	}
 
 	// Generate config from template
@@ -119,15 +137,88 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	return w.result, nil
 }
 
+// Helper methods to get the appropriate step implementation
+func (w *Wizard) getProjectTypeStep() StepInterface {
+	if w.deps != nil && w.deps.ProjectType != nil {
+		return w.deps.ProjectType
+	}
+	return w.projectTypeStep
+}
+
+func (w *Wizard) getDatabaseStep() StepInterface {
+	if w.deps != nil && w.deps.Database != nil {
+		return w.deps.Database
+	}
+	return w.databaseStep
+}
+
+func (w *Wizard) getProjectDetailsStep() StepInterface {
+	if w.deps != nil && w.deps.Details != nil {
+		return w.deps.Details
+	}
+	return w.projectDetails
+}
+
+func (w *Wizard) getFeaturesStep() StepInterface {
+	if w.deps != nil && w.deps.Features != nil {
+		return w.deps.Features
+	}
+	return w.featuresStep
+}
+
+func (w *Wizard) getOutputStep() StepInterface {
+	if w.deps != nil && w.deps.Output != nil {
+		return w.deps.Output
+	}
+	return w.outputStep
+}
+
+// Helper methods for UI operations
+func (w *Wizard) showWelcome() {
+	if w.deps != nil && w.deps.UI != nil {
+		w.deps.UI.ShowWelcome()
+		return
+	}
+	w.ui.ShowWelcome()
+}
+
+func (w *Wizard) showStepHeader(title string) {
+	if w.deps != nil && w.deps.UI != nil {
+		w.deps.UI.ShowStepHeader(title)
+		return
+	}
+	w.ui.ShowStepHeader(title)
+}
+
+func (w *Wizard) showStepComplete(title, message string) {
+	if w.deps != nil && w.deps.UI != nil {
+		w.deps.UI.ShowStepComplete(title, message)
+		return
+	}
+	w.ui.ShowStepComplete(title, message)
+}
+
 // generateConfig generates the final sqlc configuration
 func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 	// Validate output configuration
-	if err := w.outputStep.ValidateConfiguration(data); err != nil {
-		return fmt.Errorf("invalid output configuration: %w", err)
+	if outputStep := w.getOutputStep(); outputStep != nil {
+		if validatableStep, ok := outputStep.(interface{ ValidateConfiguration(*generated.TemplateData) error }); ok {
+			if err := validatableStep.ValidateConfiguration(data); err != nil {
+				return fmt.Errorf("invalid output configuration: %w", err)
+			}
+		}
 	}
 
 	// Get appropriate template
-	tmpl, err := templates.GetTemplate(data.ProjectType)
+	var tmpl TemplateInterface
+	var err error
+	
+	if w.deps != nil && w.deps.TemplateFunc != nil {
+		tmpl, err = w.deps.TemplateFunc(templates.ProjectType(data.ProjectType))
+	} else {
+		tmpl, err = templates.GetTemplate(templates.ProjectType(data.ProjectType))
+	}
+	
 	if err != nil {
 		return fmt.Errorf("failed to get template: %w", err)
 	}
@@ -146,7 +237,14 @@ func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 
 // showSummary displays the final configuration summary
 func (w *Wizard) showSummary(data *generated.TemplateData) {
-	w.ui.ShowSection("🎉 Configuration Complete")
+	var ui UIInterface
+	if w.deps != nil && w.deps.UI != nil {
+		ui = w.deps.UI
+	} else {
+		ui = w.ui
+	}
+
+	ui.ShowSection("🎉 Configuration Complete")
 
 	summary := fmt.Sprintf(`
 Project: %s
@@ -188,5 +286,5 @@ Database Features:
 		data.Database.UseFullText,
 	)
 
-	w.ui.ShowInfo(summary)
+	ui.ShowInfo(summary)
 }
