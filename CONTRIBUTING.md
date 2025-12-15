@@ -110,7 +110,7 @@ var _ = Describe("Wizard", func() {
 func NewWizard() *Wizard {
     theme := huh.ThemeBase()
     ui := NewUIHelper()
-    
+
     return &Wizard{
         theme: theme,
         ui:    ui,
@@ -173,6 +173,7 @@ SQLC-Wizzard/
 ### Before Submitting
 
 1. **Test thoroughly**
+
    ```bash
    just test
    just lint
@@ -185,15 +186,17 @@ SQLC-Wizzard/
    - Architecture docs
 
 3. **Commit convention**
+
    ```
    type(scope): description
-   
+
    [optional body]
-   
+
    [optional footer]
    ```
-   
+
    Examples:
+
    ```
    feat(wizard): add new project type
    fix(init): handle missing sqlc binary
@@ -266,6 +269,7 @@ Brief description of changes made.
 ## 🎉 Recognition
 
 Contributors are recognized in:
+
 - README.md contributors section
 - Release notes
 - GitHub contributors graph

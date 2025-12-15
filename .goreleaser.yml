@@ -5,8 +5,8 @@ version: 2
 
 before:
   hooks:
-  - go mod tidy
-  - go generate ./...
+    - go mod tidy
+    - go generate ./...
 
 builds:
   - env:
@@ -20,7 +20,7 @@ builds:
       - arm64
     ignore:
       - goos: darwin
-        goarch: '386'
+        goarch: "386"
       - goos: windows
         goarch: arm64
     binary: sqlc-wizard
@@ -44,7 +44,7 @@ archives:
       - docs/*
 
 checksum:
-  name_template: 'checksums.txt'
+  name_template: "checksums.txt"
 
 snapshot:
   version_template: "{{ incpatch .Version }}-next"
@@ -54,9 +54,9 @@ changelog:
   use: github
   filters:
     exclude:
-      - '^docs:'
-      - '^test:'
-      - '^chore:'
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
       - Merge pull request
       - Merge branch
 
@@ -101,33 +101,33 @@ release:
   name_template: "{{.ProjectName}} v{{.Version}}"
   header: |
     ## SQLC-Wizard {{.Version}}
-    
+
     🧙‍♂️ An interactive CLI wizard that generates perfect sqlc configurations in minutes, not hours.
-    
+
     ### 📦 Installation
-    
+
     **Homebrew:**
     ```bash
     brew install sqlc-wizard
     ```
-    
+
     **Go Install:**
     ```bash
     go install github.com/LarsArtmann/SQLC-Wizzard@{{.Version}}
     ```
-    
+
     **Binary:**
     Download the appropriate binary for your platform from the assets below.
-    
+
     ### 🚀 What's New
-    
+
     {{ .Changelog }}
 
 # Configure notification
 notification:
   slack:
     webhook_url: https://hooks.slack.com/...
-    channel: '#releases'
+    channel: "#releases"
     message: |
       🚀 SQLC-Wizard {{.Version}} has been released!
       Download it here: {{ .ReleaseURL }}

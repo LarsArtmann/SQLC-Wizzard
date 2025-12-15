@@ -10,18 +10,21 @@
 ## 🎯 **Current State Analysis**
 
 ### **📊 Coverage Metrics**
+
 - **Current Coverage:** 2.9% (improved from 1.8%)
 - **Total Lines:** ~350 lines of wizard code
 - **Test Coverage Goal:** 80% (industry standard for critical components)
 - **Risk Level:** HIGH - Insufficient testing for critical user interaction flows
 
 ### **🎪 Current Wizard Status**
+
 - ✅ **Functionality:** Working - Wizard compiles and runs successfully
 - ✅ **Integration:** Good - Works with CLI and other components
 - ✅ **User Experience:** Functional - Generates working sqlc.yaml configs
 - ❌ **Test Coverage:** LOW - Only 2.9% of wizard code tested
 
 ### **🚨 Testing Gaps Identified**
+
 - **CLI Interaction Flows:** Not comprehensively tested
 - **User Input Validation:** Limited edge case coverage
 - **Error Scenarios:** Insufficient error path testing
@@ -33,6 +36,7 @@
 ## 🎯 **Testing Objectives**
 
 ### **Primary Goals**
+
 1. **Achieve 80% Test Coverage** for wizard package
 2. **Test All CLI Interaction Flows** comprehensively
 3. **Cover All Error Scenarios** with proper assertions
@@ -40,6 +44,7 @@
 5. **Test Integration Points** with adapters and CLI
 
 ### **Quality Standards**
+
 - **Test Coverage:** ≥ 80% (target: 85%)
 - **Branch Coverage:** ≥ 75% (target: 80%)
 - **Function Coverage:** 100% (all functions tested)
@@ -50,6 +55,7 @@
 ## 🏗️ **Test Architecture**
 
 ### **Test Structure Organization**
+
 ```
 internal/wizard/
 ├── wizard_test.go           # Main wizard flow tests
@@ -66,6 +72,7 @@ internal/wizard/
 ### **Test Categories**
 
 #### **1. Main Wizard Flow Tests**
+
 ```go
 func TestWizardCompleteFlow_SimpleProject(t *testing.T) {
     // Test complete wizard from start to finish
@@ -87,6 +94,7 @@ func TestWizardCancellation(t *testing.T) {
 ```
 
 #### **2. Individual Step Tests**
+
 ```go
 func TestProjectTypeStep_AllOptions(t *testing.T) {
     // Test all project type selections
@@ -108,6 +116,7 @@ func TestFeatureStep_AllCombinations(t *testing.T) {
 ```
 
 #### **3. Error Scenario Tests**
+
 ```go
 func TestWizardHandles_InvalidProjectName(t *testing.T) {
     // Test invalid project name handling
@@ -129,6 +138,7 @@ func TestWizardHandles_FileSystemErrors(t *testing.T) {
 ```
 
 #### **4. Configuration Generation Tests**
+
 ```go
 func TestConfigGeneration_AllProjectTypes(t *testing.T) {
     // Test config generation for all project types
@@ -154,6 +164,7 @@ func TestConfigGeneration_AllFeatureCombinations(t *testing.T) {
 ## 🎯 **Specific Test Implementation Plan**
 
 ### **Day 1: Core Flow Testing (8 hours)**
+
 ```go
 // High-priority wizard flow tests
 func TestWizardRunsSuccessfully(t *testing.T)
@@ -165,6 +176,7 @@ func TestWizardHandlesInvalidInputs(t *testing.T)
 ```
 
 ### **Day 2: Step and Integration Testing (8 hours)**
+
 ```go
 // Individual step testing
 func TestProjectTypeStep(t *testing.T)
@@ -181,6 +193,7 @@ func TestWizardTemplateIntegration(t *testing.T)
 ```
 
 ### **Day 3: Error and Edge Case Testing (8 hours)**
+
 ```go
 // Comprehensive error scenario testing
 func TestWizardErrorScenarios(t *testing.T)
@@ -196,6 +209,7 @@ func TestWizardAccessibility(t *testing.T)
 ## 🧪 **Mock and Test Double Strategy**
 
 ### **UI Helper Mock**
+
 ```go
 type MockUIHelper struct {
     responses []string
@@ -220,10 +234,10 @@ func TestWizardWithMockUI(t *testing.T) {
         responses: []string{"microservice", "postgresql", "my-project"},
         confirmed: true,
     }
-    
+
     wizard := NewWizardWithUI(mockUI)
     result, err := wizard.Run()
-    
+
     Expect(err).ToNot(HaveOccurred())
     Expect(result.ProjectType).To(Equal("microservice"))
     Expect(len(mockUI.calls)).To(Equal(3))
@@ -231,6 +245,7 @@ func TestWizardWithMockUI(t *testing.T) {
 ```
 
 ### **Adapter Mock**
+
 ```go
 type MockConfigAdapter struct {
     configs []string
@@ -243,18 +258,19 @@ func (m *MockConfigAdapter) GenerateConfig(data TemplateData) (string, error) {
         m.errors = m.errors[1:]
         return "", err
     }
-    
+
     if len(m.configs) > 0 {
         config := m.configs[0]
         m.configs = m.configs[1:]
         return config, nil
     }
-    
+
     return defaultConfig, nil
 }
 ```
 
 ### **File System Mock**
+
 ```go
 type MockFileSystem struct {
     files    map[string]string
@@ -266,7 +282,7 @@ func (m *MockFileSystem) WriteFile(path string, data []byte, perm fs.FileMode) e
     if err, exists := m.errors[path]; exists {
         return err
     }
-    
+
     m.files[path] = string(data)
     m.created = append(m.created, path)
     return nil
@@ -283,6 +299,7 @@ func (m *MockFileSystem) Exists(path string) bool {
 ## 📊 **Coverage Measurement Strategy**
 
 ### **Tools and Metrics**
+
 ```bash
 # Generate coverage report
 go test ./internal/wizard -coverprofile=coverage.out
@@ -301,6 +318,7 @@ go test -coverprofile=coverage.out && \
 ```
 
 ### **Coverage Goals by File**
+
 ```
 wizard.go            ≥ 85% (main wizard logic)
 steps.go             ≥ 80% (step handlers)
@@ -314,6 +332,7 @@ error_handling.go     ≥ 85% (error scenarios)
 ## 🎯 **Test Quality Standards**
 
 ### **AAA Pattern (Arrange, Act, Assert)**
+
 ```go
 func TestWizardGeneratesValidConfig(t *testing.T) {
     // Arrange
@@ -321,13 +340,13 @@ func TestWizardGeneratesValidConfig(t *testing.T) {
     mockUI.SetProjectType("microservice")
     mockUI.SetDatabase("postgresql")
     mockUI.SetProjectName("test-project")
-    
+
     mockAdapter := NewMockConfigAdapter()
     wizard := NewWizardWithDependencies(mockUI, mockAdapter)
-    
+
     // Act
     result, err := wizard.Run()
-    
+
     // Assert
     Expect(err).ToNot(HaveOccurred())
     Expect(result).ToNot(BeNil())
@@ -338,6 +357,7 @@ func TestWizardGeneratesValidConfig(t *testing.T) {
 ```
 
 ### **Table-Driven Tests**
+
 ```go
 func TestWizardProjectTypes(t *testing.T) {
     testCases := []struct {
@@ -352,7 +372,7 @@ func TestWizardProjectTypes(t *testing.T) {
         {"Invalid Type", "invalid", "", true},
         {"Empty", "", "", true},
     }
-    
+
     for _, tc := range testCases {
         t.Run(tc.name, func(t *testing.T) {
             // Test implementation using tc
@@ -362,6 +382,7 @@ func TestWizardProjectTypes(t *testing.T) {
 ```
 
 ### **Integration Test Scenarios**
+
 ```go
 func TestWizardEndToEndScenarios(t *testing.T) {
     scenarios := []struct {
@@ -372,11 +393,11 @@ func TestWizardEndToEndScenarios(t *testing.T) {
         expectValid bool
     }{
         {"Simple Hobby Project", "hobby", "sqlite", []string{}, true},
-        {"Complex Microservice", "microservice", "postgresql", 
+        {"Complex Microservice", "microservice", "postgresql",
          []string{"uuids", "json", "prepared"}, true},
         {"Invalid Configuration", "invalid", "invalid", []string{}, false},
     }
-    
+
     for _, scenario := range scenarios {
         t.Run(scenario.name, func(t *testing.T) {
             // End-to-end test implementation
@@ -390,15 +411,16 @@ func TestWizardEndToEndScenarios(t *testing.T) {
 ## 🎯 **Performance Testing**
 
 ### **Wizard Performance Tests**
+
 ```go
 func TestWizardPerformance(t *testing.T) {
     start := time.Now()
-    
+
     wizard := NewWizard()
     result, err := wizard.Run()
-    
+
     duration := time.Since(start)
-    
+
     Expect(err).ToNot(HaveOccurred())
     Expect(duration).To(BeNumerically("<", 2*time.Second))
     Expect(result).ToNot(BeNil())
@@ -406,19 +428,19 @@ func TestWizardPerformance(t *testing.T) {
 
 func TestWizardMemoryUsage(t *testing.T) {
     var m1, m2 runtime.MemStats
-    
+
     runtime.GC()
     runtime.ReadMemStats(&m1)
-    
+
     wizard := NewWizard()
     result, err := wizard.Run()
-    
+
     Expect(err).ToNot(HaveOccurred())
     Expect(result).ToNot(BeNil())
-    
+
     runtime.GC()
     runtime.ReadMemStats(&m2)
-    
+
     memoryUsed := m2.Alloc - m1.Alloc
     Expect(memoryUsed).To(BeNumerically("<", 50*1024*1024)) // < 50MB
 }
@@ -429,24 +451,28 @@ func TestWizardMemoryUsage(t *testing.T) {
 ## 📋 **Definition of Done**
 
 ### **Coverage Requirements**
+
 - [ ] Wizard package coverage ≥ 80%
 - [ ] All wizard functions tested (100% function coverage)
 - [ ] All error paths tested (100% error path coverage)
 - [ ] Integration coverage ≥ 90%
 
 ### **Test Quality Requirements**
+
 - [ ] All tests follow AAA pattern
 - [ ] Table-driven tests for multiple scenarios
 - [ ] Mock objects for all external dependencies
 - [ ] Comprehensive integration tests
 
 ### **Validation Requirements**
+
 - [ ] All tests pass consistently
 - [ ] Coverage targets achieved
 - [ ] Performance benchmarks met
 - [ ] No flaky tests or race conditions
 
 ### **Documentation Requirements**
+
 - [ ] Test documentation with examples
 - [ ] Coverage report generation
 - [ ] Performance benchmark documentation
@@ -457,18 +483,21 @@ func TestWizardMemoryUsage(t *testing.T) {
 ## 📊 **Success Metrics**
 
 ### **Coverage Achievement**
+
 - [ ] Line coverage: ≥ 80%
 - [ ] Branch coverage: ≥ 75%
 - [ ] Function coverage: 100%
 - [ ] Integration coverage: ≥ 90%
 
 ### **Quality Achievement**
+
 - [ ] All wizard workflows tested
 - [ ] All error scenarios covered
 - [ ] Performance benchmarks met
 - [ ] Zero flaky tests
 
 ### **Development Achievement**
+
 - [ ] Test suite runs < 30 seconds
 - [ ] Memory usage < 50MB during tests
 - [ ] No external dependencies during tests
@@ -494,6 +523,6 @@ This feature is **HIGH PRIORITY** because:
 
 ---
 
-*Created: 2025-11-15*  
-*Priority: HIGH*  
-*Ready for comprehensive test implementation* 🎯
+_Created: 2025-11-15_  
+_Priority: HIGH_  
+_Ready for comprehensive test implementation_ 🎯

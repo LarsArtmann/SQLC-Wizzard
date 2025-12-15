@@ -8,10 +8,12 @@
 ## 🔴 CRITICAL (Must Fix Before v0.1.0)
 
 ### 1. Add Comprehensive Ginkgo Tests (4 hours) ⚠️ HIGHEST PRIORITY
+
 **Current:** 0% test coverage
 **Target:** 80%+ coverage
 
 **Checklist:**
+
 - [ ] Bootstrap Ginkgo test suites (`ginkgo bootstrap`)
 - [ ] Add config package tests
   - [ ] Parser tests (valid + invalid YAML)
@@ -35,10 +37,12 @@
 ---
 
 ### 2. Fix Type Safety: Replace `interface{}` (2 hours)
+
 **Current:** Using `interface{}` for Queries/Schema
 **Target:** Type-safe union type
 
 **Checklist:**
+
 - [ ] Create `pkg/config/path_or_paths.go`
 - [ ] Implement `PathOrPaths` struct
 - [ ] Implement `UnmarshalYAML` (handle string and []string)
@@ -54,10 +58,12 @@
 ---
 
 ### 3. Fix Split Brain: SafetyRules (1 hour)
+
 **Current:** Duplication between `SafetyRules` and `RuleConfig`
 **Target:** Single source of truth
 
 **Checklist:**
+
 - [ ] Create `internal/domain/rule.go`
 - [ ] Move `RuleConfig` to domain package
 - [ ] Add `SafetyRules.ToRuleConfigs() []RuleConfig` method
@@ -71,10 +77,12 @@
 ---
 
 ### 4. Fix Split Brain: Features (1 hour)
+
 **Current:** Duplication between `Features` and `GoGenConfig`
 **Target:** Single source of truth
 
 **Checklist:**
+
 - [ ] Create `internal/domain/emit_options.go`
 - [ ] Define canonical `EmitOptions` type
 - [ ] Add `EmitOptions.ToGoGenConfig() GoGenConfig` method
@@ -89,10 +97,12 @@
 ---
 
 ### 5. Implement Error Package (1.5 hours)
+
 **Current:** Empty `internal/errors/` directory
 **Target:** Structured error types with codes
 
 **Checklist:**
+
 - [ ] Create `internal/errors/errors.go` with error codes
 - [ ] Define `ErrorCode` enum (CONFIG_INVALID, WIZARD_FAILED, etc.)
 - [ ] Create `WizardError` with context
@@ -108,10 +118,12 @@
 ---
 
 ### 6. Add Smart Constructors (1 hour)
+
 **Current:** `type ProjectType string` - no validation
 **Target:** Validated constructors
 
 **Checklist:**
+
 - [ ] Add `NewProjectType(s string) (ProjectType, error)`
 - [ ] Add `NewDatabaseType(s string) (DatabaseType, error)`
 - [ ] Add validation logic
@@ -125,10 +137,12 @@
 ---
 
 ### 7. Remove Unused Dependencies (15 minutes)
+
 **Current:** `samber/do` imported but not used
 **Target:** Clean `go.mod`
 
 **Checklist:**
+
 - [ ] Remove `samber/do`: `go mod edit -droprequire github.com/samber/do/v2`
 - [ ] Run `go mod tidy`
 - [ ] Verify removal: `grep "samber/do" go.mod`
@@ -141,7 +155,9 @@
 ## 🟡 HIGH PRIORITY (Quality Improvements)
 
 ### 8. Add CI/CD Workflows (1 hour)
+
 **Checklist:**
+
 - [ ] Create `.github/workflows/test.yml`
   - [ ] Run tests on PR
   - [ ] Check coverage
@@ -158,7 +174,9 @@
 ---
 
 ### 9. Add Linting Configuration (30 minutes)
+
 **Checklist:**
+
 - [ ] Create `.golangci.yml` with strict rules
 - [ ] Add `go-arch-lint` rules in `.go-arch-lint.yml`
 - [ ] Create `.pre-commit-config.yaml`
@@ -168,7 +186,9 @@
 ---
 
 ### 10. Use Railway-Oriented Programming (2 hours)
+
 **Checklist:**
+
 - [ ] Update `Template.Generate()` → `mo.Result[*SqlcConfig, error]`
 - [ ] Update parser functions → `mo.Result`
 - [ ] Chain operations with `FlatMap`, `Map`
@@ -180,7 +200,9 @@
 ## 🟢 MEDIUM PRIORITY (Features)
 
 ### 11. Split Large Files (45 minutes)
+
 **Checklist:**
+
 - [ ] Split `wizard.go` into `steps/*.go` files
   - [ ] `steps/project_type.go`
   - [ ] `steps/database.go`
@@ -191,7 +213,9 @@
 ---
 
 ### 12. Add Hobby Template (1 hour)
+
 **Checklist:**
+
 - [ ] Create `internal/templates/hobby.go`
 - [ ] SQLite-focused, minimal setup
 - [ ] Single-file queries
@@ -201,7 +225,9 @@
 ---
 
 ### 13. Add Enterprise Template (2 hours)
+
 **Checklist:**
+
 - [ ] Create `internal/templates/enterprise.go`
 - [ ] Multi-DB support
 - [ ] Cloud integration
@@ -211,7 +237,9 @@
 ---
 
 ### 14. Implement Detectors Package (2 hours)
+
 **Checklist:**
+
 - [ ] Create `internal/detectors/go_mod.go`
   - [ ] Detect package path from go.mod
 - [ ] Create `internal/detectors/config.go`
@@ -226,6 +254,7 @@
 ## 📊 SUCCESS METRICS
 
 Before releasing v0.1.0:
+
 - [x] MVP works end-to-end ✅
 - [ ] Test coverage ≥ 80%
 - [ ] Zero `interface{}` types
@@ -240,6 +269,7 @@ Before releasing v0.1.0:
 ## 🚀 RELEASE CHECKLIST
 
 When ready for v0.1.0:
+
 - [ ] All P0 (Critical) items complete
 - [ ] All tests passing
 - [ ] Coverage ≥ 80%

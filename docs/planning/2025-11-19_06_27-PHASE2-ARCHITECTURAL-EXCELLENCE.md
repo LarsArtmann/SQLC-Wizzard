@@ -9,24 +9,26 @@
 ## 📊 Current State Assessment
 
 ### Coverage Metrics
-| Package | Coverage | Status |
-|---------|----------|--------|
-| errors | 98.0% | ✅ Excellent |
-| schema | 98.1% | ✅ Excellent |
-| validation | 100.0% | ✅ Perfect |
-| creators | 95.0% | ✅ Excellent |
-| migration | 100.0% | ✅ Perfect |
-| utils | 93.4% | ✅ Excellent |
-| templates | 64.8% | ⚠️ Good |
-| generators | 47.6% | ⚠️ Acceptable |
-| domain | 33.3% | ⚠️ Needs Work |
-| config | 30.0% | ⚠️ Needs Work |
-| adapters | 23.3% | ❌ Poor |
-| commands | 21.3% | ❌ Poor |
+
+| Package    | Coverage | Status          |
+| ---------- | -------- | --------------- |
+| errors     | 98.0%    | ✅ Excellent    |
+| schema     | 98.1%    | ✅ Excellent    |
+| validation | 100.0%   | ✅ Perfect      |
+| creators   | 95.0%    | ✅ Excellent    |
+| migration  | 100.0%   | ✅ Perfect      |
+| utils      | 93.4%    | ✅ Excellent    |
+| templates  | 64.8%    | ⚠️ Good         |
+| generators | 47.6%    | ⚠️ Acceptable   |
+| domain     | 33.3%    | ⚠️ Needs Work   |
+| config     | 30.0%    | ⚠️ Needs Work   |
+| adapters   | 23.3%    | ❌ Poor         |
+| commands   | 21.3%    | ❌ Poor         |
 | **wizard** | **2.9%** | ❌ **TERRIBLE** |
-| **cmd** | **0%** | ❌ **CRITICAL** |
+| **cmd**    | **0%**   | ❌ **CRITICAL** |
 
 ### Code Quality Metrics
+
 - **Longest file:** errors.go (383 lines) ❌
 - **Split brains identified:** 6 ❌
 - **Boolean → Enum opportunities:** 18 fields ❌
@@ -43,19 +45,20 @@
 
 ### Tasks (1.1 - 1.7)
 
-| ID | Task | Time | Value | Priority |
-|----|------|------|-------|----------|
-| 1.1 | Split EmitOptions into Type-Safe Enums | 45min | 18% | CRITICAL |
-| 1.2 | Split SafetyRules into Semantic Groups | 40min | 15% | CRITICAL |
-| 1.3 | Remove Duplicate DefaultEmitOptions | 20min | 8% | HIGH |
-| 1.4 | Remove Duplicate DefaultSafetyRules | 20min | 5% | HIGH |
-| 1.5 | Add uint Types for Counts/Limits | 30min | 3% | MEDIUM |
-| 1.6 | Fix Split Brain: MigrationStatus | 35min | 2% | MEDIUM |
-| 1.7 | Verify All Changes Work Together | 25min | - | CRITICAL |
+| ID  | Task                                   | Time  | Value | Priority |
+| --- | -------------------------------------- | ----- | ----- | -------- |
+| 1.1 | Split EmitOptions into Type-Safe Enums | 45min | 18%   | CRITICAL |
+| 1.2 | Split SafetyRules into Semantic Groups | 40min | 15%   | CRITICAL |
+| 1.3 | Remove Duplicate DefaultEmitOptions    | 20min | 8%    | HIGH     |
+| 1.4 | Remove Duplicate DefaultSafetyRules    | 20min | 5%    | HIGH     |
+| 1.5 | Add uint Types for Counts/Limits       | 30min | 3%    | MEDIUM   |
+| 1.6 | Fix Split Brain: MigrationStatus       | 35min | 2%    | MEDIUM   |
+| 1.7 | Verify All Changes Work Together       | 25min | -     | CRITICAL |
 
 #### 1.1 Split EmitOptions into Type-Safe Enums (45min)
 
 **Current Problem:**
+
 ```go
 type EmitOptions struct {
     EmitJSONTags           bool  // Style preference
@@ -70,12 +73,14 @@ type EmitOptions struct {
 ```
 
 **Problems:**
+
 - 8 booleans = 256 possible states, only ~12 are valid
 - No semantic grouping
 - Difficult to validate combinations
 - Split brain: EmitEmptySlices + EmitPointersForNull both handle nullability
 
 **Solution:**
+
 ```go
 type NullHandlingMode string
 const (
@@ -106,6 +111,7 @@ type EmitOptions struct {
 ```
 
 **Steps:**
+
 1. Create `internal/domain/emit_modes.go` with enums
 2. Create `EmitOptions` struct with typed fields
 3. Add `IsValid()` methods to each enum
@@ -116,6 +122,7 @@ type EmitOptions struct {
 #### 1.2 Split SafetyRules into Semantic Groups (40min)
 
 **Current Problem:**
+
 ```go
 type SafetyRules struct {
     NoSelectStar        bool  // Query style
@@ -128,6 +135,7 @@ type SafetyRules struct {
 ```
 
 **Solution:**
+
 ```go
 type QueryStyleRules struct {
     NoSelectStar bool
@@ -156,6 +164,7 @@ type SafetyRules struct {
 ```
 
 **Steps:**
+
 1. Create `internal/domain/safety_policy.go`
 2. Define three groups + enum
 3. Update config package to use new structure
@@ -166,10 +175,12 @@ type SafetyRules struct {
 #### 1.3-1.4 Remove Duplicate Default Functions (20min each)
 
 **Current State:**
+
 - `DefaultEmitOptions()` in `generated/types.go` AND `internal/domain/domain.go`
 - `DefaultSafetyRules()` in `generated/types.go` AND `internal/domain/domain.go`
 
 **Solution:**
+
 - Keep ONLY in `internal/domain/` (hand-written, not generated)
 - Update TypeSpec to NOT generate defaults
 - Add comment in generated code pointing to domain package
@@ -177,6 +188,7 @@ type SafetyRules struct {
 #### 1.5 Add uint Types for Counts/Limits (30min)
 
 **Locations needing uint:**
+
 - `QueryParameterLimit int` → `QueryParameterLimit uint`
 - Row counts, table counts, index counts
 - Port numbers, timeout values
@@ -185,6 +197,7 @@ type SafetyRules struct {
 #### 1.6 Fix Split Brain: MigrationStatus (35min)
 
 **Current Split Brain:**
+
 ```go
 type MigrationStatus struct {
     Applied   bool
@@ -193,6 +206,7 @@ type MigrationStatus struct {
 ```
 
 **Solution:**
+
 ```go
 type MigrationStatus struct {
     AppliedAt *time.Time
@@ -221,18 +235,18 @@ func (m *MigrationStatus) IsApplied() bool {
 
 ### Tasks (2.1 - 2.10)
 
-| ID | Task | Time | Value | Priority |
-|----|------|------|-------|----------|
-| 2.1 | Split errors.go into 4 files | 40min | 4% | HIGH |
-| 2.2 | Add Wizard Core Tests (30 specs) | 60min | 3% | CRITICAL |
-| 2.3 | Add Wizard UI Tests (20 specs) | 45min | 2% | HIGH |
-| 2.4 | Add CLI Entry Point Tests | 50min | 2% | CRITICAL |
-| 2.5 | Add Commands Package Tests | 55min | 1% | HIGH |
-| 2.6 | Add Missing QueryExecutor Adapter | 45min | 0.5% | MEDIUM |
-| 2.7 | Add Missing SchemaInspector Adapter | 45min | 0.5% | MEDIUM |
-| 2.8 | Consolidate Validation Logic | 50min | 0.3% | MEDIUM |
-| 2.9 | Add Domain Business Logic Methods | 40min | 0.2% | MEDIUM |
-| 2.10 | Integration Tests for Full Workflow | 25min | - | HIGH |
+| ID   | Task                                | Time  | Value | Priority |
+| ---- | ----------------------------------- | ----- | ----- | -------- |
+| 2.1  | Split errors.go into 4 files        | 40min | 4%    | HIGH     |
+| 2.2  | Add Wizard Core Tests (30 specs)    | 60min | 3%    | CRITICAL |
+| 2.3  | Add Wizard UI Tests (20 specs)      | 45min | 2%    | HIGH     |
+| 2.4  | Add CLI Entry Point Tests           | 50min | 2%    | CRITICAL |
+| 2.5  | Add Commands Package Tests          | 55min | 1%    | HIGH     |
+| 2.6  | Add Missing QueryExecutor Adapter   | 45min | 0.5%  | MEDIUM   |
+| 2.7  | Add Missing SchemaInspector Adapter | 45min | 0.5%  | MEDIUM   |
+| 2.8  | Consolidate Validation Logic        | 50min | 0.3%  | MEDIUM   |
+| 2.9  | Add Domain Business Logic Methods   | 40min | 0.2%  | MEDIUM   |
+| 2.10 | Integration Tests for Full Workflow | 25min | -     | HIGH     |
 
 #### 2.1 Split errors.go into Multiple Files (40min)
 
@@ -240,6 +254,7 @@ func (m *MigrationStatus) IsApplied() bool {
 **Target:** 4 files, each <150 lines
 
 **Split Strategy:**
+
 ```
 internal/errors/
 ├── error.go                 // Core Error struct, Error() method (~80 lines)
@@ -255,6 +270,7 @@ internal/errors/
 **New Tests Needed:** ~50 specs
 
 **Test Categories:**
+
 1. **Core Logic Tests (30 specs):**
    - Template selection
    - Configuration generation
@@ -275,6 +291,7 @@ internal/errors/
 **Target Coverage:** 80%
 
 **Strategy:**
+
 - Create testable CLI runner
 - Mock flag parsing
 - Test command dispatch
@@ -287,6 +304,7 @@ internal/errors/
 **Target Coverage:** 75%
 
 **Missing Tests:**
+
 - Doctor command edge cases
 - Init command validation
 - Generate command error paths
@@ -295,6 +313,7 @@ internal/errors/
 #### 2.6-2.7 Add Missing Adapters (90min total)
 
 **QueryExecutor Adapter:**
+
 ```go
 type QueryExecutor interface {
     Execute(ctx context.Context, query string) (Result, error)
@@ -304,6 +323,7 @@ type QueryExecutor interface {
 ```
 
 **SchemaInspector Adapter:**
+
 ```go
 type SchemaInspector interface {
     InspectTables(ctx context.Context) ([]Table, error)
@@ -315,6 +335,7 @@ type SchemaInspector interface {
 #### 2.8 Consolidate Validation Logic (50min)
 
 **Duplications Found:**
+
 - Config validation in 3 places
 - Template validation in 2 places
 - Path validation scattered
@@ -324,6 +345,7 @@ type SchemaInspector interface {
 #### 2.9 Add Domain Business Logic (40min)
 
 **Enhance Anemic Models:**
+
 ```go
 // Before: Anemic
 type MigrationStatus struct {
@@ -351,29 +373,30 @@ func (m *MigrationStatus) WasAppliedRecently(window time.Duration) bool
 
 ### Tasks (3.1 - 3.17)
 
-| ID | Task | Time | Value | Priority |
-|----|------|------|-------|----------|
-| 3.1 | Add Value Objects for Common Concepts | 75min | 2% | MEDIUM |
-| 3.2 | Create Service Layer for Business Logic | 85min | 2% | MEDIUM |
-| 3.3 | Add Integration Tests (E2E workflows) | 90min | 1.5% | HIGH |
-| 3.4 | Refactor Large Functions (>50 lines) | 80min | 1.5% | MEDIUM |
-| 3.5 | Add Proper Logging with Levels | 70min | 1% | MEDIUM |
-| 3.6 | Add Metrics/Observability Hooks | 65min | 1% | LOW |
-| 3.7 | Improve Error Context Consistency | 60min | 1% | MEDIUM |
-| 3.8 | Add Configuration Validation Service | 70min | 1% | MEDIUM |
-| 3.9 | Add Migration Planning Service | 75min | 1% | MEDIUM |
-| 3.10 | Add Template Customization System | 80min | 0.8% | LOW |
-| 3.11 | Add Plugin System Foundation | 85min | 0.8% | LOW |
-| 3.12 | Improve Type Safety in Generated Code | 70min | 0.7% | MEDIUM |
-| 3.13 | Add Benchmarks for Critical Paths | 60min | 0.5% | LOW |
-| 3.14 | Add ADRs for Key Decisions | 55min | 0.5% | LOW |
-| 3.15 | Improve Documentation Comments | 50min | 0.4% | LOW |
-| 3.16 | Add Performance Profiling | 45min | 0.3% | LOW |
-| 3.17 | Final Integration & Smoke Tests | 110min | - | CRITICAL |
+| ID   | Task                                    | Time   | Value | Priority |
+| ---- | --------------------------------------- | ------ | ----- | -------- |
+| 3.1  | Add Value Objects for Common Concepts   | 75min  | 2%    | MEDIUM   |
+| 3.2  | Create Service Layer for Business Logic | 85min  | 2%    | MEDIUM   |
+| 3.3  | Add Integration Tests (E2E workflows)   | 90min  | 1.5%  | HIGH     |
+| 3.4  | Refactor Large Functions (>50 lines)    | 80min  | 1.5%  | MEDIUM   |
+| 3.5  | Add Proper Logging with Levels          | 70min  | 1%    | MEDIUM   |
+| 3.6  | Add Metrics/Observability Hooks         | 65min  | 1%    | LOW      |
+| 3.7  | Improve Error Context Consistency       | 60min  | 1%    | MEDIUM   |
+| 3.8  | Add Configuration Validation Service    | 70min  | 1%    | MEDIUM   |
+| 3.9  | Add Migration Planning Service          | 75min  | 1%    | MEDIUM   |
+| 3.10 | Add Template Customization System       | 80min  | 0.8%  | LOW      |
+| 3.11 | Add Plugin System Foundation            | 85min  | 0.8%  | LOW      |
+| 3.12 | Improve Type Safety in Generated Code   | 70min  | 0.7%  | MEDIUM   |
+| 3.13 | Add Benchmarks for Critical Paths       | 60min  | 0.5%  | LOW      |
+| 3.14 | Add ADRs for Key Decisions              | 55min  | 0.5%  | LOW      |
+| 3.15 | Improve Documentation Comments          | 50min  | 0.4%  | LOW      |
+| 3.16 | Add Performance Profiling               | 45min  | 0.3%  | LOW      |
+| 3.17 | Final Integration & Smoke Tests         | 110min | -     | CRITICAL |
 
 ### Value Objects (3.1)
 
 **Common Concepts Needing Value Objects:**
+
 - DatabaseName
 - TableName
 - ColumnName
@@ -382,6 +405,7 @@ func (m *MigrationStatus) WasAppliedRecently(window time.Duration) bool
 - VersionString
 
 **Example:**
+
 ```go
 type TableName struct {
     value string
@@ -402,6 +426,7 @@ func (t TableName) Equals(other TableName) bool { return t.value == other.value 
 ### Service Layer (3.2)
 
 **Services to Create:**
+
 - ConfigurationService
 - MigrationService
 - ValidationService
@@ -411,6 +436,7 @@ func (t TableName) Equals(other TableName) bool { return t.value == other.value 
 ### Integration Tests (3.3)
 
 **E2E Scenarios:**
+
 1. Full project creation flow
 2. Migration application flow
 3. Code generation flow
@@ -422,6 +448,7 @@ func (t TableName) Equals(other TableName) bool { return t.value == other.value 
 ## 📈 Execution Strategy
 
 ### Execution Order
+
 ```mermaid
 graph TB
     Start[Start Phase 2] --> Phase1[Phase 1: Type Safety<br/>215min - 51% value]
@@ -438,12 +465,14 @@ graph TB
 ```
 
 ### Time Breakdown
+
 - **Phase 1 (1%):** 215 minutes (3.6 hours) → 51% value
 - **Phase 2 (4%):** 455 minutes (7.6 hours) → 64% value
 - **Phase 3 (20%):** 1225 minutes (20.4 hours) → 80% value
 - **Total:** 1895 minutes (31.6 hours)
 
 ### Risk Mitigation
+
 1. Comprehensive tests BEFORE refactoring
 2. One commit per task with detailed messages
 3. Verify build+tests after each phase
@@ -454,6 +483,7 @@ graph TB
 ## 🎯 Success Criteria
 
 ### Phase 1 Complete When:
+
 - [ ] Zero boolean fields that should be enums
 - [ ] Zero split brains in domain models
 - [ ] Zero duplicate default functions
@@ -462,6 +492,7 @@ graph TB
 - [ ] Coverage maintained or improved
 
 ### Phase 2 Complete When:
+
 - [ ] errors.go split into 4 files, all <350 lines
 - [ ] Wizard package coverage >80%
 - [ ] CLI entry point coverage >80%
@@ -471,6 +502,7 @@ graph TB
 - [ ] All tests passing
 
 ### Phase 3 Complete When:
+
 - [ ] All value objects implemented
 - [ ] Service layer complete
 - [ ] Integration tests passing
@@ -486,6 +518,7 @@ graph TB
 ### Phase 1 Tasks (35 tasks)
 
 #### 1.1 Split EmitOptions (9 tasks × ~5min)
+
 - [ ] 1.1.1 Create emit_modes.go with NullHandlingMode enum
 - [ ] 1.1.2 Add IsValid() to NullHandlingMode
 - [ ] 1.1.3 Create EnumGenerationMode enum
@@ -497,6 +530,7 @@ graph TB
 - [ ] 1.1.9 Remove old boolean fields
 
 #### 1.2 Split SafetyRules (8 tasks × ~5min)
+
 - [ ] 1.2.1 Create safety_policy.go
 - [ ] 1.2.2 Create QueryStyleRules struct
 - [ ] 1.2.3 Create QuerySafetyRules struct with uint
@@ -507,18 +541,21 @@ graph TB
 - [ ] 1.2.8 Update tests
 
 #### 1.3 Remove Duplicate DefaultEmitOptions (4 tasks × ~5min)
+
 - [ ] 1.3.1 Review generated/types.go defaults
 - [ ] 1.3.2 Move to internal/domain if needed
 - [ ] 1.3.3 Update TypeSpec to not generate
 - [ ] 1.3.4 Update all references
 
 #### 1.4 Remove Duplicate DefaultSafetyRules (4 tasks × ~5min)
+
 - [ ] 1.4.1 Review generated/types.go defaults
 - [ ] 1.4.2 Move to internal/domain if needed
 - [ ] 1.4.3 Update TypeSpec to not generate
 - [ ] 1.4.4 Update all references
 
 #### 1.5 Add uint Types (6 tasks × ~5min)
+
 - [ ] 1.5.1 Update QueryParameterLimit to uint
 - [ ] 1.5.2 Update port numbers to uint16
 - [ ] 1.5.3 Update timeout values to uint
@@ -527,10 +564,12 @@ graph TB
 - [ ] 1.5.6 Verify no negative value usage
 
 #### 1.6 Fix MigrationStatus Split Brain (2 tasks × ~17min)
+
 - [ ] 1.6.1 Remove Applied bool, keep only AppliedAt
 - [ ] 1.6.2 Add IsApplied() method and update all usages
 
 #### 1.7 Verify Integration (2 tasks × ~12min)
+
 - [ ] 1.7.1 Run all tests, verify coverage
 - [ ] 1.7.2 Commit with detailed message
 
@@ -539,8 +578,9 @@ graph TB
 ### Phase 2 Tasks (50 tasks)
 
 #### 2.1 Split errors.go (8 tasks × ~5min)
+
 - [ ] 2.1.1 Create error_codes.go with all ErrorCode constants
-- [ ] 2.1.2 Create error_constructors.go with New* functions
+- [ ] 2.1.2 Create error_constructors.go with New\* functions
 - [ ] 2.1.3 Create error_list.go with ErrorList + helpers
 - [ ] 2.1.4 Keep error.go with core Error struct
 - [ ] 2.1.5 Verify all imports work
@@ -549,6 +589,7 @@ graph TB
 - [ ] 2.1.8 Commit
 
 #### 2.2 Add Wizard Core Tests (12 tasks × ~5min)
+
 - [ ] 2.2.1 Test template selection logic
 - [ ] 2.2.2 Test database config generation
 - [ ] 2.2.3 Test project type validation
@@ -563,6 +604,7 @@ graph TB
 - [ ] 2.2.12 Verify coverage >80%
 
 #### 2.3 Add Wizard UI Tests (8 tasks × ~5min)
+
 - [ ] 2.3.1 Test input validation UI
 - [ ] 2.3.2 Test menu navigation
 - [ ] 2.3.3 Test error display formatting
@@ -573,6 +615,7 @@ graph TB
 - [ ] 2.3.8 Verify UI coverage >70%
 
 #### 2.4 Add CLI Entry Tests (10 tasks × ~5min)
+
 - [ ] 2.4.1 Create testable CLI runner interface
 - [ ] 2.4.2 Mock flag parsing
 - [ ] 2.4.3 Test command dispatch (init)
@@ -585,6 +628,7 @@ graph TB
 - [ ] 2.4.10 Verify coverage >80%
 
 #### 2.5 Add Commands Tests (11 tasks × ~5min)
+
 - [ ] 2.5.1 Test doctor command happy path
 - [ ] 2.5.2 Test doctor command with failures
 - [ ] 2.5.3 Test doctor command with warnings
@@ -598,6 +642,7 @@ graph TB
 - [ ] 2.5.11 Verify coverage >75%
 
 #### 2.6-2.7 Add Missing Adapters (6 tasks × ~15min)
+
 - [ ] 2.6.1 Create QueryExecutor interface
 - [ ] 2.6.2 Create mock QueryExecutor
 - [ ] 2.6.3 Add tests for QueryExecutor
@@ -606,6 +651,7 @@ graph TB
 - [ ] 2.7.3 Add tests for SchemaInspector
 
 #### 2.8 Consolidate Validation (5 tasks × ~10min)
+
 - [ ] 2.8.1 Create central ValidationService
 - [ ] 2.8.2 Move config validation
 - [ ] 2.8.3 Move template validation
@@ -613,12 +659,14 @@ graph TB
 - [ ] 2.8.5 Update all usages and test
 
 #### 2.9 Add Business Logic (4 tasks × ~10min)
+
 - [ ] 2.9.1 Add MigrationStatus business methods
 - [ ] 2.9.2 Add Template business methods
 - [ ] 2.9.3 Add Config business methods
 - [ ] 2.9.4 Add tests for all methods
 
 #### 2.10 Integration Tests (1 task × ~25min)
+
 - [ ] 2.10.1 Add end-to-end workflow tests
 
 ---
@@ -626,6 +674,7 @@ graph TB
 ### Phase 3 Tasks (40 tasks)
 
 #### 3.1 Value Objects (15 tasks × ~5min)
+
 - [ ] 3.1.1 Create DatabaseName value object
 - [ ] 3.1.2 Create TableName value object
 - [ ] 3.1.3 Create ColumnName value object
@@ -643,6 +692,7 @@ graph TB
 - [ ] 3.1.15 Verify type safety improved
 
 #### 3.2-3.17 Remaining Tasks
+
 (Abbreviated for space - full breakdown follows same pattern)
 
 ---
@@ -650,12 +700,14 @@ graph TB
 ## 🔍 Quality Gates
 
 ### After Each Task:
+
 1. Run `go build ./...`
 2. Run `go test ./...`
 3. Verify coverage not decreased
 4. Commit with detailed message
 
 ### After Each Phase:
+
 1. Run full test suite
 2. Check coverage report
 3. Run linter (when available)
@@ -675,11 +727,13 @@ graph TB
 ## 🎯 Final Notes
 
 This plan is COMPREHENSIVE and DETAILED. It follows the principle:
+
 - **1% effort → 51% value** (Type Safety Revolution)
 - **4% effort → 64% value** (Testing Foundation)
 - **20% effort → 80% value** (Production Ready)
 
 **Key Principles:**
+
 1. Type safety prevents bugs at compile time
 2. Tests prevent bugs at development time
 3. DDD prevents bugs at design time

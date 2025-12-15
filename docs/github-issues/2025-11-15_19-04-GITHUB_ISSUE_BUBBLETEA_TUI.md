@@ -10,6 +10,7 @@
 ## 🎯 **Problem Statement**
 
 **Current TUI Limitations:**
+
 - ❌ Uses only `huh` sequential forms (limited interaction)
 - ❌ No custom BubbleTea application structure
 - ❌ Missing proper Bubbles components integration
@@ -17,8 +18,9 @@
 - ❌ Limited to step-by-step wizard flow
 
 **Dependencies Present:**
+
 - ✅ BubbleTea v1.3.6 (indirect)
-- ✅ Bubbles v0.21.1 (indirect)  
+- ✅ Bubbles v0.21.1 (indirect)
 - ✅ Lipgloss v1.1.0 (styling)
 - ✅ Huh v0.8.0 (forms)
 
@@ -29,6 +31,7 @@
 ## 🎪 **Vision: Smart TUI Experience**
 
 ### **Transform From:**
+
 ```bash
 sqlc-wizard init
 # Sequential forms only
@@ -37,6 +40,7 @@ sqlc-wizard init
 ```
 
 ### **Transform To:**
+
 ```bash
 sqlc-wizard init
 # Full-featured TUI dashboard with:
@@ -52,6 +56,7 @@ sqlc-wizard init
 ## 🏗️ **Technical Implementation**
 
 ### **Phase 1: Core BubbleTea App Structure**
+
 ```go
 // internal/tui/app.go
 type App struct {
@@ -77,6 +82,7 @@ func main() {
 ```
 
 ### **Phase 2: Custom Bubbles Components**
+
 ```go
 // internal/tui/components/config_editor.go
 type ConfigEditor struct {
@@ -107,6 +113,7 @@ type ValidationBar struct {
 ```
 
 ### **Phase 3: Smart Navigation System**
+
 ```go
 // internal/tui/navigation/navigation.go
 type NavigationModel struct {
@@ -131,6 +138,7 @@ type NavigationModel struct {
 ## 🎨 **Smart TUI Interface Design**
 
 ### **Interactive Dashboard Layout:**
+
 ```
 ┌─ SQLC Wizard ─────────────────────────────────────┐
 │ ╭─ Navigation ──╮ ╭─ Main View ─────────────╮ │
@@ -155,6 +163,7 @@ type NavigationModel struct {
 ```
 
 ### **Real-Time Validation Interface:**
+
 ```
 ┌─ SQLC Config Editor ───────────────────────┐
 │ ╭─ Validation ────────────────────────────╮ │
@@ -181,6 +190,7 @@ type NavigationModel struct {
 ```
 
 ### **Interactive Schema Explorer:**
+
 ```
 ┌─ Database Schema Explorer ─────────────────────┐
 │ ╭─ Tables ─────╮ ╭─ Columns ─────────────────╮ │
@@ -205,6 +215,7 @@ type NavigationModel struct {
 ## 🎯 **Core Features**
 
 ### **1. Interactive Navigation**
+
 ```go
 type NavigationFeatures struct {
     JumpBetweenSteps    bool
@@ -217,6 +228,7 @@ type NavigationFeatures struct {
 ```
 
 ### **2. Real-Time Validation**
+
 ```go
 type ValidationFeatures struct {
     LiveConfigValidation  bool
@@ -228,6 +240,7 @@ type ValidationFeatures struct {
 ```
 
 ### **3. Visual Feedback**
+
 ```go
 type VisualFeatures struct {
     ProgressIndicators   bool
@@ -243,30 +256,35 @@ type VisualFeatures struct {
 ## 🛠️ **Implementation Plan**
 
 ### **Day 1: Core BubbleTea App**
+
 - [ ] Create main BubbleTea application structure
 - [ ] Implement basic app model and update loop
 - [ ] Replace current huh-based wizard
 - [ ] Add keyboard navigation basics
 
 ### **Day 2: Custom Components**
+
 - [ ] Implement ConfigEditor component
 - [ ] Add NavigationModel component
 - [ ] Create StatusBar component
 - [ ] Add HelpModel component
 
 ### **Day 3: Smart Features**
+
 - [ ] Add real-time validation
 - [ ] Implement interactive navigation
 - [ ] Add visual feedback system
 - [ ] Create suggestion engine
 
 ### **Day 4: Advanced Components**
+
 - [ ] Implement SchemaViewer component
 - [ ] Add ValidationBar component
 - [ ] Create PreviewPanel component
 - [ ] Add Search functionality
 
 ### **Day 5: Polish & Testing**
+
 - [ ] Add animations and transitions
 - [ ] Implement keyboard shortcuts
 - [ ] Add comprehensive testing
@@ -277,6 +295,7 @@ type VisualFeatures struct {
 ## 🔧 **Technical Architecture**
 
 ### **New Package Structure**
+
 ```
 internal/tui/
 ├── app.go              # Main BubbleTea application
@@ -304,6 +323,7 @@ internal/tui/
 ```
 
 ### **Integration Points**
+
 - **Replace:** `internal/wizard/wizard.go` (huh-based)
 - **Extend:** Use existing `generated/` types
 - **Leverage:** Current `pkg/config/` functionality
@@ -314,6 +334,7 @@ internal/tui/
 ## 🎯 **Acceptance Criteria**
 
 ### **Core Functionality**
+
 - [ ] Full-featured BubbleTea app replacing current wizard
 - [ ] Interactive navigation between wizard steps
 - [ ] Real-time configuration validation
@@ -321,6 +342,7 @@ internal/tui/
 - [ ] Comprehensive keyboard shortcuts
 
 ### **Smart Features**
+
 - [ ] Jump between steps (not linear progression)
 - [ ] Skip non-essential steps when appropriate
 - [ ] Real-time error detection and suggestions
@@ -328,6 +350,7 @@ internal/tui/
 - [ ] Contextual help system
 
 ### **User Experience**
+
 - [ ] Intuitive navigation and keyboard shortcuts
 - [ ] Clear visual feedback and status indicators
 - [ ] Helpful error messages and suggestions
@@ -335,6 +358,7 @@ internal/tui/
 - [ ] Responsive and performant interface
 
 ### **Technical Quality**
+
 - [ ] Uses proper BubbleTea patterns and models
 - [ ] Custom Bubbles components for complex interactions
 - [ ] Clean separation of concerns between components
@@ -346,18 +370,21 @@ internal/tui/
 ## 📊 **Success Metrics**
 
 ### **User Experience**
+
 - [ ] Time to complete wizard reduced by 30%
 - [ ] User satisfaction rate > 95%
 - [ ] Error rate reduced by 50%
 - [ ] User retention rate improved
 
 ### **Technical Quality**
+
 - [ ] 100% BubbleTea best practices compliance
 - [ ] Component reusability > 80%
 - [ ] Performance < 100ms for navigation actions
 - [ ] Memory usage < 50MB during operation
 
 ### **Feature Usage**
+
 - [ ] Interactive navigation usage rate > 70%
 - [ ] Real-time validation adoption > 85%
 - [ ] Help system usage > 30%
@@ -396,6 +423,6 @@ This feature is **CRITICAL** for user experience because:
 
 ---
 
-*Created: 2025-11-15*  
-*Priority: HIGH*  
-*Ready for implementation* 🎯
+_Created: 2025-11-15_  
+_Priority: HIGH_  
+_Ready for implementation_ 🎯

@@ -7,6 +7,7 @@ SQLC-Wizard makes type-safe SQL accessible to everyone by providing an intuitive
 ## ✨ Features
 
 ### 🎯 Interactive Wizard
+
 ```
 $ sqlc-wizard init
 🧙‍♂️ Sqlc Configuration Wizard
@@ -23,27 +24,30 @@ Let's create the perfect sqlc setup for your project!
 ```
 
 ### 🔧 Smart Project Detection
+
 - **Auto-detect** existing database files and schemas
-- **Analyze** Go imports to determine SQL package preference  
+- **Analyze** Go imports to determine SQL package preference
 - **Scan** for existing sqlc configurations and offer upgrades
 - **Detect** project structure (microservices, monolith, library)
 - **Identify** database-specific features (UUIDs, JSON, FTS)
 
 ### 📋 Template Categories
-| Template | Description | Best For |
-|----------|-------------|-----------|
-| 🏠 **Hobby** | Simple SQLite setup | Personal projects, prototypes |
-| ⚡ **Microservice** | Single DB, container-optimized | API services, microservices |
-| 🏢 **Enterprise** | Multi-DB, comprehensive validation | Large applications, teams |
-| 🔧 **API-First** | JSON-focused, REST-friendly | REST/GraphQL backends |
-| 📊 **Analytics** | Read-heavy, complex queries | Data platforms, reporting |
-| 🧪 **Testing** | In-memory, mock-friendly | Test suites, CI/CD |
-| 🌐 **Multi-tenant** | Schema-per-tenant patterns | SaaS applications |
-| 📦 **Library** | Embeddable, minimal deps | Go libraries, packages |
+
+| Template            | Description                        | Best For                      |
+| ------------------- | ---------------------------------- | ----------------------------- |
+| 🏠 **Hobby**        | Simple SQLite setup                | Personal projects, prototypes |
+| ⚡ **Microservice** | Single DB, container-optimized     | API services, microservices   |
+| 🏢 **Enterprise**   | Multi-DB, comprehensive validation | Large applications, teams     |
+| 🔧 **API-First**    | JSON-focused, REST-friendly        | REST/GraphQL backends         |
+| 📊 **Analytics**    | Read-heavy, complex queries        | Data platforms, reporting     |
+| 🧪 **Testing**      | In-memory, mock-friendly           | Test suites, CI/CD            |
+| 🌐 **Multi-tenant** | Schema-per-tenant patterns         | SaaS applications             |
+| 📦 **Library**      | Embeddable, minimal deps           | Go libraries, packages        |
 
 ### 🚀 Advanced Features
 
 #### Configuration Validation
+
 ```bash
 $ sqlc-wizard validate
 ✓ Configuration is valid
@@ -53,6 +57,7 @@ $ sqlc-wizard validate
 ```
 
 #### Database Migration Assistant
+
 ```bash
 $ sqlc-wizard migrate --from sqlite --to postgresql
 ✓ Generated migration scripts
@@ -61,6 +66,7 @@ $ sqlc-wizard migrate --from sqlite --to postgresql
 ```
 
 #### Best Practices Assistant
+
 ```bash
 $ sqlc-wizard doctor
 🩺 Database Health Check
@@ -75,11 +81,13 @@ $ sqlc-wizard doctor
 ### Installation
 
 #### Go Install (Recommended)
+
 ```bash
 go install github.com/sqlc-wizard/sqlc-wizard@latest
 ```
 
 #### Build from Source
+
 ```bash
 git clone https://github.com/sqlc-wizard/sqlc-wizard.git
 cd sqlc-wizard
@@ -87,6 +95,7 @@ go build -o sqlc-wizard cmd/sqlc-wizard/main.go
 ```
 
 #### Package Managers
+
 ```bash
 # Homebrew (coming soon)
 brew install sqlc-wizard
@@ -98,11 +107,13 @@ docker run --rm -v $(pwd):/app sqlc-wizard/sqlc-wizard init
 ### Basic Usage
 
 #### 1. Interactive Wizard (Most Common)
+
 ```bash
 sqlc-wizard init
 ```
 
 #### 2. Non-Interactive Mode
+
 ```bash
 sqlc-wizard generate \
   --project-type=microservice \
@@ -112,12 +123,14 @@ sqlc-wizard generate \
 ```
 
 #### 3. Validate Existing Configuration
+
 ```bash
 sqlc-wizard validate
 sqlc-wizard validate --fix  # Auto-fix issues
 ```
 
 #### 4. Health Check
+
 ```bash
 sqlc-wizard doctor
 ```
@@ -125,6 +138,7 @@ sqlc-wizard doctor
 ## 📖 Command Reference
 
 ### `sqlc-wizard init`
+
 Interactive wizard to create new sqlc configurations.
 
 ```bash
@@ -141,6 +155,7 @@ Flags:
 ```
 
 ### `sqlc-wizard generate`
+
 Generate configuration without interaction.
 
 ```bash
@@ -156,6 +171,7 @@ Flags:
 ```
 
 ### `sqlc-wizard validate`
+
 Validate sqlc configuration files.
 
 ```bash
@@ -168,6 +184,7 @@ Flags:
 ```
 
 ### `sqlc-wizard doctor`
+
 Diagnose common issues and suggest improvements.
 
 ```bash
@@ -180,6 +197,7 @@ Flags:
 ```
 
 ### `sqlc-wizard migrate`
+
 Upgrade sqlc configurations between versions.
 
 ```bash
@@ -194,6 +212,7 @@ Flags:
 ## 🛠️ Template System
 
 ### Template Structure
+
 ```
 templates/
 ├── hobby/
@@ -214,6 +233,7 @@ templates/
 ```
 
 ### Custom Templates
+
 Create your own templates:
 
 ```bash
@@ -288,6 +308,7 @@ sqlc-wizard/
 ## 🔧 Configuration
 
 ### Global Configuration
+
 ```bash
 # ~/.sqlc-wizard/config.yaml
 default_database: postgresql
@@ -301,6 +322,7 @@ templates:
 ```
 
 ### Environment Variables
+
 ```bash
 export SQLC_WIZARD_CONFIG_HOME="~/.sqlc-wizard"
 export SQLC_WIZARD_TEMPLATE_DIR="~/.sqlc-wizard/templates"
@@ -310,11 +332,13 @@ export SQLC_WIZARD_CACHE_DIR="~/.sqlc-wizard/cache"
 ## 🧪 Development
 
 ### Prerequisites
+
 - Go 1.21+
 - sqlc (for testing)
 - Docker (optional, for database testing)
 
 ### Setup
+
 ```bash
 git clone https://github.com/sqlc-wizard/sqlc-wizard.git
 cd sqlc-wizard
@@ -333,6 +357,7 @@ go install ./cmd/sqlc-wizard
 ```
 
 ### Testing
+
 ```bash
 # Run all tests
 go test ./...
@@ -346,6 +371,7 @@ go test -tags=integration ./internal/detectors/...
 ```
 
 ### Contributing
+
 1. Fork the repository
 2. Create a feature branch: `git checkout -b feature/new-wizard-step`
 3. Make your changes and add tests
@@ -355,12 +381,13 @@ go test -tags=integration ./internal/detectors/...
 ## 📚 Examples
 
 ### Example 1: New Microservice
+
 ```bash
 $ sqlc-wizard init
 🧙‍♂️ Sqlc Configuration Wizard
 
 ? Project Type › Microservice
-? Primary Database › PostgreSQL  
+? Primary Database › PostgreSQL
 ? Project Name › user-service
 ? Go Package Path › github.com/company/user-service
 ? Database Features › ✓ UUIDs ✓ JSON columns
@@ -374,6 +401,7 @@ $ sqlc-wizard init
 ```
 
 Generated `sqlc.yaml`:
+
 ```yaml
 version: "2"
 sql:
@@ -403,6 +431,7 @@ sql:
 ```
 
 ### Example 2: Configuration Upgrade
+
 ```bash
 $ sqlc-wizard migrate --from v1 --to v2
 ✓ Backing up sqlc.yaml to sqlc.yaml.backup
@@ -411,6 +440,7 @@ $ sqlc-wizard migrate --from v1 --to v2
 ```
 
 ### Example 3: Health Check
+
 ```bash
 $ sqlc-wizard doctor
 🩺 Database Health Check
@@ -428,11 +458,13 @@ $ sqlc-wizard doctor
 ## 🔌 Integrations
 
 ### IDE Extensions
+
 - **VS Code**: Auto-completion, validation, and wizard UI
 - **GoLand**: Integration with database tools
 - **Vim/Neovim**: LSP integration for sqlc.yaml
 
 ### CI/CD Integration
+
 ```yaml
 # .github/workflows/sqlc-wizard.yml
 name: SQLC Validation
@@ -452,8 +484,9 @@ jobs:
 ```
 
 ### Framework Integrations
+
 - **Gin**: Optimized templates for REST APIs
-- **Echo**: Echo-specific query patterns  
+- **Echo**: Echo-specific query patterns
 - **Chi**: Chi router integration
 - **Fiber**: Fiber-optimized configurations
 
@@ -467,18 +500,21 @@ jobs:
 ## 📈 Roadmap
 
 ### Phase 1: Core Wizard ✅
+
 - [x] Basic interactive wizard
 - [x] Essential templates (Hobby, Microservice, Enterprise)
 - [x] SQLite and PostgreSQL support
 - [x] Configuration validation
 
 ### Phase 2: Advanced Features (In Progress)
+
 - [ ] MySQL support
 - [x] Multi-database configurations
 - [ ] Configuration upgrade/migration
 - [x] Doctor/diagnostics system
 
 ### Phase 3: Ecosystem Integration (Planned)
+
 - [ ] IDE extensions (VS Code, GoLand)
 - [ ] Web-based configuration generator
 - [ ] Framework-specific templates (Gin, Echo, Chi)
@@ -499,4 +535,4 @@ MIT License - see [LICENSE](LICENSE) file for details.
 
 ## 🧙‍♂️ Make sqlc configuration magical!
 
-*Generated with ❤️ by the SQLC-Wizard team*
+_Generated with ❤️ by the SQLC-Wizard team_

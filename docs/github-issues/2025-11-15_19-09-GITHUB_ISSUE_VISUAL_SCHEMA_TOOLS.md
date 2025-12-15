@@ -10,6 +10,7 @@
 ## 🎯 **Problem Statement**
 
 **Current Schema Experience:**
+
 - ❌ Text-only SQL schema files
 - ❌ No visual database structure understanding
 - ❌ Difficult to visualize relationships
@@ -17,6 +18,7 @@
 - ❌ No interactive schema documentation
 
 **User Pain Points:**
+
 - "I can't understand my database structure"
 - "How do these tables relate to each other?"
 - "I need to explain the schema to my team"
@@ -28,6 +30,7 @@
 ## 🎪 **Solution Vision**
 
 ### **Transform From:**
+
 ```sql
 -- Current: Text-only schema
 CREATE TABLE users (
@@ -46,6 +49,7 @@ CREATE TABLE posts (
 ```
 
 ### **Transform To:**
+
 ```bash
 sqlc-wizard schema visualize
 # Opens interactive visual schema explorer
@@ -60,6 +64,7 @@ sqlc-wizard schema analyze
 ## 🎨 **Visual Schema Tools Features**
 
 ### **1. Interactive ERD Viewer**
+
 ```
 ┌─ Database Schema Explorer ─────────────────────┐
 │ ╭─ Tables ─────╮ ╭─ Columns ─────────────────╮ │
@@ -80,6 +85,7 @@ sqlc-wizard schema analyze
 ```
 
 ### **2. Schema Documentation Generation**
+
 ```bash
 sqlc-wizard schema docs --format html --output docs/
 # Generates:
@@ -91,6 +97,7 @@ sqlc-wizard schema docs --format html --output docs/
 ```
 
 ### **3. Schema Analysis Tools**
+
 ```bash
 sqlc-wizard schema analyze
 # Provides insights:
@@ -102,6 +109,7 @@ sqlc-wizard schema analyze
 ```
 
 ### **4. Schema Comparison Tools**
+
 ```bash
 sqlc-wizard schema diff --from v1 --to v2
 # Shows:
@@ -116,6 +124,7 @@ sqlc-wizard schema diff --from v1 --to v2
 ## 🏗️ **Technical Implementation**
 
 ### **Phase 1: Schema Parsing Engine**
+
 ```go
 // internal/schema/parser.go
 type SchemaParser struct {
@@ -145,6 +154,7 @@ func (sp *SchemaParser) ParseSchemaDir(dir string) (*Schema, error)
 ```
 
 ### **Phase 2: Visualization Engine**
+
 ```go
 // internal/schema/visualizer.go
 type Visualizer struct {
@@ -167,6 +177,7 @@ type DocumentFormatter interface {
 ```
 
 ### **Phase 3: Interactive TUI Interface**
+
 ```go
 // internal/schema/tui.go
 type SchemaTUI struct {
@@ -195,6 +206,7 @@ func (st *SchemaTUI) View() string { /* ... */ }
 ## 🎨 **Visualization Features**
 
 ### **1. ERD Generation**
+
 ```go
 type ERDGenerator struct {
     layout    ERDLayout
@@ -220,6 +232,7 @@ type ERDStyle struct {
 ```
 
 ### **2. Documentation Generation**
+
 ```go
 type DocumentationGenerator struct {
     templates   *TemplateEngine
@@ -236,6 +249,7 @@ type DocumentationGenerator struct {
 ```
 
 ### **3. Schema Analysis**
+
 ```go
 type SchemaAnalyzer struct {
     rules      []AnalysisRule
@@ -261,6 +275,7 @@ type AnalysisRule interface {
 ## 🎯 **CLI Command Design**
 
 ### **Schema Visualization Commands**
+
 ```bash
 # Interactive schema explorer
 sqlc-wizard schema visualize
@@ -294,6 +309,7 @@ sqlc-wizard schema stats --indexes
 ```
 
 ### **Interactive TUI Interface**
+
 ```go
 // sqlc-wizard schema explore
 func main() {
@@ -301,7 +317,7 @@ func main() {
     if err != nil {
         log.Fatal(err)
     }
-    
+
     tui := NewSchemaTUI(schema)
     p := tea.NewProgram(tui, tea.WithAltScreen())
     if _, err := p.Run(); err != nil {
@@ -315,6 +331,7 @@ func main() {
 ## 🎨 **Visual Design Features**
 
 ### **1. Interactive Table Details**
+
 ```
 ┌─ Table Details: users ──────────────────────┐
 │ ╭─ Columns ──────────────────────────────────╮ │
@@ -345,6 +362,7 @@ func main() {
 ```
 
 ### **2. Relationship Visualization**
+
 ```
 ┌─ Schema Relationships ──────────────────────┐
 │                                             │
@@ -366,6 +384,7 @@ func main() {
 ```
 
 ### **3. Schema Analysis Dashboard**
+
 ```
 ┌─ Schema Analysis Dashboard ─────────────────┐
 │ ╭─ Quality Score ──────────────────────────╮ │
@@ -397,30 +416,35 @@ func main() {
 ## 🎯 **Implementation Plan**
 
 ### **Day 1: Schema Parsing Engine**
+
 - [ ] Implement SQL schema parser using github.com/xwb1989/sqlparser
 - [ ] Create Schema, Table, Column data structures
 - [ ] Add support for PostgreSQL, MySQL, SQLite
 - [ ] Test with various schema formats
 
 ### **Day 2: Basic Visualization**
+
 - [ ] Implement ERD generation using graphviz
 - [ ] Create basic HTML documentation generator
 - [ ] Add simple table/column listing
 - [ ] Generate basic relationship diagrams
 
 ### **Day 3: Interactive TUI**
+
 - [ ] Create BubbleTea-based schema explorer
 - [ ] Add table selection and details
 - [ ] Implement search and filtering
 - [ ] Add keyboard navigation
 
 ### **Day 4: Advanced Features**
+
 - [ ] Add schema analysis engine
 - [ ] Implement quality scoring system
 - [ ] Add pattern detection rules
 - [ ] Create optimization suggestions
 
 ### **Day 5: Documentation and Polish**
+
 - [ ] Generate comprehensive documentation
 - [ ] Add export options (PDF, SVG, PNG)
 - [ ] Implement schema comparison tools
@@ -431,6 +455,7 @@ func main() {
 ## 🔧 **Technical Architecture**
 
 ### **New Package Structure**
+
 ```
 internal/schema/
 ├── parser/
@@ -456,6 +481,7 @@ internal/schema/
 ```
 
 ### **External Dependencies**
+
 ```go
 // Add to go.mod
 github.com/xwb1989/sqlparser    // SQL parsing
@@ -469,24 +495,28 @@ github.com/yuin/goldmark        // Markdown generation
 ## 🎯 **Acceptance Criteria**
 
 ### **Core Functionality**
+
 - [ ] Parse SQL schema files for PostgreSQL, MySQL, SQLite
 - [ ] Generate interactive ERD diagrams
 - [ ] Create HTML documentation with embedded diagrams
 - [ ] Implement interactive TUI schema explorer
 
 ### **Visualization Features**
+
 - [ ] Table and column visualization with types and constraints
 - [ ] Relationship visualization with cardinality indicators
 - [ ] Interactive navigation with search and filtering
 - [ ] Export to multiple formats (SVG, PNG, PDF, HTML)
 
 ### **Analysis Features**
+
 - [ ] Schema quality scoring and recommendations
 - [ ] Design pattern detection (normalization, naming)
 - [ ] Performance optimization suggestions
 - [ ] Security analysis (sensitive data detection)
 
 ### **User Experience**
+
 - [ ] Fast schema parsing and visualization
 - [ ] Intuitive keyboard navigation in TUI
 - [ ] Clear error messages for invalid schemas
@@ -497,18 +527,21 @@ github.com/yuin/goldmark        // Markdown generation
 ## 📊 **Success Metrics**
 
 ### **Functionality Metrics**
+
 - [ ] Parse 95% of common SQL schemas
 - [ ] Generate ERD for 100% of supported schemas
 - [ ] Documentation generation < 5 seconds
 - [ ] TUI response time < 100ms for navigation
 
 ### **User Experience Metrics**
+
 - [ ] Schema visualization accuracy > 98%
 - [ ] User satisfaction rate > 90%
 - [ ] Error recovery success rate > 95%
 - [ ] Learning curve < 15 minutes for basic usage
 
 ### **Technical Quality Metrics**
+
 - [ ] Test coverage > 90% for schema package
 - [ ] Memory usage < 100MB for large schemas
 - [ ] Schema parsing speed > 1000 lines/second
@@ -547,6 +580,6 @@ This feature is **MEDIUM PRIORITY** because:
 
 ---
 
-*Created: 2025-11-15*  
-*Priority: MEDIUM*  
-*Ready for implementation* 🎯
+_Created: 2025-11-15_  
+_Priority: MEDIUM_  
+_Ready for implementation_ 🎯
