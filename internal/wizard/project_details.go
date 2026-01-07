@@ -2,6 +2,7 @@ package wizard
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/charmbracelet/huh"
@@ -100,15 +101,15 @@ func (s *ProjectDetailsStep) generatePackageName(projectName string) string {
 
 // replaceInvalidChars replaces characters invalid in Go package names
 func (s *ProjectDetailsStep) replaceInvalidChars(input string) string {
-	result := ""
+	var result strings.Builder
 	for _, char := range input {
 		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_' || (char >= '0' && char <= '9') {
-			result += string(char)
+			result.WriteString(string(char))
 		} else {
-			result += "_"
+			result.WriteString("_")
 		}
 	}
-	return result
+	return result.String()
 }
 
 // lowerCaseFirst converts first character to lowercase if it's uppercase
