@@ -161,7 +161,7 @@ var _ = Describe("Error Creation", func() {
 	// TODO: Add performance tests for error creation
 })
 
-func TestErrors(t *testing.T) {
+func TestErrorCreation(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Errors Suite")
+	RunSpecs(t, "Error Creation Suite")
 }

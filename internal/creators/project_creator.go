@@ -426,3 +426,133 @@ func (db *DB) Close() error {
 
 // NOTE: Additional scaffolding methods will be implemented based on demand
 // See TODO in CreateProject for planned features
+
+// buildMicroserviceQueries creates microservice-specific SQL queries
+func (pc *ProjectCreator) buildMicroserviceQueries(data generated.TemplateData) string {
+	return `-- name: CreateAPIToken :one
+INSERT INTO api_tokens (user_id, token_hash, expires_at)
+VALUES ($1, $2, $3)
+RETURNING *;
+
+-- name: GetAPITokenByHash :one
+SELECT * FROM api_tokens WHERE token_hash = $1;
+
+-- name: ListAPITokensForUser :many
+SELECT * FROM api_tokens
+WHERE user_id = $1
+ORDER BY created_at DESC;
+
+-- name: RevokeAPIToken :exec
+DELETE FROM api_tokens WHERE id = $1;
+
+-- name: CleanupExpiredTokens :exec
+DELETE FROM api_tokens WHERE expires_at < NOW();`
+}
+
+// buildEnterpriseQueries creates enterprise-specific SQL queries
+func (pc *ProjectCreator) buildEnterpriseQueries(data generated.TemplateData) string {
+	return `-- name: CreateAuditLog :one
+INSERT INTO audit_logs (user_id, action, resource_type, resource_id, old_values, new_values, ip_address, user_agent)
+VALUES (sqlc.narg('user_id'), $1, $2, $3, sqlc.narg('old_values'), sqlc.narg('new_values'), sqlc.narg('ip_address'), sqlc.narg('user_agent'))
+RETURNING *;
+
+-- name: ListAuditLogs :many
+SELECT * FROM audit_logs
+WHERE (sqlc.narg('user_id')::UUID IS NULL OR user_id = sqlc.narg('user_id')::UUID)
+  AND (sqlc.narg('resource_type')::TEXT IS NULL OR resource_type = sqlc.narg('resource_type')::TEXT)
+  AND (sqlc.narg('action')::TEXT IS NULL OR action = sqlc.narg('action')::TEXT)
+ORDER BY created_at DESC
+LIMIT sqlc.narg('limit')::INTEGER OFFSET sqlc.narg('offset')::INTEGER;
+
+-- name: GetAuditLogByID :one
+SELECT * FROM audit_logs WHERE id = $1;`
+}
+
+// buildAPIQueries creates API-first specific SQL queries
+func (pc *ProjectCreator) buildAPIQueries(data generated.TemplateData) string {
+	return `-- name: CheckRateLimit :one
+SELECT * FROM rate_limits
+WHERE client_identifier = $1 AND endpoint = $2
+ORDER BY window_start DESC
+LIMIT 1;
+
+-- name: CreateRateLimit :one
+INSERT INTO rate_limits (client_identifier, endpoint, max_requests, window_seconds, current_requests, window_start)
+VALUES ($1, $2, $3, $4, 1, NOW())
+ON CONFLICT (client_identifier, endpoint) DO UPDATE SET
+    current_requests = 1,
+    window_start = NOW()
+RETURNING *;
+
+-- name: IncrementRateLimit :one
+UPDATE rate_limits
+SET current_requests = current_requests + 1
+WHERE id = $1 AND current_requests < max_requests
+RETURNING *;
+
+-- name: CleanupExpiredRateLimits :exec
+DELETE FROM rate_limits
+WHERE window_start + (window_seconds || ' seconds')::INTERVAL < NOW();`
+}
+
+// buildMainGo creates main.go for executable projects
+func (pc *ProjectCreator) buildMainGo(data generated.TemplateData) string {
+	return `package main
+
+import (
+	"context"
+	"log"
+	"net/http"
+	"os"
+	"os/signal"
+	"syscall"
+
+	"` + data.Package.Path + `/internal/db"
+)
+
+func main() {
+	// Initialize database connection
+	database, err := db.Connect()
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer database.Close()
+
+	// Create HTTP server
+	mux := http.NewServeMux()
+
+	// Add health check endpoint
+	mux.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte("OK"))
+	})
+
+	// Add API routes
+	// TODO: Add your API routes here
+
+	// Start server
+	srv := &http.Server{
+		Addr:    ":8080",
+		Handler: mux,
+	}
+
+	// Graceful shutdown
+	go func() {
+		log.Printf("Server starting on :8080")
+		if err := srv.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatalf("Server error: %v", err)
+		}
+	}()
+
+	// Wait for interrupt signal
+	quit := make(chan os.Signal, 1)
+	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
+	<-quit
+
+	log.Println("Shutting down server...")
+	if err := srv.Shutdown(context.Background()); err != nil {
+		log.Fatalf("Server shutdown error: %v", err)
+	}
+	log.Println("Server stopped")
+}`
+}

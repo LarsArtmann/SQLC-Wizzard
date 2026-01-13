@@ -1,4 +1,4 @@
-package errors
+package errors_test
 
 import (
 	stderrors "errors"
@@ -6,6 +6,7 @@ import (
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 )
 
 var _ = Describe("Error Wrapping and Combining", func() {
@@ -84,7 +85,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 		})
 	})
 
-	Context("Combine", func() {
+	Context("errors.Combine", func() {
 		It("should combine multiple application errors", func() {
 			err1 := errors.NewError(errors.ErrorCodeValidationError, "error 1")
 			err2 := errors.NewError(errors.ErrorCodeValidationError, "error 2")

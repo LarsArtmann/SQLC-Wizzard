@@ -2,6 +2,7 @@ package wizard_test
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -34,10 +35,12 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 			Details:     mockSteps["details"],
 			Features:    mockSteps["features"],
 			Output:      mockSteps["output"],
-			Template:    mockTemplate,
+			TemplateFunc: func(projectType templates.ProjectType) (wizard.TemplateInterface, error) {
+				return mockTemplate, nil
+			},
 		}
 
-		wiz = wizard.NewWizard(wizardDeps)
+		wiz = wizard.NewTestableWizard(wizardDeps)
 	})
 
 	AfterEach(func() {
@@ -47,9 +50,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 	Context("when wizard runs successfully", func() {
 		It("should execute all steps in correct order", func() {
-			data := &generated.TemplateData{}
-
-			err := wiz.Run(data)
+			_, err := wiz.Run()
 
 			Expect(err).ToNot(HaveOccurred())
 
@@ -67,11 +68,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 		})
 
 		It("should generate template configuration", func() {
-			data := &generated.TemplateData{
-				ProjectType: generated.ProjectTypeMicroservice,
-			}
-
-			err := wiz.Run(data)
+			_, err := wiz.Run()
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(mockTemplate.GenerateCalls).To(Equal(1))
@@ -84,8 +81,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 			mockSteps["database"].ShouldFail = true
 			mockSteps["database"].FailError = NewTestError("Database step failed")
 
-			data := &generated.TemplateData{}
-			err := wiz.Run(data)
+			_, err := wiz.Run()
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("Database step failed"))
@@ -95,8 +91,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 			mockSteps["details"].ShouldValidateFail = true
 			mockSteps["details"].ValidateError = NewTestError("Validation failed")
 
-			data := &generated.TemplateData{}
-			err := wiz.Run(data)
+			_, err := wiz.Run()
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("Validation failed"))
@@ -108,8 +103,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 			mockUI.ShouldFailRun = true
 			mockUI.FailErrorMessage = "UI initialization failed"
 
-			data := &generated.TemplateData{}
-			err := wiz.Run(data)
+			_, err := wiz.Run()
 
 			Expect(err).To(HaveOccurred())
 			Expect(err.Error()).To(ContainSubstring("UI initialization failed"))
@@ -118,11 +112,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 	Context("data flow validation", func() {
 		It("should pass data correctly between steps", func() {
-			testData := &generated.TemplateData{
-				ProjectType: generated.ProjectTypeAPIFirst,
-			}
-
-			err := wiz.Run(testData)
+			_, err := wiz.Run()
 
 			Expect(err).ToNot(HaveOccurred())
 

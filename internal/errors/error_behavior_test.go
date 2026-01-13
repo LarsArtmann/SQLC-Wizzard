@@ -221,7 +221,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 	// TODO: Add error behavior under load tests
 })
 
-func TestErrors(t *testing.T) {
+func TestErrorBehavior(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Errors Behavior Suite")
 }
