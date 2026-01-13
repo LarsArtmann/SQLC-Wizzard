@@ -166,7 +166,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 
 			jsonStr, jsonErr := err.ToJSON()
 			Expect(jsonErr).To(BeNil())
-			Expect(jsonStr).To(ContainSubstring("validation_error"))
+			Expect(jsonStr).To(ContainSubstring("VALIDATION_ERROR"))
 			Expect(jsonStr).To(ContainSubstring("test error"))
 			Expect(jsonStr).To(ContainSubstring("field"))
 			Expect(jsonStr).To(ContainSubstring("test-component"))

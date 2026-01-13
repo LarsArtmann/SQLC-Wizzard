@@ -15,7 +15,7 @@ func Wrap(original error, code ErrorCode, component string) *Error {
 
 	// TODO: Add validation for component
 	err := NewError(code, original.Error())
-	return err.WithComponent(component).WithDescription(fmt.Sprintf("Wrapped error: %v", original))
+	return err.WithCause(original).WithComponent(component).WithDescription(fmt.Sprintf("Wrapped error: %v", original))
 }
 
 // WrapWithRequestID wraps an error with request ID tracking
@@ -183,7 +183,7 @@ func Wrapf(err error, baseErr *Error, format string, args ...any) *Error {
 		finalDesc = fmt.Sprintf("Original error: %v", err)
 	}
 
-	return wrapped.WithDescription(finalDesc)
+	return wrapped.WithCause(err).WithDescription(finalDesc)
 }
 
 // Base error instances for common cases
