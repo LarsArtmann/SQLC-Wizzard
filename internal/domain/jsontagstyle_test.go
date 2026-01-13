@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 )
 
-// JSONTagStyle validation test suite
+// JSONTagStyle validation test suite.
 type JSONTagStyleTestSuite struct{}
 
 func (JSONTagStyleTestSuite) GetValidValues() []domain.JSONTagStyle {

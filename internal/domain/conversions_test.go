@@ -10,7 +10,7 @@ import (
 // Test cases for bidirectional conversions between old and new types
 // Run via TestDomain in domain_test.go
 
-// emitOptionsTestCase represents a test case for EmitOptions conversion
+// emitOptionsTestCase represents a test case for EmitOptions conversion.
 type emitOptionsTestCase struct {
 	description          string
 	input                generated.EmitOptions
@@ -19,7 +19,7 @@ type emitOptionsTestCase struct {
 	expectedJSONStyle    domain.JSONTagStyle
 }
 
-// runEmitOptionsTest runs conversion test with given input and expected values
+// runEmitOptionsTest runs conversion test with given input and expected values.
 func runEmitOptionsTest(testCase emitOptionsTestCase) {
 	It("should convert "+testCase.description+" correctly", func() {
 		typeSafe := domain.EmitOptionsToTypeSafe(testCase.input)
@@ -363,7 +363,7 @@ var _ = Describe("SafetyRules Conversions", func() {
 			typeSafe := domain.SafetyRulesToTypeSafe(old)
 
 			Expect(typeSafe.CustomRules).To(Equal(customRules))
-			Expect(len(typeSafe.CustomRules)).To(Equal(2))
+			Expect(typeSafe.CustomRules).To(HaveLen(2))
 			Expect(typeSafe.CustomRules[0].Name).To(Equal("no-complex-joins"))
 			Expect(typeSafe.CustomRules[1].Name).To(Equal("require-index"))
 		})

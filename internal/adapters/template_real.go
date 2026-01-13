@@ -9,15 +9,15 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
-// RealTemplateAdapter provides actual template operations
+// RealTemplateAdapter provides actual template operations.
 type RealTemplateAdapter struct{}
 
-// NewRealTemplateAdapter creates a new real template adapter
+// NewRealTemplateAdapter creates a new real template adapter.
 func NewRealTemplateAdapter() *RealTemplateAdapter {
 	return &RealTemplateAdapter{}
 }
 
-// GetTemplate retrieves a template by type
+// GetTemplate retrieves a template by type.
 func (a *RealTemplateAdapter) GetTemplate(projectType generated.ProjectType) (templates.Template, error) {
 	switch projectType {
 	case generated.ProjectTypeMicroservice:
@@ -31,7 +31,7 @@ func (a *RealTemplateAdapter) GetTemplate(projectType generated.ProjectType) (te
 	}
 }
 
-// GenerateConfig generates configuration from template data
+// GenerateConfig generates configuration from template data.
 func (a *RealTemplateAdapter) GenerateConfig(ctx context.Context, data generated.TemplateData) (*config.SqlcConfig, error) {
 	template, err := a.GetTemplate(data.ProjectType)
 	if err != nil {
@@ -41,7 +41,7 @@ func (a *RealTemplateAdapter) GenerateConfig(ctx context.Context, data generated
 	return template.Generate(data)
 }
 
-// GenerateFiles generates files from template
+// GenerateFiles generates files from template.
 func (a *RealTemplateAdapter) GenerateFiles(ctx context.Context, data generated.TemplateData, outputDir string) ([]string, error) {
 	// For now, return empty slice as GenerateFiles is not implemented
 	_ = data
@@ -49,11 +49,11 @@ func (a *RealTemplateAdapter) GenerateFiles(ctx context.Context, data generated.
 	return []string{}, nil
 }
 
-// ValidateTemplateData validates template data
+// ValidateTemplateData validates template data.
 func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data generated.TemplateData) error {
 	// Basic validation
 	if data.ProjectType == "" {
-		return fmt.Errorf("Project type is required")
+		return errors.New("Project type is required")
 	}
 
 	if !data.ProjectType.IsValid() {
@@ -61,7 +61,7 @@ func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data gen
 	}
 
 	if data.Database.Engine == "" {
-		return fmt.Errorf("Database engine is required")
+		return errors.New("Database engine is required")
 	}
 
 	if !data.Database.Engine.IsValid() {
@@ -70,14 +70,14 @@ func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data gen
 
 	// Validate package name
 	if data.Package.Name == "" {
-		return fmt.Errorf("package name is required")
+		return errors.New("package name is required")
 	}
 
 	// For now, just return nil as full Validate is not implemented
 	return nil
 }
 
-// ListTemplates returns all available templates
+// ListTemplates returns all available templates.
 func (a *RealTemplateAdapter) ListTemplates(ctx context.Context) ([]templates.Template, error) {
 	templates := []templates.Template{
 		templates.NewMicroserviceTemplate(),

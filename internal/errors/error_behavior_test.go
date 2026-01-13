@@ -33,11 +33,11 @@ var _ = Describe("Error Behavior and Comparison", func() {
 		It("should return nil when no cause is set", func() {
 			err := NewError(ErrorCodeValidationError, "test")
 
-			Expect(err.Unwrap()).To(BeNil())
+			Expect(err.Unwrap()).To(Succeed())
 		})
 
 		It("should return the cause error when set", func() {
-			original := fmt.Errorf("original error")
+			original := errors.New("original error")
 			err := NewError(ErrorCodeValidationError, "wrapped").WithCause(original)
 
 			Expect(err.Unwrap()).To(Equal(original))
@@ -64,7 +64,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 		})
 
 		It("should handle non-application errors", func() {
-			err1 := fmt.Errorf("standard error")
+			err1 := errors.New("standard error")
 			err2 := NewError(ErrorCodeInternalServer, "test")
 
 			Expect(Is(err1, err2)).To(BeFalse())
@@ -106,25 +106,25 @@ var _ = Describe("Error Behavior and Comparison", func() {
 
 	Context("Base Errors", func() {
 		It("should have ErrConfigParseFailed", func() {
-			Expect(ErrConfigParseFailed).NotTo(BeNil())
+			Expect(ErrConfigParseFailed).To(HaveOccurred())
 			Expect(ErrConfigParseFailed.Code).To(Equal(ErrorCodeConfigParseFailed))
 			Expect(ErrConfigParseFailed.Message).To(Equal("Config parse failed"))
 		})
 
 		It("should have ErrInvalidValue", func() {
-			Expect(ErrInvalidValue).NotTo(BeNil())
+			Expect(ErrInvalidValue).To(HaveOccurred())
 			Expect(ErrInvalidValue.Code).To(Equal(ErrorCodeInvalidValue))
 			Expect(ErrInvalidValue.Message).To(Equal("Invalid value"))
 		})
 
 		It("should have ErrFileNotFound", func() {
-			Expect(ErrFileNotFound).NotTo(BeNil())
+			Expect(ErrFileNotFound).To(HaveOccurred())
 			Expect(ErrFileNotFound.Code).To(Equal(ErrorCodeFileNotFound))
 			Expect(ErrFileNotFound.Message).To(Equal("File not found"))
 		})
 
 		It("should have ErrInvalidType", func() {
-			Expect(ErrInvalidType).NotTo(BeNil())
+			Expect(ErrInvalidType).To(HaveOccurred())
 			Expect(ErrInvalidType.Code).To(Equal(ErrorCodeValidationError))
 			Expect(ErrInvalidType.Message).To(Equal("Invalid type"))
 		})
@@ -165,7 +165,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 				WithComponent("test-component")
 
 			jsonStr, jsonErr := err.ToJSON()
-			Expect(jsonErr).To(BeNil())
+			Expect(jsonErr).ToNot(HaveOccurred())
 			Expect(jsonStr).To(ContainSubstring("VALIDATION_ERROR"))
 			Expect(jsonStr).To(ContainSubstring("test error"))
 			Expect(jsonStr).To(ContainSubstring("field"))
@@ -181,7 +181,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 
 			// This should work normally
 			jsonStr, marshalErr := err.ToJSON()
-			Expect(marshalErr).To(BeNil())
+			Expect(marshalErr).ToNot(HaveOccurred())
 			Expect(jsonStr).NotTo(BeEmpty())
 
 			// TODO: Add tests for complex nested structures

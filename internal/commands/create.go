@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// CreateOptions contains options for the create command
+// CreateOptions contains options for the create command.
 type CreateOptions struct {
 	ProjectType     string
 	Database        string
@@ -25,7 +25,7 @@ type CreateOptions struct {
 	Force           bool
 }
 
-// NewCreateCommand creates the create command for complete project generation
+// NewCreateCommand creates the create command for complete project generation.
 func NewCreateCommand() *cobra.Command {
 	opts := &CreateOptions{}
 
@@ -80,7 +80,7 @@ Examples:
 func runCreate(projectName string, opts *CreateOptions) error {
 	// Validate project name
 	if projectName == "" {
-		return fmt.Errorf("project name cannot be empty")
+		return errors.New("project name cannot be empty")
 	}
 
 	// Create output directory if needed
@@ -99,7 +99,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	// Check if directory is empty (unless force is used)
 	if !opts.Force {
 		if entries, err := os.ReadDir("."); err == nil && len(entries) > 0 {
-			return fmt.Errorf("directory is not empty. Use --force to overwrite")
+			return errors.New("directory is not empty. Use --force to overwrite")
 		}
 	}
 

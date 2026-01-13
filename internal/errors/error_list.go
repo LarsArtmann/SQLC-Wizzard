@@ -5,13 +5,13 @@ import "fmt"
 // ErrorList represents multiple errors
 // TODO: Add thread safety for concurrent access
 // TODO: Add methods for error filtering
-// TODO: Add support for error aggregation
+// TODO: Add support for error aggregation.
 type ErrorList struct {
 	Errors []*Error `json:"errors"`
 }
 
 // NewErrorList creates a new error list
-// TODO: Add initial capacity configuration
+// TODO: Add initial capacity configuration.
 func NewErrorList() *ErrorList {
 	// TODO: Add configurable initial capacity
 	return &ErrorList{
@@ -22,7 +22,7 @@ func NewErrorList() *ErrorList {
 // Add adds an error to list
 // TODO: Add duplicate error detection
 // TODO: Add error validation
-// TODO: Add error deduplication
+// TODO: Add error deduplication.
 func (el *ErrorList) Add(err *Error) {
 	// TODO: Add nil check
 	// TODO: Add validation
@@ -34,19 +34,19 @@ func (el *ErrorList) Add(err *Error) {
 
 // AddError adds an error using NewError
 // TODO: Add message validation
-// TODO: Add code validation
+// TODO: Add code validation.
 func (el *ErrorList) AddError(code ErrorCode, message string) {
 	// TODO: Add validation
 	el.Add(NewError(code, message))
 }
 
 // HasErrors returns true if list contains errors
-// TODO: Add error severity filtering
+// TODO: Add error severity filtering.
 func (el *ErrorList) HasErrors() bool {
 	return len(el.Errors) > 0
 }
 
-// GetCount returns number of errors
+// GetCount returns number of errors.
 func (el *ErrorList) GetCount() int {
 	return len(el.Errors)
 }
@@ -54,7 +54,7 @@ func (el *ErrorList) GetCount() int {
 // Error implements error interface for ErrorList
 // TODO: Add configurable error formats
 // TODO: Add severity-based formatting
-// TODO: Add error limiting for large lists
+// TODO: Add error limiting for large lists.
 func (el *ErrorList) Error() string {
 	if !el.HasErrors() {
 		return "no errors"
@@ -69,7 +69,7 @@ func (el *ErrorList) Error() string {
 }
 
 // Filter returns errors matching the given criteria
-// TODO: Implement filtering by code, severity, component
+// TODO: Implement filtering by code, severity, component.
 func (el *ErrorList) Filter(predicate func(*Error) bool) *ErrorList {
 	filtered := NewErrorList()
 	for _, err := range el.Errors {
@@ -81,7 +81,7 @@ func (el *ErrorList) Filter(predicate func(*Error) bool) *ErrorList {
 }
 
 // GroupByCode groups errors by error code
-// TODO: Implement grouping functionality
+// TODO: Implement grouping functionality.
 func (el *ErrorList) GroupByCode() map[ErrorCode][]*Error {
 	groups := make(map[ErrorCode][]*Error)
 	for _, err := range el.Errors {
@@ -91,7 +91,7 @@ func (el *ErrorList) GroupByCode() map[ErrorCode][]*Error {
 }
 
 // GetByCode returns errors with specific code
-// TODO: Implement code-based retrieval
+// TODO: Implement code-based retrieval.
 func (el *ErrorList) GetByCode(code ErrorCode) []*Error {
 	return el.Filter(func(err *Error) bool {
 		return err.Code == code
@@ -99,7 +99,7 @@ func (el *ErrorList) GetByCode(code ErrorCode) []*Error {
 }
 
 // GetCritical returns critical errors
-// TODO: Implement severity filtering
+// TODO: Implement severity filtering.
 func (el *ErrorList) GetCritical() []*Error {
 	return el.Filter(func(err *Error) bool {
 		return err.IsCritical()
@@ -107,7 +107,7 @@ func (el *ErrorList) GetCritical() []*Error {
 }
 
 // GetRetryable returns retryable errors
-// TODO: Implement retryable filtering
+// TODO: Implement retryable filtering.
 func (el *ErrorList) GetRetryable() []*Error {
 	return el.Filter(func(err *Error) bool {
 		return err.IsRetryable()
@@ -115,14 +115,14 @@ func (el *ErrorList) GetRetryable() []*Error {
 }
 
 // Clear removes all errors from the list
-// TODO: Add memory management considerations
+// TODO: Add memory management considerations.
 func (el *ErrorList) Clear() {
 	// TODO: Consider memory clearing for sensitive data
 	el.Errors = el.Errors[:0]
 }
 
 // Clone creates a deep copy of the error list
-// TODO: Implement proper deep cloning
+// TODO: Implement proper deep cloning.
 func (el *ErrorList) Clone() *ErrorList {
 	clone := NewErrorList()
 	for _, err := range el.Errors {

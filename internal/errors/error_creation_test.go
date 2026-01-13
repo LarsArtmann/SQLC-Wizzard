@@ -13,7 +13,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create a new error with defaults", func() {
 			err := NewError(ErrorCodeInternalServer, "test error")
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeInternalServer))
 			Expect(err.Message).To(Equal("test error"))
 			Expect(err.Component).To(Equal("application"))
@@ -30,7 +30,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create error with formatted message", func() {
 			err := Newf(ErrorCodeValidationError, "field %s has value %d", "age", 150)
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Message).To(Equal("field age has value 150"))
 
 			// TODO: Add tests for complex formatting scenarios
@@ -40,10 +40,10 @@ var _ = Describe("Error Creation", func() {
 
 	Context("Helper Constructors", func() {
 		It("should create internal error with context", func() {
-			cause := fmt.Errorf("database connection failed")
+			cause := errors.New("database connection failed")
 			err := NewInternal("database", "connect", cause)
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeInternalServer))
 			Expect(err.Component).To(Equal("database"))
 			Expect(err.Message).To(ContainSubstring("database"))
@@ -57,7 +57,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create not found error", func() {
 			err := NewNotFound("User", "12345")
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeNotFound))
 			Expect(err.Message).To(ContainSubstring("User"))
 			Expect(err.Message).To(ContainSubstring("12345"))
@@ -69,7 +69,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create permission denied error", func() {
 			err := NewPermissionDenied("database", "write")
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodePermissionDenied))
 			Expect(err.Message).To(ContainSubstring("write"))
 			Expect(err.Message).To(ContainSubstring("database"))
@@ -81,7 +81,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create timeout error", func() {
 			err := NewTimeout("fetchData", 5000)
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeTimeout))
 			Expect(err.Message).To(ContainSubstring("fetchData"))
 			Expect(err.Message).To(ContainSubstring("5000"))
@@ -94,7 +94,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create file not found error", func() {
 			err := FileNotFoundError("/path/to/file.txt")
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeFileNotFound))
 			Expect(err.Message).To(ContainSubstring("/path/to/file.txt"))
 			Expect(err.Component).To(Equal("filesystem"))
@@ -104,10 +104,10 @@ var _ = Describe("Error Creation", func() {
 		})
 
 		It("should create file read error", func() {
-			cause := fmt.Errorf("permission denied")
+			cause := errors.New("permission denied")
 			err := FileReadError("/path/to/file.txt", cause)
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeFileReadError))
 			Expect(err.Message).To(ContainSubstring("/path/to/file.txt"))
 			Expect(err.Component).To(Equal("filesystem"))
@@ -117,10 +117,10 @@ var _ = Describe("Error Creation", func() {
 		})
 
 		It("should create config parse error", func() {
-			cause := fmt.Errorf("invalid YAML")
+			cause := errors.New("invalid YAML")
 			err := ConfigParseError("/path/to/config.yaml", cause)
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeConfigParseFailed))
 			Expect(err.Message).To(ContainSubstring("/path/to/config.yaml"))
 			Expect(err.Component).To(Equal("config"))
@@ -132,7 +132,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create template not found error", func() {
 			err := TemplateNotFoundError("missing-template")
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeTemplateNotFound))
 			Expect(err.Message).To(ContainSubstring("missing-template"))
 			Expect(err.Component).To(Equal("templates"))
@@ -144,7 +144,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create validation error", func() {
 			err := ValidationError("email", "invalid format")
 
-			Expect(err).NotTo(BeNil())
+			Expect(err).To(HaveOccurred())
 			Expect(err.Code).To(Equal(ErrorCodeValidationError))
 			Expect(err.Message).To(ContainSubstring("email"))
 			Expect(err.Message).To(ContainSubstring("invalid format"))

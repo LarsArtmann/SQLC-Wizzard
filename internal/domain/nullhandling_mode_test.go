@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// NullHandlingMode validation test suite
+// NullHandlingMode validation test suite.
 type NullHandlingModeTestSuite struct{}
 
 func (NullHandlingModeTestSuite) GetValidValues() []domain.NullHandlingMode {

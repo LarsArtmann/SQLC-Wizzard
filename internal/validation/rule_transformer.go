@@ -9,16 +9,16 @@ import (
 
 // RuleTransformer consolidates rule transformation logic from duplicate implementations
 // This eliminates the split brain between generated/types.go and internal/domain/
-// and provides a single source of truth for rule configuration generation
+// and provides a single source of truth for rule configuration generation.
 type RuleTransformer struct{}
 
-// NewRuleTransformer creates a new rule transformer
+// NewRuleTransformer creates a new rule transformer.
 func NewRuleTransformer() *RuleTransformer {
 	return &RuleTransformer{}
 }
 
 // TransformSafetyRules converts safety rules to configuration format
-// This is the single source of truth for rule transformation logic
+// This is the single source of truth for rule transformation logic.
 func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []generated.RuleConfig {
 	if rules == nil {
 		return []generated.RuleConfig{}
@@ -55,11 +55,7 @@ func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []
 
 	// Transform additional rules
 	for _, customRule := range rules.Rules {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    customRule.Name,
-			Rule:    customRule.Rule,
-			Message: customRule.Message,
-		})
+		configRules = append(configRules, generated.RuleConfig(customRule))
 	}
 
 	return configRules
@@ -78,7 +74,7 @@ func (rt *RuleTransformer) TransformDomainSafetyRules(rules *domain.SafetyRules)
 }
 
 // TransformTypeSafeSafetyRules converts NEW type-safe safety rules to configuration format
-// This is the preferred method for new code as it leverages semantic groupings and enums
+// This is the preferred method for new code as it leverages semantic groupings and enums.
 func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSafetyRules) []generated.RuleConfig {
 	var configRules []generated.RuleConfig
 
@@ -172,17 +168,13 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 
 	// Transform custom CEL rules
 	for _, customRule := range rules.CustomRules {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    customRule.Name,
-			Rule:    customRule.Rule,
-			Message: customRule.Message,
-		})
+		configRules = append(configRules, generated.RuleConfig(customRule))
 	}
 
 	return configRules
 }
 
-// uintToString converts uint to string for rule generation
+// uintToString converts uint to string for rule generation.
 func uintToString(n uint) string {
 	return strconv.FormatUint(uint64(n), 10)
 }

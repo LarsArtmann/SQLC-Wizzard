@@ -10,7 +10,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// runRuleTransformationTest runs a generic test for safety rule transformation
+// runRuleTransformationTest runs a generic test for safety rule transformation.
 func runRuleTransformationTest(transformer *validation.RuleTransformer, ruleName, expectedRule, expectedMessage string, setupRules func() *generated.SafetyRules) {
 	rules := setupRules()
 	configRules := transformer.TransformSafetyRules(rules)

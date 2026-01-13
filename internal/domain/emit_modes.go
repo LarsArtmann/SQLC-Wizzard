@@ -6,24 +6,24 @@ import "github.com/LarsArtmann/SQLC-Wizzard/generated"
 // Replaces the boolean-heavy EmitOptions from generated/types.go with
 // semantic groupings that prevent invalid state combinations
 
-// NullHandlingMode defines how nullable database values are represented in generated code
+// NullHandlingMode defines how nullable database values are represented in generated code.
 type NullHandlingMode string
 
 const (
 	// NullHandlingPointers uses pointers for all nullable fields (*string, *int64, etc.)
 	NullHandlingPointers NullHandlingMode = "pointers"
 
-	// NullHandlingEmptySlices treats nil slices as empty slices (never nil)
+	// NullHandlingEmptySlices treats nil slices as empty slices (never nil).
 	NullHandlingEmptySlices NullHandlingMode = "empty_slices"
 
 	// NullHandlingExplicitNull uses sql.Null* types (sql.NullString, sql.NullInt64, etc.)
 	NullHandlingExplicitNull NullHandlingMode = "explicit_null"
 
-	// NullHandlingMixed allows pointers for some types, sql.Null* for others (advanced)
+	// NullHandlingMixed allows pointers for some types, sql.Null* for others (advanced).
 	NullHandlingMixed NullHandlingMode = "mixed"
 )
 
-// IsValid returns true if the null handling mode is recognized
+// IsValid returns true if the null handling mode is recognized.
 func (n NullHandlingMode) IsValid() bool {
 	switch n {
 	case NullHandlingPointers, NullHandlingEmptySlices, NullHandlingExplicitNull, NullHandlingMixed:
@@ -33,41 +33,41 @@ func (n NullHandlingMode) IsValid() bool {
 	}
 }
 
-// String returns the string representation of the mode
+// String returns the string representation of the mode.
 func (n NullHandlingMode) String() string {
 	return string(n)
 }
 
-// UsePointers returns true if this mode uses pointer types for nullability
+// UsePointers returns true if this mode uses pointer types for nullability.
 func (n NullHandlingMode) UsePointers() bool {
 	return n == NullHandlingPointers || n == NullHandlingMixed
 }
 
-// UseEmptySlices returns true if this mode prefers empty slices over nil
+// UseEmptySlices returns true if this mode prefers empty slices over nil.
 func (n NullHandlingMode) UseEmptySlices() bool {
 	return n == NullHandlingEmptySlices
 }
 
-// UseExplicitNull returns true if this mode uses sql.Null* types
+// UseExplicitNull returns true if this mode uses sql.Null* types.
 func (n NullHandlingMode) UseExplicitNull() bool {
 	return n == NullHandlingExplicitNull
 }
 
-// EnumGenerationMode defines how database enums are generated in code
+// EnumGenerationMode defines how database enums are generated in code.
 type EnumGenerationMode string
 
 const (
-	// EnumGenerationBasic generates simple enum constants
+	// EnumGenerationBasic generates simple enum constants.
 	EnumGenerationBasic EnumGenerationMode = "basic"
 
-	// EnumGenerationWithValidation adds IsValid() methods to enum types
+	// EnumGenerationWithValidation adds IsValid() methods to enum types.
 	EnumGenerationWithValidation EnumGenerationMode = "with_validation"
 
-	// EnumGenerationComplete adds IsValid() + All() methods (all enum values)
+	// EnumGenerationComplete adds IsValid() + All() methods (all enum values).
 	EnumGenerationComplete EnumGenerationMode = "complete"
 )
 
-// IsValid returns true if the enum generation mode is recognized
+// IsValid returns true if the enum generation mode is recognized.
 func (e EnumGenerationMode) IsValid() bool {
 	switch e {
 	case EnumGenerationBasic, EnumGenerationWithValidation, EnumGenerationComplete:
@@ -77,39 +77,39 @@ func (e EnumGenerationMode) IsValid() bool {
 	}
 }
 
-// String returns the string representation of the mode
+// String returns the string representation of the mode.
 func (e EnumGenerationMode) String() string {
 	return string(e)
 }
 
-// IncludesValidation returns true if this mode generates IsValid() methods
+// IncludesValidation returns true if this mode generates IsValid() methods.
 func (e EnumGenerationMode) IncludesValidation() bool {
 	return e == EnumGenerationWithValidation || e == EnumGenerationComplete
 }
 
-// IncludesAllValues returns true if this mode generates All() methods
+// IncludesAllValues returns true if this mode generates All() methods.
 func (e EnumGenerationMode) IncludesAllValues() bool {
 	return e == EnumGenerationComplete
 }
 
-// StructPointerMode defines when to use pointers for generated structs
+// StructPointerMode defines when to use pointers for generated structs.
 type StructPointerMode string
 
 const (
-	// StructPointerNever never uses pointers for result/param structs
+	// StructPointerNever never uses pointers for result/param structs.
 	StructPointerNever StructPointerMode = "never"
 
-	// StructPointerResults uses pointers only for result structs
+	// StructPointerResults uses pointers only for result structs.
 	StructPointerResults StructPointerMode = "results"
 
-	// StructPointerParams uses pointers only for parameter structs
+	// StructPointerParams uses pointers only for parameter structs.
 	StructPointerParams StructPointerMode = "params"
 
-	// StructPointerAlways uses pointers for both result and parameter structs
+	// StructPointerAlways uses pointers for both result and parameter structs.
 	StructPointerAlways StructPointerMode = "always"
 )
 
-// IsValid returns true if the struct pointer mode is recognized
+// IsValid returns true if the struct pointer mode is recognized.
 func (s StructPointerMode) IsValid() bool {
 	switch s {
 	case StructPointerNever, StructPointerResults, StructPointerParams, StructPointerAlways:
@@ -119,39 +119,39 @@ func (s StructPointerMode) IsValid() bool {
 	}
 }
 
-// String returns the string representation of the mode
+// String returns the string representation of the mode.
 func (s StructPointerMode) String() string {
 	return string(s)
 }
 
-// UseResultPointers returns true if result structs should be pointers
+// UseResultPointers returns true if result structs should be pointers.
 func (s StructPointerMode) UseResultPointers() bool {
 	return s == StructPointerResults || s == StructPointerAlways
 }
 
-// UseParamPointers returns true if parameter structs should be pointers
+// UseParamPointers returns true if parameter structs should be pointers.
 func (s StructPointerMode) UseParamPointers() bool {
 	return s == StructPointerParams || s == StructPointerAlways
 }
 
-// JSONTagStyle defines the case style for JSON tags
+// JSONTagStyle defines the case style for JSON tags.
 type JSONTagStyle string
 
 const (
-	// JSONTagStyleCamel uses camelCase (e.g., userId)
+	// JSONTagStyleCamel uses camelCase (e.g., userId).
 	JSONTagStyleCamel JSONTagStyle = "camel"
 
-	// JSONTagStyleSnake uses snake_case (e.g., user_id)
+	// JSONTagStyleSnake uses snake_case (e.g., user_id).
 	JSONTagStyleSnake JSONTagStyle = "snake"
 
-	// JSONTagStylePascal uses PascalCase (e.g., UserId)
+	// JSONTagStylePascal uses PascalCase (e.g., UserId).
 	JSONTagStylePascal JSONTagStyle = "pascal"
 
-	// JSONTagStyleKebab uses kebab-case (e.g., user-id)
+	// JSONTagStyleKebab uses kebab-case (e.g., user-id).
 	JSONTagStyleKebab JSONTagStyle = "kebab"
 )
 
-// IsValid returns true if the JSON tag style is recognized
+// IsValid returns true if the JSON tag style is recognized.
 func (j JSONTagStyle) IsValid() bool {
 	switch j {
 	case JSONTagStyleCamel, JSONTagStyleSnake, JSONTagStylePascal, JSONTagStyleKebab:
@@ -161,13 +161,13 @@ func (j JSONTagStyle) IsValid() bool {
 	}
 }
 
-// String returns the string representation of the style
+// String returns the string representation of the style.
 func (j JSONTagStyle) String() string {
 	return string(j)
 }
 
 // CodeGenerationFeatures represents optional code generation features
-// These are independent boolean flags that can be enabled/disabled
+// These are independent boolean flags that can be enabled/disabled.
 type CodeGenerationFeatures struct {
 	// GenerateJSONTags adds json:"..." tags to struct fields
 	GenerateJSONTags bool
@@ -186,7 +186,7 @@ type CodeGenerationFeatures struct {
 // This is the NEW type-safe version that replaces the boolean-heavy generated.EmitOptions
 // with semantic groupings that prevent invalid state combinations
 //
-// Migration path: Use this for new code, gradually migrate existing code from EmitOptions
+// Migration path: Use this for new code, gradually migrate existing code from EmitOptions.
 type TypeSafeEmitOptions struct {
 	// NullHandling defines how nullable values are represented
 	NullHandling NullHandlingMode
@@ -204,7 +204,7 @@ type TypeSafeEmitOptions struct {
 	Features CodeGenerationFeatures
 }
 
-// DomainValidationError represents a validation error in the domain layer
+// DomainValidationError represents a validation error in the domain layer.
 type DomainValidationError struct {
 	Field   string
 	Message string
@@ -214,7 +214,7 @@ func (e *DomainValidationError) Error() string {
 	return e.Field + ": " + e.Message
 }
 
-// IsValid validates that all configuration options are valid
+// IsValid validates that all configuration options are valid.
 func (e *TypeSafeEmitOptions) IsValid() error {
 	if !e.NullHandling.IsValid() {
 		return &DomainValidationError{
@@ -248,7 +248,7 @@ func (e *TypeSafeEmitOptions) IsValid() error {
 }
 
 // ToTemplateData converts TypeSafeEmitOptions to generated.EmitOptions for compatibility
-// This is the NEW type-safe way that converts to OLD boolean-heavy format
+// This is the NEW type-safe way that converts to OLD boolean-heavy format.
 func (e *TypeSafeEmitOptions) ToTemplateData() generated.EmitOptions {
 	return generated.EmitOptions{
 		EmitJSONTags:             e.Features.GenerateJSONTags,
@@ -264,7 +264,7 @@ func (e *TypeSafeEmitOptions) ToTemplateData() generated.EmitOptions {
 }
 
 // ApplyDefaults sets sensible defaults for any empty configuration options
-// This ensures backward compatibility while maintaining type safety
+// This ensures backward compatibility while maintaining type safety.
 func (e *TypeSafeEmitOptions) ApplyDefaults() {
 	if e.NullHandling == "" {
 		e.NullHandling = NullHandlingPointers
@@ -292,7 +292,7 @@ func (e *TypeSafeEmitOptions) ApplyDefaults() {
 }
 
 // NewTypeSafeEmitOptions returns production-ready defaults for code generation
-// This creates the NEW type-safe version with semantic enums
+// This creates the NEW type-safe version with semantic enums.
 func NewTypeSafeEmitOptions() TypeSafeEmitOptions {
 	return TypeSafeEmitOptions{
 		NullHandling:   NullHandlingPointers,

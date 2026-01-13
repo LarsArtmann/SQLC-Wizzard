@@ -9,7 +9,7 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-// CreateProjectTypeStep creates project type selection step
+// CreateProjectTypeStep creates project type selection step.
 func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 	projectTypePtr := new(string)
 	*projectTypePtr = string(data.ProjectType)
@@ -36,7 +36,7 @@ func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 		})
 }
 
-// CreateDatabaseStep creates database selection step
+// CreateDatabaseStep creates database selection step.
 func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 	databasePtr := new(string)
 	*databasePtr = string(data.Database.Engine)
@@ -58,7 +58,7 @@ func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 		})
 }
 
-// CreateProjectNameStep creates project name input step
+// CreateProjectNameStep creates project name input step.
 func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 	return huh.NewInput().
 		Title("Project Name").
@@ -66,20 +66,20 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 		Value(&data.ProjectName).
 		Validate(func(name string) error {
 			if name == "" {
-				return fmt.Errorf("project name cannot be empty")
+				return errors.New("project name cannot be empty")
 			}
 			if len(name) < 2 {
-				return fmt.Errorf("project name must be at least 2 characters")
+				return errors.New("project name must be at least 2 characters")
 			}
 			if len(name) > 50 {
-				return fmt.Errorf("project name must be less than 50 characters")
+				return errors.New("project name must be less than 50 characters")
 			}
 			// Simple validation for now
 			return nil
 		})
 }
 
-// CreatePackageNameStep creates package name input step
+// CreatePackageNameStep creates package name input step.
 func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
 	return huh.NewInput().
 		Title("Package Name").
@@ -88,14 +88,14 @@ func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
 		Placeholder("db").
 		Validate(func(name string) error {
 			if name == "" {
-				return fmt.Errorf("package name cannot be empty")
+				return errors.New("package name cannot be empty")
 			}
 			// Simple validation for now
 			return nil
 		})
 }
 
-// CreatePackagePathStep creates package path input step
+// CreatePackagePathStep creates package path input step.
 func CreatePackagePathStep(data *generated.TemplateData) *huh.Input {
 	return huh.NewInput().
 		Title("Package Path").
@@ -104,14 +104,14 @@ func CreatePackagePathStep(data *generated.TemplateData) *huh.Input {
 		Placeholder("github.com/username/project").
 		Validate(func(path string) error {
 			if path == "" {
-				return fmt.Errorf("package path cannot be empty")
+				return errors.New("package path cannot be empty")
 			}
 			// Simple validation for now
 			return nil
 		})
 }
 
-// CreateOutputDirStep creates output directory input step
+// CreateOutputDirStep creates output directory input step.
 func CreateOutputDirStep(data *generated.TemplateData) *huh.Input {
 	return huh.NewInput().
 		Title("Output Directory").
@@ -120,21 +120,22 @@ func CreateOutputDirStep(data *generated.TemplateData) *huh.Input {
 		Placeholder("internal/db").
 		Validate(func(dir string) error {
 			if dir == "" {
-				return fmt.Errorf("output directory cannot be empty")
+				return errors.New("output directory cannot be empty")
 			}
 			return nil
 		})
 }
 
-// CreateDatabaseURLStep creates database URL input step
+// CreateDatabaseURLStep creates database URL input step.
 func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 	placeholder := "postgresql://localhost:5432/dbname"
 	description := "Enter the database connection URL (use environment variables in production)"
 
-	if data.Database.Engine == "sqlite" {
+	switch data.Database.Engine {
+	case "sqlite":
 		placeholder = "./data.db"
 		description = "Enter the SQLite database file path"
-	} else if data.Database.Engine == "mysql" {
+	case "mysql":
 		placeholder = "mysql://localhost:3306/dbname"
 		description = "Enter the MySQL connection URL (use environment variables in production)"
 	}
@@ -146,13 +147,13 @@ func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 		Placeholder(placeholder).
 		Validate(func(url string) error {
 			if url == "" {
-				return fmt.Errorf("database URL cannot be empty")
+				return errors.New("database URL cannot be empty")
 			}
 			return nil
 		})
 }
 
-// CreateFeatureSteps creates feature selection steps
+// CreateFeatureSteps creates feature selection steps.
 func CreateFeatureSteps(data *generated.TemplateData) []huh.Field {
 	return []huh.Field{
 		huh.NewConfirm().

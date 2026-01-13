@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 )
 
-// StructPointerMode validation test suite
+// StructPointerMode validation test suite.
 type StructPointerModeTestSuite struct{}
 
 func (StructPointerModeTestSuite) GetValidValues() []domain.StructPointerMode {

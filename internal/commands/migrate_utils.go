@@ -9,13 +9,13 @@ import (
 	"github.com/charmbracelet/log"
 )
 
-// writeMigrationResult writes migrated configuration to file
+// writeMigrationResult writes migrated configuration to file.
 func writeMigrationResult(cfg *config.SqlcConfig, destination string, force bool) error {
 	// Check if file exists and force is not set
 	if _, err := os.Stat(destination); err == nil && !force {
 		return &MigrationError{
 			Code:    "FILE_EXISTS",
-			Message: fmt.Sprintf("Destination file exists and force flag not set: %s", destination),
+			Message: "Destination file exists and force flag not set: " + destination,
 		}
 	}
 

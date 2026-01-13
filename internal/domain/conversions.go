@@ -11,7 +11,7 @@ import "github.com/LarsArtmann/SQLC-Wizzard/generated"
 // ============================================================================
 
 // ToTypeSafe converts old generated.EmitOptions to new TypeSafeEmitOptions
-// This is the bridge from legacy boolean-heavy structure to type-safe enums
+// This is the bridge from legacy boolean-heavy structure to type-safe enums.
 func EmitOptionsToTypeSafe(old generated.EmitOptions) TypeSafeEmitOptions {
 	// Determine NullHandlingMode from combination of boolean flags
 	var nullHandling NullHandlingMode
@@ -72,7 +72,7 @@ func EmitOptionsToTypeSafe(old generated.EmitOptions) TypeSafeEmitOptions {
 // This eliminates split brain and provides single source of truth for conversion
 // Use: opts.ToTemplateData() instead of opts.ToLegacy()
 
-// ParseJSONTagStyle converts string to JSONTagStyle enum
+// ParseJSONTagStyle converts string to JSONTagStyle enum.
 func ParseJSONTagStyle(s string) JSONTagStyle {
 	switch s {
 	case "camel":
@@ -93,7 +93,7 @@ func ParseJSONTagStyle(s string) JSONTagStyle {
 // ============================================================================
 
 // SafetyRulesToTypeSafe converts old generated.SafetyRules to new TypeSafeSafetyRules
-// This is the bridge from legacy boolean-heavy structure to type-safe semantic groupings
+// This is the bridge from legacy boolean-heavy structure to type-safe semantic groupings.
 func SafetyRulesToTypeSafe(old generated.SafetyRules) TypeSafeSafetyRules {
 	// Determine DestructiveOperationPolicy from boolean flags
 	var destructiveOps DestructiveOperationPolicy
@@ -124,7 +124,7 @@ func SafetyRulesToTypeSafe(old generated.SafetyRules) TypeSafeSafetyRules {
 	}
 }
 
-// convertNoSelectStarPolicy converts old boolean to new SelectStarPolicy
+// convertNoSelectStarPolicy converts old boolean to new SelectStarPolicy.
 func convertNoSelectStarPolicy(noSelectStar bool) SelectStarPolicy {
 	if noSelectStar {
 		return SelectStarForbidden
@@ -132,7 +132,7 @@ func convertNoSelectStarPolicy(noSelectStar bool) SelectStarPolicy {
 	return SelectStarAllowed
 }
 
-// convertWhereRequirement converts old boolean to new WhereClauseRequirement
+// convertWhereRequirement converts old boolean to new WhereClauseRequirement.
 func convertWhereRequirement(requireWhere bool) WhereClauseRequirement {
 	if requireWhere {
 		return WhereClauseOnDestructive
@@ -140,7 +140,7 @@ func convertWhereRequirement(requireWhere bool) WhereClauseRequirement {
 	return WhereClauseNever
 }
 
-// convertLimitRequirement converts old boolean to new LimitClauseRequirement
+// convertLimitRequirement converts old boolean to new LimitClauseRequirement.
 func convertLimitRequirement(requireLimit bool) LimitClauseRequirement {
 	if requireLimit {
 		return LimitClauseOnSelect
@@ -150,7 +150,7 @@ func convertLimitRequirement(requireLimit bool) LimitClauseRequirement {
 
 // Legacy Conversion - DEPRECATED
 // This method exists for backward compatibility but should not be used in new code
-// Use: opts.ToTemplateData() instead of opts.ToLegacy()
+// Use: opts.ToTemplateData() instead of opts.ToLegacy().
 func (rules TypeSafeSafetyRules) ToLegacy() generated.SafetyRules {
 	return generated.SafetyRules{
 		NoSelectStar: rules.StyleRules.SelectStarPolicy.ForbidsSelectStar(),
@@ -167,13 +167,13 @@ func (rules TypeSafeSafetyRules) ToLegacy() generated.SafetyRules {
 // ============================================================================
 
 // Convenience Constructor - DEPRECATED
-// This exists for backward compatibility but should not be used in new code
+// This exists for backward compatibility but should not be used in new code.
 func NewTypeSafeEmitOptionsFromLegacy(old generated.EmitOptions) TypeSafeEmitOptions {
 	return EmitOptionsToTypeSafe(old)
 }
 
 // Convenience Constructor - DEPRECATED
-// This exists for backward compatibility but should not be used in new code
+// This exists for backward compatibility but should not be used in new code.
 func NewTypeSafeSafetyRulesFromLegacy(old generated.SafetyRules) TypeSafeSafetyRules {
 	return SafetyRulesToTypeSafe(old)
 }

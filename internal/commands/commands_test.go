@@ -151,7 +151,7 @@ var _ = Describe("Doctor Command Checks", func() {
 
 			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
 			Expect(result.Message).To(ContainSubstring("compatible"))
-			Expect(result.Error).To(BeNil())
+			Expect(result.Error).ToNot(HaveOccurred())
 		})
 	})
 
@@ -161,7 +161,7 @@ var _ = Describe("Doctor Command Checks", func() {
 
 			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
 			Expect(result.Message).To(ContainSubstring("OK"))
-			Expect(result.Error).To(BeNil())
+			Expect(result.Error).ToNot(HaveOccurred())
 		})
 	})
 
@@ -173,7 +173,7 @@ var _ = Describe("Doctor Command Checks", func() {
 				Equal(commands.DoctorStatusPass),
 				Equal(commands.DoctorStatusWarn),
 			))
-			Expect(result.Error).To(BeNil())
+			Expect(result.Error).ToNot(HaveOccurred())
 		})
 	})
 })
@@ -218,7 +218,7 @@ var _ = Describe("Command Integration", func() {
 	})
 })
 
-// Helper functions for testing (mirroring internal functions)
+// Helper functions for testing (mirroring internal functions).
 func checkGoVersion(ctx context.Context) *commands.DoctorResult {
 	// Simplified version for testing
 	return &commands.DoctorResult{

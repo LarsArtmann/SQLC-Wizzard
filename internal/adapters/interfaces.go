@@ -12,7 +12,7 @@ import (
 )
 
 // SQLCAdapter defines interface for sqlc operations
-// This isolates direct sqlc usage and enables testing
+// This isolates direct sqlc usage and enables testing.
 type SQLCAdapter interface {
 	// Generate generates Go code from SQL files
 	Generate(ctx context.Context, cfg *config.SqlcConfig) error
@@ -28,7 +28,7 @@ type SQLCAdapter interface {
 }
 
 // DatabaseAdapter defines interface for database operations
-// This isolates database-specific logic and enables testing
+// This isolates database-specific logic and enables testing.
 type DatabaseAdapter interface {
 	// TestConnection tests database connectivity
 	TestConnection(ctx context.Context, cfg *config.DatabaseConfig) error
@@ -47,7 +47,7 @@ type DatabaseAdapter interface {
 }
 
 // CLIAdapter defines interface for CLI operations
-// This isolates CLI-specific logic and enables testing
+// This isolates CLI-specific logic and enables testing.
 type CLIAdapter interface {
 	// RunCommand executes a CLI command
 	RunCommand(ctx context.Context, cmd string, args ...string) (string, error)
@@ -66,7 +66,7 @@ type CLIAdapter interface {
 }
 
 // TemplateAdapter defines interface for template operations
-// This isolates template logic and enables testing
+// This isolates template logic and enables testing.
 type TemplateAdapter interface {
 	// GetTemplate retrieves a template by type
 	GetTemplate(projectType generated.ProjectType) (templates.Template, error)
@@ -85,7 +85,7 @@ type TemplateAdapter interface {
 }
 
 // FileSystemAdapter defines interface for file system operations
-// This isolates file system logic and enables testing
+// This isolates file system logic and enables testing.
 type FileSystemAdapter interface {
 	// ReadFile reads a file
 	ReadFile(ctx context.Context, path string) ([]byte, error)

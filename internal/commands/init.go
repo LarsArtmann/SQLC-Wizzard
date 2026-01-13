@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// InitOptions contains options for the init command
+// InitOptions contains options for the init command.
 type InitOptions struct {
 	ProjectType    string
 	Database       string
@@ -22,7 +22,7 @@ type InitOptions struct {
 	NonInteractive bool
 }
 
-// NewInitCommand creates the init command
+// NewInitCommand creates the init command.
 func NewInitCommand() *cobra.Command {
 	opts := &InitOptions{}
 
@@ -60,7 +60,7 @@ Example:
 func runInit(opts *InitOptions) error {
 	// Check if sqlc.yaml already exists
 	if _, err := os.Stat("sqlc.yaml"); err == nil {
-		return fmt.Errorf("sqlc.yaml already exists in current directory. Remove it first or run in a different directory")
+		return errors.New("sqlc.yaml already exists in current directory. Remove it first or run in a different directory")
 	}
 
 	var result *wizard.WizardResult
@@ -94,13 +94,13 @@ func runInit(opts *InitOptions) error {
 func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 	// Validate required flags
 	if opts.ProjectType == "" {
-		return nil, fmt.Errorf("--project-type is required in non-interactive mode")
+		return nil, errors.New("--project-type is required in non-interactive mode")
 	}
 	if opts.Database == "" {
-		return nil, fmt.Errorf("--database is required in non-interactive mode")
+		return nil, errors.New("--database is required in non-interactive mode")
 	}
 	if opts.PackagePath == "" {
-		return nil, fmt.Errorf("--package is required in non-interactive mode")
+		return nil, errors.New("--package is required in non-interactive mode")
 	}
 
 	// Create template data from flags

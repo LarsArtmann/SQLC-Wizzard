@@ -4,18 +4,18 @@ import (
 	stderrors "errors"
 	"fmt"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 )
 
 var _ = Describe("Error Wrapping and Combining", func() {
 	Context("Wrap", func() {
 		It("should wrap error with code and component", func() {
-			original := fmt.Errorf("database connection failed")
+			original := errors.New("database connection failed")
 			wrapped := errors.Wrap(original, errors.ErrorCodeInternalServer, "database")
 
-			Expect(wrapped).NotTo(BeNil())
+			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.Code).To(Equal(errors.ErrorCodeInternalServer))
 			Expect(wrapped.Component).To(Equal("database"))
 			Expect(wrapped.Message).To(Equal("database connection failed"))
@@ -28,10 +28,10 @@ var _ = Describe("Error Wrapping and Combining", func() {
 
 	Context("WrapWithRequestID", func() {
 		It("should wrap error with request ID", func() {
-			original := fmt.Errorf("operation failed")
+			original := errors.New("operation failed")
 			wrapped := errors.WrapWithRequestID(original, errors.ErrorCodeInternalServer, "req-123", "api")
 
-			Expect(wrapped).NotTo(BeNil())
+			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.RequestID).To(Equal("req-123"))
 			Expect(wrapped.Component).To(Equal("api"))
 			Expect(stderrors.Unwrap(wrapped)).To(Equal(original))
@@ -43,10 +43,10 @@ var _ = Describe("Error Wrapping and Combining", func() {
 
 	Context("WrapWithUserID", func() {
 		It("should wrap error with user ID", func() {
-			original := fmt.Errorf("permission denied")
+			original := errors.New("permission denied")
 			wrapped := errors.WrapWithUserID(original, errors.ErrorCodePermissionDenied, "user-456", "auth")
 
-			Expect(wrapped).NotTo(BeNil())
+			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.UserID).To(Equal("user-456"))
 			Expect(wrapped.Component).To(Equal("auth"))
 			Expect(stderrors.Unwrap(wrapped)).To(Equal(original))
@@ -58,11 +58,11 @@ var _ = Describe("Error Wrapping and Combining", func() {
 
 	Context("Wrapf", func() {
 		It("should wrap error with formatted message", func() {
-			original := fmt.Errorf("field validation failed")
+			original := errors.New("field validation failed")
 			baseErr := errors.NewError(errors.ErrorCodeValidationError, "validation error")
 			wrapped := errors.Wrapf(original, baseErr, "user %s has invalid %s", "john", "email")
 
-			Expect(wrapped).NotTo(BeNil())
+			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.Code).To(Equal(errors.ErrorCodeValidationError))
 			Expect(wrapped.Message).To(Equal("user john has invalid email"))
 			Expect(wrapped.Description).To(ContainSubstring("field validation failed"))
@@ -76,7 +76,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 			baseErr := errors.NewError(errors.ErrorCodeValidationError, "base error")
 			wrapped := errors.Wrapf(nil, baseErr, "formatted message")
 
-			Expect(wrapped).NotTo(BeNil())
+			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.Message).To(Equal("Cannot wrap nil error"))
 			Expect(wrapped.Code).To(Equal(errors.ErrorCodeInternalServer))
 
@@ -121,7 +121,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 		})
 
 		It("should wrap non-application errors", func() {
-			err1 := fmt.Errorf("standard error")
+			err1 := errors.New("standard error")
 			err2 := errors.NewError(errors.ErrorCodeValidationError, "app error")
 
 			list := errors.CombineErrors(err1, err2)

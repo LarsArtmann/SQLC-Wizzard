@@ -300,7 +300,7 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 			roundtripRules := transformer.TransformSafetyRules(&roundtrip)
 
 			// Step 5: Verify functional equivalence
-			Expect(len(originalRules)).To(Equal(len(roundtripRules)))
+			Expect(originalRules).To(HaveLen(len(roundtripRules)))
 
 			for i := range originalRules {
 				Expect(roundtripRules[i].Name).To(Equal(originalRules[i].Name))

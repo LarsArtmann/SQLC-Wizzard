@@ -6,7 +6,7 @@ import (
 	"strings"
 )
 
-// ValidationError represents a configuration validation error
+// ValidationError represents a configuration validation error.
 type ValidationError struct {
 	Field   string
 	Message string
@@ -16,28 +16,28 @@ func (e ValidationError) Error() string {
 	return fmt.Sprintf("%s: %s", e.Field, e.Message)
 }
 
-// ValidationResult contains validation errors and warnings
+// ValidationResult contains validation errors and warnings.
 type ValidationResult struct {
 	Errors   []ValidationError
 	Warnings []ValidationError
 }
 
-// IsValid returns true if there are no errors
+// IsValid returns true if there are no errors.
 func (r *ValidationResult) IsValid() bool {
 	return len(r.Errors) == 0
 }
 
-// AddError adds a validation error
+// AddError adds a validation error.
 func (r *ValidationResult) AddError(field, message string) {
 	r.Errors = append(r.Errors, ValidationError{Field: field, Message: message})
 }
 
-// AddWarning adds a validation warning
+// AddWarning adds a validation warning.
 func (r *ValidationResult) AddWarning(field, message string) {
 	r.Warnings = append(r.Warnings, ValidationError{Field: field, Message: message})
 }
 
-// Validate performs comprehensive validation on a SqlcConfig
+// Validate performs comprehensive validation on a SqlcConfig.
 func Validate(cfg *SqlcConfig) *ValidationResult {
 	result := &ValidationResult{}
 

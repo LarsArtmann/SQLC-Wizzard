@@ -7,13 +7,13 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-// OutputStep handles output configuration and file paths
+// OutputStep handles output configuration and file paths.
 type OutputStep struct {
 	theme *huh.Theme
 	ui    *UIHelper
 }
 
-// NewOutputStep creates a new output step
+// NewOutputStep creates a new output step.
 func NewOutputStep(theme *huh.Theme, ui *UIHelper) *OutputStep {
 	return &OutputStep{
 		theme: theme,
@@ -21,7 +21,7 @@ func NewOutputStep(theme *huh.Theme, ui *UIHelper) *OutputStep {
 	}
 }
 
-// Execute runs output configuration step
+// Execute runs output configuration step.
 func (s *OutputStep) Execute(data *generated.TemplateData) error {
 	s.ui.ShowStepHeader("Output Configuration")
 
@@ -67,39 +67,39 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 	data.Output.QueriesDir = queriesDir
 	data.Output.SchemaDir = schemaDir
 
-	s.ui.ShowInfo(fmt.Sprintf("Base directory: %s", baseDir))
-	s.ui.ShowInfo(fmt.Sprintf("Queries directory: %s", queriesDir))
-	s.ui.ShowInfo(fmt.Sprintf("Schema directory: %s", schemaDir))
+	s.ui.ShowInfo("Base directory: " + baseDir)
+	s.ui.ShowInfo("Queries directory: " + queriesDir)
+	s.ui.ShowInfo("Schema directory: " + schemaDir)
 
 	return nil
 }
 
-// ValidateConfiguration validates the complete output configuration
+// ValidateConfiguration validates the complete output configuration.
 func (s *OutputStep) ValidateConfiguration(data *generated.TemplateData) error {
 	// Check for path conflicts
 	if data.Output.BaseDir == data.Output.QueriesDir {
-		return fmt.Errorf("base output directory cannot be the same as queries directory")
+		return errors.New("base output directory cannot be the same as queries directory")
 	}
 
 	if data.Output.BaseDir == data.Output.SchemaDir {
-		return fmt.Errorf("base output directory cannot be the same as schema directory")
+		return errors.New("base output directory cannot be the same as schema directory")
 	}
 
 	if data.Output.QueriesDir == data.Output.SchemaDir {
-		return fmt.Errorf("queries directory cannot be the same as schema directory")
+		return errors.New("queries directory cannot be the same as schema directory")
 	}
 
 	// Check for reasonable directory structure
 	if data.Output.BaseDir == "" {
-		return fmt.Errorf("base output directory is required")
+		return errors.New("base output directory is required")
 	}
 
 	if data.Output.QueriesDir == "" {
-		return fmt.Errorf("queries directory is required")
+		return errors.New("queries directory is required")
 	}
 
 	if data.Output.SchemaDir == "" {
-		return fmt.Errorf("schema directory is required")
+		return errors.New("schema directory is required")
 	}
 
 	return nil

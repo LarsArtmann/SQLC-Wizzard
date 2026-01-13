@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// EnumGenerationMode validation test suite
+// EnumGenerationMode validation test suite.
 type EnumGenerationModeTestSuite struct{}
 
 func (EnumGenerationModeTestSuite) GetValidValues() []domain.EnumGenerationMode {

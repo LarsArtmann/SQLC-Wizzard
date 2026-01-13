@@ -1,9 +1,11 @@
 package errors
 
-// Is checks if an error matches a specific error type
+// Is checks if an error matches a specific error type.
 func Is(err, target error) bool {
-	if appErr, ok := err.(*Error); ok {
-		if targetErr, ok := target.(*Error); ok {
+	appErr := &Error{}
+	if errors.As(err, &appErr) {
+		targetErr := &Error{}
+		if errors.As(target, &targetErr) {
 			return appErr.Code == targetErr.Code
 		}
 	}

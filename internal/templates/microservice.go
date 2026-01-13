@@ -7,25 +7,25 @@ import (
 	"github.com/samber/lo"
 )
 
-// MicroserviceTemplate generates sqlc config for microservice projects
+// MicroserviceTemplate generates sqlc config for microservice projects.
 type MicroserviceTemplate struct{}
 
-// NewMicroserviceTemplate creates a new microservice template
+// NewMicroserviceTemplate creates a new microservice template.
 func NewMicroserviceTemplate() *MicroserviceTemplate {
 	return &MicroserviceTemplate{}
 }
 
-// Name returns the template name
+// Name returns the template name.
 func (t *MicroserviceTemplate) Name() string {
 	return "microservice"
 }
 
-// Description returns a human-readable description
+// Description returns a human-readable description.
 func (t *MicroserviceTemplate) Description() string {
 	return "Single database, container-optimized configuration for API services and microservices"
 }
 
-// Generate creates a SqlcConfig from template data
+// Generate creates a SqlcConfig from template data.
 func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	// Set defaults
 	packageConfig := data.Package
@@ -101,7 +101,7 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 	return cfg, nil
 }
 
-// DefaultData returns default TemplateData for microservice template
+// DefaultData returns default TemplateData for microservice template.
 func (t *MicroserviceTemplate) DefaultData() TemplateData {
 	return generated.TemplateData{
 		ProjectName: "",
@@ -137,7 +137,7 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 	}
 }
 
-// RequiredFeatures returns which features this template requires
+// RequiredFeatures returns which features this template requires.
 func (t *MicroserviceTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "prepared_queries", "json_tags"}
 }
@@ -157,7 +157,7 @@ func (t *MicroserviceTemplate) buildGoGenConfig(data generated.TemplateData, sql
 	return cfg
 }
 
-// getSQLPackage returns the appropriate SQL package for the database
+// getSQLPackage returns the appropriate SQL package for the database.
 func (t *MicroserviceTemplate) getSQLPackage(db DatabaseType) string {
 	switch db {
 	case DatabaseTypePostgreSQL:
@@ -171,7 +171,7 @@ func (t *MicroserviceTemplate) getSQLPackage(db DatabaseType) string {
 	}
 }
 
-// getBuildTags returns appropriate build tags
+// getBuildTags returns appropriate build tags.
 func (t *MicroserviceTemplate) getBuildTags(data TemplateData) string {
 	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
@@ -185,7 +185,7 @@ func (t *MicroserviceTemplate) getBuildTags(data TemplateData) string {
 	}
 }
 
-// getTypeOverrides returns database-specific type overrides
+// getTypeOverrides returns database-specific type overrides.
 func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Override {
 	var overrides []config.Override
 
@@ -226,7 +226,7 @@ func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Over
 	return overrides
 }
 
-// getRenameRules returns common rename rules for better Go naming
+// getRenameRules returns common rename rules for better Go naming.
 func (t *MicroserviceTemplate) getRenameRules() map[string]string {
 	return map[string]string{
 		"id":   "ID",

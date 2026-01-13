@@ -17,7 +17,7 @@ func TestGenerators(t *testing.T) {
 	RunSpecs(t, "Generators Suite")
 }
 
-// Helper function to create template data for testing
+// Helper function to create template data for testing.
 func createTemplateData(engine generated.DatabaseType, outputDir string) generated.TemplateData {
 	return generated.TemplateData{
 		Database: generated.DatabaseConfig{
@@ -34,7 +34,7 @@ func createTemplateData(engine generated.DatabaseType, outputDir string) generat
 	}
 }
 
-// Helper function to create and setup generator
+// Helper function to create and setup generator.
 func setupGenerator(tempDir string) (*generators.Generator, func()) {
 	gen := generators.NewGenerator(tempDir)
 	cleanup := func() {
@@ -43,7 +43,7 @@ func setupGenerator(tempDir string) (*generators.Generator, func()) {
 	return gen, cleanup
 }
 
-// Helper function to verify schema file content
+// Helper function to verify schema file content.
 func verifySchemaContent(content, engine string) {
 	switch engine {
 	case "postgresql":
@@ -68,7 +68,7 @@ func verifySchemaContent(content, engine string) {
 	}
 }
 
-// Helper function to verify query content
+// Helper function to verify query content.
 func verifyQueryContent(content string) {
 	Expect(content).To(ContainSubstring("SELECT"))
 	Expect(content).To(ContainSubstring("INSERT"))

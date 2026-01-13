@@ -10,13 +10,13 @@ import (
 )
 
 // DirectoryCreator handles directory structure creation
-// Implements FileSystemCreator interface with clean separation of concerns
+// Implements FileSystemCreator interface with clean separation of concerns.
 type DirectoryCreator struct {
 	fs  adapters.FileSystemAdapter
 	cli adapters.CLIAdapter
 }
 
-// NewDirectoryCreator creates a new directory creator
+// NewDirectoryCreator creates a new directory creator.
 func NewDirectoryCreator(fs adapters.FileSystemAdapter, cli adapters.CLIAdapter) *DirectoryCreator {
 	return &DirectoryCreator{
 		fs:  fs,
@@ -25,7 +25,7 @@ func NewDirectoryCreator(fs adapters.FileSystemAdapter, cli adapters.CLIAdapter)
 }
 
 // Create creates directory structure for the project
-// Implements Creator[CreatorConfig] interface
+// Implements Creator[CreatorConfig] interface.
 func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) error {
 	dc.cli.Println("📁 Creating directory structure...")
 
@@ -36,34 +36,34 @@ func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) er
 		if err := dc.fs.MkdirAll(ctx, fullPath, 0o755); err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", dir, err)
 		}
-		dc.cli.Println(fmt.Sprintf("Created directory: %s", fullPath))
+		dc.cli.Println("Created directory: " + fullPath)
 	}
 
 	return nil
 }
 
-// CanHandle returns true if this creator can handle the config
+// CanHandle returns true if this creator can handle the config.
 func (dc *DirectoryCreator) CanHandle(config CreatorConfig) bool {
 	return config.OutputPath != "" && config.ProjectName != ""
 }
 
-// Dependencies returns any creators that must run first
+// Dependencies returns any creators that must run first.
 func (dc *DirectoryCreator) Dependencies() []string {
 	return []string{} // No dependencies - runs first
 }
 
-// FileSystem returns the file system adapter
+// FileSystem returns the file system adapter.
 func (dc *DirectoryCreator) FileSystem() adapters.FileSystemAdapter {
 	return dc.fs
 }
 
-// SetFileSystem sets the file system adapter (for testing)
+// SetFileSystem sets the file system adapter (for testing).
 func (dc *DirectoryCreator) SetFileSystem(fs adapters.FileSystemAdapter) {
 	dc.fs = fs
 }
 
 // getProjectDirectories returns directory list based on project type
-// Uses switch to ensure all cases are handled
+// Uses switch to ensure all cases are handled.
 func (dc *DirectoryCreator) getProjectDirectories(config CreatorConfig) []string {
 	// Base directories required for all project types
 	baseDirs := []string{
@@ -85,7 +85,7 @@ func (dc *DirectoryCreator) getProjectDirectories(config CreatorConfig) []string
 }
 
 // getProjectTypeDirectories returns directories specific to project type
-// Ensures all project types have proper directory structure
+// Ensures all project types have proper directory structure.
 func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.ProjectType) []string {
 	switch projectType {
 	case generated.ProjectTypeMicroservice:
@@ -160,14 +160,14 @@ func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.Proj
 	}
 }
 
-// Validate ensures config is valid for directory creation
+// Validate ensures config is valid for directory creation.
 func (dc *DirectoryCreator) Validate(config CreatorConfig) error {
 	if config.ProjectName == "" {
-		return fmt.Errorf("project name cannot be empty")
+		return errors.New("project name cannot be empty")
 	}
 
 	if config.OutputPath == "" {
-		return fmt.Errorf("output path cannot be empty")
+		return errors.New("output path cannot be empty")
 	}
 
 	if !config.ProjectType.IsValid() {

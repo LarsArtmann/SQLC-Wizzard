@@ -7,7 +7,7 @@ import (
 )
 
 // MigrationAdapter defines the interface for database migration operations
-// This follows the Adapter pattern to external dependencies
+// This follows the Adapter pattern to external dependencies.
 type MigrationAdapter interface {
 	// Migrate runs database migrations from a source
 	Migrate(ctx context.Context, source, databaseURL string) error

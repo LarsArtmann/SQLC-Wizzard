@@ -16,7 +16,7 @@ type (
 	SafetyRules  = generated.SafetyRules
 )
 
-// Helper functions for validation
+// Helper functions for validation.
 func IsValidProjectType(projectType string) bool {
 	return generated.ProjectType(projectType).IsValid()
 }
@@ -25,7 +25,7 @@ func IsValidDatabaseType(database string) bool {
 	return generated.DatabaseType(database).IsValid()
 }
 
-// Template interface defines behavior for all template implementations
+// Template interface defines behavior for all template implementations.
 type Template interface {
 	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
 	DefaultData() generated.TemplateData
@@ -51,7 +51,7 @@ func NewDatabaseType(database string) (DatabaseType, error) {
 	return dt, nil
 }
 
-// MustNew constructors - PANIC on invalid input (for constants)
+// MustNew constructors - PANIC on invalid input (for constants).
 func MustNewProjectType(projectType string) ProjectType {
 	pt, err := NewProjectType(projectType)
 	if err != nil {

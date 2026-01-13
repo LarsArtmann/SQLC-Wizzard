@@ -7,7 +7,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 )
 
-// CreatorConfig represents common configuration for all creators
+// CreatorConfig represents common configuration for all creators.
 type CreatorConfig struct {
 	ProjectName  string
 	ProjectType  generated.ProjectType
@@ -18,7 +18,7 @@ type CreatorConfig struct {
 }
 
 // Creator defines common interface for all project creators
-// Uses generics for type-safe configuration handling
+// Uses generics for type-safe configuration handling.
 type Creator[T any] interface {
 	// Create executes the creation operation with type-safe config
 	Create(ctx context.Context, config T) error
@@ -30,7 +30,7 @@ type Creator[T any] interface {
 	Dependencies() []string
 }
 
-// Result represents the result of a creation operation
+// Result represents the result of a creation operation.
 type Result struct {
 	Success bool
 	Message string
@@ -38,12 +38,12 @@ type Result struct {
 	Errors  []error
 }
 
-// IsSuccess returns true if the operation was successful
+// IsSuccess returns true if the operation was successful.
 func (r *Result) IsSuccess() bool {
 	return r.Success && len(r.Errors) == 0
 }
 
-// AddError adds an error to the result
+// AddError adds an error to the result.
 func (r *Result) AddError(err error) {
 	if err != nil {
 		r.Errors = append(r.Errors, err)
@@ -51,12 +51,12 @@ func (r *Result) AddError(err error) {
 	}
 }
 
-// AddFile adds a created file to the result
+// AddFile adds a created file to the result.
 func (r *Result) AddFile(path string) {
 	r.Files = append(r.Files, path)
 }
 
-// FileSystemCreator defines interface for creators that work with file system
+// FileSystemCreator defines interface for creators that work with file system.
 type FileSystemCreator interface {
 	Creator[CreatorConfig]
 
@@ -67,7 +67,7 @@ type FileSystemCreator interface {
 	SetFileSystem(fs adapters.FileSystemAdapter)
 }
 
-// TemplateCreator defines interface for creators that generate templates
+// TemplateCreator defines interface for creators that generate templates.
 type TemplateCreator interface {
 	FileSystemCreator
 
@@ -78,7 +78,7 @@ type TemplateCreator interface {
 	SupportedProjectTypes() []generated.ProjectType
 }
 
-// ScaffoldCreator defines interface for high-level scaffolding operations
+// ScaffoldCreator defines interface for high-level scaffolding operations.
 type ScaffoldCreator interface {
 	Creator[CreatorConfig]
 

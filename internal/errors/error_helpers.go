@@ -7,7 +7,7 @@ import (
 // Wrap wraps an existing error with additional context
 // TODO: Add validation for nil error handling
 // TODO: Add automatic component detection
-// TODO: Add context preservation
+// TODO: Add context preservation.
 func Wrap(original error, code ErrorCode, component string) *Error {
 	if original == nil {
 		return NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
@@ -20,7 +20,7 @@ func Wrap(original error, code ErrorCode, component string) *Error {
 
 // WrapWithRequestID wraps an error with request ID tracking
 // TODO: Add request ID validation
-// TODO: Add automatic request ID extraction from context
+// TODO: Add automatic request ID extraction from context.
 func WrapWithRequestID(original error, code ErrorCode, requestID, component string) *Error {
 	err := Wrap(original, code, component)
 	return err.WithRequestID(requestID)
@@ -28,7 +28,7 @@ func WrapWithRequestID(original error, code ErrorCode, requestID, component stri
 
 // WrapWithUserID wraps an error with user ID tracking
 // TODO: Add user ID validation
-// TODO: Add automatic user ID extraction from context
+// TODO: Add automatic user ID extraction from context.
 func WrapWithUserID(original error, code ErrorCode, userID, component string) *Error {
 	err := Wrap(original, code, component)
 	return err.WithUserID(userID)
@@ -36,7 +36,7 @@ func WrapWithUserID(original error, code ErrorCode, userID, component string) *E
 
 // Combine combines multiple errors into an ErrorList
 // TODO: Add nil error filtering
-// TODO: Add duplicate error detection
+// TODO: Add duplicate error detection.
 func Combine(errors ...*Error) *ErrorList {
 	errorList := NewErrorList()
 	for _, err := range errors {
@@ -48,14 +48,15 @@ func Combine(errors ...*Error) *ErrorList {
 
 // CombineErrors combines error interface types into ErrorList
 // TODO: Add better handling of wrapped errors
-// TODO: Add error type detection and categorization
+// TODO: Add error type detection and categorization.
 func CombineErrors(errs ...error) *ErrorList {
 	errorList := NewErrorList()
 	for _, err := range errs {
 		if err == nil {
 			continue // Skip nil errors
 		}
-		if appErr, ok := err.(*Error); ok {
+		appErr := &Error{}
+		if errors.As(err, &appErr) {
 			errorList.Add(appErr)
 		} else {
 			// Wrap non-application errors
@@ -73,7 +74,7 @@ func CombineErrors(errs ...error) *ErrorList {
 
 // NewInternal creates an internal server error with context
 // TODO: Add automatic component detection from call stack
-// TODO: Add operation validation
+// TODO: Add operation validation.
 func NewInternal(component, operation string, cause error) *Error {
 	message := fmt.Sprintf("Internal error in %s during %s", component, operation)
 	err := NewError(ErrorCodeInternalServer, message)
@@ -85,7 +86,7 @@ func NewInternal(component, operation string, cause error) *Error {
 
 // NewNotFound creates a not found error with context
 // TODO: Add resource type validation
-// TODO: Add ID format validation
+// TODO: Add ID format validation.
 func NewNotFound(resource, id string) *Error {
 	// TODO: Add validation for resource and ID
 	message := fmt.Sprintf("%s with ID '%s' not found", resource, id)
@@ -94,7 +95,7 @@ func NewNotFound(resource, id string) *Error {
 
 // NewPermissionDenied creates a permission denied error
 // TODO: Add operation validation
-// TODO: Add resource validation
+// TODO: Add resource validation.
 func NewPermissionDenied(resource, operation string) *Error {
 	// TODO: Add validation for inputs
 	message := fmt.Sprintf("Permission denied for %s on resource: %s", operation, resource)
@@ -103,7 +104,7 @@ func NewPermissionDenied(resource, operation string) *Error {
 
 // NewTimeout creates a timeout error
 // TODO: Add timeout value validation
-// TODO: Add operation validation
+// TODO: Add operation validation.
 func NewTimeout(operation string, timeoutMs int64) *Error {
 	// TODO: Add validation for timeout value
 	message := fmt.Sprintf("Operation '%s' timed out after %dms", operation, timeoutMs)
@@ -112,19 +113,19 @@ func NewTimeout(operation string, timeoutMs int64) *Error {
 
 // FileNotFoundError creates a file not found error
 // TODO: Add path validation
-// TODO: Add path normalization
+// TODO: Add path normalization.
 func FileNotFoundError(path string) *Error {
 	// TODO: Add path validation
-	message := fmt.Sprintf("File not found: %s", path)
+	message := "File not found: " + path
 	return NewError(ErrorCodeFileNotFound, message).WithComponent("filesystem")
 }
 
 // FileReadError creates a file read error
 // TODO: Add path validation
-// TODO: Add error wrapping validation
+// TODO: Add error wrapping validation.
 func FileReadError(path string, err error) *Error {
 	// TODO: Add path validation
-	message := fmt.Sprintf("Failed to read file: %s", path)
+	message := "Failed to read file: " + path
 	appErr := NewError(ErrorCodeFileReadError, message).WithComponent("filesystem")
 	if err != nil {
 		appErr = appErr.WithCause(err)
@@ -134,10 +135,10 @@ func FileReadError(path string, err error) *Error {
 
 // ConfigParseError creates a config parse error
 // TODO: Add path validation
-// TODO: Add config type detection
+// TODO: Add config type detection.
 func ConfigParseError(path string, err error) *Error {
 	// TODO: Add path validation
-	message := fmt.Sprintf("Failed to parse config file: %s", path)
+	message := "Failed to parse config file: " + path
 	appErr := NewError(ErrorCodeConfigParseFailed, message).WithComponent("config")
 	if err != nil {
 		appErr = appErr.WithDescription(err.Error())
@@ -147,16 +148,16 @@ func ConfigParseError(path string, err error) *Error {
 
 // TemplateNotFoundError creates a template not found error
 // TODO: Add template name validation
-// TODO: Add template type checking
+// TODO: Add template type checking.
 func TemplateNotFoundError(template string) *Error {
 	// TODO: Add template name validation
-	message := fmt.Sprintf("Template not found: %s", template)
+	message := "Template not found: " + template
 	return NewError(ErrorCodeTemplateNotFound, message).WithComponent("templates")
 }
 
 // ValidationError creates a validation error
 // TODO: Add field name validation
-// TODO: Add validation rule checking
+// TODO: Add validation rule checking.
 func ValidationError(field, message string) *Error {
 	// TODO: Add field validation
 	errMsg := fmt.Sprintf("Validation failed for field '%s': %s", field, message)
@@ -165,7 +166,7 @@ func ValidationError(field, message string) *Error {
 
 // Wrapf wraps an error with formatted message and base error
 // TODO: Add format string validation
-// TODO: Add protection against format injection
+// TODO: Add protection against format injection.
 func Wrapf(err error, baseErr *Error, format string, args ...any) *Error {
 	if err == nil {
 		return NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
@@ -188,7 +189,7 @@ func Wrapf(err error, baseErr *Error, format string, args ...any) *Error {
 
 // Base error instances for common cases
 // TODO: Consider making these immutable
-// TODO: Add context-specific base errors
+// TODO: Add context-specific base errors.
 var (
 	ErrConfigParseFailed = NewError(ErrorCodeConfigParseFailed, "Config parse failed")
 	ErrInvalidValue      = NewError(ErrorCodeInvalidValue, "Invalid value")

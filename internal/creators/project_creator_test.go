@@ -18,7 +18,7 @@ func TestCreators(t *testing.T) {
 	RunSpecs(t, "Creators Suite")
 }
 
-// createBaseConfig generates a base project configuration with standard defaults
+// createBaseConfig generates a base project configuration with standard defaults.
 func createBaseConfig(projectName string) *creators.CreateConfig {
 	return &creators.CreateConfig{
 		ProjectName: projectName,
@@ -43,7 +43,7 @@ func createBaseConfig(projectName string) *creators.CreateConfig {
 	}
 }
 
-// Mock adapters for testing
+// Mock adapters for testing.
 type MockFileSystemAdapter struct {
 	mkdirAllCalls   []MkdirAllCall
 	writeFileCalls  []WriteFileCall
@@ -356,7 +356,7 @@ var _ = Describe("ProjectCreator", func() {
 
 			// All directories should be created before files
 			// (This is implicit in the implementation, but good to verify)
-			Expect(len(mockFS.mkdirAllCalls)).To(BeNumerically(">", 0))
+			Expect(mockFS.mkdirAllCalls).ToNot(BeEmpty())
 		})
 	})
 

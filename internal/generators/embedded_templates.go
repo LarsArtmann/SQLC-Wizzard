@@ -2,7 +2,7 @@ package generators
 
 import "github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 
-// getQueryTemplate returns the embedded query template for a database type
+// getQueryTemplate returns the embedded query template for a database type.
 func getQueryTemplate(db templates.DatabaseType) string {
 	switch db {
 	case templates.DatabaseTypePostgreSQL:
@@ -16,7 +16,7 @@ func getQueryTemplate(db templates.DatabaseType) string {
 	}
 }
 
-// getSchemaTemplate returns the embedded schema template for a database type
+// getSchemaTemplate returns the embedded schema template for a database type.
 func getSchemaTemplate(db templates.DatabaseType) string {
 	switch db {
 	case templates.DatabaseTypePostgreSQL:

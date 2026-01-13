@@ -9,7 +9,7 @@ import (
 // TODO: Extract to internal/testing/mocks directory
 // TODO: Add validation for step execution order
 // TODO: Add state transition validation
-// TODO: Add execution duration tracking
+// TODO: Add execution duration tracking.
 type MockStep struct {
 	ExecuteCalls       int
 	ShouldFail         bool
@@ -24,7 +24,7 @@ type MockStep struct {
 
 // NewMockStep creates a fresh mock step instance
 // TODO: Add configurable default behaviors
-// TODO: Add validation constraints
+// TODO: Add validation constraints.
 func NewMockStep() *MockStep {
 	return &MockStep{}
 }
@@ -32,7 +32,7 @@ func NewMockStep() *MockStep {
 // Execute tracks step execution and applies configured behavior
 // TODO: Add input validation
 // TODO: Add execution state tracking
-// TODO: Add timing information
+// TODO: Add timing information.
 func (m *MockStep) Execute(data *generated.TemplateData) error {
 	m.ExecuteCalls++
 	m.LastCallData = data
@@ -65,7 +65,7 @@ func (m *MockStep) Execute(data *generated.TemplateData) error {
 
 // ValidateConfiguration tracks validation calls and applies configured behavior
 // TODO: Add validation rule testing
-// TODO: Add validation coverage tracking
+// TODO: Add validation coverage tracking.
 func (m *MockStep) ValidateConfiguration(data *generated.TemplateData) error {
 	m.ValidateCalls++
 	if m.ShouldValidateFail {
@@ -77,7 +77,7 @@ func (m *MockStep) ValidateConfiguration(data *generated.TemplateData) error {
 // MockTemplate is a mock implementation of wizard.TemplateInterface for testing
 // TODO: Extract to internal/testing/mocks directory
 // TODO: Add template feature validation
-// TODO: Add generation result verification
+// TODO: Add generation result verification.
 type MockTemplate struct {
 	GenerateCalls int
 	ShouldFail    bool
@@ -87,14 +87,14 @@ type MockTemplate struct {
 
 // NewMockTemplate creates a fresh mock template instance
 // TODO: Add configurable template types
-// TODO: Add feature set configuration
+// TODO: Add feature set configuration.
 func NewMockTemplate() *MockTemplate {
 	return &MockTemplate{}
 }
 
 // Generate tracks template generation and returns mock configuration
 // TODO: Add result validation
-// TODO: Add generation optimization tracking
+// TODO: Add generation optimization tracking.
 func (m *MockTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	m.GenerateCalls++
 	m.LastCallData = data
@@ -126,7 +126,7 @@ func (m *MockTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig
 
 // DefaultData returns default template data for testing
 // TODO: Make this configurable
-// TODO: Add multiple default data sets for different scenarios
+// TODO: Add multiple default data sets for different scenarios.
 func (m *MockTemplate) DefaultData() generated.TemplateData {
 	return generated.TemplateData{
 		ProjectType: generated.ProjectTypeMicroservice,
@@ -135,19 +135,19 @@ func (m *MockTemplate) DefaultData() generated.TemplateData {
 
 // RequiredFeatures returns required features for the template
 // TODO: Make this configurable
-// TODO: Add feature validation
+// TODO: Add feature validation.
 func (m *MockTemplate) RequiredFeatures() []string {
 	return []string{"basic"}
 }
 
 // Name returns the template name
-// TODO: Make this configurable
+// TODO: Make this configurable.
 func (m *MockTemplate) Name() string {
 	return "Mock Template"
 }
 
 // Description returns the template description
-// TODO: Make this configurable
+// TODO: Make this configurable.
 func (m *MockTemplate) Description() string {
 	return "A mock template for testing"
 }

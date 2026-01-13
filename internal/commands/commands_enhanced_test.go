@@ -51,7 +51,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			cmd.SetArgs([]string{"--help"})
 
 			err := cmd.Execute()
-			Expect(err).To(BeNil())
+			Expect(err).ToNot(HaveOccurred())
 
 			help := buf.String()
 			Expect(strings.ToLower(help)).To(ContainSubstring("usage"))
@@ -420,7 +420,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 		It("should handle concurrent command execution", func() {
 			// Create multiple config files
 			configFiles := make([]string, 5)
-			for i := 0; i < 5; i++ {
+			for i := range 5 {
 				configFiles[i] = filepath.Join(tempDir, fmt.Sprintf("config%d.yaml", i))
 				cfg := &config.SqlcConfig{
 					Version: "2",

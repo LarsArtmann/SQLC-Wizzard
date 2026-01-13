@@ -10,7 +10,7 @@ import (
 )
 
 // ShowCompletion displays final configuration summary with typed schema
-// Replaces 'any' type with proper typed schema parameter
+// Replaces 'any' type with proper typed schema parameter.
 func ShowCompletion(cfg *schema.Schema, data generated.TemplateData) {
 	ui := NewUIHelper()
 
@@ -26,18 +26,20 @@ func ShowCompletion(cfg *schema.Schema, data generated.TemplateData) {
 	ui.ShowInfo(completion)
 }
 
-// ShowError displays schema validation errors with proper typing
+// ShowError displays schema validation errors with proper typing.
 func ShowError(err error) {
 	ui := NewUIHelper()
 
 	// Check if it's a schema error
-	if schemaErr, ok := err.(*schema.SchemaError); ok {
+	schemaErr := &schema.SchemaError{}
+	if errors.As(err, &schemaErr) {
 		ui.showErrorWithSchemaDetails(schemaErr)
 		return
 	}
 
 	// Check if it's our typed error
-	if appErr, ok := err.(*errors.Error); ok {
+	appErr := &errors.Error{}
+	if errors.As(err, &appErr) {
 		ui.showErrorWithTypedDetails(appErr)
 		return
 	}
@@ -47,7 +49,7 @@ func ShowError(err error) {
 	ui.ShowInfo(err.Error())
 }
 
-// ShowProgress displays progress for schema operations
+// ShowProgress displays progress for schema operations.
 func ShowProgress(current, total int, operation string) {
 	ui := NewUIHelper()
 
@@ -55,7 +57,7 @@ func ShowProgress(current, total int, operation string) {
 	ui.ShowInfo(fmt.Sprintf("Progress: %d/%d completed", current, total))
 }
 
-// ValidateConfiguration validates configuration using schema
+// ValidateConfiguration validates configuration using schema.
 func ValidateConfiguration(cfg *schema.Schema) error {
 	if cfg == nil {
 		return errors.NewError(errors.ErrorCodeInternalServer, "Schema cannot be null")
@@ -74,7 +76,7 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 	return nil
 }
 
-// GenerateConfiguration generates final configuration from schema and template data
+// GenerateConfiguration generates final configuration from schema and template data.
 func GenerateConfiguration(schema *schema.Schema, data generated.TemplateData) (string, error) {
 	// Validate inputs
 	if err := ValidateConfiguration(schema); err != nil {
@@ -90,7 +92,7 @@ func GenerateConfiguration(schema *schema.Schema, data generated.TemplateData) (
 	return config, nil
 }
 
-// generateConfigFromSchema generates sqlc configuration from schema and template data
+// generateConfigFromSchema generates sqlc configuration from schema and template data.
 func generateConfigFromSchema(s *schema.Schema, data generated.TemplateData) (string, error) {
 	// Create a basic SQLC config from schema
 	sqlcConfig := &config.SqlcConfig{

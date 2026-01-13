@@ -11,7 +11,7 @@ import (
 // Test cases for TypeSafeSafetyRules and related types
 // Run via TestDomain in domain_test.go
 
-// safetyRulesExpectations defines the expected values for safety rules testing
+// safetyRulesExpectations defines the expected values for safety rules testing.
 type safetyRulesExpectations struct {
 	description            string
 	noSelectStar           bool
@@ -22,7 +22,7 @@ type safetyRulesExpectations struct {
 	destructiveOps         domain.DestructiveOperationPolicy
 }
 
-// assertSafetyRules validates safety rules against expected values
+// assertSafetyRules validates safety rules against expected values.
 func assertSafetyRules(rules any, expectations safetyRulesExpectations) {
 	switch r := rules.(type) {
 	case domain.TypeSafeSafetyRules:
@@ -95,7 +95,7 @@ var _ = Describe("QuerySafetyRules", func() {
 	})
 })
 
-// DestructiveOperationPolicy validation test suite
+// DestructiveOperationPolicy validation test suite.
 type DestructiveOperationPolicyTestSuite struct{}
 
 func (DestructiveOperationPolicyTestSuite) GetValidValues() []domain.DestructiveOperationPolicy {

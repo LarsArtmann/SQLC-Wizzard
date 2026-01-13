@@ -63,8 +63,8 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 			// Verify UI interactions
 			Expect(mockUI.WelcomeCalls).To(Equal(1))
-			Expect(len(mockUI.StepHeaders)).To(Equal(5))
-			Expect(len(mockUI.StepCompletions)).To(Equal(5))
+			Expect(mockUI.StepHeaders).To(HaveLen(5))
+			Expect(mockUI.StepCompletions).To(HaveLen(5))
 		})
 
 		It("should generate template configuration", func() {
@@ -132,12 +132,12 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 // NewTestError creates a test error for failure scenarios
 // TODO: Move to test utilities
-// TODO: Add error type validation
+// TODO: Add error type validation.
 func NewTestError(message string) error {
 	return &testError{message: message}
 }
 
-// testError is a simple error type for testing
+// testError is a simple error type for testing.
 type testError struct {
 	message string
 }

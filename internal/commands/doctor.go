@@ -12,7 +12,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// DoctorCommand creates a new doctor command
+// DoctorCommand creates a new doctor command.
 func NewDoctorCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "doctor",
@@ -23,19 +23,19 @@ environment to identify potential issues before they cause problems.`,
 	}
 }
 
-// DoctorStatus represents the status of a diagnostic check
+// DoctorStatus represents the status of a diagnostic check.
 type DoctorStatus string
 
 const (
-	// DoctorStatusPass indicates the check passed successfully
+	// DoctorStatusPass indicates the check passed successfully.
 	DoctorStatusPass DoctorStatus = "PASS"
-	// DoctorStatusFail indicates the check failed critically
+	// DoctorStatusFail indicates the check failed critically.
 	DoctorStatusFail DoctorStatus = "FAIL"
-	// DoctorStatusWarn indicates the check found a non-critical issue
+	// DoctorStatusWarn indicates the check found a non-critical issue.
 	DoctorStatusWarn DoctorStatus = "WARN"
 )
 
-// IsValid checks if the doctor status is valid
+// IsValid checks if the doctor status is valid.
 func (d DoctorStatus) IsValid() bool {
 	switch d {
 	case DoctorStatusPass, DoctorStatusFail, DoctorStatusWarn:
@@ -45,12 +45,12 @@ func (d DoctorStatus) IsValid() bool {
 	}
 }
 
-// String returns the string representation of the status
+// String returns the string representation of the status.
 func (d DoctorStatus) String() string {
 	return string(d)
 }
 
-// Icon returns an appropriate icon for the status
+// Icon returns an appropriate icon for the status.
 func (d DoctorStatus) Icon() string {
 	switch d {
 	case DoctorStatusPass:
@@ -64,14 +64,14 @@ func (d DoctorStatus) Icon() string {
 	}
 }
 
-// DoctorCheck represents a single diagnostic check
+// DoctorCheck represents a single diagnostic check.
 type DoctorCheck struct {
 	Name        string
 	Description string
 	Checker     func(context.Context) *DoctorResult
 }
 
-// DoctorResult represents the result of a diagnostic check
+// DoctorResult represents the result of a diagnostic check.
 type DoctorResult struct {
 	Status   DoctorStatus // Type-safe status instead of magic strings
 	Message  string
@@ -79,7 +79,7 @@ type DoctorResult struct {
 	Error    error
 }
 
-// runDoctor executes the diagnostic checks
+// runDoctor executes the diagnostic checks.
 func runDoctor(cmd *cobra.Command, args []string) error {
 	ctx := context.Background()
 
@@ -159,7 +159,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 	}
 }
 
-// checkGoVersion checks Go version compatibility
+// checkGoVersion checks Go version compatibility.
 func checkGoVersion(ctx context.Context) *DoctorResult {
 	goVersion := runtime.Version()
 
@@ -179,7 +179,7 @@ func checkGoVersion(ctx context.Context) *DoctorResult {
 	}
 }
 
-// checkSQLCInstallation checks sqlc installation
+// checkSQLCInstallation checks sqlc installation.
 func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	sqlcAdapter := adapters.NewRealSQLCAdapter()
 	err := sqlcAdapter.CheckInstallation(ctx)
@@ -209,7 +209,7 @@ func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	}
 }
 
-// checkDatabaseDrivers checks database driver availability
+// checkDatabaseDrivers checks database driver availability.
 func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 	dbAdapter := adapters.NewRealDatabaseAdapter()
 
@@ -235,7 +235,7 @@ func checkDatabaseDrivers(ctx context.Context) *DoctorResult {
 	}
 }
 
-// checkFileSystemPermissions checks filesystem permissions
+// checkFileSystemPermissions checks filesystem permissions.
 func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	fsAdapter := adapters.NewRealFileSystemAdapter()
 
@@ -273,7 +273,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	}
 }
 
-// checkMemoryAvailability checks available memory
+// checkMemoryAvailability checks available memory.
 func checkMemoryAvailability(ctx context.Context) *DoctorResult {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)

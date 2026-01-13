@@ -13,13 +13,13 @@ func TestUtils(t *testing.T) {
 	RunSpecs(t, "Utils Suite")
 }
 
-// Helper function to create test cases for string transformations
+// Helper function to create test cases for string transformations.
 type stringTestCase struct {
 	input    string
 	expected string
 }
 
-// Helper function to run multiple test cases
+// Helper function to run multiple test cases.
 func runStringTests(testFunc func(string) string, testCases []stringTestCase) {
 	for _, tc := range testCases {
 		result := testFunc(tc.input)
@@ -27,20 +27,20 @@ func runStringTests(testFunc func(string) string, testCases []stringTestCase) {
 	}
 }
 
-// Helper function to test edge cases
+// Helper function to test edge cases.
 func testEdgeCases(testFunc func(string) string, emptyExpected, singleExpected string) {
 	Expect(testFunc("")).To(Equal(emptyExpected))
 	Expect(testFunc("A")).To(Equal(singleExpected))
 }
 
-// Helper function for truncate test cases
+// Helper function for truncate test cases.
 type truncateTestCase struct {
 	input    string
 	length   int
 	expected string
 }
 
-// Helper function to run truncate test cases
+// Helper function to run truncate test cases.
 func runTruncateTests(testFunc func(string, int) string, testCases []truncateTestCase) {
 	for _, tc := range testCases {
 		result := testFunc(tc.input, tc.length)
@@ -49,7 +49,7 @@ func runTruncateTests(testFunc func(string, int) string, testCases []truncateTes
 	}
 }
 
-// caseConversionTestCase represents a test case for string case conversion functions
+// caseConversionTestCase represents a test case for string case conversion functions.
 type caseConversionTestCase struct {
 	testCases    []stringTestCase
 	edgeCaseFunc func(string) string
@@ -58,7 +58,7 @@ type caseConversionTestCase struct {
 	edgeTrailing string
 }
 
-// runCaseConversionTests runs comprehensive tests for case conversion functions
+// runCaseConversionTests runs comprehensive tests for case conversion functions.
 func runCaseConversionTests(testFunc func(string) string, description string, testCase caseConversionTestCase) {
 	It("should convert CamelCase to "+description, func() {
 		runStringTests(testFunc, testCase.testCases)

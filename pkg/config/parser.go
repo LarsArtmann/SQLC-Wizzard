@@ -7,7 +7,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// ParseFile reads and parses a sqlc.yaml file
+// ParseFile reads and parses a sqlc.yaml file.
 func ParseFile(path string) (*SqlcConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
@@ -25,7 +25,7 @@ func ParseFile(path string) (*SqlcConfig, error) {
 	return cfg, nil
 }
 
-// Parse parses YAML data into a SqlcConfig
+// Parse parses YAML data into a SqlcConfig.
 func Parse(data []byte) (*SqlcConfig, error) {
 	var cfg SqlcConfig
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
@@ -35,7 +35,7 @@ func Parse(data []byte) (*SqlcConfig, error) {
 	return &cfg, nil
 }
 
-// LoadOrDefault attempts to load a config file, returns default config if not found
+// LoadOrDefault attempts to load a config file, returns default config if not found.
 func LoadOrDefault(path string) (*SqlcConfig, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return DefaultConfig(), nil
@@ -44,7 +44,7 @@ func LoadOrDefault(path string) (*SqlcConfig, error) {
 	return ParseFile(path)
 }
 
-// DefaultConfig returns a basic default configuration
+// DefaultConfig returns a basic default configuration.
 func DefaultConfig() *SqlcConfig {
 	return &SqlcConfig{
 		Version: "2",

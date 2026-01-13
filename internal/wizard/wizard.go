@@ -9,7 +9,7 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-// WizardResult contains the output of running the wizard
+// WizardResult contains the output of running the wizard.
 type WizardResult struct {
 	Config          *config.SqlcConfig
 	TemplateData    generated.TemplateData
@@ -17,7 +17,7 @@ type WizardResult struct {
 	GenerateSchema  bool
 }
 
-// Wizard manages the interactive configuration flow
+// Wizard manages the interactive configuration flow.
 type Wizard struct {
 	result *WizardResult
 	theme  *huh.Theme
@@ -32,7 +32,7 @@ type Wizard struct {
 	outputStep      *OutputStep
 }
 
-// NewWizard creates a new wizard instance
+// NewWizard creates a new wizard instance.
 func NewWizard() *Wizard {
 	theme := huh.ThemeBase()
 	ui := NewUIHelper()
@@ -71,12 +71,12 @@ func NewWizard() *Wizard {
 	}
 }
 
-// GetResult returns the current wizard result
+// GetResult returns the current wizard result.
 func (w *Wizard) GetResult() *WizardResult {
 	return w.result
 }
 
-// Run executes the interactive wizard
+// Run executes the interactive wizard.
 func (w *Wizard) Run() (*WizardResult, error) {
 	// Display welcome banner
 	w.showWelcome()
@@ -137,7 +137,7 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	return w.result, nil
 }
 
-// Helper methods to get the appropriate step implementation
+// Helper methods to get the appropriate step implementation.
 func (w *Wizard) getProjectTypeStep() StepInterface {
 	if w.deps != nil && w.deps.ProjectType != nil {
 		return w.deps.ProjectType
@@ -173,7 +173,7 @@ func (w *Wizard) getOutputStep() StepInterface {
 	return w.outputStep
 }
 
-// Helper methods for UI operations
+// Helper methods for UI operations.
 func (w *Wizard) showWelcome() {
 	if w.deps != nil && w.deps.UI != nil {
 		w.deps.UI.ShowWelcome()
@@ -198,7 +198,7 @@ func (w *Wizard) showStepComplete(title, message string) {
 	w.ui.ShowStepComplete(title, message)
 }
 
-// generateConfig generates the final sqlc configuration
+// generateConfig generates the final sqlc configuration.
 func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 	// Validate output configuration
 	if outputStep := w.getOutputStep(); outputStep != nil {
@@ -237,7 +237,7 @@ func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 	return nil
 }
 
-// showSummary displays the final configuration summary
+// showSummary displays the final configuration summary.
 func (w *Wizard) showSummary(data *generated.TemplateData) {
 	var ui UIInterface
 	if w.deps != nil && w.deps.UI != nil {

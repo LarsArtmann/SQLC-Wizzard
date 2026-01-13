@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// ValidationTestSuite defines interface for types that need validation testing
+// ValidationTestSuite defines interface for types that need validation testing.
 type ValidationTestSuite[T interface {
 	IsValid() bool
 	String() string
@@ -15,7 +15,7 @@ type ValidationTestSuite[T interface {
 	GetTypeName() string
 }
 
-// TestValidationSuite runs generic validation tests for any type implementing ValidationTestSuite
+// TestValidationSuite runs generic validation tests for any type implementing ValidationTestSuite.
 func TestValidationSuite[T interface {
 	IsValid() bool
 	String() string
@@ -37,7 +37,7 @@ func TestValidationSuite[T interface {
 	})
 }
 
-// RunBooleanMethodTest runs generic tests for boolean methods
+// RunBooleanMethodTest runs generic tests for boolean methods.
 func RunBooleanMethodTest(context string, trueModes, falseModes []string, method func(string) bool, methodDisplay string) {
 	It("should return true for "+context, func() {
 		for _, mode := range trueModes {
@@ -52,14 +52,14 @@ func RunBooleanMethodTest(context string, trueModes, falseModes []string, method
 	})
 }
 
-// RunStringRepresentationTest runs generic tests for String() method of enums
+// RunStringRepresentationTest runs generic tests for String() method of enums.
 func RunStringRepresentationTest(enumTestCases []EnumTestCase) {
 	for _, testCase := range enumTestCases {
 		Expect(testCase.EnumValue.String()).To(Equal(testCase.ExpectedString))
 	}
 }
 
-// EnumTestCase represents a test case for enum string representation
+// EnumTestCase represents a test case for enum string representation.
 type EnumTestCase struct {
 	EnumValue      interface{ String() string }
 	ExpectedString string

@@ -22,7 +22,7 @@ var _ = Describe("Validator", func() {
 			result.AddError("field1", "error message")
 			result.AddError("field2", "another error")
 
-			Expect(len(result.Errors)).To(Equal(2))
+			Expect(result.Errors).To(HaveLen(2))
 			Expect(result.Errors[0].Field).To(Equal("field1"))
 			Expect(result.Errors[0].Message).To(Equal("error message"))
 			Expect(result.Errors[1].Field).To(Equal("field2"))
@@ -36,7 +36,7 @@ var _ = Describe("Validator", func() {
 			result.AddWarning("field1", "warning message")
 			result.AddWarning("field2", "another warning")
 
-			Expect(len(result.Warnings)).To(Equal(2))
+			Expect(result.Warnings).To(HaveLen(2))
 			Expect(result.Warnings[0].Field).To(Equal("field1"))
 			Expect(result.Warnings[0].Message).To(Equal("warning message"))
 			Expect(result.Warnings[1].Field).To(Equal("field2"))
@@ -51,8 +51,8 @@ var _ = Describe("Validator", func() {
 			result.AddWarning("field2", "warning message")
 			result.AddWarning("field3", "another warning")
 
-			Expect(len(result.Errors)).To(Equal(1))
-			Expect(len(result.Warnings)).To(Equal(2))
+			Expect(result.Errors).To(HaveLen(1))
+			Expect(result.Warnings).To(HaveLen(2))
 			Expect(result.IsValid()).To(BeFalse()) // Has errors
 		})
 	})
@@ -131,7 +131,7 @@ var _ = Describe("Validator", func() {
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			Expect(result.IsValid()).To(BeFalse())
-			Expect(len(result.Errors)).To(BeNumerically(">", 0))
+			Expect(result.Errors).ToNot(BeEmpty())
 
 			// Find version error
 			var versionError *ValidationError
@@ -141,7 +141,7 @@ var _ = Describe("Validator", func() {
 					break
 				}
 			}
-			Expect(versionError).NotTo(BeNil())
+			Expect(versionError).To(HaveOccurred())
 			Expect(versionError.Message).To(ContainSubstring("required"))
 		})
 
@@ -154,7 +154,7 @@ var _ = Describe("Validator", func() {
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
 			Expect(result.IsValid()).To(BeFalse())
-			Expect(len(result.Errors)).To(BeNumerically(">", 0))
+			Expect(result.Errors).ToNot(BeEmpty())
 		})
 
 		It("should detect invalid database engine", func() {
@@ -284,7 +284,7 @@ var _ = Describe("Validator", func() {
 			result := Validate(nil)
 			Expect(result).NotTo(BeNil())
 			Expect(result.IsValid()).To(BeFalse())
-			Expect(len(result.Errors)).To(BeNumerically(">", 0))
+			Expect(result.Errors).ToNot(BeEmpty())
 		})
 	})
 

@@ -17,15 +17,15 @@ import (
 )
 
 // RealMigrationAdapter implements MigrationAdapter interface using golang-migrate
-// Database drivers are imported on-demand to reduce build time
+// Database drivers are imported on-demand to reduce build time.
 type RealMigrationAdapter struct{}
 
-// NewRealMigrationAdapter creates a new real migration adapter
+// NewRealMigrationAdapter creates a new real migration adapter.
 func NewRealMigrationAdapter() *RealMigrationAdapter {
 	return &RealMigrationAdapter{}
 }
 
-// Migrate runs database migrations from a source
+// Migrate runs database migrations from a source.
 func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL string) error {
 	log.Info("Starting database migration", "source", source, "database", databaseURL)
 
@@ -61,7 +61,7 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 	return nil
 }
 
-// Rollback rolls back database migrations
+// Rollback rolls back database migrations.
 func (r *RealMigrationAdapter) Rollback(ctx context.Context, source, databaseURL string, steps int) error {
 	log.Info("Rolling back database migrations", "source", source, "database", databaseURL, "steps", steps)
 
@@ -80,11 +80,12 @@ func (r *RealMigrationAdapter) Rollback(ctx context.Context, source, databaseURL
 	}
 
 	version, _, err := m.Version()
-	if err == migrate.ErrNilVersion {
+	switch err {
+	case migrate.ErrNilVersion:
 		log.Info("All migrations rolled back")
-	} else if err == nil {
+	case nil:
 		log.Info("Rollback completed", "current_version", version)
-	} else {
+	default:
 		log.Error("Failed to get version after rollback", "error", err)
 		return fmt.Errorf("failed to get version after rollback: %w", err)
 	}
@@ -92,7 +93,7 @@ func (r *RealMigrationAdapter) Rollback(ctx context.Context, source, databaseURL
 	return nil
 }
 
-// Status checks migration status
+// Status checks migration status.
 func (r *RealMigrationAdapter) Status(ctx context.Context, source, databaseURL string) (*migration.MigrationStatus, error) {
 	log.Info("Checking migration status", "source", source, "database", databaseURL)
 
@@ -127,7 +128,7 @@ func (r *RealMigrationAdapter) Status(ctx context.Context, source, databaseURL s
 	return status, nil
 }
 
-// Validate validates migration files
+// Validate validates migration files.
 func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) error {
 	log.Info("Validating migration files", "source", source)
 
@@ -148,7 +149,7 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 	return nil
 }
 
-// CreateMigration creates a new migration file
+// CreateMigration creates a new migration file.
 func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name, directory string) (string, error) {
 	log.Info("Creating migration", "name", name, "directory", directory)
 
@@ -158,7 +159,7 @@ func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name, direct
 	}
 
 	// Generate timestamp for migration file
-	timestamp := fmt.Sprintf("%d", time.Now().Unix())
+	timestamp := strconv.FormatInt(time.Now().Unix(), 10)
 	upFile := filepath.Join(directory, fmt.Sprintf("%s_%s.up.sql", timestamp, name))
 	downFile := filepath.Join(directory, fmt.Sprintf("%s_%s.down.sql", timestamp, name))
 
@@ -192,7 +193,7 @@ func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name, direct
 	return upFile, nil
 }
 
-// MigrateSQLCConfig migrates SQLC configuration from one version/database to another
+// MigrateSQLCConfig migrates SQLC configuration from one version/database to another.
 func (r *RealMigrationAdapter) MigrateSQLCConfig(ctx context.Context, sourceConfig *config.SqlcConfig, targetDatabase generated.DatabaseType, targetVersion string) (*config.SqlcConfig, error) {
 	log.Info("Migrating SQLC configuration", "target_database", targetDatabase, "target_version", targetVersion)
 
@@ -222,7 +223,7 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(ctx context.Context, sourceConf
 	return &newConfig, nil
 }
 
-// updateDatabaseConfig updates database-specific configuration
+// updateDatabaseConfig updates database-specific configuration.
 func (r *RealMigrationAdapter) updateDatabaseConfig(config *config.SqlcConfig, targetDatabase generated.DatabaseType) error {
 	for i := range config.SQL {
 		sqlConfig := &config.SQL[i]
