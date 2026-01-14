@@ -7,7 +7,33 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	"github.com/spf13/cobra"
 )
+
+// executeCommand executes a command with given args and returns error.
+func executeCommand(cmd *cobra.Command, args []string) error {
+	cmd.SetArgs(args)
+	return cmd.Execute()
+}
+
+// executeCommandWithOutput executes a command and returns both output and error.
+func executeCommandWithOutput(cmd *cobra.Command, args []string) (string, error) {
+	var output bytes.Buffer
+	cmd.SetArgs(args)
+	cmd.SetOut(&output)
+	cmd.SetErr(&output)
+	err := cmd.Execute()
+	return output.String(), err
+}
+
+// executeCommandWithHelp executes a command with --help flag.
+func executeCommandWithHelp(cmd *cobra.Command) error {
+	args := []string{"--help"}
+	var output bytes.Buffer
+	cmd.SetArgs(args)
+	cmd.SetOut(&output)
+	return cmd.Execute()
+}
 
 func TestIntegration(t *testing.T) {
 	RegisterFailHandler(Fail)
@@ -18,60 +44,34 @@ var _ = Describe("Basic Command Integration", func() {
 	Context("Command Execution", func() {
 		It("should run doctor command without panicking", func() {
 			doctorCmd := commands.NewDoctorCommand()
-			var output bytes.Buffer
-			doctorCmd.SetOut(&output)
-			doctorCmd.SetErr(&output)
+			outputStr, err := executeCommandWithOutput(doctorCmd, []string{})
 
-			err := doctorCmd.Execute()
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
-
-			// Should have some output (may be zero if command fails silently)
-			outputStr := output.String()
 			Expect(len(outputStr)).To(BeNumerically(">=", 0))
 		})
 
 		It("should handle validate command with missing file", func() {
 			validateCmd := commands.NewValidateCommand()
 			args := []string{"/nonexistent/config.yaml"}
-			validateCmd.SetArgs(args)
-
-			err := validateCmd.Execute()
+			err := executeCommand(validateCmd, args)
 			Expect(err).To(HaveOccurred())
 		})
 
 		It("should run generate command with basic args", func() {
 			generateCmd := commands.NewGenerateCommand()
-			args := []string{"--help"}
-			generateCmd.SetArgs(args)
-
-			var output bytes.Buffer
-			generateCmd.SetOut(&output)
-
-			err := generateCmd.Execute()
+			err := executeCommandWithHelp(generateCmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 
 		It("should run migrate command", func() {
 			migrateCmd := commands.NewMigrateCommand()
-			args := []string{"--help"}
-			migrateCmd.SetArgs(args)
-
-			var output bytes.Buffer
-			migrateCmd.SetOut(&output)
-
-			err := migrateCmd.Execute()
+			err := executeCommandWithHelp(migrateCmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 
 		It("should run init command", func() {
 			initCmd := commands.NewInitCommand()
-			args := []string{"--help"}
-			initCmd.SetArgs(args)
-
-			var output bytes.Buffer
-			initCmd.SetOut(&output)
-
-			err := initCmd.Execute()
+			err := executeCommandWithHelp(initCmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 	})
@@ -79,61 +79,31 @@ var _ = Describe("Basic Command Integration", func() {
 	Context("Command Help System", func() {
 		It("should provide help for doctor command", func() {
 			cmd := commands.NewDoctorCommand()
-			args := []string{"--help"}
-			cmd.SetArgs(args)
-
-			var output bytes.Buffer
-			cmd.SetOut(&output)
-
-			err := cmd.Execute()
+			err := executeCommandWithHelp(cmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 
 		It("should provide help for validate command", func() {
 			cmd := commands.NewValidateCommand()
-			args := []string{"--help"}
-			cmd.SetArgs(args)
-
-			var output bytes.Buffer
-			cmd.SetOut(&output)
-
-			err := cmd.Execute()
+			err := executeCommandWithHelp(cmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 
 		It("should provide help for generate command", func() {
 			cmd := commands.NewGenerateCommand()
-			args := []string{"--help"}
-			cmd.SetArgs(args)
-
-			var output bytes.Buffer
-			cmd.SetOut(&output)
-
-			err := cmd.Execute()
+			err := executeCommandWithHelp(cmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 
 		It("should provide help for migrate command", func() {
 			cmd := commands.NewMigrateCommand()
-			args := []string{"--help"}
-			cmd.SetArgs(args)
-
-			var output bytes.Buffer
-			cmd.SetOut(&output)
-
-			err := cmd.Execute()
+			err := executeCommandWithHelp(cmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 
 		It("should provide help for init command", func() {
 			cmd := commands.NewInitCommand()
-			args := []string{"--help"}
-			cmd.SetArgs(args)
-
-			var output bytes.Buffer
-			cmd.SetOut(&output)
-
-			err := cmd.Execute()
+			err := executeCommandWithHelp(cmd)
 			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
 		})
 	})
