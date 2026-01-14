@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )

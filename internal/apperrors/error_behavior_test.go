@@ -1,8 +1,8 @@
 package apperrors
 
 import (
-	"testing"
 	stderrors "errors"
+	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
