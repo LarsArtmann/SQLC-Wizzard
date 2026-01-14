@@ -133,10 +133,13 @@ func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 	description := "Enter the database connection URL (use environment variables in production)"
 
 	switch data.Database.Engine {
-	case "sqlite":
+	case generated.DatabaseTypePostgreSQL:
+		placeholder = "postgresql://localhost:5432/dbname"
+		description = "Enter the PostgreSQL connection URL (use environment variables in production)"
+	case generated.DatabaseTypeSQLite:
 		placeholder = "./data.db"
 		description = "Enter the SQLite database file path"
-	case "mysql":
+	case generated.DatabaseTypeMySQL:
 		placeholder = "mysql://localhost:3306/dbname"
 		description = "Enter the MySQL connection URL (use environment variables in production)"
 	}

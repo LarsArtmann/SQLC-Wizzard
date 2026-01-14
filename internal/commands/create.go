@@ -95,7 +95,9 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	if err := os.Chdir(outputPath); err != nil {
 		return fmt.Errorf("failed to change to project directory: %w", err)
 	}
-	defer os.Chdir(originalDir)
+	defer func() {
+		_ = os.Chdir(originalDir)
+	}()
 
 	// Check if directory is empty (unless force is used)
 	if !opts.Force {

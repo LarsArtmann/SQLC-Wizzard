@@ -27,7 +27,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 
 	AfterEach(func() {
 		if tempDir != "" {
-			os.RemoveAll(tempDir)
+			_ = os.RemoveAll(tempDir)
 		}
 	})
 
@@ -118,7 +118,9 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 			err := os.WriteFile(unreadableFile, []byte("test"), 0o000) // No permissions
 			Expect(err).NotTo(HaveOccurred())
 
-			defer os.Chmod(unreadableFile, 0o644) // Restore permissions for cleanup
+			defer func() {
+				_ = os.Chmod(unreadableFile, 0o644) // Restore permissions for cleanup
+			}()
 
 			cmd := commands.NewValidateCommand()
 			args := []string{unreadableFile}
@@ -279,7 +281,7 @@ var _ = Describe("Migrate Command Enhanced Testing", func() {
 
 	AfterEach(func() {
 		if tempDir != "" {
-			os.RemoveAll(tempDir)
+			_ = os.RemoveAll(tempDir)
 		}
 	})
 
@@ -395,7 +397,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 
 	AfterEach(func() {
 		if tempDir != "" {
-			os.RemoveAll(tempDir)
+			_ = os.RemoveAll(tempDir)
 		}
 	})
 
@@ -407,7 +409,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Remove file after creating command to simulate race condition
-			os.Remove(configFile)
+			_ = os.Remove(configFile)
 
 			cmd := commands.NewValidateCommand()
 			args := []string{configFile}

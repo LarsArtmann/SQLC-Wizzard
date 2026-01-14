@@ -38,7 +38,7 @@ func NewProjectCreator(fs adapters.FileSystemAdapter, cli adapters.CLIAdapter) *
 
 // CreateProject creates a complete project structure.
 func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfig) error {
-	pc.cli.Println("🏗️  Creating project structure...")
+	_ = pc.cli.Println("🏗️  Creating project structure...")
 
 	// Create directory structure
 	if err := pc.createDirectoryStructure(ctx, config); err != nil {
@@ -78,7 +78,7 @@ func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfi
 
 // createDirectoryStructure creates the basic directory structure.
 func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *CreateConfig) error {
-	pc.cli.Println("📁 Creating directory structure...")
+	_ = pc.cli.Println("📁 Creating directory structure...")
 
 	dirs := []string{
 		"db/schema",
@@ -97,13 +97,23 @@ func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *
 	switch config.ProjectType {
 	case generated.ProjectTypeMicroservice:
 		dirs = append(dirs, "api", "internal/api", "internal/handlers")
+	case generated.ProjectTypeHobby:
+		dirs = append(dirs, "internal/handlers")
+	case generated.ProjectTypeEnterprise:
+		dirs = append(dirs, "api", "internal/api", "internal/handlers")
+	case generated.ProjectTypeAPIFirst:
+		dirs = append(dirs, "api", "internal/api", "internal/handlers")
+	case generated.ProjectTypeAnalytics:
+		dirs = append(dirs, "internal/analytics", "internal/processors")
+	case generated.ProjectTypeTesting:
+		dirs = append(dirs, "test/integration", "test/e2e")
+	case generated.ProjectTypeMultiTenant:
+		dirs = append(dirs, "api", "internal/api", "internal/tenants")
+	case generated.ProjectTypeLibrary:
+		dirs = append(dirs, "examples", "internal/testutil")
 		// TODO: Add other project types when generated types are complete
 		// case generated.ProjectTypeFullstack:
 		// 	dirs = append(dirs, "web", "web/src", "web/public", "internal/api")
-		// case generated.ProjectTypeAPIFirst:
-		// 	dirs = append(dirs, "api", "internal/api", "internal/handlers")
-		// case generated.ProjectTypeLibrary:
-		// 	dirs = append(dirs, "examples", "internal/testutil")
 	}
 
 	for _, dir := range dirs {
@@ -117,7 +127,7 @@ func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *
 
 // generateSQLCConfig generates the sqlc.yaml file.
 func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateConfig) error {
-	pc.cli.Println("⚙️  Generating sqlc.yaml...")
+	_ = pc.cli.Println("⚙️  Generating sqlc.yaml...")
 
 	// Defensive check: ensure config is not nil before marshalling
 	if cfg.Config == nil {
@@ -135,7 +145,7 @@ func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateCon
 
 // generateDatabaseSchema creates database schema file.
 func (pc *ProjectCreator) generateDatabaseSchema(ctx context.Context, cfg *CreateConfig) error {
-	pc.cli.Println("🗄️  Generating database schema...")
+	_ = pc.cli.Println("🗄️  Generating database schema...")
 
 	// Build schema content based on project configuration
 	schemaContent := pc.buildSchemaSQL(cfg.TemplateData)
@@ -145,7 +155,7 @@ func (pc *ProjectCreator) generateDatabaseSchema(ctx context.Context, cfg *Creat
 
 // generateQueryFiles creates SQL query files for sqlc.
 func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateConfig) error {
-	pc.cli.Println("🔍 Generating SQL query files...")
+	_ = pc.cli.Println("🔍 Generating SQL query files...")
 
 	// Create queries directory
 	if err := pc.fs.MkdirAll(ctx, "queries", 0o755); err != nil {
@@ -175,6 +185,25 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 		if err := pc.fs.WriteFile(ctx, "queries/api.sql", []byte(apiQueries), 0o644); err != nil {
 			return fmt.Errorf("failed to write api queries: %w", err)
 		}
+	case generated.ProjectTypeHobby:
+		// Use basic users queries for hobby projects
+	case generated.ProjectTypeAnalytics:
+		analyticsQueries := pc.buildAnalyticsQueries(cfg.TemplateData)
+		if err := pc.fs.WriteFile(ctx, "queries/analytics.sql", []byte(analyticsQueries), 0o644); err != nil {
+			return fmt.Errorf("failed to write analytics queries: %w", err)
+		}
+	case generated.ProjectTypeTesting:
+		testingQueries := pc.buildTestingQueries(cfg.TemplateData)
+		if err := pc.fs.WriteFile(ctx, "queries/testing.sql", []byte(testingQueries), 0o644); err != nil {
+			return fmt.Errorf("failed to write testing queries: %w", err)
+		}
+	case generated.ProjectTypeMultiTenant:
+		tenantQueries := pc.buildMultiTenantQueries(cfg.TemplateData)
+		if err := pc.fs.WriteFile(ctx, "queries/tenant.sql", []byte(tenantQueries), 0o644); err != nil {
+			return fmt.Errorf("failed to write tenant queries: %w", err)
+		}
+	case generated.ProjectTypeLibrary:
+		// Use basic users queries for library projects
 	}
 
 	return nil
@@ -182,7 +211,7 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 
 // generateGoModuleStructure creates basic Go module structure.
 func (pc *ProjectCreator) generateGoModuleStructure(ctx context.Context, cfg *CreateConfig) error {
-	pc.cli.Println("📦 Generating Go module structure...")
+	_ = pc.cli.Println("📦 Generating Go module structure...")
 
 	// Create go.mod
 	goModContent := pc.buildGoMod(cfg.TemplateData)
@@ -229,6 +258,16 @@ func (pc *ProjectCreator) buildSchemaSQL(data generated.TemplateData) string {
 		schema += pc.createEnterpriseTables(data)
 	case generated.ProjectTypeAPIFirst:
 		schema += pc.createAPIFirstTables(data)
+	case generated.ProjectTypeHobby:
+		schema += pc.createHobbyTables(data)
+	case generated.ProjectTypeAnalytics:
+		schema += pc.createAnalyticsTables(data)
+	case generated.ProjectTypeTesting:
+		schema += pc.createTestingTables(data)
+	case generated.ProjectTypeMultiTenant:
+		schema += pc.createMultiTenantTables(data)
+	case generated.ProjectTypeLibrary:
+		schema += pc.createLibraryTables(data)
 		// Note: Add more project types as needed
 	}
 
@@ -359,9 +398,173 @@ RETURNING *;
 DELETE FROM users WHERE id = $1;
 
 -- name: ListUsers :many
-SELECT * FROM users 
-ORDER BY created_at DESC 
+SELECT * FROM users
+ORDER BY created_at DESC
 LIMIT sqlc.arg('limit') OFFSET sqlc.arg('offset');
+`
+}
+
+// buildAnalyticsQueries creates analytics query templates.
+func (pc *ProjectCreator) buildAnalyticsQueries(data generated.TemplateData) string {
+	return `-- name: CreateEvent :one
+INSERT INTO events (event_type, payload, user_id)
+VALUES ($1, $2, $3)
+RETURNING *;
+
+-- name: GetEventByID :one
+SELECT * FROM events WHERE id = $1;
+
+-- name: ListEvents :many
+SELECT * FROM events
+WHERE created_at >= NOW() - INTERVAL '24 hours'
+ORDER BY created_at DESC;
+`
+}
+
+// buildTestingQueries creates testing query templates.
+func (pc *ProjectCreator) buildTestingQueries(data generated.TemplateData) string {
+	return `-- name: CreateFixture :one
+INSERT INTO fixtures (name, data)
+VALUES ($1, $2)
+RETURNING *;
+
+-- name: GetFixture :one
+SELECT * FROM fixtures WHERE name = $1;
+
+-- name: ListFixtures :many
+SELECT * FROM fixtures ORDER BY name;
+`
+}
+
+// buildMultiTenantQueries creates multi-tenant query templates.
+func (pc *ProjectCreator) buildMultiTenantQueries(data generated.TemplateData) string {
+	return `-- name: CreateTenant :one
+INSERT INTO tenants (name, domain)
+VALUES ($1, $2)
+RETURNING *;
+
+-- name: GetTenantByID :one
+SELECT * FROM tenants WHERE id = $1;
+
+-- name: GetTenantByDomain :one
+SELECT * FROM tenants WHERE domain = $1;
+
+-- name: ListTenants :many
+SELECT * FROM tenants ORDER BY created_at DESC;
+`
+}
+
+// createHobbyTables creates tables for hobby projects.
+func (pc *ProjectCreator) createHobbyTables(data generated.TemplateData) string {
+	return `
+-- Settings table for hobby project configuration
+CREATE TABLE settings (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_id UUID NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    key VARCHAR(255) NOT NULL,
+    value TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(user_id, key)
+);
+
+CREATE INDEX idx_settings_user_id ON settings(user_id);
+`
+}
+
+// createAnalyticsTables creates tables for analytics projects.
+func (pc *ProjectCreator) createAnalyticsTables(data generated.TemplateData) string {
+	return `
+-- Events table for analytics data
+CREATE TABLE events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_type VARCHAR(255) NOT NULL,
+    payload JSONB,
+    user_id UUID REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_events_type ON events(event_type);
+CREATE INDEX idx_events_user_id ON events(user_id);
+CREATE INDEX idx_events_created_at ON events(created_at);
+
+-- Aggregations table for pre-computed analytics
+CREATE TABLE aggregations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    metric_name VARCHAR(255) NOT NULL,
+    metric_value NUMERIC NOT NULL,
+    aggregation_period VARCHAR(50) NOT NULL,
+    computed_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_aggregations_metric ON aggregations(metric_name);
+`
+}
+
+// createTestingTables creates tables for testing projects.
+func (pc *ProjectCreator) createTestingTables(data generated.TemplateData) string {
+	return `
+-- Fixtures table for test data
+CREATE TABLE fixtures (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL UNIQUE,
+    data JSONB NOT NULL,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Test runs table for tracking test execution
+CREATE TABLE test_runs (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    duration_ms INTEGER,
+    started_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    completed_at TIMESTAMP WITH TIME ZONE
+);
+
+CREATE INDEX idx_test_runs_status ON test_runs(status);
+CREATE INDEX idx_test_runs_started_at ON test_runs(started_at);
+`
+}
+
+// createMultiTenantTables creates tables for multi-tenant projects.
+func (pc *ProjectCreator) createMultiTenantTables(data generated.TemplateData) string {
+	return `
+-- Tenants table for multi-tenancy support
+CREATE TABLE tenants (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name VARCHAR(255) NOT NULL,
+    domain VARCHAR(255) NOT NULL UNIQUE,
+    settings JSONB,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_tenants_domain ON tenants(domain);
+
+-- Add tenant_id column to users
+ALTER TABLE users ADD COLUMN tenant_id UUID REFERENCES tenants(id) ON DELETE CASCADE;
+
+CREATE INDEX idx_users_tenant_id ON users(tenant_id);
+`
+}
+
+// createLibraryTables creates tables for library projects.
+func (pc *ProjectCreator) createLibraryTables(data generated.TemplateData) string {
+	return `
+-- Examples table for library examples
+CREATE TABLE examples (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    code_snippet TEXT NOT NULL,
+    language VARCHAR(50),
+    difficulty VARCHAR(50),
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+CREATE INDEX idx_examples_language ON examples(language);
+CREATE INDEX idx_examples_difficulty ON examples(difficulty);
 `
 }
 

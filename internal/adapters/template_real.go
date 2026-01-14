@@ -27,6 +27,16 @@ func (a *RealTemplateAdapter) GetTemplate(projectType generated.ProjectType) (te
 		return templates.NewMicroserviceTemplate(), nil // Use microservice as fallback
 	case generated.ProjectTypeEnterprise:
 		return templates.NewMicroserviceTemplate(), nil // Use microservice as fallback
+	case generated.ProjectTypeAPIFirst:
+		return templates.NewMicroserviceTemplate(), nil // Use microservice as fallback
+	case generated.ProjectTypeAnalytics:
+		return templates.NewMicroserviceTemplate(), nil // Use microservice as fallback
+	case generated.ProjectTypeTesting:
+		return templates.NewMicroserviceTemplate(), nil // Use microservice as fallback
+	case generated.ProjectTypeMultiTenant:
+		return templates.NewMicroserviceTemplate(), nil // Use microservice as fallback
+	case generated.ProjectTypeLibrary:
+		return templates.NewMicroserviceTemplate(), nil // Use microservice as fallback
 	default:
 		return nil, fmt.Errorf("Unknown project type: %s", projectType)
 	}

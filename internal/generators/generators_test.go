@@ -38,7 +38,7 @@ func createTemplateData(engine generated.DatabaseType, outputDir string) generat
 func setupGenerator(tempDir string) (*generators.Generator, func()) {
 	gen := generators.NewGenerator(tempDir)
 	cleanup := func() {
-		os.RemoveAll(tempDir)
+		_ = os.RemoveAll(tempDir)
 	}
 	return gen, cleanup
 }
@@ -80,7 +80,9 @@ var _ = Describe("NewGenerator", func() {
 	It("should create a generator with valid output directory", func() {
 		tempDir, err := os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
-		defer os.RemoveAll(tempDir)
+		defer func() {
+			_ = os.RemoveAll(tempDir)
+		}()
 
 		gen := generators.NewGenerator(tempDir)
 		Expect(gen).NotTo(BeNil())
@@ -241,7 +243,9 @@ var _ = Describe("Template Data Integration", func() {
 	It("should use template data correctly", func() {
 		tempDir, err := os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
-		defer os.RemoveAll(tempDir)
+		defer func() {
+			_ = os.RemoveAll(tempDir)
+		}()
 
 		gen, cleanup := setupGenerator(tempDir)
 		defer cleanup()

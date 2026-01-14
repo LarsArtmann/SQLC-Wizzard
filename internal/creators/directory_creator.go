@@ -28,7 +28,7 @@ func NewDirectoryCreator(fs adapters.FileSystemAdapter, cli adapters.CLIAdapter)
 // Create creates directory structure for the project
 // Implements Creator[CreatorConfig] interface.
 func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) error {
-	dc.cli.Println("📁 Creating directory structure...")
+	_ = dc.cli.Println("📁 Creating directory structure...")
 
 	dirs := dc.getProjectDirectories(config)
 
@@ -37,7 +37,7 @@ func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) er
 		if err := dc.fs.MkdirAll(ctx, fullPath, 0o755); err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", dir, err)
 		}
-		dc.cli.Println("Created directory: " + fullPath)
+		_ = dc.cli.Println("Created directory: " + fullPath)
 	}
 
 	return nil
@@ -144,6 +144,25 @@ func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.Proj
 			"internal/products",
 			"internal/payments",
 			"pkg/shared",
+		}
+
+	case generated.ProjectTypeTesting:
+		return []string{
+			"internal/tests",
+			"test/integration",
+			"test/e2e",
+			"test/fixtures",
+		}
+
+	case generated.ProjectTypeMultiTenant:
+		return []string{
+			"api",
+			"internal/api",
+			"internal/handlers",
+			"internal/middleware",
+			"internal/tenants",
+			"pkg/auth",
+			"pkg/tenant",
 		}
 
 	// TODO: Add remaining project types as they are implemented

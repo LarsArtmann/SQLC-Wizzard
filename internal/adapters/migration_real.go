@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -35,10 +36,15 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 		log.Error("Failed to create migration instance", "error", err)
 		return fmt.Errorf("failed to create migration instance: %w", err)
 	}
-	defer m.Close()
+	defer func() {
+		_, closeErr := m.Close()
+		if closeErr != nil {
+			log.Warn("Failed to close migration", "error", closeErr)
+		}
+	}()
 
 	version, dirty, err := m.Version()
-	if err != nil && err != migrate.ErrNilVersion {
+	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		log.Error("Failed to get migration version", "error", err)
 		return fmt.Errorf("failed to get migration version: %w", err)
 	}
@@ -48,7 +54,7 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 		return fmt.Errorf("database is dirty at version %d", version)
 	}
 
-	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Error("Migration failed", "error", err)
 		return fmt.Errorf("migration failed: %w", err)
 	}
@@ -71,20 +77,25 @@ func (r *RealMigrationAdapter) Rollback(ctx context.Context, source, databaseURL
 		log.Error("Failed to create migration instance", "error", err)
 		return fmt.Errorf("failed to create migration instance: %w", err)
 	}
-	defer m.Close()
+	defer func() {
+		_, closeErr := m.Close()
+		if closeErr != nil {
+			log.Warn("Failed to close migration", "error", closeErr)
+		}
+	}()
 
 	for i := range steps {
-		if err := m.Steps(-1); err != nil && err != migrate.ErrNoChange {
+		if err := m.Steps(-1); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 			log.Error("Rollback step failed", "step", i+1, "error", err)
 			return fmt.Errorf("rollback step %d failed: %w", i+1, err)
 		}
 	}
 
 	version, _, err := m.Version()
-	switch err {
-	case migrate.ErrNilVersion:
+	switch {
+	case errors.Is(err, migrate.ErrNilVersion):
 		log.Info("All migrations rolled back")
-	case nil:
+	case err == nil:
 		log.Info("Rollback completed", "current_version", version)
 	default:
 		log.Error("Failed to get version after rollback", "error", err)
@@ -103,10 +114,15 @@ func (r *RealMigrationAdapter) Status(ctx context.Context, source, databaseURL s
 		log.Error("Failed to create migration instance", "error", err)
 		return nil, fmt.Errorf("failed to create migration instance: %w", err)
 	}
-	defer m.Close()
+	defer func() {
+		_, closeErr := m.Close()
+		if closeErr != nil {
+			log.Warn("Failed to close migration", "error", closeErr)
+		}
+	}()
 
 	version, dirty, err := m.Version()
-	if err != nil && err != migrate.ErrNilVersion {
+	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		log.Error("Failed to get migration version", "error", err)
 		return nil, fmt.Errorf("failed to get migration version: %w", err)
 	}
@@ -117,7 +133,7 @@ func (r *RealMigrationAdapter) Status(ctx context.Context, source, databaseURL s
 		return nil, fmt.Errorf("failed to create migration status: %w", err)
 	}
 
-	if err == migrate.ErrNilVersion {
+	if errors.Is(err, migrate.ErrNilVersion) {
 		// No migrations applied yet
 		log.Info("No migrations applied yet")
 	} else {
@@ -138,10 +154,15 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 		log.Error("Failed to create migration instance for validation", "error", err)
 		return fmt.Errorf("failed to create migration instance for validation: %w", err)
 	}
-	defer m.Close()
+	defer func() {
+		_, closeErr := m.Close()
+		if closeErr != nil {
+			log.Warn("Failed to close migration", "error", closeErr)
+		}
+	}()
 
 	version, _, err := m.Version()
-	if err != nil && err != migrate.ErrNilVersion {
+	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		log.Error("Migration validation failed", "error", err)
 		return fmt.Errorf("migration validation failed: %w", err)
 	}

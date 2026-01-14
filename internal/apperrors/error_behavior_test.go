@@ -20,7 +20,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 
 		It("should include description in error string when present", func() {
 			err := NewError(ErrorCodeValidationError, "test message")
-			err.WithDescription("detailed explanation")
+			_ = err.WithDescription("detailed explanation")
 
 			Expect(err.Error()).To(Equal("[VALIDATION_ERROR] test message: detailed explanation"))
 
