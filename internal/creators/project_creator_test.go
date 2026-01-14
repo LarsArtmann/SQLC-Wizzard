@@ -2,11 +2,11 @@ package creators_test
 
 import (
 	"context"
-	"errors"
 	"io/fs"
 	"testing"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/creators"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	. "github.com/onsi/ginkgo/v2"
