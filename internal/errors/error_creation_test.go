@@ -1,7 +1,7 @@
 package errors
 
 import (
-	"fmt"
+	stderrors "errors"
 	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
@@ -40,7 +40,7 @@ var _ = Describe("Error Creation", func() {
 
 	Context("Helper Constructors", func() {
 		It("should create internal error with context", func() {
-			cause := errors.New("database connection failed")
+			cause := stderrors.New("database connection failed")
 			err := NewInternal("database", "connect", cause)
 
 			Expect(err).To(HaveOccurred())
@@ -104,7 +104,7 @@ var _ = Describe("Error Creation", func() {
 		})
 
 		It("should create file read error", func() {
-			cause := errors.New("permission denied")
+			cause := stderrors.New("permission denied")
 			err := FileReadError("/path/to/file.txt", cause)
 
 			Expect(err).To(HaveOccurred())
@@ -117,7 +117,7 @@ var _ = Describe("Error Creation", func() {
 		})
 
 		It("should create config parse error", func() {
-			cause := errors.New("invalid YAML")
+			cause := stderrors.New("invalid YAML")
 			err := ConfigParseError("/path/to/config.yaml", cause)
 
 			Expect(err).To(HaveOccurred())

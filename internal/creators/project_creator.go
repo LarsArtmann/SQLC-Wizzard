@@ -2,6 +2,7 @@ package creators
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"

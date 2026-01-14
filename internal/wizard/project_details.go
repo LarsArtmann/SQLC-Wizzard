@@ -3,6 +3,7 @@ package wizard
 import (
 	"fmt"
 	"strings"
+	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/charmbracelet/huh"
@@ -36,10 +37,10 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Value(&projectName).
 				Validate(func(str string) error {
 					if len(str) < 2 {
-						return errors.New("project name must be at least 2 characters")
+						return stderrors.New("project name must be at least 2 characters")
 					}
 					if len(str) > 50 {
-						return errors.New("project name must be less than 50 characters")
+						return stderrors.New("project name must be less than 50 characters")
 					}
 					return nil
 				}),
@@ -62,7 +63,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Value(&packageName).
 				Validate(func(str string) error {
 					if len(str) < 2 {
-						return errors.New("package name must be at least 2 characters")
+						return stderrors.New("package name must be at least 2 characters")
 					}
 					return nil
 				}),

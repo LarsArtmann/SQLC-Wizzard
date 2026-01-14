@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"context"
+	"errors"
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"

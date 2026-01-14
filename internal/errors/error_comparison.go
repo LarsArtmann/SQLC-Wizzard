@@ -1,5 +1,7 @@
 package errors
 
+import "errors"
+
 // Is checks if an error matches a specific error type.
 func Is(err, target error) bool {
 	appErr := &Error{}

@@ -1,8 +1,8 @@
 package errors
 
 import (
-	"fmt"
 	"testing"
+	stderrors "errors"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -37,7 +37,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 		})
 
 		It("should return the cause error when set", func() {
-			original := errors.New("original error")
+			original := stderrors.New("original error")
 			err := NewError(ErrorCodeValidationError, "wrapped").WithCause(original)
 
 			Expect(err.Unwrap()).To(Equal(original))
@@ -64,7 +64,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 		})
 
 		It("should handle non-application errors", func() {
-			err1 := errors.New("standard error")
+			err1 := stderrors.New("standard error")
 			err2 := NewError(ErrorCodeInternalServer, "test")
 
 			Expect(Is(err1, err2)).To(BeFalse())

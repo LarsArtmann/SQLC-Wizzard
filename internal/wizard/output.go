@@ -2,6 +2,7 @@ package wizard
 
 import (
 	"fmt"
+	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/charmbracelet/huh"
@@ -78,28 +79,28 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 func (s *OutputStep) ValidateConfiguration(data *generated.TemplateData) error {
 	// Check for path conflicts
 	if data.Output.BaseDir == data.Output.QueriesDir {
-		return errors.New("base output directory cannot be the same as queries directory")
+		return stderrors.New("base output directory cannot be the same as queries directory")
 	}
 
 	if data.Output.BaseDir == data.Output.SchemaDir {
-		return errors.New("base output directory cannot be the same as schema directory")
+		return stderrors.New("base output directory cannot be the same as schema directory")
 	}
 
 	if data.Output.QueriesDir == data.Output.SchemaDir {
-		return errors.New("queries directory cannot be the same as schema directory")
+		return stderrors.New("queries directory cannot be the same as schema directory")
 	}
 
 	// Check for reasonable directory structure
 	if data.Output.BaseDir == "" {
-		return errors.New("base output directory is required")
+		return stderrors.New("base output directory is required")
 	}
 
 	if data.Output.QueriesDir == "" {
-		return errors.New("queries directory is required")
+		return stderrors.New("queries directory is required")
 	}
 
 	if data.Output.SchemaDir == "" {
-		return errors.New("schema directory is required")
+		return stderrors.New("schema directory is required")
 	}
 
 	return nil

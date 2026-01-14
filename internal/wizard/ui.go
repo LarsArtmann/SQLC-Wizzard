@@ -2,6 +2,7 @@ package wizard
 
 import (
 	"fmt"
+	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
@@ -32,14 +33,14 @@ func ShowError(err error) {
 
 	// Check if it's a schema error
 	schemaErr := &schema.SchemaError{}
-	if errors.As(err, &schemaErr) {
+	if stderrors.As(err, &schemaErr) {
 		ui.showErrorWithSchemaDetails(schemaErr)
 		return
 	}
 
 	// Check if it's our typed error
 	appErr := &errors.Error{}
-	if errors.As(err, &appErr) {
+	if stderrors.As(err, &appErr) {
 		ui.showErrorWithTypedDetails(appErr)
 		return
 	}

@@ -2,7 +2,6 @@ package errors_test
 
 import (
 	stderrors "errors"
-	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 	. "github.com/onsi/ginkgo/v2"
@@ -12,7 +11,7 @@ import (
 var _ = Describe("Error Wrapping and Combining", func() {
 	Context("Wrap", func() {
 		It("should wrap error with code and component", func() {
-			original := errors.New("database connection failed")
+			original := stderrors.New("database connection failed")
 			wrapped := errors.Wrap(original, errors.ErrorCodeInternalServer, "database")
 
 			Expect(wrapped).To(HaveOccurred())
@@ -28,7 +27,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 
 	Context("WrapWithRequestID", func() {
 		It("should wrap error with request ID", func() {
-			original := errors.New("operation failed")
+			original := stderrors.New("operation failed")
 			wrapped := errors.WrapWithRequestID(original, errors.ErrorCodeInternalServer, "req-123", "api")
 
 			Expect(wrapped).To(HaveOccurred())
@@ -43,7 +42,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 
 	Context("WrapWithUserID", func() {
 		It("should wrap error with user ID", func() {
-			original := errors.New("permission denied")
+			original := stderrors.New("permission denied")
 			wrapped := errors.WrapWithUserID(original, errors.ErrorCodePermissionDenied, "user-456", "auth")
 
 			Expect(wrapped).To(HaveOccurred())
@@ -58,7 +57,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 
 	Context("Wrapf", func() {
 		It("should wrap error with formatted message", func() {
-			original := errors.New("field validation failed")
+			original := stderrors.New("field validation failed")
 			baseErr := errors.NewError(errors.ErrorCodeValidationError, "validation error")
 			wrapped := errors.Wrapf(original, baseErr, "user %s has invalid %s", "john", "email")
 
@@ -121,7 +120,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 		})
 
 		It("should wrap non-application errors", func() {
-			err1 := errors.New("standard error")
+			err1 := stderrors.New("standard error")
 			err2 := errors.NewError(errors.ErrorCodeValidationError, "app error")
 
 			list := errors.CombineErrors(err1, err2)

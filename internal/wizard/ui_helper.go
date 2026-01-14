@@ -2,6 +2,7 @@ package wizard
 
 import (
 	"fmt"
+	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
@@ -145,7 +146,7 @@ func (ui *UIHelper) GetConfirmation() (bool, error) {
 	}
 
 	if !confirmed {
-		return false, errors.New("configuration cancelled by user")
+		return false, stderrors.New("configuration cancelled by user")
 	}
 
 	return true, nil
