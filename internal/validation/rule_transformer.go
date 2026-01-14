@@ -69,8 +69,7 @@ func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []
 func (rt *RuleTransformer) TransformDomainSafetyRules(rules *domain.SafetyRules) []generated.RuleConfig {
 	// Since domain.SafetyRules is an alias for generated.SafetyRules,
 	// we can directly use the consolidated transformation logic
-	generatedRules := (*generated.SafetyRules)(rules)
-	return rt.TransformSafetyRules(generatedRules)
+	return rt.TransformSafetyRules(rules)
 }
 
 // TransformTypeSafeSafetyRules converts NEW type-safe safety rules to configuration format

@@ -68,18 +68,18 @@ func MustNewDatabaseType(database string) DatabaseType {
 	return dt
 }
 
-// Constants - use generated types, NO MANUAL STRINGS!
+// Constants - use generated types directly, NO MANUAL STRINGS!
 const (
-	ProjectTypeHobby        = ProjectType(generated.ProjectTypeHobby)
-	ProjectTypeMicroservice = ProjectType(generated.ProjectTypeMicroservice)
-	ProjectTypeEnterprise   = ProjectType(generated.ProjectTypeEnterprise)
-	ProjectTypeAPIFirst     = ProjectType(generated.ProjectTypeAPIFirst)
-	ProjectTypeAnalytics    = ProjectType(generated.ProjectTypeAnalytics)
-	ProjectTypeTesting      = ProjectType(generated.ProjectTypeTesting)
-	ProjectTypeMultiTenant  = ProjectType(generated.ProjectTypeMultiTenant)
-	ProjectTypeLibrary      = ProjectType(generated.ProjectTypeLibrary)
+	ProjectTypeHobby        = generated.ProjectTypeHobby
+	ProjectTypeMicroservice = generated.ProjectTypeMicroservice
+	ProjectTypeEnterprise   = generated.ProjectTypeEnterprise
+	ProjectTypeAPIFirst     = generated.ProjectTypeAPIFirst
+	ProjectTypeAnalytics    = generated.ProjectTypeAnalytics
+	ProjectTypeTesting      = generated.ProjectTypeTesting
+	ProjectTypeMultiTenant  = generated.ProjectTypeMultiTenant
+	ProjectTypeLibrary      = generated.ProjectTypeLibrary
 
-	DatabaseTypePostgreSQL = DatabaseType(generated.DatabaseTypePostgreSQL)
-	DatabaseTypeMySQL      = DatabaseType(generated.DatabaseTypeMySQL)
-	DatabaseTypeSQLite     = DatabaseType(generated.DatabaseTypeSQLite)
+	DatabaseTypePostgreSQL = generated.DatabaseTypePostgreSQL
+	DatabaseTypeMySQL      = generated.DatabaseTypeMySQL
+	DatabaseTypeSQLite     = generated.DatabaseTypeSQLite
 )

@@ -216,9 +216,9 @@ func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 	var err error
 
 	if w.deps != nil && w.deps.TemplateFunc != nil {
-		tmpl, err = w.deps.TemplateFunc(templates.ProjectType(data.ProjectType))
+		tmpl, err = w.deps.TemplateFunc(data.ProjectType)
 	} else {
-		tmpl, err = templates.GetTemplate(templates.ProjectType(data.ProjectType))
+		tmpl, err = templates.GetTemplate(data.ProjectType)
 	}
 
 	if err != nil {
