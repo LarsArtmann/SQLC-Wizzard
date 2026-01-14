@@ -2,7 +2,7 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
@@ -38,7 +38,7 @@ type Template interface {
 func NewProjectType(projectType string) (ProjectType, error) {
 	pt := ProjectType(projectType)
 	if !pt.IsValid() {
-		return "", errors.ValidationError("project_type", projectType)
+		return "", apperrors.ValidationError("project_type", projectType)
 	}
 	return pt, nil
 }
@@ -46,7 +46,7 @@ func NewProjectType(projectType string) (ProjectType, error) {
 func NewDatabaseType(database string) (DatabaseType, error) {
 	dt := DatabaseType(database)
 	if !dt.IsValid() {
-		return "", errors.ValidationError("database", database)
+		return "", apperrors.ValidationError("database", database)
 	}
 	return dt, nil
 }

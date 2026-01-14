@@ -1,11 +1,11 @@
 package wizard
 
 import (
+	"errors"
 	"fmt"
-	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
@@ -33,14 +33,14 @@ func ShowError(err error) {
 
 	// Check if it's a schema error
 	schemaErr := &schema.SchemaError{}
-	if stderrors.As(err, &schemaErr) {
+	if errors.As(err, &schemaErr) {
 		ui.showErrorWithSchemaDetails(schemaErr)
 		return
 	}
 
 	// Check if it's our typed error
-	appErr := &errors.Error{}
-	if stderrors.As(err, &appErr) {
+	appErr := &apperrors.Error{}
+	if errors.As(err, &appErr) {
 		ui.showErrorWithTypedDetails(appErr)
 		return
 	}
@@ -61,7 +61,7 @@ func ShowProgress(current, total int, operation string) {
 // ValidateConfiguration validates configuration using schema.
 func ValidateConfiguration(cfg *schema.Schema) error {
 	if cfg == nil {
-		return errors.NewError(errors.ErrorCodeInternalServer, "Schema cannot be null")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "Schema cannot be null")
 	}
 
 	// Validate schema using typed validation
@@ -71,7 +71,7 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 
 	// Additional business logic validation
 	if len(cfg.Tables) > 100 {
-		return errors.NewError(errors.ErrorCodeSchemaValidation, "Schema exceeds maximum allowed tables")
+		return apperrors.NewError(apperrors.ErrorCodeSchemaValidation, "Schema exceeds maximum allowed tables")
 	}
 
 	return nil
@@ -117,7 +117,7 @@ func generateConfigFromSchema(s *schema.Schema, data generated.TemplateData) (st
 	// Convert to YAML string
 	yamlData, err := config.Marshal(sqlcConfig)
 	if err != nil {
-		return "", errors.ConfigParseError("generated config", err)
+		return "", apperrors.ConfigParseError("generated config", err)
 	}
 
 	return string(yamlData), nil

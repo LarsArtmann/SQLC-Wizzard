@@ -220,7 +220,7 @@ func (s *Schema) GetColumn(tableName, columnName string) (*Column, bool) {
 	return nil, false
 }
 
-// SchemaError represents schema-specific errors.
+// SchemaError represents schema-specific apperrors.
 type SchemaError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`

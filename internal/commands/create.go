@@ -2,11 +2,11 @@ package commands
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/creators"
@@ -81,7 +81,7 @@ Examples:
 func runCreate(projectName string, opts *CreateOptions) error {
 	// Validate project name
 	if projectName == "" {
-		return errors.New("project name cannot be empty")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "project name cannot be empty")
 	}
 
 	// Create output directory if needed
@@ -100,7 +100,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	// Check if directory is empty (unless force is used)
 	if !opts.Force {
 		if entries, err := os.ReadDir("."); err == nil && len(entries) > 0 {
-			return errors.New("directory is not empty. Use --force to overwrite")
+			return apperrors.NewError(apperrors.ErrorCodeInternalServer, "directory is not empty. Use --force to overwrite")
 		}
 	}
 

@@ -3,7 +3,7 @@ package config
 import (
 	"os"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -12,14 +12,14 @@ func ParseFile(path string) (*SqlcConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, errors.FileNotFoundError(path)
+			return nil, apperrors.FileNotFoundError(path)
 		}
-		return nil, errors.FileReadError(path, err)
+		return nil, apperrors.FileReadError(path, err)
 	}
 
 	cfg, err := Parse(data)
 	if err != nil {
-		return nil, errors.ConfigParseError(path, err)
+		return nil, apperrors.ConfigParseError(path, err)
 	}
 
 	return cfg, nil
@@ -29,7 +29,7 @@ func ParseFile(path string) (*SqlcConfig, error) {
 func Parse(data []byte) (*SqlcConfig, error) {
 	var cfg SqlcConfig
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, errors.Wrapf(err, errors.ErrConfigParseFailed, "failed to parse YAML")
+		return nil, apperrors.Wrapf(err, apperrors.ErrConfigParseFailed, "failed to parse YAML")
 	}
 
 	return &cfg, nil

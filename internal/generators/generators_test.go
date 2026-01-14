@@ -218,7 +218,7 @@ var _ = Describe("Error Handling", func() {
 		// SKIP: This test fails in some environments (Docker, root, etc.)
 		// where file permissions don't prevent writes as expected.
 		// Need to refactor to use dependency injection with a mock filesystem
-		// that can reliably simulate permission errors.
+		// that can reliably simulate permission apperrors.
 
 		// Make directory read-only
 		err := os.Chmod(tempDir, 0o444)

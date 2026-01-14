@@ -7,7 +7,7 @@ import (
 	"testing"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -249,7 +249,7 @@ func generateExampleFiles(outputDir string, force bool) error {
 		if _, err := os.Stat(outputDir); err == nil {
 			files, err := os.ReadDir(outputDir)
 			if err == nil && len(files) > 0 {
-				return errors.NewError(errors.ErrorCodeInternalServer, "directory_not_empty").WithDescription("output directory is not empty")
+				return apperrors.NewError(apperrors.ErrorCodeInternalServer, "directory_not_empty").WithDescription("output directory is not empty")
 			}
 		}
 	}

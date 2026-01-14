@@ -7,7 +7,7 @@ import (
 	"runtime"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/spf13/cobra"
 )
@@ -155,7 +155,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		return nil
 	default:
 		fmt.Printf("❌ %d error(s) and %d warning(s) found. Please fix errors before continuing.\n", failed, warned)
-		return errors.NewError(errors.ErrorCodeInternalServer, "health_check_failed").WithDescription("environment issues detected")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "health_check_failed").WithDescription("environment issues detected")
 	}
 }
 

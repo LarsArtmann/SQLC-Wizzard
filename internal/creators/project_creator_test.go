@@ -65,7 +65,7 @@ type WriteFileCall struct {
 func (m *MockFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm fs.FileMode) error {
 	m.mkdirAllCalls = append(m.mkdirAllCalls, MkdirAllCall{Path: path, Perm: perm})
 	if m.shouldFailMkdir {
-		return errors.New("mkdir failed")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "mkdir failed")
 	}
 	return nil
 }
@@ -73,37 +73,37 @@ func (m *MockFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm 
 func (m *MockFileSystemAdapter) WriteFile(ctx context.Context, path string, content []byte, perm fs.FileMode) error {
 	m.writeFileCalls = append(m.writeFileCalls, WriteFileCall{Path: path, Content: content, Perm: perm})
 	if m.shouldFailWrite {
-		return errors.New("write failed")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "write failed")
 	}
 	return nil
 }
 
 func (m *MockFileSystemAdapter) ReadFile(ctx context.Context, path string) ([]byte, error) {
-	return nil, errors.New("not implemented")
+	return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 func (m *MockFileSystemAdapter) Exists(ctx context.Context, path string) (bool, error) {
-	return false, errors.New("not implemented")
+	return false, apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 func (m *MockFileSystemAdapter) Remove(ctx context.Context, path string) error {
-	return errors.New("not implemented")
+	return apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 func (m *MockFileSystemAdapter) TempDir(ctx context.Context, pattern string) (string, error) {
-	return "", errors.New("not implemented")
+	return "", apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 func (m *MockFileSystemAdapter) Copy(ctx context.Context, src, dst string) error {
-	return errors.New("not implemented")
+	return apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 func (m *MockFileSystemAdapter) CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error {
-	return errors.New("not implemented")
+	return apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 func (m *MockFileSystemAdapter) ListFiles(ctx context.Context, dir string) ([]string, error) {
-	return nil, errors.New("not implemented")
+	return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 type MockCLIAdapter struct {
@@ -132,7 +132,7 @@ func (m *MockCLIAdapter) GetVersion(ctx context.Context, command string) (string
 }
 
 func (m *MockCLIAdapter) Install(ctx context.Context, cmd string) error {
-	return errors.New("not implemented")
+	return apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
 var _ = Describe("ProjectCreator", func() {

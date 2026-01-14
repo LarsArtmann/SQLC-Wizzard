@@ -1,9 +1,9 @@
-package errors_test
+package apperrors_test
 
 import (
 	stderrors "errors"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -12,10 +12,10 @@ var _ = Describe("Error Wrapping and Combining", func() {
 	Context("Wrap", func() {
 		It("should wrap error with code and component", func() {
 			original := stderrors.New("database connection failed")
-			wrapped := errors.Wrap(original, errors.ErrorCodeInternalServer, "database")
+			wrapped := apperrors.Wrap(original, apperrors.ErrorCodeInternalServer, "database")
 
 			Expect(wrapped).To(HaveOccurred())
-			Expect(wrapped.Code).To(Equal(errors.ErrorCodeInternalServer))
+			Expect(wrapped.Code).To(Equal(apperrors.ErrorCodeInternalServer))
 			Expect(wrapped.Component).To(Equal("database"))
 			Expect(wrapped.Message).To(Equal("database connection failed"))
 			Expect(stderrors.Unwrap(wrapped)).To(Equal(original))
@@ -28,7 +28,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 	Context("WrapWithRequestID", func() {
 		It("should wrap error with request ID", func() {
 			original := stderrors.New("operation failed")
-			wrapped := errors.WrapWithRequestID(original, errors.ErrorCodeInternalServer, "req-123", "api")
+			wrapped := apperrors.WrapWithRequestID(original, apperrors.ErrorCodeInternalServer, "req-123", "api")
 
 			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.RequestID).To(Equal("req-123"))
@@ -43,7 +43,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 	Context("WrapWithUserID", func() {
 		It("should wrap error with user ID", func() {
 			original := stderrors.New("permission denied")
-			wrapped := errors.WrapWithUserID(original, errors.ErrorCodePermissionDenied, "user-456", "auth")
+			wrapped := apperrors.WrapWithUserID(original, apperrors.ErrorCodePermissionDenied, "user-456", "auth")
 
 			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.UserID).To(Equal("user-456"))
@@ -58,11 +58,11 @@ var _ = Describe("Error Wrapping and Combining", func() {
 	Context("Wrapf", func() {
 		It("should wrap error with formatted message", func() {
 			original := stderrors.New("field validation failed")
-			baseErr := errors.NewError(errors.ErrorCodeValidationError, "validation error")
-			wrapped := errors.Wrapf(original, baseErr, "user %s has invalid %s", "john", "email")
+			baseErr := apperrors.NewError(apperrors.ErrorCodeValidationError, "validation error")
+			wrapped := apperrors.Wrapf(original, baseErr, "user %s has invalid %s", "john", "email")
 
 			Expect(wrapped).To(HaveOccurred())
-			Expect(wrapped.Code).To(Equal(errors.ErrorCodeValidationError))
+			Expect(wrapped.Code).To(Equal(apperrors.ErrorCodeValidationError))
 			Expect(wrapped.Message).To(Equal("user john has invalid email"))
 			Expect(wrapped.Description).To(ContainSubstring("field validation failed"))
 			Expect(stderrors.Unwrap(wrapped)).To(Equal(original))
@@ -72,25 +72,25 @@ var _ = Describe("Error Wrapping and Combining", func() {
 		})
 
 		It("should handle nil original error", func() {
-			baseErr := errors.NewError(errors.ErrorCodeValidationError, "base error")
-			wrapped := errors.Wrapf(nil, baseErr, "formatted message")
+			baseErr := apperrors.NewError(apperrors.ErrorCodeValidationError, "base error")
+			wrapped := apperrors.Wrapf(nil, baseErr, "formatted message")
 
 			Expect(wrapped).To(HaveOccurred())
 			Expect(wrapped.Message).To(Equal("Cannot wrap nil error"))
-			Expect(wrapped.Code).To(Equal(errors.ErrorCodeInternalServer))
+			Expect(wrapped.Code).To(Equal(apperrors.ErrorCodeInternalServer))
 
 			// TODO: Add tests for nil base error
 			// TODO: Add validation for both errors being nil
 		})
 	})
 
-	Context("errors.Combine", func() {
+	Context("apperrors.Combine", func() {
 		It("should combine multiple application errors", func() {
-			err1 := errors.NewError(errors.ErrorCodeValidationError, "error 1")
-			err2 := errors.NewError(errors.ErrorCodeValidationError, "error 2")
-			err3 := errors.NewError(errors.ErrorCodeInternalServer, "error 3")
+			err1 := apperrors.NewError(apperrors.ErrorCodeValidationError, "error 1")
+			err2 := apperrors.NewError(apperrors.ErrorCodeValidationError, "error 2")
+			err3 := apperrors.NewError(apperrors.ErrorCodeInternalServer, "error 3")
 
-			list := errors.Combine(err1, err2, err3)
+			list := apperrors.Combine(err1, err2, err3)
 
 			Expect(list.GetCount()).To(Equal(3))
 			Expect(list.Errors[0].Message).To(Equal("error 1"))
@@ -102,7 +102,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 		})
 
 		It("should handle empty error list", func() {
-			list := errors.Combine()
+			list := apperrors.Combine()
 
 			Expect(list.GetCount()).To(Equal(0))
 			Expect(list.HasErrors()).To(BeFalse())
@@ -111,42 +111,42 @@ var _ = Describe("Error Wrapping and Combining", func() {
 
 	Context("CombineErrors", func() {
 		It("should combine application errors", func() {
-			err1 := errors.NewError(errors.ErrorCodeValidationError, "error 1")
-			err2 := errors.NewError(errors.ErrorCodeValidationError, "error 2")
+			err1 := apperrors.NewError(apperrors.ErrorCodeValidationError, "error 1")
+			err2 := apperrors.NewError(apperrors.ErrorCodeValidationError, "error 2")
 
-			list := errors.CombineErrors(err1, err2)
+			list := apperrors.CombineErrors(err1, err2)
 
 			Expect(list.GetCount()).To(Equal(2))
 		})
 
 		It("should wrap non-application errors", func() {
 			err1 := stderrors.New("standard error")
-			err2 := errors.NewError(errors.ErrorCodeValidationError, "app error")
+			err2 := apperrors.NewError(apperrors.ErrorCodeValidationError, "app error")
 
-			list := errors.CombineErrors(err1, err2)
+			list := apperrors.CombineErrors(err1, err2)
 
 			Expect(list.GetCount()).To(Equal(2))
-			Expect(list.Errors[0].Code).To(Equal(errors.ErrorCodeInternalServer))
+			Expect(list.Errors[0].Code).To(Equal(apperrors.ErrorCodeInternalServer))
 			Expect(list.Errors[0].Component).To(Equal("unknown"))
 			Expect(list.Errors[0].Message).To(ContainSubstring("standard error"))
-			Expect(list.Errors[1].Code).To(Equal(errors.ErrorCodeValidationError))
+			Expect(list.Errors[1].Code).To(Equal(apperrors.ErrorCodeValidationError))
 
 			// TODO: Add validation for wrapping behavior
 			// TODO: Add tests for error preservation
 		})
 
 		It("should skip nil errors", func() {
-			appErr := errors.NewError(errors.ErrorCodeValidationError, "app error")
+			appErr := apperrors.NewError(apperrors.ErrorCodeValidationError, "app error")
 
-			list := errors.CombineErrors(nil, appErr, nil)
+			list := apperrors.CombineErrors(nil, appErr, nil)
 
 			Expect(list.GetCount()).To(Equal(1))
-			Expect(list.Errors[0].Code).To(Equal(errors.ErrorCodeValidationError))
+			Expect(list.Errors[0].Code).To(Equal(apperrors.ErrorCodeValidationError))
 			Expect(list.Errors[0].Message).To(Equal("app error"))
 		})
 
 		It("should handle all nil errors", func() {
-			list := errors.CombineErrors(nil, nil, nil)
+			list := apperrors.CombineErrors(nil, nil, nil)
 
 			Expect(list.GetCount()).To(Equal(0))
 			Expect(list.HasErrors()).To(BeFalse())

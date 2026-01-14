@@ -1,10 +1,10 @@
 package commands
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/generators"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
@@ -61,7 +61,7 @@ Example:
 func runInit(opts *InitOptions) error {
 	// Check if sqlc.yaml already exists
 	if _, err := os.Stat("sqlc.yaml"); err == nil {
-		return errors.New("sqlc.yaml already exists in current directory. Remove it first or run in a different directory")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "sqlc.yaml already exists in current directory. Remove it first or run in a different directory")
 	}
 
 	var result *wizard.WizardResult
@@ -95,13 +95,13 @@ func runInit(opts *InitOptions) error {
 func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 	// Validate required flags
 	if opts.ProjectType == "" {
-		return nil, errors.New("--project-type is required in non-interactive mode")
+		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "--project-type is required in non-interactive mode")
 	}
 	if opts.Database == "" {
-		return nil, errors.New("--database is required in non-interactive mode")
+		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "--database is required in non-interactive mode")
 	}
 	if opts.PackagePath == "" {
-		return nil, errors.New("--package is required in non-interactive mode")
+		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "--package is required in non-interactive mode")
 	}
 
 	// Create template data from flags

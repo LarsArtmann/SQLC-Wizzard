@@ -2,10 +2,10 @@ package creators
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"path/filepath"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 )
@@ -164,11 +164,11 @@ func (dc *DirectoryCreator) getProjectTypeDirectories(projectType generated.Proj
 // Validate ensures config is valid for directory creation.
 func (dc *DirectoryCreator) Validate(config CreatorConfig) error {
 	if config.ProjectName == "" {
-		return errors.New("project name cannot be empty")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "project name cannot be empty")
 	}
 
 	if config.OutputPath == "" {
-		return errors.New("output path cannot be empty")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "output path cannot be empty")
 	}
 
 	if !config.ProjectType.IsValid() {

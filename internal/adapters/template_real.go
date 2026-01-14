@@ -2,9 +2,9 @@ package adapters
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
@@ -54,7 +54,7 @@ func (a *RealTemplateAdapter) GenerateFiles(ctx context.Context, data generated.
 func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data generated.TemplateData) error {
 	// Basic validation
 	if data.ProjectType == "" {
-		return errors.New("Project type is required")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "Project type is required")
 	}
 
 	if !data.ProjectType.IsValid() {
@@ -62,7 +62,7 @@ func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data gen
 	}
 
 	if data.Database.Engine == "" {
-		return errors.New("Database engine is required")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "Database engine is required")
 	}
 
 	if !data.Database.Engine.IsValid() {
@@ -71,7 +71,7 @@ func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data gen
 
 	// Validate package name
 	if data.Package.Name == "" {
-		return errors.New("package name is required")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "package name is required")
 	}
 
 	// For now, just return nil as full Validate is not implemented

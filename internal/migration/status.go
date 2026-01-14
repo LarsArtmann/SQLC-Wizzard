@@ -114,7 +114,7 @@ func (ms *MigrationStatus) GetPendingMigrations() uint {
 	return total - applied
 }
 
-// ValidationError represents migration-specific validation errors.
+// ValidationError represents migration-specific validation apperrors.
 type ValidationError struct {
 	Field   string `json:"field"`
 	Message string `json:"message"`

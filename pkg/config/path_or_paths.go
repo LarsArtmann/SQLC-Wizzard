@@ -1,7 +1,7 @@
 package config
 
 import (
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"gopkg.in/yaml.v3"
 )
 
@@ -62,8 +62,8 @@ func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 		return nil
 	}
 
-	return errors.Newf(
-		errors.ErrorCodeInvalidValue,
+	return apperrors.Newf(
+		apperrors.ErrorCodeInvalidValue,
 		"path_or_paths must be either a string or array of strings, got: %v", value.Kind,
 	)
 }

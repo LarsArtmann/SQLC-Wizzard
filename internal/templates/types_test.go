@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -23,7 +23,7 @@ func TestNewProjectType_Invalid(t *testing.T) {
 
 	require.Error(t, err)
 	assert.Empty(t, result)
-	assert.True(t, errors.Is(err, errors.ErrInvalidType))
+	assert.True(t, apperrors.Is(err, apperrors.ErrInvalidType))
 }
 
 func TestNewDatabaseType_Valid(t *testing.T) {
@@ -38,7 +38,7 @@ func TestNewDatabaseType_Invalid(t *testing.T) {
 
 	require.Error(t, err)
 	assert.Empty(t, result)
-	assert.True(t, errors.Is(err, errors.ErrInvalidType))
+	assert.True(t, apperrors.Is(err, apperrors.ErrInvalidType))
 }
 
 func TestMustNewProjectType_Valid(t *testing.T) {

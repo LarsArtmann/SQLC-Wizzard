@@ -1,7 +1,7 @@
 package templates
 
 import (
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 )
 
 // Registry manages available templates.
@@ -33,7 +33,7 @@ func (r *Registry) Register(tmpl Template) {
 func (r *Registry) Get(projectType ProjectType) (Template, error) {
 	tmpl, ok := r.templates[projectType]
 	if !ok {
-		return nil, errors.TemplateNotFoundError(string(projectType))
+		return nil, apperrors.TemplateNotFoundError(string(projectType))
 	}
 	return tmpl, nil
 }

@@ -22,7 +22,7 @@ type ValidationResult struct {
 	Warnings []ValidationError
 }
 
-// IsValid returns true if there are no errors.
+// IsValid returns true if there are no apperrors.
 func (r *ValidationResult) IsValid() bool {
 	return len(r.Errors) == 0
 }

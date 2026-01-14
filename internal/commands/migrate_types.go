@@ -4,7 +4,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 )
 
-// MigrationError represents migration-specific errors.
+// MigrationError represents migration-specific apperrors.
 type MigrationError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`

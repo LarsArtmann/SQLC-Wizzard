@@ -2,9 +2,9 @@ package wizard
 
 import (
 	"fmt"
-	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/charmbracelet/huh"
 )
 
@@ -79,28 +79,28 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 func (s *OutputStep) ValidateConfiguration(data *generated.TemplateData) error {
 	// Check for path conflicts
 	if data.Output.BaseDir == data.Output.QueriesDir {
-		return stderrors.New("base output directory cannot be the same as queries directory")
+		return apperrors.NewError(apperrors.ErrorCodeValidationError, "base output directory cannot be the same as queries directory")
 	}
 
 	if data.Output.BaseDir == data.Output.SchemaDir {
-		return stderrors.New("base output directory cannot be the same as schema directory")
+		return apperrors.NewError(apperrors.ErrorCodeValidationError, "base output directory cannot be the same as schema directory")
 	}
 
 	if data.Output.QueriesDir == data.Output.SchemaDir {
-		return stderrors.New("queries directory cannot be the same as schema directory")
+		return apperrors.NewError(apperrors.ErrorCodeValidationError, "queries directory cannot be the same as schema directory")
 	}
 
 	// Check for reasonable directory structure
 	if data.Output.BaseDir == "" {
-		return stderrors.New("base output directory is required")
+		return apperrors.NewError(apperrors.ErrorCodeValidationError, "base output directory is required")
 	}
 
 	if data.Output.QueriesDir == "" {
-		return stderrors.New("queries directory is required")
+		return apperrors.NewError(apperrors.ErrorCodeValidationError, "queries directory is required")
 	}
 
 	if data.Output.SchemaDir == "" {
-		return stderrors.New("schema directory is required")
+		return apperrors.NewError(apperrors.ErrorCodeValidationError, "schema directory is required")
 	}
 
 	return nil

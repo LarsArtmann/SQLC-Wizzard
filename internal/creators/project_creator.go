@@ -2,9 +2,9 @@ package creators
 
 import (
 	"context"
-	"errors"
 	"fmt"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
@@ -121,7 +121,7 @@ func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateCon
 
 	// Defensive check: ensure config is not nil before marshalling
 	if cfg.Config == nil {
-		return errors.New("sqlc config is nil: cannot marshal empty configuration to yaml")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "sqlc config is nil: cannot marshal empty configuration to yaml")
 	}
 
 	// Convert config to YAML using the marshaller

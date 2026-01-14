@@ -2,10 +2,9 @@ package wizard
 
 import (
 	"fmt"
-	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
@@ -146,7 +145,7 @@ func (ui *UIHelper) GetConfirmation() (bool, error) {
 	}
 
 	if !confirmed {
-		return false, stderrors.New("configuration cancelled by user")
+		return false, apperrors.NewError(apperrors.ErrorCodeValidationError, "configuration cancelled by user")
 	}
 
 	return true, nil
@@ -181,7 +180,7 @@ func (ui *UIHelper) formatCompletionDetails(cfg *schema.Schema, data generated.T
 	return details
 }
 
-// showErrorWithSchemaDetails displays schema errors.
+// showErrorWithSchemaDetails displays schema apperrors.
 func (ui *UIHelper) showErrorWithSchemaDetails(err *schema.SchemaError) {
 	errorStyle := lipgloss.NewStyle().
 		Bold(true).
@@ -197,8 +196,8 @@ func (ui *UIHelper) showErrorWithSchemaDetails(err *schema.SchemaError) {
 	fmt.Println(detailStyle.Render("Message: " + err.Message))
 }
 
-// showErrorWithTypedDetails displays typed errors.
-func (ui *UIHelper) showErrorWithTypedDetails(err *errors.Error) {
+// showErrorWithTypedDetails displays typed apperrors.
+func (ui *UIHelper) showErrorWithTypedDetails(err *apperrors.Error) {
 	errorStyle := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("#FF5555")).

@@ -3,9 +3,9 @@ package wizard
 
 import (
 	"fmt"
-	stderrors "errors"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/charmbracelet/huh"
 )
@@ -67,13 +67,13 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 		Value(&data.ProjectName).
 		Validate(func(name string) error {
 			if name == "" {
-				return stderrors.New("project name cannot be empty")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name cannot be empty")
 			}
 			if len(name) < 2 {
-				return stderrors.New("project name must be at least 2 characters")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be at least 2 characters")
 			}
 			if len(name) > 50 {
-				return stderrors.New("project name must be less than 50 characters")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be less than 50 characters")
 			}
 			// Simple validation for now
 			return nil
@@ -89,7 +89,7 @@ func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
 		Placeholder("db").
 		Validate(func(name string) error {
 			if name == "" {
-				return stderrors.New("package name cannot be empty")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "package name cannot be empty")
 			}
 			// Simple validation for now
 			return nil
@@ -105,7 +105,7 @@ func CreatePackagePathStep(data *generated.TemplateData) *huh.Input {
 		Placeholder("github.com/username/project").
 		Validate(func(path string) error {
 			if path == "" {
-				return stderrors.New("package path cannot be empty")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "package path cannot be empty")
 			}
 			// Simple validation for now
 			return nil
@@ -121,7 +121,7 @@ func CreateOutputDirStep(data *generated.TemplateData) *huh.Input {
 		Placeholder("internal/db").
 		Validate(func(dir string) error {
 			if dir == "" {
-				return stderrors.New("output directory cannot be empty")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "output directory cannot be empty")
 			}
 			return nil
 		})
@@ -148,7 +148,7 @@ func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 		Placeholder(placeholder).
 		Validate(func(url string) error {
 			if url == "" {
-				return stderrors.New("database URL cannot be empty")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "database URL cannot be empty")
 			}
 			return nil
 		})
