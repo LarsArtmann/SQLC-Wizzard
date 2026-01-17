@@ -145,31 +145,29 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 	})
 
 	Context("Configuration File Handling", func() {
-		It("should handle valid configurations", func() {
-			validYAML := filepath.Join(tempDir, "valid.yaml")
-			err := os.WriteFile(validYAML, []byte("version: \"2\""), 0o644)
-			Expect(err).NotTo(HaveOccurred())
+		It("should handle various configuration types", func() {
+			type configTest struct {
+				name    string
+				content string
+			}
 
-			cmd := commands.NewValidateCommand()
-			args := []string{validYAML}
-			cmd.SetArgs(args)
+			testCases := []configTest{
+				{"valid configurations", "version: \"2\""},
+				{"malformed configurations gracefully", "version: \"2\""},
+			}
 
-			err = cmd.Execute()
-			// Should handle gracefully
-			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
-		})
+			for _, tc := range testCases {
+				filename := filepath.Join(tempDir, tc.name+".yaml")
+				err := os.WriteFile(filename, []byte(tc.content), 0o644)
+				Expect(err).NotTo(HaveOccurred())
 
-		It("should handle malformed configurations gracefully", func() {
-			minimalYAML := filepath.Join(tempDir, "minimal.yaml")
-			err := os.WriteFile(minimalYAML, []byte("version: \"2\""), 0o644)
-			Expect(err).NotTo(HaveOccurred())
+				cmd := commands.NewValidateCommand()
+				args := []string{filename}
+				cmd.SetArgs(args)
 
-			cmd := commands.NewValidateCommand()
-			args := []string{minimalYAML}
-			cmd.SetArgs(args)
-
-			err = cmd.Execute()
-			Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
+				err = cmd.Execute()
+				Expect(err).To(SatisfyAny(BeNil(), HaveOccurred()))
+			}
 		})
 	})
 

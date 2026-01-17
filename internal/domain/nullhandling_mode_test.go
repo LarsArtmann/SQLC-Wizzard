@@ -41,28 +41,41 @@ var _ = Describe("NullHandlingMode", func() {
 		func(mode string) bool { return domain.NullHandlingMode(mode).UsePointers() },
 		"UsePointers")
 
-	Context("UseEmptySlices", func() {
-		It("should return true only for empty slices mode", func() {
-			Expect(domain.NullHandlingEmptySlices.UseEmptySlices()).To(BeTrue())
-		})
+	Context("Mode-specific methods", func() {
+		type modeMethodTest struct {
+			methodName    string
+			assertTrueFor domain.NullHandlingMode
+			methodCaller  func(domain.NullHandlingMode) bool
+		}
 
-		It("should return false for other modes", func() {
-			Expect(domain.NullHandlingPointers.UseEmptySlices()).To(BeFalse())
-			Expect(domain.NullHandlingExplicitNull.UseEmptySlices()).To(BeFalse())
-			Expect(domain.NullHandlingMixed.UseEmptySlices()).To(BeFalse())
-		})
-	})
+		DescribeTable("should return true only for specific mode",
+			func(tc modeMethodTest) {
+				Expect(tc.methodCaller(tc.assertTrueFor)).To(BeTrue())
 
-	Context("UseExplicitNull", func() {
-		It("should return true only for explicit null mode", func() {
-			Expect(domain.NullHandlingExplicitNull.UseExplicitNull()).To(BeTrue())
-		})
+				allModes := []domain.NullHandlingMode{
+					domain.NullHandlingPointers,
+					domain.NullHandlingEmptySlices,
+					domain.NullHandlingExplicitNull,
+					domain.NullHandlingMixed,
+				}
 
-		It("should return false for other modes", func() {
-			Expect(domain.NullHandlingPointers.UseExplicitNull()).To(BeFalse())
-			Expect(domain.NullHandlingEmptySlices.UseExplicitNull()).To(BeFalse())
-			Expect(domain.NullHandlingMixed.UseExplicitNull()).To(BeFalse())
-		})
+				for _, mode := range allModes {
+					if mode != tc.assertTrueFor {
+						Expect(tc.methodCaller(mode)).To(BeFalse())
+					}
+				}
+			},
+			Entry("UseEmptySlices", modeMethodTest{
+				methodName:    "UseEmptySlices",
+				assertTrueFor: domain.NullHandlingEmptySlices,
+				methodCaller:  func(m domain.NullHandlingMode) bool { return m.UseEmptySlices() },
+			}),
+			Entry("UseExplicitNull", modeMethodTest{
+				methodName:    "UseExplicitNull",
+				assertTrueFor: domain.NullHandlingExplicitNull,
+				methodCaller:  func(m domain.NullHandlingMode) bool { return m.UseExplicitNull() },
+			}),
+		)
 	})
 
 	Context("String", func() {

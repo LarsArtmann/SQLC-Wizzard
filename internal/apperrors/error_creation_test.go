@@ -2,7 +2,6 @@ package apperrors
 
 import (
 	stderrors "errors"
-	"testing"
 
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -160,8 +159,3 @@ var _ = Describe("Error Creation", func() {
 	// TODO: Add tests for error creation with unicode characters
 	// TODO: Add performance tests for error creation
 })
-
-func TestErrorCreation(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Error Creation Suite")
-}

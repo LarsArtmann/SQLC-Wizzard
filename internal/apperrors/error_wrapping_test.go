@@ -25,34 +25,52 @@ var _ = Describe("Error Wrapping and Combining", func() {
 		})
 	})
 
-	Context("WrapWithRequestID", func() {
-		It("should wrap error with request ID", func() {
-			original := stderrors.New("operation failed")
-			wrapped := apperrors.WrapWithRequestID(original, apperrors.ErrorCodeInternalServer, "req-123", "api")
+	Context("WrapWithRequestID and WrapWithUserID", func() {
+		type wrappingTestCase struct {
+			name        string
+			errorMsg    string
+			code        apperrors.ErrorCode
+			id          string
+			component   string
+			expectID    string
+			expectError string
+		}
 
-			Expect(wrapped).To(HaveOccurred())
-			Expect(wrapped.RequestID).To(Equal("req-123"))
-			Expect(wrapped.Component).To(Equal("api"))
-			Expect(stderrors.Unwrap(wrapped)).To(Equal(original))
+		DescribeTable("should wrap error with context",
+			func(tc wrappingTestCase, wrapFunc func(error, apperrors.ErrorCode, string, string) *apperrors.Error) {
+				original := stderrors.New(tc.errorMsg)
+				wrapped := wrapFunc(original, tc.code, tc.id, tc.component)
 
-			// TODO: Add validation for empty request ID
-			// TODO: Add tests for request ID format validation
-		})
-	})
+				Expect(wrapped).To(HaveOccurred())
+				Expect(stderrors.Unwrap(wrapped)).To(Equal(original))
 
-	Context("WrapWithUserID", func() {
-		It("should wrap error with user ID", func() {
-			original := stderrors.New("permission denied")
-			wrapped := apperrors.WrapWithUserID(original, apperrors.ErrorCodePermissionDenied, "user-456", "auth")
+				if tc.expectID == "requestID" {
+					Expect(wrapped.RequestID).To(Equal(tc.id))
+				} else {
+					Expect(wrapped.UserID).To(Equal(tc.id))
+				}
+				Expect(wrapped.Component).To(Equal(tc.component))
+			},
+			Entry("WrapWithRequestID", wrappingTestCase{
+				name:        "wrap with request ID",
+				errorMsg:    "operation failed",
+				code:        apperrors.ErrorCodeInternalServer,
+				id:          "req-123",
+				component:   "api",
+				expectID:    "requestID",
+				expectError: "operation failed",
+			}, apperrors.WrapWithRequestID),
 
-			Expect(wrapped).To(HaveOccurred())
-			Expect(wrapped.UserID).To(Equal("user-456"))
-			Expect(wrapped.Component).To(Equal("auth"))
-			Expect(stderrors.Unwrap(wrapped)).To(Equal(original))
-
-			// TODO: Add validation for empty user ID
-			// TODO: Add tests for user ID format validation
-		})
+			Entry("WrapWithUserID", wrappingTestCase{
+				name:        "wrap with user ID",
+				errorMsg:    "permission denied",
+				code:        apperrors.ErrorCodePermissionDenied,
+				id:          "user-456",
+				component:   "auth",
+				expectID:    "userID",
+				expectError: "permission denied",
+			}, apperrors.WrapWithUserID),
+		)
 	})
 
 	Context("Wrapf", func() {

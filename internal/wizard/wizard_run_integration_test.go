@@ -19,29 +19,11 @@ var _ = Describe("Wizard Run Method Integration", func() {
 			result := wiz.GetResult()
 
 			// Set up complete template data as Run() method would
-			result.TemplateData = generated.TemplateData{
-				ProjectName: "integration-test-project",
-				ProjectType: generated.ProjectTypeMicroservice,
-				Package: generated.PackageConfig{
-					Name: "db",
-					Path: "github.com/example/integrationtest",
-				},
-				Database: generated.DatabaseConfig{
-					Engine:    generated.DatabaseTypePostgreSQL,
-					UseUUIDs:  true,
-					UseJSON:   true,
-					UseArrays: true,
-				},
-				Output: generated.OutputConfig{
-					BaseDir:    "./internal/db",
-					QueriesDir: "./internal/db/queries",
-					SchemaDir:  "./internal/db/schema",
-				},
-				Validation: generated.ValidationConfig{
-					EmitOptions: generated.DefaultEmitOptions(),
-					SafetyRules: generated.DefaultSafetyRules(),
-				},
-			}
+			result.TemplateData = createTemplateDataWithFeatures(
+				"integration-test-project",
+				generated.ProjectTypeMicroservice,
+			)
+			result.TemplateData.Package.Path = "github.com/example/integrationtest"
 
 			// This simulates the data flow in Run() method
 			Expect(result.TemplateData.ProjectName).To(Equal("integration-test-project"))

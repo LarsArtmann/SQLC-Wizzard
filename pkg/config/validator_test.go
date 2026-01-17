@@ -1,10 +1,37 @@
 package config_test
 
 import (
+	"strings"
+
 	. "github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
+
+// Helper function to create a basic SQL configuration.
+func createBasicSQLConfig(engine, outDir, packageName string) SQLConfig {
+	return SQLConfig{
+		Engine:  engine,
+		Schema:  NewPathOrPaths([]string{"schema.sql"}),
+		Queries: NewPathOrPaths([]string{"queries.sql"}),
+		Gen: GenConfig{
+			Go: &GoGenConfig{
+				Out:     outDir,
+				Package: packageName,
+			},
+		},
+	}
+}
+
+// Helper function to create a basic SqlcConfig.
+func createBasicSqlcConfig(engine string) *SqlcConfig {
+	return &SqlcConfig{
+		Version: "2",
+		SQL: []SQLConfig{
+			createBasicSQLConfig(engine, "db", "db"),
+		},
+	}
+}
 
 var _ = Describe("Validator", func() {
 	Context("ValidationResult", func() {
@@ -16,32 +43,54 @@ var _ = Describe("Validator", func() {
 			Expect(result.IsValid()).To(BeTrue())
 		})
 
-		It("should add errors correctly", func() {
-			result := &ValidationResult{}
+		Context("error and warning management", func() {
+			type testCase struct {
+				name        string
+				addField1   string
+				addMessage1 string
+				addField2   string
+				addMessage2 string
+			}
 
-			result.AddError("field1", "error message")
-			result.AddError("field2", "another error")
+			DescribeTable("should add items correctly",
+				func(tc testCase) {
+					result := &ValidationResult{}
 
-			Expect(result.Errors).To(HaveLen(2))
-			Expect(result.Errors[0].Field).To(Equal("field1"))
-			Expect(result.Errors[0].Message).To(Equal("error message"))
-			Expect(result.Errors[1].Field).To(Equal("field2"))
-			Expect(result.Errors[1].Message).To(Equal("another error"))
-			Expect(result.IsValid()).To(BeFalse())
-		})
-
-		It("should add warnings correctly", func() {
-			result := &ValidationResult{}
-
-			result.AddWarning("field1", "warning message")
-			result.AddWarning("field2", "another warning")
-
-			Expect(result.Warnings).To(HaveLen(2))
-			Expect(result.Warnings[0].Field).To(Equal("field1"))
-			Expect(result.Warnings[0].Message).To(Equal("warning message"))
-			Expect(result.Warnings[1].Field).To(Equal("field2"))
-			Expect(result.Warnings[1].Message).To(Equal("another warning"))
-			Expect(result.IsValid()).To(BeTrue()) // Warnings don't make it invalid
+					if strings.Contains(tc.name, "error") {
+						result.AddError(tc.addField1, tc.addMessage1)
+						result.AddError(tc.addField2, tc.addMessage2)
+						Expect(result.Errors).To(HaveLen(2))
+						Expect(result.Errors[0].Field).To(Equal(tc.addField1))
+						Expect(result.Errors[0].Message).To(Equal(tc.addMessage1))
+						Expect(result.Errors[1].Field).To(Equal(tc.addField2))
+						Expect(result.Errors[1].Message).To(Equal(tc.addMessage2))
+						Expect(result.IsValid()).To(BeFalse())
+					} else {
+						result.AddWarning(tc.addField1, tc.addMessage1)
+						result.AddWarning(tc.addField2, tc.addMessage2)
+						Expect(result.Warnings).To(HaveLen(2))
+						Expect(result.Warnings[0].Field).To(Equal(tc.addField1))
+						Expect(result.Warnings[0].Message).To(Equal(tc.addMessage1))
+						Expect(result.Warnings[1].Field).To(Equal(tc.addField2))
+						Expect(result.Warnings[1].Message).To(Equal(tc.addMessage2))
+						Expect(result.IsValid()).To(BeTrue()) // Warnings don't make it invalid
+					}
+				},
+				Entry("should add errors correctly", testCase{
+					name:        "error",
+					addField1:   "field1",
+					addMessage1: "error message",
+					addField2:   "field2",
+					addMessage2: "another error",
+				}),
+				Entry("should add warnings correctly", testCase{
+					name:        "warning",
+					addField1:   "field1",
+					addMessage1: "warning message",
+					addField2:   "field2",
+					addMessage2: "another warning",
+				}),
+			)
 		})
 
 		It("should mix errors and warnings correctly", func() {
@@ -158,22 +207,7 @@ var _ = Describe("Validator", func() {
 		})
 
 		It("should detect invalid database engine", func() {
-			cfg := &SqlcConfig{
-				Version: "2",
-				SQL: []SQLConfig{
-					{
-						Engine:  "invalid_engine",
-						Schema:  NewPathOrPaths([]string{"schema.sql"}),
-						Queries: NewPathOrPaths([]string{"queries.sql"}),
-						Gen: GenConfig{
-							Go: &GoGenConfig{
-								Out:     "db",
-								Package: "db",
-							},
-						},
-					},
-				},
-			}
+			cfg := createBasicSqlcConfig("invalid_engine")
 
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
@@ -184,28 +218,8 @@ var _ = Describe("Validator", func() {
 			cfg := &SqlcConfig{
 				Version: "2",
 				SQL: []SQLConfig{
-					{
-						Engine:  "postgresql",
-						Schema:  NewPathOrPaths([]string{"schema1.sql"}),
-						Queries: NewPathOrPaths([]string{"queries1.sql"}),
-						Gen: GenConfig{
-							Go: &GoGenConfig{
-								Out:     "db1",
-								Package: "db1",
-							},
-						},
-					},
-					{
-						Engine:  "mysql",
-						Schema:  NewPathOrPaths([]string{"schema2.sql"}),
-						Queries: NewPathOrPaths([]string{"queries2.sql"}),
-						Gen: GenConfig{
-							Go: &GoGenConfig{
-								Out:     "db2",
-								Package: "db2",
-							},
-						},
-					},
+					createBasicSQLConfig("postgresql", "db1", "db1"),
+					createBasicSQLConfig("mysql", "db2", "db2"),
 				},
 			}
 
@@ -215,22 +229,9 @@ var _ = Describe("Validator", func() {
 		})
 
 		It("should validate Go generator configuration", func() {
-			cfg := &SqlcConfig{
-				Version: "2",
-				SQL: []SQLConfig{
-					{
-						Engine:  "postgresql",
-						Schema:  NewPathOrPaths([]string{"schema.sql"}),
-						Queries: NewPathOrPaths([]string{"queries.sql"}),
-						Gen: GenConfig{
-							Go: &GoGenConfig{
-								Out:     "",
-								Package: "",
-							},
-						},
-					},
-				},
-			}
+			cfg := createBasicSqlcConfig("postgresql")
+			cfg.SQL[0].Gen.Go.Out = ""
+			cfg.SQL[0].Gen.Go.Package = ""
 
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
@@ -238,19 +239,8 @@ var _ = Describe("Validator", func() {
 		})
 
 		It("should handle nil Go generator config", func() {
-			cfg := &SqlcConfig{
-				Version: "2",
-				SQL: []SQLConfig{
-					{
-						Engine:  "postgresql",
-						Schema:  NewPathOrPaths([]string{"schema.sql"}),
-						Queries: NewPathOrPaths([]string{"queries.sql"}),
-						Gen: GenConfig{
-							Go: nil,
-						},
-					},
-				},
-			}
+			cfg := createBasicSqlcConfig("postgresql")
+			cfg.SQL[0].Gen.Go = nil
 
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
@@ -258,22 +248,8 @@ var _ = Describe("Validator", func() {
 		})
 
 		It("should validate path configurations", func() {
-			cfg := &SqlcConfig{
-				Version: "2",
-				SQL: []SQLConfig{
-					{
-						Engine:  "postgresql",
-						Schema:  NewPathOrPaths([]string{""}), // Empty path
-						Queries: NewPathOrPaths([]string{"queries.sql"}),
-						Gen: GenConfig{
-							Go: &GoGenConfig{
-								Out:     "db",
-								Package: "db",
-							},
-						},
-					},
-				},
-			}
+			cfg := createBasicSqlcConfig("postgresql")
+			cfg.SQL[0].Schema = NewPathOrPaths([]string{""}) // Empty path
 
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())
@@ -290,23 +266,8 @@ var _ = Describe("Validator", func() {
 
 	Context("Edge Cases and Error Handling", func() {
 		It("should handle configuration with warnings only", func() {
-			cfg := &SqlcConfig{
-				Version: "2",
-				SQL: []SQLConfig{
-					{
-						Engine:  "postgresql",
-						Schema:  NewPathOrPaths([]string{"schema.sql"}),
-						Queries: NewPathOrPaths([]string{"queries.sql"}),
-						Gen: GenConfig{
-							Go: &GoGenConfig{
-								Out:     "db",
-								Package: "db",
-								// May trigger warnings for missing optional fields
-							},
-						},
-					},
-				},
-			}
+			cfg := createBasicSqlcConfig("postgresql")
+			// May trigger warnings for missing optional fields
 
 			result := Validate(cfg)
 			Expect(result).NotTo(BeNil())

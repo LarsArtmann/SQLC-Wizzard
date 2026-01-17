@@ -10,6 +10,21 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
+// createValidatedInput creates a validated input field with common error checking.
+func createValidatedInput(title, description, placeholder, fieldName string, value *string) *huh.Input {
+	return huh.NewInput().
+		Title(title).
+		Description(description).
+		Value(value).
+		Placeholder(placeholder).
+		Validate(func(val string) error {
+			if val == "" {
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, fieldName+" cannot be empty")
+			}
+			return nil
+		})
+}
+
 // CreateProjectTypeStep creates project type selection step.
 func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 	projectTypePtr := new(string)
@@ -82,49 +97,35 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 
 // CreatePackageNameStep creates package name input step.
 func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
-	return huh.NewInput().
-		Title("Package Name").
-		Description("Enter the Go package name for generated code").
-		Value(&data.Package.Name).
-		Placeholder("db").
-		Validate(func(name string) error {
-			if name == "" {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, "package name cannot be empty")
-			}
-			// Simple validation for now
-			return nil
-		})
+	return createValidatedInput(
+		"Package Name",
+		"Enter the Go package name for generated code",
+		"db",
+		"package name",
+		&data.Package.Name,
+	)
 }
 
 // CreatePackagePathStep creates package path input step.
 func CreatePackagePathStep(data *generated.TemplateData) *huh.Input {
-	return huh.NewInput().
-		Title("Package Path").
-		Description("Enter the Go module path for your project").
-		Value(&data.Package.Path).
-		Placeholder("github.com/username/project").
-		Validate(func(path string) error {
-			if path == "" {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, "package path cannot be empty")
-			}
-			// Simple validation for now
-			return nil
-		})
+	return createValidatedInput(
+		"Package Path",
+		"Enter the Go module path for your project",
+		"github.com/username/project",
+		"package path",
+		&data.Package.Path,
+	)
 }
 
 // CreateOutputDirStep creates output directory input step.
 func CreateOutputDirStep(data *generated.TemplateData) *huh.Input {
-	return huh.NewInput().
-		Title("Output Directory").
-		Description("Enter the directory where generated files will be placed").
-		Value(&data.Output.BaseDir).
-		Placeholder("internal/db").
-		Validate(func(dir string) error {
-			if dir == "" {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, "output directory cannot be empty")
-			}
-			return nil
-		})
+	return createValidatedInput(
+		"Output Directory",
+		"Enter the directory where generated files will be placed",
+		"internal/db",
+		"output directory",
+		&data.Output.BaseDir,
+	)
 }
 
 // CreateDatabaseURLStep creates database URL input step.

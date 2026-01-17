@@ -23,31 +23,9 @@ var _ = Describe("Wizard Run Method", func() {
 	})
 
 	It("should handle valid template data generation", func() {
-		// Set up valid template data manually
 		result := wiz.GetResult()
-		result.TemplateData = generated.TemplateData{
-			ProjectName: "test-project",
-			ProjectType: generated.ProjectTypeMicroservice,
-			Package: generated.PackageConfig{
-				Name: "db",
-				Path: "github.com/example/testdb",
-			},
-			Database: generated.DatabaseConfig{
-				Engine:    generated.DatabaseTypePostgreSQL,
-				UseUUIDs:  true,
-				UseJSON:   true,
-				UseArrays: true,
-			},
-			Output: generated.OutputConfig{
-				BaseDir:    "./internal/db",
-				QueriesDir: "./internal/db/queries",
-				SchemaDir:  "./internal/db/schema",
-			},
-			Validation: generated.ValidationConfig{
-				EmitOptions: generated.DefaultEmitOptions(),
-				SafetyRules: generated.DefaultSafetyRules(),
-			},
-		}
+		result.TemplateData = createTemplateDataWithFeatures("test-project", generated.ProjectTypeMicroservice)
+		result.TemplateData.Package.Path = "github.com/example/testdb"
 
 		Expect(result.TemplateData.ProjectName).To(Equal("test-project"))
 		Expect(result.TemplateData.ProjectType).To(Equal(generated.ProjectTypeMicroservice))
