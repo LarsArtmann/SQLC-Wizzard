@@ -42,30 +42,30 @@
 
 ```yaml
 Key Insights:
-- Use golang-migrate/migrate/v4 for industry-standard migrations
-- Create MigrationAdapter interface for testability
-- Implement both database migrations and configuration migrations
-- Add rollback, status, and creation capabilities
+  - Use golang-migrate/migrate/v4 for industry-standard migrations
+  - Create MigrationAdapter interface for testability
+  - Implement both database migrations and configuration migrations
+  - Add rollback, status, and creation capabilities
 ```
 
 ### **Rule Transformation Architecture**
 
 ```yaml
 Key Insights:
-- Consolidate transformation logic in single location
-- Use TypeSpec-generated types as source of truth
-- Create RuleTransformer with clear responsibility
-- Maintain backward compatibility during transition
+  - Consolidate transformation logic in single location
+  - Use TypeSpec-generated types as source of truth
+  - Create RuleTransformer with clear responsibility
+  - Maintain backward compatibility during transition
 ```
 
 ### **Type Model Design**
 
 ```yaml
 Key Insights:
-- Prefer generated types over custom implementations
-- Use type aliases for backward compatibility
-- Eliminate interface{} where possible
-- Make impossible states unrepresentable
+  - Prefer generated types over custom implementations
+  - Use type aliases for backward compatibility
+  - Eliminate interface{} where possible
+  - Make impossible states unrepresentable
 ```
 
 ## 📊 **Process Improvement Learnings**

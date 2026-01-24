@@ -35,6 +35,7 @@ sqlc-wizard version
 ```
 
 **Output:**
+
 ```
 sqlc-wizard 1.0.0
   commit: abc123def456
@@ -60,11 +61,13 @@ sqlc-wizard version
 Download the appropriate binary for your platform from the [releases page](https://github.com/LarsArtmann/SQLC-Wizzard/releases).
 
 **Supported Platforms:**
+
 - Linux (AMD64, ARM64)
-- macOS (AMD64, ARM64)  
+- macOS (AMD64, ARM64)
 - Windows (AMD64)
 
 **Download Example (Linux AMD64):**
+
 ```bash
 curl -L -o sqlc-wizard https://github.com/LarsArtmann/SQLC-Wizzard/releases/download/v1.0.0/sqlc-wizard-linux-amd64
 chmod +x sqlc-wizard
@@ -109,11 +112,13 @@ which sqlc-wizard
 ```
 
 **Expected Output (Go install):**
+
 ```
 /home/yourname/go/bin/sqlc-wizard
 ```
 
 **Expected Output (Homebrew):**
+
 ```
 /usr/local/bin/sqlc-wizard
 ```
@@ -121,11 +126,13 @@ which sqlc-wizard
 If the command is not found, add the appropriate directory to your PATH:
 
 **For Go install:**
+
 ```bash
 export PATH=$PATH:$(go env GOPATH)/bin
 ```
 
 **For Homebrew (macOS):**
+
 ```bash
 export PATH=$PATH:/usr/local/bin
 ```
@@ -155,6 +162,7 @@ sqlc-wizard
 ```
 
 **Expected Output:**
+
 ```
 ╔═══════════════════════════════════════════════════════════════╗
 ║                                                                    ║
@@ -218,6 +226,7 @@ Package path: github.com/myorg/myproject
 ```
 
 **Quick Start Values:**
+
 - **Package name:** `myproject`
 - **Package path:** `github.com/myorg/myproject`
 
@@ -240,7 +249,8 @@ Enable features (use arrow keys + space to toggle):
 ↑/↓ navigate  space to toggle  enter to continue
 ```
 
-**For Quick Start:** 
+**For Quick Start:**
+
 - Keep "Use UUIDs" checked (press space to toggle)
 - Leave everything else unchecked
 - Press Enter to continue
@@ -262,6 +272,7 @@ Schema directory: ./sql/schema
 ```
 
 **Quick Start Values:**
+
 - Press Enter to accept defaults
 
 ### Step 7: Completion
@@ -296,6 +307,7 @@ cat sqlc.yaml
 ```
 
 **Expected Output:**
+
 ```yaml
 version: "2"
 sql:
@@ -319,6 +331,7 @@ sqlc generate
 ```
 
 **Expected Output:**
+
 ```
 # package db
 ...
@@ -354,6 +367,7 @@ func main() {
 ## Quick Start Summary
 
 You've now:
+
 1. ✅ Installed SQLC-Wizard
 2. ✅ Created a new hobby project with SQLite
 3. ✅ Generated sqlc.yaml configuration
@@ -371,6 +385,7 @@ You've now:
 ---
 
 **Need more help?** Check out:
+
 - [Project Types](#project-types) - Learn about other templates
 - [Configuration Options](#configuration-options) - All available settings
 - [Troubleshooting](#troubleshooting) - Common issues and solutions
@@ -388,12 +403,14 @@ SQLC-Wizard provides several project templates optimized for different use cases
 **Database:** SQLite (default) or PostgreSQL
 
 **Features:**
+
 - Simple directory structure
 - Minimal configuration options
 - Fast setup (≤ 2 minutes)
 - Low memory footprint
 
 **Generated Structure:**
+
 ```
 myproject/
 ├── internal/
@@ -408,6 +425,7 @@ myproject/
 ```
 
 **Use When:**
+
 - Building a personal blog or app
 - Creating a prototype or MVP
 - Learning SQLC
@@ -422,6 +440,7 @@ myproject/
 **Database:** PostgreSQL (recommended) or MySQL
 
 **Features:**
+
 - API token authentication queries
 - Service health check queries
 - Transaction support
@@ -429,6 +448,7 @@ myproject/
 - Prepared query optimization
 
 **Generated Structure:**
+
 ```
 microservice/
 ├── internal/
@@ -450,6 +470,7 @@ microservice/
 ```
 
 **Use When:**
+
 - Building microservices architecture
 - Creating REST APIs or GraphQL services
 - Need service-to-service authentication
@@ -464,6 +485,7 @@ microservice/
 **Database:** PostgreSQL or MySQL
 
 **Features:**
+
 - Audit logging tables
 - Soft delete queries
 - Row-level security support
@@ -472,6 +494,7 @@ microservice/
 - Performance monitoring queries
 
 **Generated Structure:**
+
 ```
 enterprise/
 ├── internal/
@@ -500,6 +523,7 @@ enterprise/
 ```
 
 **Use When:**
+
 - Building SaaS applications
 - Need audit trails and compliance
 - Multi-tenant architecture
@@ -515,6 +539,7 @@ enterprise/
 **Database:** Multi-database support (PostgreSQL, MySQL, SQLite)
 
 **Features:**
+
 - Rate limiting queries
 - API key management
 - Request/response logging
@@ -522,6 +547,7 @@ enterprise/
 - Response caching support
 
 **Generated Structure:**
+
 ```
 api-first/
 ├── internal/
@@ -547,6 +573,7 @@ api-first/
 ```
 
 **Use When:**
+
 - Building REST/GraphQL APIs
 - Mobile application backends
 - Rate limiting required
@@ -562,6 +589,7 @@ api-first/
 **Database:** PostgreSQL (recommended) or MySQL
 
 **Features:**
+
 - Time-series queries
 - Aggregation functions
 - Window functions support
@@ -569,6 +597,7 @@ api-first/
 - Data import/export queries
 
 **Generated Structure:**
+
 ```
 analytics/
 ├── internal/
@@ -593,6 +622,7 @@ analytics/
 ```
 
 **Use When:**
+
 - Building data warehouses
 - Creating BI dashboards
 - Real-time analytics
@@ -608,6 +638,7 @@ analytics/
 **Database:** SQLite (default) or PostgreSQL
 
 **Features:**
+
 - Test data seeding queries
 - Test cleanup queries
 - Test assertion queries
@@ -615,6 +646,7 @@ analytics/
 - Test result storage
 
 **Generated Structure:**
+
 ```
 testing/
 ├── internal/
@@ -638,6 +670,7 @@ testing/
 ```
 
 **Use When:**
+
 - Building integration test frameworks
 - Creating QA tools
 - Database testing utilities
@@ -646,21 +679,20 @@ testing/
 
 ## Choosing the Right Project Type
 
-| Project Type | Complexity | Features | Database | Use Case |
-|--------------|------------|-----------|-----------|
-| Hobby | ⭐ Simple | Basic | Personal projects |
-| Microservice | ⭐⭐⭐ Moderate | Advanced | APIs, Services |
-| Enterprise | ⭐⭐⭐⭐⭐⭐ Complex | Multi-DB | SaaS, Large apps |
-| API-First | ⭐⭐⭐⭐ Advanced | Multi-DB | REST/GraphQL APIs |
-| Analytics | ⭐⭐⭐⭐ Moderate | Advanced | Data pipelines |
-| Testing | ⭐⭐ Simple | Basic | QA, Testing tools |
+| Project Type | Complexity           | Features | Database          | Use Case |
+| ------------ | -------------------- | -------- | ----------------- | -------- |
+| Hobby        | ⭐ Simple            | Basic    | Personal projects |
+| Microservice | ⭐⭐⭐ Moderate      | Advanced | APIs, Services    |
+| Enterprise   | ⭐⭐⭐⭐⭐⭐ Complex | Multi-DB | SaaS, Large apps  |
+| API-First    | ⭐⭐⭐⭐ Advanced    | Multi-DB | REST/GraphQL APIs |
+| Analytics    | ⭐⭐⭐⭐ Moderate    | Advanced | Data pipelines    |
+| Testing      | ⭐⭐ Simple          | Basic    | QA, Testing tools |
 
 **Recommendation:** Start with **Hobby** or **Microservice** type, then upgrade as needed.
 
 ---
 
 **Next:** Learn about [Configuration Options](#configuration-options).
-
 
 ---
 
@@ -673,16 +705,19 @@ SQLC-Wizard provides many configuration options to customize your project.
 Configure where generated files are placed.
 
 **Options:**
+
 - **Base directory:** Root directory for generated code (default: `./internal/db`)
 - **Queries directory:** SQL query files (default: `./sql/queries`)
 - **Schema directory:** Database schema files (default: `./sql/schema`)
 
 **Best Practices:**
+
 - Use `internal/db` for private database code
 - Keep SQL files in `sql/` directory
 - Separate queries from schema in subdirectories
 
 **Example:**
+
 ```
 Output Configuration
 
@@ -696,6 +731,7 @@ Schema directory: ./sql/schema
 Configure database-specific options.
 
 **Available Features:**
+
 - **Use UUIDs:** Generate UUID columns for primary keys (recommended)
 - **Use JSON columns:** Support JSONB data types (PostgreSQL)
 - **Use arrays:** Support array data types (PostgreSQL)
@@ -714,6 +750,7 @@ Configure database-specific options.
 | Generated schema | ✅ | ✅ | ✅ |
 
 **Recommendations:**
+
 - ✅ Always enable "Use UUIDs" (better security and distribution)
 - ✅ Enable "JSON columns" for flexible data storage (PostgreSQL/MySQL)
 - ✅ Enable "Full-text search" for content-heavy applications
@@ -726,15 +763,18 @@ Configure database-specific options.
 Configure Go package details.
 
 **Options:**
+
 - **Package name:** Name of generated Go package (default: `myproject`)
 - **Package path:** Full Go module path (default: `github.com/myorg/myproject`)
 
 **Best Practices:**
+
 - Use lowercase package names (e.g., `db`, `models`)
 - Use full module paths for packages (e.g., `github.com/org/project/internal/db`)
 - Match package name to directory structure
 
 **Example:**
+
 ```
 Project Details
 
@@ -747,30 +787,34 @@ Package path: github.com/myorg/myproject/internal/db
 Wizard generates optimized sqlc.yaml with these options:
 
 #### Go Options
+
 ```yaml
 gen:
   go:
-    out: "internal/db"              # Output directory
-    sql_package: "db"            # Package name
-    emit_json_tags: true           # JSON struct tags
-    emit_prepared_queries: true     # Prepared queries
-    emit_interface: true         # Generate interfaces
+    out: "internal/db" # Output directory
+    sql_package: "db" # Package name
+    emit_json_tags: true # JSON struct tags
+    emit_prepared_queries: true # Prepared queries
+    emit_interface: true # Generate interfaces
 ```
 
 **Explanation:**
+
 - `emit_json_tags`: Add `json:` struct tags for API responses
 - `emit_prepared_queries`: Use prepared statements (better performance)
 - `emit_interface`: Generate DB interface (easier mocking in tests)
 
 #### Database Options
+
 ```yaml
 sql:
   - schema: "sql/schema"
     queries: "sql/queries"
-    engine: "sqlite"               # or postgresql, mysql
+    engine: "sqlite" # or postgresql, mysql
 ```
 
 **Supported Engines:**
+
 - `postgresql`: PostgreSQL 12+ (recommended for production)
 - `mysql`: MySQL 8.0+ (good compatibility)
 - `sqlite`: SQLite 3.35+ (good for development/testing)
@@ -780,6 +824,7 @@ sql:
 For advanced users, you can manually edit `sqlc.yaml` after generation.
 
 **Common Manual Adjustments:**
+
 ```yaml
 # Add additional output languages
 gen:
@@ -800,13 +845,13 @@ strict_generate: true
 ```
 
 **When to Manually Edit:**
+
 - Need TypeScript output (in addition to Go)
 - Require custom sqlc rules
 - Want strict type checking
 - Need specific sqlc overrides
 
 ---
-
 
 ## 🐛 Troubleshooting
 
@@ -821,6 +866,7 @@ This section covers common issues and their solutions.
 **Solutions:**
 
 1. **Verify Installation**
+
    ```bash
    which sqlc-wizard
    ```
@@ -830,14 +876,16 @@ This section covers common issues and their solutions.
    - Homebrew: `/usr/local/bin/sqlc-wizard`
 
 2. **Add to PATH**
-   
+
    For Go install:
+
    ```bash
    echo 'export PATH=$PATH:$(go env GOPATH)/bin' >> ~/.bashrc
    source ~/.bashrc
    ```
 
    For Homebrew (macOS):
+
    ```bash
    echo 'export PATH=$PATH:/usr/local/bin' >> ~/.zshrc
    source ~/.zshrc
@@ -853,6 +901,7 @@ This section covers common issues and their solutions.
 **Problem:** Binary doesn't have execute permission.
 
 **Solution:**
+
 ```bash
 chmod +x sqlc-wizard
 ```
@@ -866,6 +915,7 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Redownload binary**
+
    ```bash
    rm sqlc-wizard
    curl -L -o sqlc-wizard https://github.com/LarsArtmann/SQLC-Wizzard/releases/download/v1.0.0/sqlc-wizard-linux-amd64
@@ -888,9 +938,11 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Use SSH with proper terminal support**
+
    ```bash
    ssh -t user@host sqlc-wizard
    ```
+
    Note the `-t` flag for pseudo-terminal allocation.
 
 2. **Use CI/CD mode** (non-interactive)
@@ -912,23 +964,25 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Check if database is running**
+
    ```bash
    # PostgreSQL
    pg_isready -h localhost -p 5432
-   
+
    # MySQL
    mysqladmin -h localhost -p 3306 ping
-   
+
    # SQLite (no daemon needed)
    ls -la *.db
    ```
 
 2. **Check database connection settings**
+
    ```bash
    # PostgreSQL
    cat ~/.pgpass
    host:localhost:5432:dbname:user:password
-   
+
    # MySQL
    cat ~/.my.cnf
    [client]
@@ -937,13 +991,14 @@ chmod +x sqlc-wizard
    ```
 
 3. **Start database** (if not running)
+
    ```bash
    # PostgreSQL (Docker)
    docker run -d -p 5432:5432 -e POSTGRES_PASSWORD=password postgres
-   
+
    # MySQL (Docker)
    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD=password mysql
-   
+
    # SQLite (no daemon needed)
    # Just ensure .db file exists
    ```
@@ -957,21 +1012,23 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Validate YAML syntax**
+
    ```bash
    # Install yamllint (if not installed)
    pip install yamllint
-   
+
    # Validate sqlc.yaml
    yamllint sqlc.yaml
    ```
 
 2. **Check indentation** (YAML is indentation-sensitive)
+
    ```yaml
    # Correct (2 spaces)
    version: "2"
    sql:
      - schema: "sql/schema"
-   
+
    # Incorrect (tabs)
    version: "2"
    sql:
@@ -995,19 +1052,22 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Check query directory structure**
+
    ```bash
    # Should match sqlc.yaml
    ls -la sql/queries/
    ```
 
 2. **Verify sqlc.yaml configuration**
+
    ```yaml
    sql:
      - schema: "sql/schema"
-       queries: "sql/queries"  # Check this path
+       queries: "sql/queries" # Check this path
    ```
 
 3. **Create sample query file**
+
    ```bash
    mkdir -p sql/queries
    cat > sql/queries/users.sql <<EOF
@@ -1030,16 +1090,17 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Check SQL column types**
+
    ```sql
    -- Use integer for id
    CREATE TABLE users (
      id INTEGER PRIMARY KEY,
      name TEXT NOT NULL
    );
-   
+
    -- Or use uuid extension (PostgreSQL)
    CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-   
+
    CREATE TABLE users (
      id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
      name TEXT NOT NULL
@@ -1047,6 +1108,7 @@ chmod +x sqlc-wizard
    ```
 
 2. **Check sqlc overrides**
+
    ```yaml
    # Override column types
    override:
@@ -1072,11 +1134,13 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Use caching** (sqlc feature)
+
    ```bash
    sqlc generate --cache
    ```
 
 2. **Split schema files** (if possible)
+
    ```bash
    # Instead of one huge schema.sql
    mkdir -p sql/schema
@@ -1103,6 +1167,7 @@ chmod +x sqlc-wizard
 **Solutions:**
 
 1. **Check sqlc version**
+
    ```bash
    sqlc version
    ```
@@ -1112,14 +1177,15 @@ chmod +x sqlc-wizard
    - Check release notes for your version
 
 3. **Regenerate with wizard**
+
    ```bash
    # Backup current configuration
    cp sqlc.yaml sqlc.yaml.backup
-   
+
    # Regenerate
    rm sqlc.yaml
    sqlc-wizard
-   
+
    # Review changes
    diff sqlc.yaml.backup sqlc.yaml
    ```
@@ -1157,4 +1223,3 @@ If you're still stuck:
 ---
 
 **Need more advanced troubleshooting?** Check [Migration Guide](../guides/migration.md) for common migration scenarios.
-

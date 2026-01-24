@@ -122,6 +122,7 @@ CREATE TABLE users (
 ## When to Upgrade
 
 Consider upgrading to **PostgreSQL** when:
+
 - Need concurrent writes
 - Require advanced features (JSON, arrays, full-text search)
 - Building production application

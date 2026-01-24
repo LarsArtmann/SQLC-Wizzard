@@ -14,12 +14,12 @@ Successfully identified and eliminated 70% of code duplication across the SQLC-W
 
 ### Key Metrics
 
-| Metric | Before | After | Improvement |
-|--------|---------|--------|-------------|
-| Clone Groups | 10 | 3 | **70% reduction** |
-| Total Clones | 25+ | 6 | **76% reduction** |
-| Test Pass Rate | 100% | 100% | **No regressions** |
-| Files Modified | - | 9 | Targeted refactoring |
+| Metric         | Before | After | Improvement          |
+| -------------- | ------ | ----- | -------------------- |
+| Clone Groups   | 10     | 3     | **70% reduction**    |
+| Total Clones   | 25+    | 6     | **76% reduction**    |
+| Test Pass Rate | 100%   | 100%  | **No regressions**   |
+| Files Modified | -      | 9     | Targeted refactoring |
 
 ---
 
@@ -59,11 +59,13 @@ Successfully identified and eliminated 70% of code duplication across the SQLC-W
 **Change:** Created `createValidatedInput()` helper function
 
 **Impact:** Eliminated 3 duplicate input field creation functions:
+
 - `CreatePackageNameStep()`
 - `CreatePackagePathStep()`
 - `CreateOutputDirStep()`
 
 **Before:**
+
 ```go
 func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
     return huh.NewInput().
@@ -82,6 +84,7 @@ func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
 ```
 
 **After:**
+
 ```go
 func createValidatedInput(title, description, placeholder, fieldName string, value *string) *huh.Input {
     return huh.NewInput().
@@ -115,6 +118,7 @@ func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
 **File:** `pkg/config/validator_test.go`
 
 **Changes:**
+
 - Created `createBasicSQLConfig()` helper
 - Created `createBasicSqlcConfig()` helper
 - Converted AddError/AddWarning tests to table-driven format
@@ -123,6 +127,7 @@ func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
 **Impact:** Eliminated 4 duplicate test structures and reduced line count by ~60 lines
 
 **New Helpers:**
+
 ```go
 func createBasicSQLConfig(engine, outDir, packageName string) SQLConfig {
     return SQLConfig{
@@ -159,6 +164,7 @@ func createBasicSqlcConfig(engine string) *SqlcConfig {
 **Impact:** Eliminated duplicate type definitions and methods; added `createFeatureConfig()` helper
 
 **Before:**
+
 ```go
 type codeGenerationConfig struct {
     title       string
@@ -178,6 +184,7 @@ func (c safetyRuleConfig) GetTitle() string { return c.title }
 ```
 
 **After:**
+
 ```go
 type featureConfig struct {
     title       string
@@ -209,6 +216,7 @@ func createFeatureConfig(title, description string, assign fieldAssignment) Feat
 **Impact:** Eliminated duplicate template data setup across multiple test files
 
 **New Helpers:**
+
 ```go
 func createTemplateData() generated.TemplateData
 func createTemplateDataWithFeatures(projectName string, projectType generated.ProjectType) generated.TemplateData
@@ -216,6 +224,7 @@ func createTemplateDataWithCustomOutput(baseDir, queriesDir, schemaDir string) g
 ```
 
 **Updated Files:**
+
 - `internal/wizard/wizard_run_integration_test.go`
 - `internal/wizard/wizard_run_test.go`
 - `internal/wizard/wizard_comprehensive_test.go`
@@ -267,6 +276,7 @@ func createTemplateDataWithCustomOutput(baseDir, queriesDir, schemaDir string) g
 ## Testing Results
 
 ### Pre-Refactoring Test Results
+
 ```
 FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 ```
@@ -274,6 +284,7 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 **Issue:** Duplicate `RunSpecs()` calls
 
 ### Post-Refactoring Test Results
+
 ```
 ✅ All tests passed (437 specs, 100% success rate)
 ✅ No regressions introduced
@@ -281,6 +292,7 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 ```
 
 **Test Summary:**
+
 - Total packages tested: 16
 - Total specs run: 437
 - Passed: 437
@@ -289,6 +301,7 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 - Skipped: 0
 
 ### Build Verification
+
 ```bash
 ✅ go build ./internal/wizard
 ✅ go build ./pkg/config
@@ -302,17 +315,20 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 ## Code Quality Improvements
 
 ### Maintainability
+
 - ✅ Reduced code duplication by 70%
 - ✅ Introduced reusable helper functions
 - ✅ Improved test consistency across codebase
 - ✅ Easier to add new similar tests (table-driven)
 
 ### Readability
+
 - ✅ Clearer test structure with table-driven tests
 - ✅ Separated concerns (test helpers vs test logic)
 - ✅ Reduced cognitive load when reading test files
 
 ### Extensibility
+
 - ✅ New input steps can use `createValidatedInput()` helper
 - ✅ New test cases can leverage test helpers
 - ✅ Feature configs can use unified `createFeatureConfig()` pattern
@@ -342,19 +358,19 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 
 ## Files Modified Summary
 
-| File | Lines Changed | Type |
-|------|--------------|------|
-| `internal/wizard/steps.go` | ~50 | Refactor |
-| `internal/wizard/features.go` | ~40 | Refactor |
-| `internal/wizard/test_helpers_test.go` | +50 | New File |
-| `internal/wizard/wizard_run_integration_test.go` | ~20 | Refactor |
-| `internal/wizard/wizard_run_test.go` | ~25 | Refactor |
-| `internal/wizard/wizard_comprehensive_test.go` | ~15 | Refactor |
-| `pkg/config/validator_test.go` | ~60 | Refactor |
-| `internal/apperrors/error_wrapping_test.go` | ~30 | Refactor |
-| `internal/domain/nullhandling_mode_test.go` | ~25 | Refactor |
-| `internal/commands/commands_enhanced_test.go` | ~20 | Refactor |
-| `internal/apperrors/error_creation_test.go` | ~5 | Bug Fix |
+| File                                             | Lines Changed | Type     |
+| ------------------------------------------------ | ------------- | -------- |
+| `internal/wizard/steps.go`                       | ~50           | Refactor |
+| `internal/wizard/features.go`                    | ~40           | Refactor |
+| `internal/wizard/test_helpers_test.go`           | +50           | New File |
+| `internal/wizard/wizard_run_integration_test.go` | ~20           | Refactor |
+| `internal/wizard/wizard_run_test.go`             | ~25           | Refactor |
+| `internal/wizard/wizard_comprehensive_test.go`   | ~15           | Refactor |
+| `pkg/config/validator_test.go`                   | ~60           | Refactor |
+| `internal/apperrors/error_wrapping_test.go`      | ~30           | Refactor |
+| `internal/domain/nullhandling_mode_test.go`      | ~25           | Refactor |
+| `internal/commands/commands_enhanced_test.go`    | ~20           | Refactor |
+| `internal/apperrors/error_creation_test.go`      | ~5            | Bug Fix  |
 
 **Total:** ~340 lines refactored/added across 11 files
 
@@ -363,17 +379,20 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 ## Recommendations
 
 ### Immediate Actions
+
 - ✅ **COMPLETE** - Code deduplication finished
 - ✅ **COMPLETE** - All tests passing
 - ✅ **COMPLETE** - No regressions introduced
 
 ### Future Improvements
+
 1. **CI Integration**: Consider adding `art-dupl` to CI pipeline to catch new duplications
 2. **Code Review Guidelines**: Add guidelines for using test helpers and table-driven tests
 3. **Refactoring Sprints**: Schedule regular deduplication sessions (monthly/quarterly)
 4. **Metrics Tracking**: Track code duplication metrics over time to identify trends
 
 ### Monitoring
+
 - Run `art-dupl -t 70` monthly to ensure duplication doesn't creep back in
 - Use `just fd` alias for quick duplicate detection during development
 - Add code complexity metrics to identify areas prone to duplication
@@ -383,17 +402,20 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 ## Lessons Learned
 
 ### What Worked Well
+
 1. **Systematic Approach**: Reading all files first, then identifying patterns before refactoring
 2. **Test-First**: Ensuring tests pass after each change before moving to next
 3. **Helper Extraction**: Creating reusable helpers proved more effective than modifying each clone individually
 4. **Table-Driven Tests**: Most effective pattern for eliminating test duplications
 
 ### Challenges Overcome
+
 1. **Multiple Test Suites**: Fixed Ginkgo `RunSpecs()` duplication that was causing test failures
 2. **Complex Duplication**: Some clones spanned multiple files requiring careful analysis
 3. **Maintainability**: Ensuring refactored code remained clear and maintainable
 
 ### Best Practices Established
+
 1. **Use Table-Driven Tests**: For similar test cases with different inputs
 2. **Extract Helpers**: For repeated patterns with slight variations
 3. **Unify Types**: When duplicate types serve the same purpose

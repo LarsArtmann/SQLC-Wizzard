@@ -73,66 +73,76 @@ TypeSpec Integration: 60% ⚠️ (Partial implementation)
 
 ```markdown
 ✅ [Task 1] Fix Lint Error (5min)
-   - File: internal/generators/generators_test.go:218
-   - Action: Check os.Chmod return value
-   - Priority: BLOCKING
+
+- File: internal/generators/generators_test.go:218
+- Action: Check os.Chmod return value
+- Priority: BLOCKING
 
 ✅ [Task 2] Eliminate Duplicate Code (15min)
-   - File: internal/wizard/wizard_steps_test.go:10-56
-   - Action: Extract common test logic to helper function
-   - Priority: HIGH
+
+- File: internal/wizard/wizard_steps_test.go:10-56
+- Action: Extract common test logic to helper function
+- Priority: HIGH
 
 ✅ [Task 3] Create Helper Functions (15min)
-   - File: internal/wizard/wizard_steps_test.go
-   - Action: Extract validation logic to reduce duplication
-   - Priority: HIGH
+
+- File: internal/wizard/wizard_steps_test.go
+- Action: Extract validation logic to reduce duplication
+- Priority: HIGH
 
 ✅ [Task 4] Cleanup Deprecated Code (15min)
-   - File: generated/types.go:169
-   - Action: Remove deprecated interface{} method
-   - Priority: MEDIUM
+
+- File: generated/types.go:169
+- Action: Remove deprecated interface{} method
+- Priority: MEDIUM
 ```
 
 #### **CORE FUNCTIONALITY (60-120 minutes each)**
 
 ```markdown
 ✅ [Task 5] Complete Migration Logic (120min)
-   - File: internal/commands/migrate.go:71
-   - Action: Implement actual migration functionality
-   - Impact: Core product feature
-   - Priority: CRITICAL
+
+- File: internal/commands/migrate.go:71
+- Action: Implement actual migration functionality
+- Impact: Core product feature
+- Priority: CRITICAL
 
 ✅ [Task 6] Extract Rule Transformation (90min)
-   - Files: generated/types.go & internal/domain/domain.go
-   - Action: Create shared rule_transformer.go
-   - Impact: Eliminate major duplication
-   - Priority: HIGH
+
+- Files: generated/types.go & internal/domain/domain.go
+- Action: Create shared rule_transformer.go
+- Impact: Eliminate major duplication
+- Priority: HIGH
 
 ✅ [Task 7] Standardize Error Handling (60min)
-   - Files: 15+ files with fmt.Errorf patterns
-   - Action: Migrate to internal/errors patterns
-   - Impact: Consistency improvement
-   - Priority: HIGH
+
+- Files: 15+ files with fmt.Errorf patterns
+- Action: Migrate to internal/errors patterns
+- Impact: Consistency improvement
+- Priority: HIGH
 ```
 
 #### **ARCHITECTURAL IMPROVEMENTS (60-90 minutes each)**
 
 ```markdown
 ✅ [Task 8] Split Large Files (60min)
-   - Files: wizard.go (270), implementations.go (269)
-   - Action: Split into focused components
-   - Impact: Maintainability
-   - Priority: MEDIUM
+
+- Files: wizard.go (270), implementations.go (269)
+- Action: Split into focused components
+- Impact: Maintainability
+- Priority: MEDIUM
 
 ✅ [Task 9] Add Integration Tests (90min)
-   - Action: Create end-to-end workflow tests
-   - Impact: Production readiness
-   - Priority: HIGH
+
+- Action: Create end-to-end workflow tests
+- Impact: Production readiness
+- Priority: HIGH
 
 ✅ [Task 10] TypeSpec Template Generation (120min)
-   - Action: Generate template code from TypeSpec
-   - Impact: Full type safety
-   - Priority: CRITICAL
+
+- Action: Generate template code from TypeSpec
+- Impact: Full type safety
+- Priority: CRITICAL
 ```
 
 ### **🟡 PHASE 2: PROFESSIONAL POLISH (Tasks 11-20)**
@@ -141,40 +151,46 @@ TypeSpec Integration: 60% ⚠️ (Partial implementation)
 
 ```markdown
 ✅ [Task 11] Performance Benchmarks (60min)
-   - Action: Add benchmarks for generation
-   - Impact: Performance monitoring
-   - Priority: MEDIUM
+
+- Action: Add benchmarks for generation
+- Impact: Performance monitoring
+- Priority: MEDIUM
 
 ✅ [Task 12] Memory Optimization (45min)
-   - File: internal/utils/strings.go:51-38
-   - Action: Pre-allocate slices with capacity
-   - Impact: Memory efficiency
-   - Priority: LOW
+
+- File: internal/utils/strings.go:51-38
+- Action: Pre-allocate slices with capacity
+- Impact: Memory efficiency
+- Priority: LOW
 
 ✅ [Task 13] String Operations (45min)
-   - Files: Multiple validation files
-   - Action: Use strings.Builder for concatenation
-   - Impact: Performance improvement
-   - Priority: LOW
+
+- Files: Multiple validation files
+- Action: Use strings.Builder for concatenation
+- Impact: Performance improvement
+- Priority: LOW
 ```
 
 #### **USER EXPERIENCE & QUALITY (30-45 minutes each)**
 
 ```markdown
 ✅ [Task 14] Enhanced Validation (45min)
-   - Action: Better error messages and guidance
-   - Impact: User experience
-   - Priority: MEDIUM
+
+- Action: Better error messages and guidance
+- Impact: User experience
+- Priority: MEDIUM
 
 ✅ [Task 15] Documentation Update (30min)
-   - Action: Update README and API docs
-   - Impact: Developer experience
-   - Priority: LOW
+
+- Action: Update README and API docs
+- Impact: Developer experience
+- Priority: LOW
 
 ✅ [Task 16] Code Review Preparation (30min)
-   - Action: Ensure all code meets standards
-   - Impact: Quality assurance
-   - Priority: LOW
+
+- Action: Ensure all code meets standards
+- Impact: Quality assurance
+- Priority: LOW
 ```
 
 ---
