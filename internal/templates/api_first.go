@@ -118,7 +118,7 @@ func (t *APIFirstTemplate) DefaultData() TemplateData {
 			UseManaged:  true,
 			UseUUIDs:    true,
 			UseJSON:     true,
-			UseArrays:   false,
+			UseArrays:   true,
 			UseFullText: false,
 		},
 
