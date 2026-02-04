@@ -17,9 +17,8 @@ func NewRegistry() *Registry {
 
 	// Register built-in templates
 	r.Register(NewMicroserviceTemplate())
-	// TODO: Register other templates
-	// r.Register(NewHobbyTemplate())
-	// r.Register(NewEnterpriseTemplate())
+	r.Register(NewHobbyTemplate())
+	r.Register(NewEnterpriseTemplate())
 
 	return r
 }
