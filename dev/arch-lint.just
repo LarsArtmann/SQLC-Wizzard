@@ -1058,7 +1058,9 @@ verbose:
 # Git hooks setup
 setup-hooks:
     @echo "{{BOLD}}🪝 SETTING UP GIT HOOKS{{NORMAL}}"
-    @echo '#!/bin/sh\necho "Running pre-commit linting..."\njust lint' > .git/hooks/pre-commit
+    @echo "#!/bin/sh" > .git/hooks/pre-commit
+    @echo "echo \"Running pre-commit linting...\"" >> .git/hooks/pre-commit
+    @echo "just lint" >> .git/hooks/pre-commit
     @chmod +x .git/hooks/pre-commit
     @echo "{{GREEN}}✅ Git hooks setup completed!{{NORMAL}}"
 
