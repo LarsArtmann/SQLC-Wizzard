@@ -118,12 +118,14 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 	}
 
 	// Transform MaxRowsWithoutLimit rule (NEW!)
+	// Violation when: no LIMIT clause OR LIMIT value < threshold
+	// This ensures unbounded result sets are prevented
 	if rules.SafetyRules.MaxRowsWithoutLimit > 0 {
 		limitStr := uintToString(rules.SafetyRules.MaxRowsWithoutLimit)
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "max-rows-without-limit",
-			Rule:    "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > " + limitStr + ")",
-			Message: "SELECT queries without LIMIT or with LIMIT > " + limitStr + " are not allowed",
+			Rule:    "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() < " + limitStr + ")",
+			Message: "SELECT queries without LIMIT or with LIMIT < " + limitStr + " are not allowed",
 		})
 	}
 

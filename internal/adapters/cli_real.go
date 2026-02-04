@@ -52,7 +52,7 @@ func (a *RealCLIAdapter) Install(ctx context.Context, cmd string) error {
 }
 
 // Println prints a message to output.
-func (a *RealCLIAdapter) Println(message string) error {
+func (a *RealCLIAdapter) Println(ctx context.Context, message string) error {
 	fmt.Println(message)
 	return nil
 }

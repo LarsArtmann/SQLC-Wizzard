@@ -28,7 +28,7 @@ func NewDirectoryCreator(fs adapters.FileSystemAdapter, cli adapters.CLIAdapter)
 // Create creates directory structure for the project
 // Implements Creator[CreatorConfig] interface.
 func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) error {
-	_ = dc.cli.Println("📁 Creating directory structure...")
+	_ = dc.cli.Println(ctx, "📁 Creating directory structure...")
 
 	dirs := dc.getProjectDirectories(config)
 
@@ -37,7 +37,7 @@ func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) er
 		if err := dc.fs.MkdirAll(ctx, fullPath, 0o755); err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", dir, err)
 		}
-		_ = dc.cli.Println("Created directory: " + fullPath)
+		_ = dc.cli.Println(ctx, "Created directory: "+fullPath)
 	}
 
 	return nil

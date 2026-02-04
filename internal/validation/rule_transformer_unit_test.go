@@ -191,4 +191,277 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			Expect(configRules[0].Name).To(Equal("domain-custom"))
 		})
 	})
+
+	Context("TransformTypeSafeSafetyRules", func() {
+		It("should produce empty rules when all type-safe policies are disabled", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarAllowed,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseNever,
+					LimitRequirement:    domain.LimitClauseNever,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(BeEmpty())
+		})
+
+		It("should transform SelectStarPolicy.ForbidsSelectStar() correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarForbidden,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseNever,
+					LimitRequirement:    domain.LimitClauseNever,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("no-select-star"))
+			Expect(configRules[0].Rule).To(Equal("!query.contains('SELECT *')"))
+			Expect(configRules[0].Message).To(ContainSubstring("explicit column names"))
+		})
+
+		It("should transform WhereRequirement.RequiresOnDestructive() correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarAllowed,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseOnDestructive,
+					LimitRequirement:    domain.LimitClauseNever,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("require-where"))
+			Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()"))
+		})
+
+		It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarAllowed,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseNever,
+					LimitRequirement:    domain.LimitClauseOnSelect,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("require-limit"))
+			Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && !query.hasLimitClause()"))
+		})
+
+		It("should transform MaxRowsWithoutLimit correctly", func() {
+			rules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarAllowed,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseNever,
+					LimitRequirement:    domain.LimitClauseNever,
+					MaxRowsWithoutLimit: 100,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("max-rows-without-limit"))
+			Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() < 100)"))
+		})
+	})
+
+	Context("Transformer Parity Tests", func() {
+		// These tests verify that equivalent configurations produce identical expressions
+		// following the "violation when true" convention consistently across both transformers
+
+		It("should produce identical expressions for NoSelectStar vs ForbidsSelectStar", func() {
+			// Boolean-based rule
+			boolRules := &generated.SafetyRules{
+				NoSelectStar: true,
+				RequireWhere: false,
+				RequireLimit: false,
+			}
+			boolResult := transformer.TransformSafetyRules(boolRules)
+
+			// Type-safe rule (equivalent policy)
+			typeSafeRules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarForbidden,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseNever,
+					LimitRequirement:    domain.LimitClauseNever,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
+
+			// Both should produce identical expressions
+			Expect(boolResult).To(HaveLen(1))
+			Expect(typeSafeResult).To(HaveLen(1))
+			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
+			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
+			// Expression: violation when SELECT * is present
+			Expect(boolResult[0].Rule).To(Equal("!query.contains('SELECT *')"))
+		})
+
+		It("should produce identical expressions for RequireWhere vs RequiresOnDestructive", func() {
+			// Boolean-based rule
+			boolRules := &generated.SafetyRules{
+				NoSelectStar: false,
+				RequireWhere: true,
+				RequireLimit: false,
+			}
+			boolResult := transformer.TransformSafetyRules(boolRules)
+
+			// Type-safe rule (equivalent policy)
+			typeSafeRules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarAllowed,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseOnDestructive,
+					LimitRequirement:    domain.LimitClauseNever,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
+
+			// Both should produce identical expressions
+			Expect(boolResult).To(HaveLen(1))
+			Expect(typeSafeResult).To(HaveLen(1))
+			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
+			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
+			// Expression: violation when WHERE clause is missing (query.hasWhereClause() returns false)
+			Expect(boolResult[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()"))
+		})
+
+		It("should produce identical expressions for RequireLimit vs RequiresOnSelect", func() {
+			// Boolean-based rule
+			boolRules := &generated.SafetyRules{
+				NoSelectStar: false,
+				RequireWhere: false,
+				RequireLimit: true,
+			}
+			boolResult := transformer.TransformSafetyRules(boolRules)
+
+			// Type-safe rule (equivalent policy)
+			typeSafeRules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarAllowed,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseNever,
+					LimitRequirement:    domain.LimitClauseOnSelect,
+					MaxRowsWithoutLimit: 0,
+				},
+				DestructiveOps: domain.DestructiveAllowed,
+				CustomRules:    []generated.SafetyRule{},
+			}
+			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
+
+			// Both should produce identical expressions
+			Expect(boolResult).To(HaveLen(1))
+			Expect(typeSafeResult).To(HaveLen(1))
+			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
+			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
+			// Expression: violation when LIMIT clause is missing (!query.hasLimitClause() returns true when missing)
+			Expect(boolResult[0].Rule).To(Equal("query.type == 'SELECT' && !query.hasLimitClause()"))
+		})
+
+		It("should follow consistent violation polarity convention", func() {
+			// Verify the convention: rules express "violation when true"
+			//
+			// For forbidden patterns (NoSelectStar, NoDropTable, NoTruncate):
+			//   Rule uses "violation when pattern exists" → !query.contains('PATTERN')
+			//
+			// For required patterns (RequireWhere, RequireLimit):
+			//   Rule uses "violation when pattern is missing" → !query.hasClause()
+			//
+			// This is consistent: the boolean flag + expression together mean "flag is true → violation condition"
+
+			typeSafeRules := &domain.TypeSafeSafetyRules{
+				StyleRules: domain.QueryStyleRules{
+					SelectStarPolicy:   domain.SelectStarForbidden,
+					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+				},
+				SafetyRules: domain.QuerySafetyRules{
+					WhereRequirement:    domain.WhereClauseOnDestructive,
+					LimitRequirement:    domain.LimitClauseOnSelect,
+					MaxRowsWithoutLimit: 100,
+				},
+				DestructiveOps: domain.DestructiveForbidden,
+				CustomRules:    []generated.SafetyRule{},
+			}
+			result := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
+
+			// Should have 4 rules: no-select-star, require-where, require-limit, max-rows-without-limit, no-drop-table, no-truncate
+			Expect(result).To(HaveLen(6))
+
+			// Find and verify each rule's expression follows violation convention
+			ruleMap := make(map[string]generated.RuleConfig)
+			for _, rule := range result {
+				ruleMap[rule.Name] = rule
+			}
+
+			// NoSelectStar: violation when SELECT * exists → !contains('SELECT *')
+			Expect(ruleMap["no-select-star"].Rule).To(MatchRegexp(`!query\.contains\('SELECT \*'\)`))
+
+			// RequireWhere: violation when WHERE is missing → hasWhereClause() in expression
+			Expect(ruleMap["require-where"].Rule).To(ContainSubstring("hasWhereClause()"))
+
+			// RequireLimit: violation when LIMIT is missing → !hasLimitClause()
+			Expect(ruleMap["require-limit"].Rule).To(MatchRegexp(`!query\.hasLimitClause\(\)`))
+
+			// MaxRowsWithoutLimit: violation when limit is missing or too small
+			Expect(ruleMap["max-rows-without-limit"].Rule).To(ContainSubstring("hasLimitClause()"))
+			Expect(ruleMap["max-rows-without-limit"].Rule).To(ContainSubstring("limitValue()"))
+
+			// NoDropTable: violation when DROP TABLE exists
+			Expect(ruleMap["no-drop-table"].Rule).To(MatchRegexp(`!query\.contains\('DROP TABLE'\)`))
+
+			// NoTruncate: violation when TRUNCATE exists
+			Expect(ruleMap["no-truncate"].Rule).To(MatchRegexp(`!query\.contains\('TRUNCATE'\)`))
+		})
+	})
 })

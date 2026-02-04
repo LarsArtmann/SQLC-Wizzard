@@ -99,7 +99,7 @@ func (m *MockFileSystemAdapter) Copy(ctx context.Context, src, dst string) error
 }
 
 func (m *MockFileSystemAdapter) CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error {
-	return apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
+	return m.MkdirAll(ctx, path, perm)
 }
 
 func (m *MockFileSystemAdapter) ListFiles(ctx context.Context, dir string) ([]string, error) {
@@ -110,7 +110,7 @@ type MockCLIAdapter struct {
 	printedLines []string
 }
 
-func (m *MockCLIAdapter) Println(msg string) error {
+func (m *MockCLIAdapter) Println(ctx context.Context, msg string) error {
 	m.printedLines = append(m.printedLines, msg)
 	return nil
 }

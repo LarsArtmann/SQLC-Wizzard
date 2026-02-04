@@ -41,17 +41,18 @@ func (a *RealFileSystemAdapter) WriteFile(ctx context.Context, path string, data
 }
 
 // CreateDirectory creates a directory.
+// Deprecated: Use MkdirAll instead. This method will be removed in a future breaking change.
 func (a *RealFileSystemAdapter) CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error {
+	return a.MkdirAll(ctx, path, perm)
+}
+
+// MkdirAll creates a directory and all parent directories.
+func (a *RealFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm fs.FileMode) error {
 	err := os.MkdirAll(path, perm)
 	if err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", path, err)
 	}
 	return nil
-}
-
-// MkdirAll creates a directory and all parent directories (alias for CreateDirectory).
-func (a *RealFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm fs.FileMode) error {
-	return a.CreateDirectory(ctx, path, perm)
 }
 
 // Exists checks if a path exists.

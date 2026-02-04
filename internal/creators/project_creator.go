@@ -38,7 +38,7 @@ func NewProjectCreator(fs adapters.FileSystemAdapter, cli adapters.CLIAdapter) *
 
 // CreateProject creates a complete project structure.
 func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfig) error {
-	_ = pc.cli.Println("🏗️  Creating project structure...")
+	_ = pc.cli.Println(ctx, "🏗️  Creating project structure...")
 
 	// Create directory structure
 	if err := pc.createDirectoryStructure(ctx, config); err != nil {
@@ -78,7 +78,7 @@ func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfi
 
 // createDirectoryStructure creates the basic directory structure.
 func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *CreateConfig) error {
-	_ = pc.cli.Println("📁 Creating directory structure...")
+	_ = pc.cli.Println(ctx, "📁 Creating directory structure...")
 
 	dirs := []string{
 		"db/schema",
@@ -111,9 +111,8 @@ func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *
 		dirs = append(dirs, "api", "internal/api", "internal/tenants")
 	case generated.ProjectTypeLibrary:
 		dirs = append(dirs, "examples", "internal/testutil")
-		// TODO: Add other project types when generated types are complete
-		// case generated.ProjectTypeFullstack:
-		// 	dirs = append(dirs, "web", "web/src", "web/public", "internal/api")
+	default:
+		return fmt.Errorf("unsupported project type: %s", config.ProjectType)
 	}
 
 	for _, dir := range dirs {
@@ -127,7 +126,7 @@ func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *
 
 // generateSQLCConfig generates the sqlc.yaml file.
 func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateConfig) error {
-	_ = pc.cli.Println("⚙️  Generating sqlc.yaml...")
+	_ = pc.cli.Println(ctx, "⚙️  Generating sqlc.yaml...")
 
 	// Defensive check: ensure config is not nil before marshalling
 	if cfg.Config == nil {
@@ -145,65 +144,78 @@ func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateCon
 
 // generateDatabaseSchema creates database schema file.
 func (pc *ProjectCreator) generateDatabaseSchema(ctx context.Context, cfg *CreateConfig) error {
-	_ = pc.cli.Println("🗄️  Generating database schema...")
+	_ = pc.cli.Println(ctx, "🗄️  Generating database schema...")
 
 	// Build schema content based on project configuration
-	schemaContent := pc.buildSchemaSQL(cfg.TemplateData)
+	// Note: TemplateData must be properly populated from CreateConfig
+	templateData := generated.TemplateData{
+		ProjectName: cfg.ProjectName,
+		ProjectType: cfg.ProjectType,
+	}
+	schemaContent := pc.buildSchemaSQL(templateData)
 
 	return pc.fs.WriteFile(ctx, "schema.sql", []byte(schemaContent), 0o644)
 }
 
 // generateQueryFiles creates SQL query files for sqlc.
 func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateConfig) error {
-	_ = pc.cli.Println("🔍 Generating SQL query files...")
+	_ = pc.cli.Println(ctx, "🔍 Generating SQL query files...")
 
 	// Create queries directory
 	if err := pc.fs.MkdirAll(ctx, "queries", 0o755); err != nil {
 		return fmt.Errorf("failed to create queries directory: %w", err)
 	}
 
+	// Build template data from config
+	templateData := generated.TemplateData{
+		ProjectName: cfg.ProjectName,
+		ProjectType: cfg.ProjectType,
+	}
+
 	// Generate basic queries based on database schema
-	usersQueries := pc.buildUsersQueries(cfg.TemplateData)
+	usersQueries := pc.buildUsersQueries(templateData)
 	if err := pc.fs.WriteFile(ctx, "queries/users.sql", []byte(usersQueries), 0o644); err != nil {
 		return fmt.Errorf("failed to write users queries: %w", err)
 	}
 
 	// Add project-specific queries
-	switch cfg.TemplateData.ProjectType {
+	switch templateData.ProjectType {
 	case generated.ProjectTypeMicroservice:
-		microserviceQueries := pc.buildMicroserviceQueries(cfg.TemplateData)
+		microserviceQueries := pc.buildMicroserviceQueries(templateData)
 		if err := pc.fs.WriteFile(ctx, "queries/microservice.sql", []byte(microserviceQueries), 0o644); err != nil {
 			return fmt.Errorf("failed to write microservice queries: %w", err)
 		}
 	case generated.ProjectTypeEnterprise:
-		enterpriseQueries := pc.buildEnterpriseQueries(cfg.TemplateData)
+		enterpriseQueries := pc.buildEnterpriseQueries(templateData)
 		if err := pc.fs.WriteFile(ctx, "queries/enterprise.sql", []byte(enterpriseQueries), 0o644); err != nil {
 			return fmt.Errorf("failed to write enterprise queries: %w", err)
 		}
 	case generated.ProjectTypeAPIFirst:
-		apiQueries := pc.buildAPIQueries(cfg.TemplateData)
+		apiQueries := pc.buildAPIQueries(templateData)
 		if err := pc.fs.WriteFile(ctx, "queries/api.sql", []byte(apiQueries), 0o644); err != nil {
 			return fmt.Errorf("failed to write api queries: %w", err)
 		}
 	case generated.ProjectTypeHobby:
 		// Use basic users queries for hobby projects
 	case generated.ProjectTypeAnalytics:
-		analyticsQueries := pc.buildAnalyticsQueries(cfg.TemplateData)
+		analyticsQueries := pc.buildAnalyticsQueries(templateData)
 		if err := pc.fs.WriteFile(ctx, "queries/analytics.sql", []byte(analyticsQueries), 0o644); err != nil {
 			return fmt.Errorf("failed to write analytics queries: %w", err)
 		}
 	case generated.ProjectTypeTesting:
-		testingQueries := pc.buildTestingQueries(cfg.TemplateData)
+		testingQueries := pc.buildTestingQueries(templateData)
 		if err := pc.fs.WriteFile(ctx, "queries/testing.sql", []byte(testingQueries), 0o644); err != nil {
 			return fmt.Errorf("failed to write testing queries: %w", err)
 		}
 	case generated.ProjectTypeMultiTenant:
-		tenantQueries := pc.buildMultiTenantQueries(cfg.TemplateData)
+		tenantQueries := pc.buildMultiTenantQueries(templateData)
 		if err := pc.fs.WriteFile(ctx, "queries/tenant.sql", []byte(tenantQueries), 0o644); err != nil {
 			return fmt.Errorf("failed to write tenant queries: %w", err)
 		}
 	case generated.ProjectTypeLibrary:
 		// Use basic users queries for library projects
+	default:
+		return fmt.Errorf("unsupported project type: %s", templateData.ProjectType)
 	}
 
 	return nil
@@ -211,7 +223,7 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 
 // generateGoModuleStructure creates basic Go module structure.
 func (pc *ProjectCreator) generateGoModuleStructure(ctx context.Context, cfg *CreateConfig) error {
-	_ = pc.cli.Println("📦 Generating Go module structure...")
+	_ = pc.cli.Println(ctx, "📦 Generating Go module structure...")
 
 	// Create go.mod
 	goModContent := pc.buildGoMod(cfg.TemplateData)
@@ -268,7 +280,8 @@ func (pc *ProjectCreator) buildSchemaSQL(data generated.TemplateData) string {
 		schema += pc.createMultiTenantTables(data)
 	case generated.ProjectTypeLibrary:
 		schema += pc.createLibraryTables(data)
-		// Note: Add more project types as needed
+	default:
+		panic(fmt.Sprintf("unsupported project type: %s", data.ProjectType))
 	}
 
 	schema += "\n-- Indexes for performance\n"

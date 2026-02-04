@@ -62,7 +62,7 @@ type CLIAdapter interface {
 	Install(ctx context.Context, cmd string) error
 
 	// Println prints a message to output
-	Println(message string) error
+	Println(ctx context.Context, message string) error
 }
 
 // TemplateAdapter defines interface for template operations
@@ -93,7 +93,8 @@ type FileSystemAdapter interface {
 	// WriteFile writes a file
 	WriteFile(ctx context.Context, path string, data []byte, perm fs.FileMode) error
 
-	// CreateDirectory creates a directory
+	// CreateDirectory creates a directory.
+	// Deprecated: Use MkdirAll instead. This method will be removed in a future breaking change.
 	CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error
 
 	// MkdirAll creates a directory and all parent directories
