@@ -2,7 +2,9 @@ package creators_test
 
 import (
 	"context"
+	"fmt"
 	"io/fs"
+	"strings"
 	"testing"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
@@ -47,6 +49,7 @@ func createBaseConfig(projectName string) *creators.CreateConfig {
 type MockFileSystemAdapter struct {
 	mkdirAllCalls   []MkdirAllCall
 	writeFileCalls  []WriteFileCall
+	callLog         []string
 	shouldFailMkdir bool
 	shouldFailWrite bool
 }
@@ -64,6 +67,7 @@ type WriteFileCall struct {
 
 func (m *MockFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm fs.FileMode) error {
 	m.mkdirAllCalls = append(m.mkdirAllCalls, MkdirAllCall{Path: path, Perm: perm})
+	m.callLog = append(m.callLog, "mkdir:"+path)
 	if m.shouldFailMkdir {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "mkdir failed")
 	}
@@ -72,6 +76,7 @@ func (m *MockFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm 
 
 func (m *MockFileSystemAdapter) WriteFile(ctx context.Context, path string, content []byte, perm fs.FileMode) error {
 	m.writeFileCalls = append(m.writeFileCalls, WriteFileCall{Path: path, Content: content, Perm: perm})
+	m.callLog = append(m.callLog, "write:"+path)
 	if m.shouldFailWrite {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "write failed")
 	}
@@ -354,9 +359,30 @@ var _ = Describe("ProjectCreator", func() {
 			Expect(mockFS.mkdirAllCalls).NotTo(BeEmpty())
 			Expect(mockFS.writeFileCalls).To(HaveLen(2))
 
-			// All directories should be created before files
-			// (This is implicit in the implementation, but good to verify)
-			Expect(mockFS.mkdirAllCalls).ToNot(BeEmpty())
+			// Verify that all mkdir calls occur before any write calls
+			// by checking that no "write:" entries appear before any "mkdir:" entries
+			foundWrite := false
+			for _, entry := range mockFS.callLog {
+				if strings.HasPrefix(entry, "write:") {
+					foundWrite = true
+				} else if strings.HasPrefix(entry, "mkdir:") && foundWrite {
+					// Found a mkdir after a write - wrong order!
+					Fail(fmt.Sprintf("mkdir call %s appears after write call, violates order requirement", entry))
+				}
+			}
+
+			// Ensure we have both mkdir and write operations
+			hasMkdir := false
+			hasWrite := false
+			for _, entry := range mockFS.callLog {
+				if strings.HasPrefix(entry, "mkdir:") {
+					hasMkdir = true
+				} else if strings.HasPrefix(entry, "write:") {
+					hasWrite = true
+				}
+			}
+			Expect(hasMkdir).To(BeTrue(), "Expected at least one mkdir operation")
+			Expect(hasWrite).To(BeTrue(), "Expected at least one write operation")
 		})
 	})
 

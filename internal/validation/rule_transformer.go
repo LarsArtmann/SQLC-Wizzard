@@ -36,10 +36,11 @@ func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []
 	}
 
 	// Transform RequireWhere rule
+	// Violation when: query lacks WHERE clause (required for safety)
 	if rules.RequireWhere {
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "require-where",
-			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
+			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
 			Message: "WHERE clause is required for this query type",
 		})
 	}
@@ -100,10 +101,11 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 	// ========== SAFETY RULES (Prevent Bugs) ==========
 
 	// Transform RequireWhere rule
+	// Violation when: query lacks WHERE clause (required for safety)
 	if rules.SafetyRules.WhereRequirement.RequiresOnDestructive() {
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "require-where",
-			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
+			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
 			Message: "WHERE clause is required for SELECT/UPDATE/DELETE queries to prevent accidental full-table operations",
 		})
 	}
@@ -117,15 +119,15 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSa
 		})
 	}
 
-	// Transform MaxRowsWithoutLimit rule (NEW!)
-	// Violation when: no LIMIT clause OR LIMIT value < threshold
-	// This ensures unbounded result sets are prevented
+	// Transform MaxRowsWithoutLimit rule
+	// Violation when: no LIMIT clause OR LIMIT exceeds threshold (too permissive)
+	// This prevents unbounded or excessively large result sets
 	if rules.SafetyRules.MaxRowsWithoutLimit > 0 {
 		limitStr := uintToString(rules.SafetyRules.MaxRowsWithoutLimit)
 		configRules = append(configRules, generated.RuleConfig{
 			Name:    "max-rows-without-limit",
-			Rule:    "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() < " + limitStr + ")",
-			Message: "SELECT queries without LIMIT or with LIMIT < " + limitStr + " are not allowed",
+			Rule:    "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > " + limitStr + ")",
+			Message: "SELECT queries without LIMIT or with LIMIT > " + limitStr + " are not allowed",
 		})
 	}
 

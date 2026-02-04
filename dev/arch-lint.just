@@ -365,6 +365,11 @@ lint-files:
 
 # Enforce single main file in cmd/ directory
 lint-cmd-single:
+    @echo "{{BOLD}}📋 CHECKING SINGLE CMD MAIN FILE{{NORMAL}}"
+    @if [ ! -f "./scripts/check-cmd-single.sh" ]; then \
+        echo "{{RED}}❌ Script not found: ./scripts/check-cmd-single.sh{{NORMAL}}"; \
+        exit 1; \
+    fi
     @./scripts/check-cmd-single.sh
 
 # Auto-fix issues where possible
@@ -573,9 +578,10 @@ clean:
     @echo "{{BOLD}}🧹 SMART CLEANING{{NORMAL}}"
     @echo "{{YELLOW}}Cleaning: {{REPORT_DIR}}{{NORMAL}}"
     @if [ -d "{{REPORT_DIR}}" ]; then \
-        echo "  📊 Removing $(find {{REPORT_DIR}} -type f | wc -l) report files..."; \
+        COUNT=`find {{REPORT_DIR}} -type f | wc -l`; \
+        echo "  📊 Removing $COUNT report files..."; \
         rm -rf {{REPORT_DIR}}; \
-        echo "{{GREEN}}✅ Cleaned $(find {{REPORT_DIR}} -type f 2>/dev/null | wc -l) files successfully!{{NORMAL}}"; \
+        echo "{{GREEN}}✅ Cleaned $COUNT files successfully!{{NORMAL}}"; \
     else \
         echo "{{CYAN}}ℹ️  No reports directory to clean{{NORMAL}}"; \
     fi
@@ -1173,7 +1179,12 @@ docker-clean:
 # Show Docker logs
 docker-logs:
     @echo "{{BOLD}}📋 DOCKER LOGS{{NORMAL}}"
-    docker-compose logs -f
+    @if [ -f docker-compose.yml ]; then \
+        docker-compose logs -f; \
+    else \
+        echo "⚠️  docker-compose.yml not found - nothing to show."; \
+        exit 1; \
+    fi
 
 # Security scan Docker image with Trivy
 docker-security: docker-build

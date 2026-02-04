@@ -68,7 +68,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			runRuleTransformationTest(
 				transformer,
 				"require-where",
-				"query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()",
+				"query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
 				"WHERE clause is required for this query type",
 				func() *generated.SafetyRules {
 					return &generated.SafetyRules{RequireWhere: true}
@@ -255,7 +255,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 
 			Expect(configRules).To(HaveLen(1))
 			Expect(configRules[0].Name).To(Equal("require-where"))
-			Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()"))
+			Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
 		})
 
 		It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
@@ -299,7 +299,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 
 			Expect(configRules).To(HaveLen(1))
 			Expect(configRules[0].Name).To(Equal("max-rows-without-limit"))
-			Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() < 100)"))
+			Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)"))
 		})
 	})
 
@@ -371,8 +371,8 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			Expect(typeSafeResult).To(HaveLen(1))
 			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
 			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
-			// Expression: violation when WHERE clause is missing (query.hasWhereClause() returns false)
-			Expect(boolResult[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && query.hasWhereClause()"))
+			// Expression: violation when WHERE clause is missing (!query.hasWhereClause() returns true when missing)
+			Expect(boolResult[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
 		})
 
 		It("should produce identical expressions for RequireLimit vs RequiresOnSelect", func() {
