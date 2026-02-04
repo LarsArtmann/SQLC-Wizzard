@@ -814,7 +814,7 @@ graph-all:
     @echo "{{BOLD}}📊 GENERATING ALL ARCHITECTURE GRAPHS{{NORMAL}}"
     @echo "{{CYAN}}This will generate flow, DI, and vendor graphs for complete documentation...{{NORMAL}}"
     @echo ""
-    @mkdir -p docs/graphs/{flow,dependency-injection,focused,vendor}
+    @for dir in flow dependency-injection focused vendor; do mkdir -p "docs/graphs/$$dir"; done
     @echo "{{BOLD}}1️⃣  Generating Flow Graph (default)...{{NORMAL}}"
     @just graph
     @echo ""
@@ -1158,7 +1158,12 @@ docker-stop:
 # Clean up Docker resources
 docker-clean:
     @echo "{{BOLD}}🧹 CLEANING DOCKER RESOURCES{{NORMAL}}"
-    docker-compose down -v --remove-orphans
+    @if [ -f docker-compose.yml ]; then \
+        docker-compose down -v --remove-orphans; \
+        echo "{{GREEN}}✅ Docker Compose services stopped and removed!{{NORMAL}}"; \
+    else \
+        echo "⚠️  docker-compose.yml not found - skipping docker-compose down."; \
+    fi
     docker image prune -f
     docker system prune -f
     @echo "{{GREEN}}✅ Docker resources cleaned!{{NORMAL}}"
