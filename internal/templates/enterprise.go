@@ -266,6 +266,5 @@ func (t *EnterpriseTemplate) getRenameRules() map[string]string {
 		"http": "HTTP",
 		"db":   "DB",
 		"otp":  "OTP",
-		"id":   "ID",
 	}
 }

@@ -7,54 +7,54 @@ import (
 	"github.com/samber/lo"
 )
 
-// HobbyTemplate generates sqlc config for hobby/personal projects.
-type HobbyTemplate struct{}
+// TestingTemplate generates sqlc config for test projects and fixtures.
+type TestingTemplate struct{}
 
-// NewHobbyTemplate creates a new hobby template.
-func NewHobbyTemplate() *HobbyTemplate {
-	return &HobbyTemplate{}
+// NewTestingTemplate creates a new testing template.
+func NewTestingTemplate() *TestingTemplate {
+	return &TestingTemplate{}
 }
 
 // Name returns the template name.
-func (t *HobbyTemplate) Name() string {
-	return "hobby"
+func (t *TestingTemplate) Name() string {
+	return "testing"
 }
 
 // Description returns a human-readable description.
-func (t *HobbyTemplate) Description() string {
-	return "Lightweight hobby configuration for personal projects and learning"
+func (t *TestingTemplate) Description() string {
+	return "Lightweight configuration for test suites and database fixtures"
 }
 
 // Generate creates a SqlcConfig from template data.
-func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
+func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	// Set defaults
 	packageConfig := data.Package
 	if packageConfig.Name == "" {
-		packageConfig.Name = "db"
+		packageConfig.Name = "testdata"
 		data.Package = packageConfig
 	}
 	if packageConfig.Path == "" {
-		packageConfig.Path = "db"
+		packageConfig.Path = "testdata/db"
 		data.Package = packageConfig
 	}
 
 	outputConfig := data.Output
 	if outputConfig.BaseDir == "" {
-		outputConfig.BaseDir = "db"
+		outputConfig.BaseDir = "testdata/db"
 		data.Output = outputConfig
 	}
 	if outputConfig.QueriesDir == "" {
-		outputConfig.QueriesDir = "db/queries"
+		outputConfig.QueriesDir = "testdata/queries"
 		data.Output = outputConfig
 	}
 	if outputConfig.SchemaDir == "" {
-		outputConfig.SchemaDir = "db/schema"
+		outputConfig.SchemaDir = "testdata/schema"
 		data.Output = outputConfig
 	}
 
 	databaseConfig := data.Database
 	if databaseConfig.URL == "" {
-		databaseConfig.URL = "file:dev.db"
+		databaseConfig.URL = "file:testdata/test.db"
 	}
 
 	// Determine SQL package based on database type
@@ -65,7 +65,7 @@ func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfi
 		Version: "2",
 		SQL: []config.SQLConfig{
 			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "hobby"),
+				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "test"),
 				Engine:               string(databaseConfig.Engine),
 				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
 				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
@@ -101,20 +101,20 @@ func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfi
 	return cfg, nil
 }
 
-// DefaultData returns default TemplateData for hobby template.
-func (t *HobbyTemplate) DefaultData() TemplateData {
+// DefaultData returns default TemplateData for testing template.
+func (t *TestingTemplate) DefaultData() TemplateData {
 	return generated.TemplateData{
 		ProjectName: "",
-		ProjectType: MustNewProjectType("hobby"),
+		ProjectType: MustNewProjectType("testing"),
 
 		Package: generated.PackageConfig{
-			Name: "db",
-			Path: "db",
+			Name: "testdata",
+			Path: "testdata/db",
 		},
 
 		Database: generated.DatabaseConfig{
 			Engine:      MustNewDatabaseType("sqlite"),
-			URL:         "file:dev.db",
+			URL:         "file:testdata/test.db",
 			UseManaged:  false,
 			UseUUIDs:    false,
 			UseJSON:     false,
@@ -123,9 +123,9 @@ func (t *HobbyTemplate) DefaultData() TemplateData {
 		},
 
 		Output: generated.OutputConfig{
-			BaseDir:    "db",
-			QueriesDir: "db/queries",
-			SchemaDir:  "db/schema",
+			BaseDir:    "testdata/db",
+			QueriesDir: "testdata/queries",
+			SchemaDir:  "testdata/schema",
 		},
 
 		Validation: generated.ValidationConfig{
@@ -145,8 +145,8 @@ func (t *HobbyTemplate) DefaultData() TemplateData {
 			SafetyRules: generated.SafetyRules{
 				NoSelectStar: false,
 				RequireWhere: false,
-				NoDropTable:  false,
-				NoTruncate:   false,
+				NoDropTable:  true,
+				NoTruncate:   true,
 				RequireLimit: false,
 				Rules:        []generated.SafetyRule{},
 			},
@@ -155,12 +155,12 @@ func (t *HobbyTemplate) DefaultData() TemplateData {
 }
 
 // RequiredFeatures returns which features this template requires.
-func (t *HobbyTemplate) RequiredFeatures() []string {
-	return []string{}
+func (t *TestingTemplate) RequiredFeatures() []string {
+	return []string{"empty_slices"}
 }
 
 // buildGoGenConfig builds the GoGenConfig from template data.
-func (t *HobbyTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
+func (t *TestingTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
 	cfg := &config.GoGenConfig{
 		Package:    data.Package.Name,
 		Out:        data.Output.BaseDir,
@@ -174,7 +174,7 @@ func (t *HobbyTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage
 }
 
 // getSQLPackage returns the appropriate SQL package for the database.
-func (t *HobbyTemplate) getSQLPackage(db DatabaseType) string {
+func (t *TestingTemplate) getSQLPackage(db DatabaseType) string {
 	switch db {
 	case DatabaseTypePostgreSQL:
 		return "database/sql"
@@ -188,23 +188,24 @@ func (t *HobbyTemplate) getSQLPackage(db DatabaseType) string {
 }
 
 // getBuildTags returns appropriate build tags.
-func (t *HobbyTemplate) getBuildTags(data TemplateData) string {
+func (t *TestingTemplate) getBuildTags(data TemplateData) string {
 	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
-		return "postgres"
+		return "test,postgres"
 	case DatabaseTypeMySQL:
-		return "mysql"
+		return "test,mysql"
 	case DatabaseTypeSQLite:
-		return "sqlite"
+		return "test,sqlite"
 	default:
-		return ""
+		return "test"
 	}
 }
 
 // getTypeOverrides returns database-specific type overrides.
-func (t *HobbyTemplate) getTypeOverrides(data TemplateData) []config.Override {
+func (t *TestingTemplate) getTypeOverrides(data TemplateData) []config.Override {
 	var overrides []config.Override
 
+	// Testing typically uses simple types
 	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
 		if data.Database.UseUUIDs {
@@ -214,25 +215,14 @@ func (t *HobbyTemplate) getTypeOverrides(data TemplateData) []config.Override {
 				GoImportPath: "github.com/google/uuid",
 			})
 		}
-	case DatabaseTypeMySQL:
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "json",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
 	}
 
 	return overrides
 }
 
 // getRenameRules returns common rename rules for better Go naming.
-func (t *HobbyTemplate) getRenameRules() map[string]string {
+func (t *TestingTemplate) getRenameRules() map[string]string {
 	return map[string]string{
-		"id":   "ID",
-		"uuid": "UUID",
-		"url":  "URL",
-		"uri":  "URI",
+		"id": "ID",
 	}
 }

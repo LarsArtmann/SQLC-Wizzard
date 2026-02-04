@@ -131,3 +131,94 @@ func TestMicroserviceTemplate_Generate_Basic(t *testing.T) {
 	assert.Equal(t, "postgresql", sqlConfig.Engine)
 	assert.NotNil(t, sqlConfig.Database)
 }
+
+// HobbyTemplate Tests
+func TestHobbyTemplate_Name(t *testing.T) {
+	template := &templates.HobbyTemplate{}
+	assert.Equal(t, "hobby", template.Name())
+}
+
+func TestHobbyTemplate_Description(t *testing.T) {
+	template := &templates.HobbyTemplate{}
+	assert.Contains(t, template.Description(), "hobby")
+}
+
+func TestHobbyTemplate_DefaultData(t *testing.T) {
+	template := &templates.HobbyTemplate{}
+	data := template.DefaultData()
+
+	// Verify defaults
+	assert.Equal(t, generated.ProjectTypeHobby, data.ProjectType)
+	assert.Equal(t, "db", data.Package.Name)
+	assert.Equal(t, "db", data.Package.Path)
+	assert.Equal(t, generated.DatabaseTypeSQLite, data.Database.Engine)
+	assert.False(t, data.Database.UseUUIDs)
+	assert.False(t, data.Database.UseJSON)
+	assert.False(t, data.Database.UseArrays)
+}
+
+func TestHobbyTemplate_Generate_Basic(t *testing.T) {
+	template := &templates.HobbyTemplate{}
+	data := template.DefaultData()
+	data.ProjectName = "my-hobby-project"
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "2", result.Version)
+	assert.Len(t, result.SQL, 1)
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, "my-hobby-project", sqlConfig.Name)
+	assert.Equal(t, "sqlite", sqlConfig.Engine)
+	assert.NotNil(t, sqlConfig.Database)
+}
+
+// EnterpriseTemplate Tests
+func TestEnterpriseTemplate_Name(t *testing.T) {
+	template := &templates.EnterpriseTemplate{}
+	assert.Equal(t, "enterprise", template.Name())
+}
+
+func TestEnterpriseTemplate_Description(t *testing.T) {
+	template := &templates.EnterpriseTemplate{}
+	assert.Contains(t, template.Description(), "enterprise")
+}
+
+func TestEnterpriseTemplate_DefaultData(t *testing.T) {
+	template := &templates.EnterpriseTemplate{}
+	data := template.DefaultData()
+
+	// Verify defaults
+	assert.Equal(t, generated.ProjectTypeEnterprise, data.ProjectType)
+	assert.Equal(t, "db", data.Package.Name)
+	assert.Equal(t, "internal/db", data.Package.Path)
+	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
+	assert.True(t, data.Database.UseUUIDs)
+	assert.True(t, data.Database.UseJSON)
+	assert.True(t, data.Database.UseArrays)
+	assert.True(t, data.Database.UseFullText)
+}
+
+func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
+	template := &templates.EnterpriseTemplate{}
+	data := template.DefaultData()
+	data.ProjectName = "enterprise-service"
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "2", result.Version)
+	assert.Len(t, result.SQL, 1)
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, "enterprise-service", sqlConfig.Name)
+	assert.Equal(t, "postgresql", sqlConfig.Engine)
+	assert.NotNil(t, sqlConfig.Database)
+	assert.True(t, *sqlConfig.StrictFunctionChecks)
+	assert.True(t, *sqlConfig.StrictOrderBy)
+}

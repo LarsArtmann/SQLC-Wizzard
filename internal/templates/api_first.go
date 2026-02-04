@@ -7,26 +7,26 @@ import (
 	"github.com/samber/lo"
 )
 
-// HobbyTemplate generates sqlc config for hobby/personal projects.
-type HobbyTemplate struct{}
+// APIFirstTemplate generates sqlc config for API-first projects.
+type APIFirstTemplate struct{}
 
-// NewHobbyTemplate creates a new hobby template.
-func NewHobbyTemplate() *HobbyTemplate {
-	return &HobbyTemplate{}
+// NewAPIFirstTemplate creates a new API-first template.
+func NewAPIFirstTemplate() *APIFirstTemplate {
+	return &APIFirstTemplate{}
 }
 
 // Name returns the template name.
-func (t *HobbyTemplate) Name() string {
-	return "hobby"
+func (t *APIFirstTemplate) Name() string {
+	return "api-first"
 }
 
 // Description returns a human-readable description.
-func (t *HobbyTemplate) Description() string {
-	return "Lightweight hobby configuration for personal projects and learning"
+func (t *APIFirstTemplate) Description() string {
+	return "Optimized for REST/GraphQL API development with JSON support and camelCase naming"
 }
 
 // Generate creates a SqlcConfig from template data.
-func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
+func (t *APIFirstTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	// Set defaults
 	packageConfig := data.Package
 	if packageConfig.Name == "" {
@@ -34,27 +34,27 @@ func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfi
 		data.Package = packageConfig
 	}
 	if packageConfig.Path == "" {
-		packageConfig.Path = "db"
+		packageConfig.Path = "internal/db"
 		data.Package = packageConfig
 	}
 
 	outputConfig := data.Output
 	if outputConfig.BaseDir == "" {
-		outputConfig.BaseDir = "db"
+		outputConfig.BaseDir = "internal/db"
 		data.Output = outputConfig
 	}
 	if outputConfig.QueriesDir == "" {
-		outputConfig.QueriesDir = "db/queries"
+		outputConfig.QueriesDir = "internal/db/queries"
 		data.Output = outputConfig
 	}
 	if outputConfig.SchemaDir == "" {
-		outputConfig.SchemaDir = "db/schema"
+		outputConfig.SchemaDir = "internal/db/schema"
 		data.Output = outputConfig
 	}
 
 	databaseConfig := data.Database
 	if databaseConfig.URL == "" {
-		databaseConfig.URL = "file:dev.db"
+		databaseConfig.URL = "${DATABASE_URL}"
 	}
 
 	// Determine SQL package based on database type
@@ -65,7 +65,7 @@ func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfi
 		Version: "2",
 		SQL: []config.SQLConfig{
 			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "hobby"),
+				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "api"),
 				Engine:               string(databaseConfig.Engine),
 				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
 				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
@@ -101,52 +101,52 @@ func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfi
 	return cfg, nil
 }
 
-// DefaultData returns default TemplateData for hobby template.
-func (t *HobbyTemplate) DefaultData() TemplateData {
+// DefaultData returns default TemplateData for API-first template.
+func (t *APIFirstTemplate) DefaultData() TemplateData {
 	return generated.TemplateData{
 		ProjectName: "",
-		ProjectType: MustNewProjectType("hobby"),
+		ProjectType: MustNewProjectType("api-first"),
 
 		Package: generated.PackageConfig{
 			Name: "db",
-			Path: "db",
+			Path: "internal/db",
 		},
 
 		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("sqlite"),
-			URL:         "file:dev.db",
-			UseManaged:  false,
-			UseUUIDs:    false,
-			UseJSON:     false,
+			Engine:      MustNewDatabaseType("postgresql"),
+			URL:         "${DATABASE_URL}",
+			UseManaged:  true,
+			UseUUIDs:    true,
+			UseJSON:     true,
 			UseArrays:   false,
 			UseFullText: false,
 		},
 
 		Output: generated.OutputConfig{
-			BaseDir:    "db",
-			QueriesDir: "db/queries",
-			SchemaDir:  "db/schema",
+			BaseDir:    "internal/db",
+			QueriesDir: "internal/db/queries",
+			SchemaDir:  "internal/db/schema",
 		},
 
 		Validation: generated.ValidationConfig{
 			StrictFunctions: false,
 			StrictOrderBy:   false,
 			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             false,
-				EmitPreparedQueries:      false,
-				EmitInterface:            false,
+				EmitJSONTags:             true,
+				EmitPreparedQueries:      true,
+				EmitInterface:            true,
 				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      false,
-				EmitAllEnumValues:        false,
-				JSONTagsCaseStyle:        "snake",
+				EmitResultStructPointers: true,
+				EmitParamsStructPointers: true,
+				EmitEnumValidMethod:      true,
+				EmitAllEnumValues:        true,
+				JSONTagsCaseStyle:        "camel",
 			},
 			SafetyRules: generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				NoDropTable:  false,
-				NoTruncate:   false,
+				NoSelectStar: true,
+				RequireWhere: true,
+				NoDropTable:  true,
+				NoTruncate:   true,
 				RequireLimit: false,
 				Rules:        []generated.SafetyRule{},
 			},
@@ -155,12 +155,12 @@ func (t *HobbyTemplate) DefaultData() TemplateData {
 }
 
 // RequiredFeatures returns which features this template requires.
-func (t *HobbyTemplate) RequiredFeatures() []string {
-	return []string{}
+func (t *APIFirstTemplate) RequiredFeatures() []string {
+	return []string{"emit_interface", "prepared_queries", "json_tags", "camel_case"}
 }
 
 // buildGoGenConfig builds the GoGenConfig from template data.
-func (t *HobbyTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
+func (t *APIFirstTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
 	cfg := &config.GoGenConfig{
 		Package:    data.Package.Name,
 		Out:        data.Output.BaseDir,
@@ -174,10 +174,10 @@ func (t *HobbyTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage
 }
 
 // getSQLPackage returns the appropriate SQL package for the database.
-func (t *HobbyTemplate) getSQLPackage(db DatabaseType) string {
+func (t *APIFirstTemplate) getSQLPackage(db DatabaseType) string {
 	switch db {
 	case DatabaseTypePostgreSQL:
-		return "database/sql"
+		return "pgx/v5"
 	case DatabaseTypeMySQL:
 		return "database/sql"
 	case DatabaseTypeSQLite:
@@ -188,10 +188,10 @@ func (t *HobbyTemplate) getSQLPackage(db DatabaseType) string {
 }
 
 // getBuildTags returns appropriate build tags.
-func (t *HobbyTemplate) getBuildTags(data TemplateData) string {
+func (t *APIFirstTemplate) getBuildTags(data TemplateData) string {
 	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
-		return "postgres"
+		return "postgres,pgx"
 	case DatabaseTypeMySQL:
 		return "mysql"
 	case DatabaseTypeSQLite:
@@ -202,11 +202,12 @@ func (t *HobbyTemplate) getBuildTags(data TemplateData) string {
 }
 
 // getTypeOverrides returns database-specific type overrides.
-func (t *HobbyTemplate) getTypeOverrides(data TemplateData) []config.Override {
+func (t *APIFirstTemplate) getTypeOverrides(data TemplateData) []config.Override {
 	var overrides []config.Override
 
 	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
+		// UUID support
 		if data.Database.UseUUIDs {
 			overrides = append(overrides, config.Override{
 				DBType:       "uuid",
@@ -214,7 +215,18 @@ func (t *HobbyTemplate) getTypeOverrides(data TemplateData) []config.Override {
 				GoImportPath: "github.com/google/uuid",
 			})
 		}
+
+		// JSONB support for APIs
+		if data.Database.UseJSON {
+			overrides = append(overrides, config.Override{
+				DBType:       "jsonb",
+				GoType:       "RawMessage",
+				GoImportPath: "encoding/json",
+			})
+		}
+
 	case DatabaseTypeMySQL:
+		// JSON support for APIs
 		if data.Database.UseJSON {
 			overrides = append(overrides, config.Override{
 				DBType:       "json",
@@ -228,11 +240,17 @@ func (t *HobbyTemplate) getTypeOverrides(data TemplateData) []config.Override {
 }
 
 // getRenameRules returns common rename rules for better Go naming.
-func (t *HobbyTemplate) getRenameRules() map[string]string {
+func (t *APIFirstTemplate) getRenameRules() map[string]string {
 	return map[string]string{
 		"id":   "ID",
 		"uuid": "UUID",
 		"url":  "URL",
 		"uri":  "URI",
+		"json": "JSON",
+		"api":  "API",
+		"http": "HTTP",
+		"db":   "DB",
+		"created_at": "CreatedAt",
+		"updated_at": "UpdatedAt",
 	}
 }

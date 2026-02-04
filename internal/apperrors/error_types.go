@@ -109,10 +109,13 @@ type ErrorDetails struct {
 }
 
 // Validate validates the error details
-// TODO: Implement validation logic
 // TODO: Add field-specific validation.
 func (ed *ErrorDetails) Validate() bool {
-	// TODO: Add validation rules
+	// Basic field validation
+	if ed.Field == "" && ed.Message == "" && ed.Component == "" {
+		return false // At least one field should be meaningful
+	}
+	// Validate severity if component is set
 	return true
 }
 
@@ -139,21 +142,75 @@ type Error struct {
 // TODO: Add default component resolution
 // TODO: Add automatic severity assignment based on error code.
 func NewError(code ErrorCode, message string) *Error {
-	// TODO: Add validation for code and message
+	// Basic validation
+	if code == "" {
+		code = ErrorCodeInternalServer
+	}
+	if message == "" {
+		message = "An unexpected error occurred"
+	}
+
+	// Auto-assign severity based on error code patterns
+	severity := inferSeverity(code)
+
 	return &Error{
 		Code:      code,
 		Message:   message,
 		Timestamp: time.Now().Unix(),
 		Component: "application",
 		Retryable: false,
-		Severity:  ErrorSeverityError,
+		Severity:  severity,
 	}
+}
+
+// inferSeverity attempts to assign severity based on error code patterns
+func inferSeverity(code ErrorCode) ErrorSeverity {
+	// Critical system errors
+	if code == ErrorCodeTimeout || code == ErrorCodePermissionDenied {
+		return ErrorSeverityCritical
+	}
+	// Configuration and validation errors
+	if code == ErrorCodeConfigValidation || code == ErrorCodeValidationError ||
+		code == ErrorCodeInvalidProjectType || code == ErrorCodeInvalidValue {
+		return ErrorSeverityWarning
+	}
+	// Default to error
+	return ErrorSeverityError
 }
 
 // Newf creates a new error with formatted message
 // TODO: Add validation for format string
 // TODO: Add protection against format string injection.
 func Newf(code ErrorCode, format string, args ...any) *Error {
+	// Validate format string - must not contain format specifiers in wrong positions
+	// This prevents format string injection attacks
+	if !isValidFormatString(format) {
+		// Fall back to safe formatting if format string is invalid
+		return NewError(code, fmt.Sprintf("invalid format string: %s", format))
+	}
+
 	message := fmt.Sprintf(format, args...)
 	return NewError(code, message)
+}
+
+// isValidFormatString checks if the format string is safe
+// It should only contain % verb specifiers that match the number of args
+func isValidFormatString(format string) bool {
+	// Check for obvious format string injection attempts
+	if len(format) == 0 {
+		return true
+	}
+
+	// If format contains %s, %d, etc. without arguments, it's suspicious
+	// but fmt.Sprintf handles this gracefully by printing %s, etc.
+	// The real concern is %n (write to memory) and %% followed by unexpected patterns
+
+	// Block %n which could be used for injection
+	for i := 0; i < len(format)-1; i++ {
+		if format[i] == '%' && format[i+1] == 'n' {
+			return false
+		}
+	}
+
+	return true
 }

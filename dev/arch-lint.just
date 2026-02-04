@@ -366,11 +366,11 @@ lint-files:
 # Enforce single main file in cmd/ directory
 lint-cmd-single:
     @echo "{{BOLD}}📋 CHECKING SINGLE CMD MAIN FILE{{NORMAL}}"
-    @if [ ! -f "./scripts/check-cmd-single.sh" ]; then \
-        echo "{{RED}}❌ Script not found: ./scripts/check-cmd-single.sh{{NORMAL}}"; \
+    @if [ ! -f "../scripts/check-cmd-single.sh" ]; then \
+        echo "{{RED}}❌ Script not found: ../scripts/check-cmd-single.sh{{NORMAL}}"; \
         exit 1; \
     fi
-    @./scripts/check-cmd-single.sh
+    @../scripts/check-cmd-single.sh
 
 # Auto-fix issues where possible
 fix:
