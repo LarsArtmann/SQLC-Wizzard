@@ -57,7 +57,6 @@ func TestAllTemplates_GenerateValidConfig(t *testing.T) {
 func TestAllTemplates_GenerateWithCustomData(t *testing.T) {
 	// Test that all templates handle custom data correctly
 	registry := templates.NewRegistry()
-	allTemplates := registry.List()
 
 	testCases := []struct {
 		templateName string

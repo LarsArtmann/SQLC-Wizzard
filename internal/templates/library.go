@@ -8,7 +8,9 @@ import (
 )
 
 // LibraryTemplate generates sqlc config for reusable Go libraries.
-type LibraryTemplate struct{}
+type LibraryTemplate struct {
+	BaseTemplate
+}
 
 // NewLibraryTemplate creates a new library template.
 func NewLibraryTemplate() *LibraryTemplate {
@@ -27,38 +29,25 @@ func (t *LibraryTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Set defaults
-	packageConfig := data.Package
-	if packageConfig.Name == "" {
-		packageConfig.Name = "db"
-		data.Package = packageConfig
+	// Library-specific defaults
+	if data.Package.Name == "" {
+		data.Package.Name = "db"
 	}
-	if packageConfig.Path == "" {
-		packageConfig.Path = "internal/db"
-		data.Package = packageConfig
+	if data.Package.Path == "" {
+		data.Package.Path = "internal/db"
 	}
-
-	outputConfig := data.Output
-	if outputConfig.BaseDir == "" {
-		outputConfig.BaseDir = "internal/db"
-		data.Output = outputConfig
+	if data.Output.BaseDir == "" {
+		data.Output.BaseDir = "internal/db"
 	}
-	if outputConfig.QueriesDir == "" {
-		outputConfig.QueriesDir = "internal/db/queries"
-		data.Output = outputConfig
+	if data.Output.QueriesDir == "" {
+		data.Output.QueriesDir = "internal/db/queries"
 	}
-	if outputConfig.SchemaDir == "" {
-		outputConfig.SchemaDir = "internal/db/schema"
-		data.Output = outputConfig
+	if data.Output.SchemaDir == "" {
+		data.Output.SchemaDir = "internal/db/schema"
 	}
-
-	databaseConfig := data.Database
-	if databaseConfig.URL == "" {
-		databaseConfig.URL = "${DATABASE_URL}"
+	if data.Database.URL == "" {
+		data.Database.URL = "${DATABASE_URL}"
 	}
-
-	// Determine SQL package based on database type
-	sqlPackage := t.getSQLPackage(databaseConfig.Engine)
 
 	// Build config
 	cfg := &config.SqlcConfig{
@@ -66,17 +55,17 @@ func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 		SQL: []config.SQLConfig{
 			{
 				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "library"),
-				Engine:               string(databaseConfig.Engine),
-				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
+				Engine:               string(data.Database.Engine),
+				Queries:              config.NewPathOrPaths([]string{data.Output.QueriesDir}),
+				Schema:               config.NewPathOrPaths([]string{data.Output.SchemaDir}),
 				StrictFunctionChecks: lo.ToPtr(false),
 				StrictOrderBy:        lo.ToPtr(false),
 				Database: &config.DatabaseConfig{
-					URI:     databaseConfig.URL,
-					Managed: databaseConfig.UseManaged,
+					URI:     data.Database.URL,
+					Managed: data.Database.UseManaged,
 				},
 				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data, sqlPackage),
+					Go: t.buildGoGenConfig(data),
 				},
 				Rules: []config.RuleConfig{},
 			},
@@ -160,88 +149,16 @@ func (t *LibraryTemplate) RequiredFeatures() []string {
 }
 
 // buildGoGenConfig builds the GoGenConfig from template data.
-func (t *LibraryTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
-	cfg := &config.GoGenConfig{
-		Package:    data.Package.Name,
-		Out:        data.Output.BaseDir,
-		SQLPackage: sqlPackage,
-		BuildTags:  t.getBuildTags(data),
-		Overrides:  t.getTypeOverrides(data),
-		Rename:     t.getRenameRules(),
-	}
+func (t *LibraryTemplate) buildGoGenConfig(data generated.TemplateData) *config.GoGenConfig {
+	sqlPackage := t.GetSQLPackage(data.Database.Engine)
+	cfg := t.BuildGoGenConfig(data, sqlPackage)
 
-	return cfg
-}
-
-// getSQLPackage returns the appropriate SQL package for the database.
-func (t *LibraryTemplate) getSQLPackage(db DatabaseType) string {
-	switch db {
-	case DatabaseTypePostgreSQL:
-		return "database/sql"
-	case DatabaseTypeMySQL:
-		return "database/sql"
-	case DatabaseTypeSQLite:
-		return "database/sql"
-	default:
-		return "database/sql"
-	}
-}
-
-// getBuildTags returns appropriate build tags.
-func (t *LibraryTemplate) getBuildTags(data TemplateData) string {
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		return "postgres"
-	case DatabaseTypeMySQL:
-		return "mysql"
-	case DatabaseTypeSQLite:
-		return "sqlite"
-	default:
-		return ""
-	}
-}
-
-// getTypeOverrides returns database-specific type overrides.
-func (t *LibraryTemplate) getTypeOverrides(data TemplateData) []config.Override {
-	var overrides []config.Override
-
-	// Libraries should have minimal dependencies
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		if data.Database.UseUUIDs {
-			overrides = append(overrides, config.Override{
-				DBType:       "uuid",
-				GoType:       "UUID",
-				GoImportPath: "github.com/google/uuid",
-			})
-		}
-
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "jsonb",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
-
-	case DatabaseTypeMySQL:
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "json",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
-	}
-
-	return overrides
-}
-
-// getRenameRules returns common rename rules for better Go naming.
-func (t *LibraryTemplate) getRenameRules() map[string]string {
-	return map[string]string{
+	// Libraries use simpler rename rules
+	cfg.Rename = map[string]string{
 		"id":   "ID",
 		"json": "JSON",
 		"api":  "API",
 	}
+
+	return cfg
 }

@@ -8,7 +8,9 @@ import (
 )
 
 // MultiTenantTemplate generates sqlc config for multi-tenant SaaS applications.
-type MultiTenantTemplate struct{}
+type MultiTenantTemplate struct {
+	BaseTemplate
+}
 
 // NewMultiTenantTemplate creates a new multi-tenant template.
 func NewMultiTenantTemplate() *MultiTenantTemplate {
@@ -27,38 +29,25 @@ func (t *MultiTenantTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Set defaults
-	packageConfig := data.Package
-	if packageConfig.Name == "" {
-		packageConfig.Name = "db"
-		data.Package = packageConfig
+	// Multi-tenant-specific defaults
+	if data.Package.Name == "" {
+		data.Package.Name = "db"
 	}
-	if packageConfig.Path == "" {
-		packageConfig.Path = "internal/db"
-		data.Package = packageConfig
+	if data.Package.Path == "" {
+		data.Package.Path = "internal/db"
 	}
-
-	outputConfig := data.Output
-	if outputConfig.BaseDir == "" {
-		outputConfig.BaseDir = "internal/db"
-		data.Output = outputConfig
+	if data.Output.BaseDir == "" {
+		data.Output.BaseDir = "internal/db"
 	}
-	if outputConfig.QueriesDir == "" {
-		outputConfig.QueriesDir = "internal/db/queries"
-		data.Output = outputConfig
+	if data.Output.QueriesDir == "" {
+		data.Output.QueriesDir = "internal/db/queries"
 	}
-	if outputConfig.SchemaDir == "" {
-		outputConfig.SchemaDir = "internal/db/schema"
-		data.Output = outputConfig
+	if data.Output.SchemaDir == "" {
+		data.Output.SchemaDir = "internal/db/schema"
 	}
-
-	databaseConfig := data.Database
-	if databaseConfig.URL == "" {
-		databaseConfig.URL = "${DATABASE_URL}"
+	if data.Database.URL == "" {
+		data.Database.URL = "${DATABASE_URL}"
 	}
-
-	// Determine SQL package based on database type
-	sqlPackage := t.getSQLPackage(databaseConfig.Engine)
 
 	// Build config
 	cfg := &config.SqlcConfig{
@@ -66,17 +55,17 @@ func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.Sql
 		SQL: []config.SQLConfig{
 			{
 				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "multi-tenant"),
-				Engine:               string(databaseConfig.Engine),
-				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
+				Engine:               string(data.Database.Engine),
+				Queries:              config.NewPathOrPaths([]string{data.Output.QueriesDir}),
+				Schema:               config.NewPathOrPaths([]string{data.Output.SchemaDir}),
 				StrictFunctionChecks: lo.ToPtr(true),
 				StrictOrderBy:        lo.ToPtr(true),
 				Database: &config.DatabaseConfig{
-					URI:     databaseConfig.URL,
-					Managed: databaseConfig.UseManaged,
+					URI:     data.Database.URL,
+					Managed: data.Database.UseManaged,
 				},
 				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data, sqlPackage),
+					Go: t.buildGoGenConfig(data),
 				},
 				Rules: []config.RuleConfig{},
 			},
@@ -156,108 +145,16 @@ func (t *MultiTenantTemplate) DefaultData() TemplateData {
 
 // RequiredFeatures returns which features this template requires.
 func (t *MultiTenantTemplate) RequiredFeatures() []string {
-	return []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation"}
+	return []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"}
 }
 
 // buildGoGenConfig builds the GoGenConfig from template data.
-func (t *MultiTenantTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
-	cfg := &config.GoGenConfig{
-		Package:    data.Package.Name,
-		Out:        data.Output.BaseDir,
-		SQLPackage: sqlPackage,
-		BuildTags:  t.getBuildTags(data),
-		Overrides:  t.getTypeOverrides(data),
-		Rename:     t.getRenameRules(),
-	}
+func (t *MultiTenantTemplate) buildGoGenConfig(data generated.TemplateData) *config.GoGenConfig {
+	sqlPackage := t.GetSQLPackage(data.Database.Engine)
+	cfg := t.BuildGoGenConfig(data, sqlPackage)
 
-	return cfg
-}
-
-// getSQLPackage returns the appropriate SQL package for the database.
-func (t *MultiTenantTemplate) getSQLPackage(db DatabaseType) string {
-	switch db {
-	case DatabaseTypePostgreSQL:
-		return "pgx/v5"
-	case DatabaseTypeMySQL:
-		return "database/sql"
-	case DatabaseTypeSQLite:
-		return "database/sql"
-	default:
-		return "database/sql"
-	}
-}
-
-// getBuildTags returns appropriate build tags.
-func (t *MultiTenantTemplate) getBuildTags(data TemplateData) string {
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		return "postgres,pgx,multitenant"
-	case DatabaseTypeMySQL:
-		return "mysql,multitenant"
-	case DatabaseTypeSQLite:
-		return "sqlite,multitenant"
-	default:
-		return "multitenant"
-	}
-}
-
-// getTypeOverrides returns database-specific type overrides.
-func (t *MultiTenantTemplate) getTypeOverrides(data TemplateData) []config.Override {
-	var overrides []config.Override
-
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		// UUID support for tenant IDs
-		if data.Database.UseUUIDs {
-			overrides = append(overrides, config.Override{
-				DBType:       "uuid",
-				GoType:       "UUID",
-				GoImportPath: "github.com/google/uuid",
-			})
-		}
-
-		// JSONB support for metadata
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "jsonb",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
-
-		// Array support for multi-tenant patterns
-		if data.Database.UseArrays {
-			overrides = append(overrides, config.Override{
-				DBType:       "_text",
-				GoType:       "[]string",
-				GoImportPath: "",
-				Nullable:     true,
-			})
-			overrides = append(overrides, config.Override{
-				DBType:       "_uuid",
-				GoType:       "[]UUID",
-				GoImportPath: "github.com/google/uuid",
-				Nullable:     true,
-			})
-		}
-
-	case DatabaseTypeMySQL:
-		// JSON support for metadata
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "json",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
-	}
-
-	return overrides
-}
-
-// getRenameRules returns common rename rules for better Go naming.
-func (t *MultiTenantTemplate) getRenameRules() map[string]string {
-	return map[string]string{
+	// Multi-tenant uses extended rename rules
+	cfg.Rename = map[string]string{
 		"id":     "ID",
 		"uuid":   "UUID",
 		"tenant": "Tenant",
@@ -269,4 +166,6 @@ func (t *MultiTenantTemplate) getRenameRules() map[string]string {
 		"db":     "DB",
 		"sql":    "SQL",
 	}
+
+	return cfg
 }

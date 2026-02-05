@@ -8,7 +8,9 @@ import (
 )
 
 // TestingTemplate generates sqlc config for test projects and fixtures.
-type TestingTemplate struct{}
+type TestingTemplate struct {
+	BaseTemplate
+}
 
 // NewTestingTemplate creates a new testing template.
 func NewTestingTemplate() *TestingTemplate {
@@ -27,38 +29,25 @@ func (t *TestingTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Set defaults
-	packageConfig := data.Package
-	if packageConfig.Name == "" {
-		packageConfig.Name = "testdata"
-		data.Package = packageConfig
+	// Testing-specific defaults
+	if data.Package.Name == "" {
+		data.Package.Name = "testdata"
 	}
-	if packageConfig.Path == "" {
-		packageConfig.Path = "testdata/db"
-		data.Package = packageConfig
+	if data.Package.Path == "" {
+		data.Package.Path = "testdata/db"
 	}
-
-	outputConfig := data.Output
-	if outputConfig.BaseDir == "" {
-		outputConfig.BaseDir = "testdata/db"
-		data.Output = outputConfig
+	if data.Output.BaseDir == "" {
+		data.Output.BaseDir = "testdata/db"
 	}
-	if outputConfig.QueriesDir == "" {
-		outputConfig.QueriesDir = "testdata/queries"
-		data.Output = outputConfig
+	if data.Output.QueriesDir == "" {
+		data.Output.QueriesDir = "testdata/queries"
 	}
-	if outputConfig.SchemaDir == "" {
-		outputConfig.SchemaDir = "testdata/schema"
-		data.Output = outputConfig
+	if data.Output.SchemaDir == "" {
+		data.Output.SchemaDir = "testdata/schema"
 	}
-
-	databaseConfig := data.Database
-	if databaseConfig.URL == "" {
-		databaseConfig.URL = "file:testdata/test.db"
+	if data.Database.URL == "" {
+		data.Database.URL = "file:testdata/test.db"
 	}
-
-	// Determine SQL package based on database type
-	sqlPackage := t.getSQLPackage(databaseConfig.Engine)
 
 	// Build config
 	cfg := &config.SqlcConfig{
@@ -66,17 +55,17 @@ func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 		SQL: []config.SQLConfig{
 			{
 				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "test"),
-				Engine:               string(databaseConfig.Engine),
-				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
+				Engine:               string(data.Database.Engine),
+				Queries:              config.NewPathOrPaths([]string{data.Output.QueriesDir}),
+				Schema:               config.NewPathOrPaths([]string{data.Output.SchemaDir}),
 				StrictFunctionChecks: lo.ToPtr(false),
 				StrictOrderBy:        lo.ToPtr(false),
 				Database: &config.DatabaseConfig{
-					URI:     databaseConfig.URL,
-					Managed: databaseConfig.UseManaged,
+					URI:     data.Database.URL,
+					Managed: data.Database.UseManaged,
 				},
 				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data, sqlPackage),
+					Go: t.buildGoGenConfig(data),
 				},
 				Rules: []config.RuleConfig{},
 			},
@@ -160,69 +149,14 @@ func (t *TestingTemplate) RequiredFeatures() []string {
 }
 
 // buildGoGenConfig builds the GoGenConfig from template data.
-func (t *TestingTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
-	cfg := &config.GoGenConfig{
-		Package:    data.Package.Name,
-		Out:        data.Output.BaseDir,
-		SQLPackage: sqlPackage,
-		BuildTags:  t.getBuildTags(data),
-		Overrides:  t.getTypeOverrides(data),
-		Rename:     t.getRenameRules(),
+func (t *TestingTemplate) buildGoGenConfig(data generated.TemplateData) *config.GoGenConfig {
+	sqlPackage := t.GetSQLPackage(data.Database.Engine)
+	cfg := t.BuildGoGenConfig(data, sqlPackage)
+
+	// Testing uses minimal rename rules
+	cfg.Rename = map[string]string{
+		"id": "ID",
 	}
 
 	return cfg
-}
-
-// getSQLPackage returns the appropriate SQL package for the database.
-func (t *TestingTemplate) getSQLPackage(db DatabaseType) string {
-	switch db {
-	case DatabaseTypePostgreSQL:
-		return "database/sql"
-	case DatabaseTypeMySQL:
-		return "database/sql"
-	case DatabaseTypeSQLite:
-		return "database/sql"
-	default:
-		return "database/sql"
-	}
-}
-
-// getBuildTags returns appropriate build tags.
-func (t *TestingTemplate) getBuildTags(data TemplateData) string {
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		return "test,postgres"
-	case DatabaseTypeMySQL:
-		return "test,mysql"
-	case DatabaseTypeSQLite:
-		return "test,sqlite"
-	default:
-		return "test"
-	}
-}
-
-// getTypeOverrides returns database-specific type overrides.
-func (t *TestingTemplate) getTypeOverrides(data TemplateData) []config.Override {
-	var overrides []config.Override
-
-	// Testing typically uses simple types
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		if data.Database.UseUUIDs {
-			overrides = append(overrides, config.Override{
-				DBType:       "uuid",
-				GoType:       "UUID",
-				GoImportPath: "github.com/google/uuid",
-			})
-		}
-	}
-
-	return overrides
-}
-
-// getRenameRules returns common rename rules for better Go naming.
-func (t *TestingTemplate) getRenameRules() map[string]string {
-	return map[string]string{
-		"id": "ID",
-	}
 }
