@@ -420,7 +420,7 @@ func TestLibraryTemplate_Name(t *testing.T) {
 
 func TestLibraryTemplate_Description(t *testing.T) {
 	template := &templates.LibraryTemplate{}
-	assert.Contains(t, template.Description(), "library")
+	assert.Contains(t, template.Description(), "Library")
 }
 
 func TestLibraryTemplate_DefaultData(t *testing.T) {
