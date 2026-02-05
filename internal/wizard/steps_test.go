@@ -1,17 +1,10 @@
 package wizard
 
 import (
-	"testing"
-
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
-
-func TestWizardSteps(t *testing.T) {
-	RegisterFailHandler(Fail)
-	RunSpecs(t, "Wizard Steps Suite")
-}
 
 var _ = Describe("CreateProjectTypeStep", func() {
 	Context("with default template data", func() {
