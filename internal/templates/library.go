@@ -22,7 +22,7 @@ func (t *LibraryTemplate) Name() string {
 
 // Description returns a human-readable description.
 func (t *LibraryTemplate) Description() string {
-	return "Flexible configuration for reusable Go libraries with minimal dependencies and broad compatibility"
+	return "Library package configuration for reusable Go library development"
 }
 
 // Generate creates a SqlcConfig from template data.

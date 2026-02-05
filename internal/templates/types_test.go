@@ -222,3 +222,240 @@ func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
 	assert.True(t, *sqlConfig.StrictFunctionChecks)
 	assert.True(t, *sqlConfig.StrictOrderBy)
 }
+
+// APIFirstTemplate Tests
+func TestAPIFirstTemplate_Name(t *testing.T) {
+	template := &templates.APIFirstTemplate{}
+	assert.Equal(t, "api-first", template.Name())
+}
+
+func TestAPIFirstTemplate_Description(t *testing.T) {
+	template := &templates.APIFirstTemplate{}
+	assert.Contains(t, template.Description(), "API")
+}
+
+func TestAPIFirstTemplate_DefaultData(t *testing.T) {
+	template := &templates.APIFirstTemplate{}
+	data := template.DefaultData()
+
+	assert.Equal(t, generated.ProjectType("api-first"), data.ProjectType)
+	assert.Equal(t, "db", data.Package.Name)
+	assert.Equal(t, "internal/db", data.Package.Path)
+	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
+	assert.True(t, data.Database.UseUUIDs)
+	assert.True(t, data.Database.UseJSON)
+	assert.True(t, data.Database.UseArrays)
+	assert.True(t, data.Validation.EmitOptions.EmitJSONTags)
+	assert.True(t, data.Validation.EmitOptions.EmitPreparedQueries)
+	assert.Equal(t, "camel", data.Validation.EmitOptions.JSONTagsCaseStyle)
+}
+
+func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
+	template := &templates.APIFirstTemplate{}
+	data := template.DefaultData()
+	data.ProjectName = "api-service"
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "2", result.Version)
+	assert.Len(t, result.SQL, 1)
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, "api-service", sqlConfig.Name)
+	assert.Equal(t, "postgresql", sqlConfig.Engine)
+	assert.NotNil(t, sqlConfig.Database)
+	assert.False(t, *sqlConfig.StrictFunctionChecks)
+	assert.False(t, *sqlConfig.StrictOrderBy)
+}
+
+// AnalyticsTemplate Tests
+func TestAnalyticsTemplate_Name(t *testing.T) {
+	template := &templates.AnalyticsTemplate{}
+	assert.Equal(t, "analytics", template.Name())
+}
+
+func TestAnalyticsTemplate_Description(t *testing.T) {
+	template := &templates.AnalyticsTemplate{}
+	assert.Contains(t, template.Description(), "analytics")
+}
+
+func TestAnalyticsTemplate_DefaultData(t *testing.T) {
+	template := &templates.AnalyticsTemplate{}
+	data := template.DefaultData()
+
+	assert.Equal(t, generated.ProjectType("analytics"), data.ProjectType)
+	assert.Equal(t, "analytics", data.Package.Name)
+	assert.Equal(t, "internal/analytics", data.Package.Path)
+	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
+	assert.False(t, data.Database.UseUUIDs)
+	assert.True(t, data.Database.UseJSON)
+	assert.True(t, data.Database.UseArrays)
+	assert.True(t, data.Database.UseFullText)
+	assert.Equal(t, "snake", data.Validation.EmitOptions.JSONTagsCaseStyle)
+}
+
+func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
+	template := &templates.AnalyticsTemplate{}
+	data := template.DefaultData()
+	data.ProjectName = "analytics-service"
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "2", result.Version)
+	assert.Len(t, result.SQL, 1)
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, "analytics-service", sqlConfig.Name)
+	assert.Equal(t, "postgresql", sqlConfig.Engine)
+	assert.NotNil(t, sqlConfig.Database)
+	assert.True(t, *sqlConfig.StrictFunctionChecks)
+	assert.True(t, *sqlConfig.StrictOrderBy)
+}
+
+// TestingTemplate Tests
+func TestTestingTemplate_Name(t *testing.T) {
+	template := &templates.TestingTemplate{}
+	assert.Equal(t, "testing", template.Name())
+}
+
+func TestTestingTemplate_Description(t *testing.T) {
+	template := &templates.TestingTemplate{}
+	assert.Contains(t, template.Description(), "test")
+}
+
+func TestTestingTemplate_DefaultData(t *testing.T) {
+	template := &templates.TestingTemplate{}
+	data := template.DefaultData()
+
+	assert.Equal(t, generated.ProjectType("testing"), data.ProjectType)
+	assert.Equal(t, "testdata", data.Package.Name)
+	assert.Equal(t, "testdata/db", data.Package.Path)
+	assert.Equal(t, generated.DatabaseTypeSQLite, data.Database.Engine)
+	assert.False(t, data.Database.UseUUIDs)
+	assert.False(t, data.Database.UseJSON)
+	assert.False(t, data.Database.UseArrays)
+	assert.False(t, data.Validation.EmitOptions.EmitJSONTags)
+	assert.False(t, data.Validation.EmitOptions.EmitPreparedQueries)
+}
+
+func TestTestingTemplate_Generate_Basic(t *testing.T) {
+	template := &templates.TestingTemplate{}
+	data := template.DefaultData()
+	data.ProjectName = "test-project"
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "2", result.Version)
+	assert.Len(t, result.SQL, 1)
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, "test-project", sqlConfig.Name)
+	assert.Equal(t, "sqlite", sqlConfig.Engine)
+	assert.NotNil(t, sqlConfig.Database)
+	assert.False(t, *sqlConfig.StrictFunctionChecks)
+	assert.False(t, *sqlConfig.StrictOrderBy)
+}
+
+// MultiTenantTemplate Tests
+func TestMultiTenantTemplate_Name(t *testing.T) {
+	template := &templates.MultiTenantTemplate{}
+	assert.Equal(t, "multi-tenant", template.Name())
+}
+
+func TestMultiTenantTemplate_Description(t *testing.T) {
+	template := &templates.MultiTenantTemplate{}
+	assert.Contains(t, template.Description(), "multi-tenant")
+}
+
+func TestMultiTenantTemplate_DefaultData(t *testing.T) {
+	template := &templates.MultiTenantTemplate{}
+	data := template.DefaultData()
+
+	assert.Equal(t, generated.ProjectType("multi-tenant"), data.ProjectType)
+	assert.Equal(t, "db", data.Package.Name)
+	assert.Equal(t, "internal/db", data.Package.Path)
+	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
+	assert.True(t, data.Database.UseUUIDs)
+	assert.True(t, data.Database.UseJSON)
+	assert.True(t, data.Database.UseArrays)
+	assert.True(t, data.Validation.EmitOptions.EmitJSONTags)
+	assert.Equal(t, "camel", data.Validation.EmitOptions.JSONTagsCaseStyle)
+}
+
+func TestMultiTenantTemplate_Generate_Basic(t *testing.T) {
+	template := &templates.MultiTenantTemplate{}
+	data := template.DefaultData()
+	data.ProjectName = "multi-tenant-app"
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "2", result.Version)
+	assert.Len(t, result.SQL, 1)
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, "multi-tenant-app", sqlConfig.Name)
+	assert.Equal(t, "postgresql", sqlConfig.Engine)
+	assert.NotNil(t, sqlConfig.Database)
+	assert.True(t, *sqlConfig.StrictFunctionChecks)
+	assert.True(t, *sqlConfig.StrictOrderBy)
+}
+
+// LibraryTemplate Tests
+func TestLibraryTemplate_Name(t *testing.T) {
+	template := &templates.LibraryTemplate{}
+	assert.Equal(t, "library", template.Name())
+}
+
+func TestLibraryTemplate_Description(t *testing.T) {
+	template := &templates.LibraryTemplate{}
+	assert.Contains(t, template.Description(), "library")
+}
+
+func TestLibraryTemplate_DefaultData(t *testing.T) {
+	template := &templates.LibraryTemplate{}
+	data := template.DefaultData()
+
+	assert.Equal(t, generated.ProjectType("library"), data.ProjectType)
+	assert.Equal(t, "db", data.Package.Name)
+	assert.Equal(t, "internal/db", data.Package.Path)
+	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
+	assert.False(t, data.Database.UseUUIDs)
+	assert.False(t, data.Database.UseJSON)
+	assert.False(t, data.Database.UseArrays)
+	assert.True(t, data.Validation.EmitOptions.EmitJSONTags)
+	assert.True(t, data.Validation.EmitOptions.EmitInterface)
+	assert.Equal(t, "camel", data.Validation.EmitOptions.JSONTagsCaseStyle)
+}
+
+func TestLibraryTemplate_Generate_Basic(t *testing.T) {
+	template := &templates.LibraryTemplate{}
+	data := template.DefaultData()
+	data.ProjectName = "library-module"
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err)
+	require.NotNil(t, result)
+
+	assert.Equal(t, "2", result.Version)
+	assert.Len(t, result.SQL, 1)
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, "library-module", sqlConfig.Name)
+	assert.Equal(t, "postgresql", sqlConfig.Engine)
+	assert.NotNil(t, sqlConfig.Database)
+	assert.False(t, *sqlConfig.StrictFunctionChecks)
+	assert.False(t, *sqlConfig.StrictOrderBy)
+}
