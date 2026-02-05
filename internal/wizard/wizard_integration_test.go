@@ -56,7 +56,7 @@ var _ = Describe("Configuration Generation", func() {
 
 		Expect(sqlcConfig).NotTo(BeNil())
 		Expect(sqlcConfig.Version).To(Equal("2"))
-		Expect(len(sqlcConfig.SQL)).To(Equal(1))
+		Expect(sqlcConfig.SQL).To(HaveLen(1))
 		Expect(sqlcConfig.SQL[0].Engine).To(Equal("postgresql"))
 	})
 })

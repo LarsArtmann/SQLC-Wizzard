@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// newMigrateDBCreateCommand creates migration creation command
+// newMigrateDBCreateCommand creates migration creation command.
 func newMigrateDBCreateCommand() *cobra.Command {
 	var name string
 
@@ -34,13 +34,13 @@ func newMigrateDBCreateCommand() *cobra.Command {
 	return cmd
 }
 
-// CreateConfig represents migration creation configuration
+// CreateConfig represents migration creation configuration.
 type CreateConfig struct {
 	Name           string
 	MigrationsPath string
 }
 
-// runMigrationCreate executes migration file creation
+// runMigrationCreate executes migration file creation.
 func runMigrationCreate(config *CreateConfig) error {
 	if config.Name == "" {
 		return &MigrationError{

@@ -4,7 +4,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 )
 
-// SqlcConfig represents the complete sqlc.yaml configuration (v2 schema)
+// SqlcConfig represents the complete sqlc.yaml configuration (v2 schema).
 type SqlcConfig struct {
 	Version string       `yaml:"version"`
 	Cloud   *CloudConfig `yaml:"cloud,omitempty"`
@@ -12,7 +12,7 @@ type SqlcConfig struct {
 	Rules   []RuleConfig `yaml:"rules,omitempty"`
 }
 
-// CloudConfig represents sqlc Cloud integration settings
+// CloudConfig represents sqlc Cloud integration settings.
 type CloudConfig struct {
 	Organization string `yaml:"organization,omitempty"`
 	Project      string `yaml:"project"`
@@ -20,7 +20,7 @@ type CloudConfig struct {
 	Hostname     string `yaml:"hostname,omitempty"`
 }
 
-// SQLConfig represents a single database configuration
+// SQLConfig represents a single database configuration.
 type SQLConfig struct {
 	Name                 string          `yaml:"name,omitempty"`
 	Engine               string          `yaml:"engine"`
@@ -34,13 +34,13 @@ type SQLConfig struct {
 	CodegenPlugins       []CodegenPlugin `yaml:"codegen,omitempty"`
 }
 
-// DatabaseConfig represents database connection settings
+// DatabaseConfig represents database connection settings.
 type DatabaseConfig struct {
 	URI     string `yaml:"uri,omitempty"`
 	Managed bool   `yaml:"managed,omitempty"`
 }
 
-// GenConfig represents code generation settings
+// GenConfig represents code generation settings.
 type GenConfig struct {
 	Go         *GoGenConfig         `yaml:"go,omitempty"`
 	Kotlin     *KotlinGenConfig     `yaml:"kotlin,omitempty"`
@@ -48,7 +48,7 @@ type GenConfig struct {
 	TypeScript *TypeScriptGenConfig `yaml:"typescript,omitempty"`
 }
 
-// GoGenConfig represents Go-specific generation settings
+// GoGenConfig represents Go-specific generation settings.
 type GoGenConfig struct {
 	Package                     string            `yaml:"package"`
 	Out                         string            `yaml:"out"`
@@ -81,25 +81,25 @@ type GoGenConfig struct {
 	InflectionExcludeTableNames []string          `yaml:"inflection_exclude_table_names,omitempty"`
 }
 
-// KotlinGenConfig represents Kotlin-specific generation settings
+// KotlinGenConfig represents Kotlin-specific generation settings.
 type KotlinGenConfig struct {
 	Package string `yaml:"package"`
 	Out     string `yaml:"out"`
 }
 
-// PythonGenConfig represents Python-specific generation settings
+// PythonGenConfig represents Python-specific generation settings.
 type PythonGenConfig struct {
 	Package string `yaml:"package"`
 	Out     string `yaml:"out"`
 }
 
-// TypeScriptGenConfig represents TypeScript-specific generation settings
+// TypeScriptGenConfig represents TypeScript-specific generation settings.
 type TypeScriptGenConfig struct {
 	Package string `yaml:"package"`
 	Out     string `yaml:"out"`
 }
 
-// Override represents a type override configuration
+// Override represents a type override configuration.
 type Override struct {
 	DBType       string `yaml:"db_type,omitempty"`
 	GoType       string `yaml:"go_type,omitempty"`
@@ -113,14 +113,14 @@ type Override struct {
 	GoPointer    bool   `yaml:"go_pointer,omitempty"`
 }
 
-// RuleConfig represents a validation rule (CEL-based)
+// RuleConfig represents a validation rule (CEL-based).
 type RuleConfig struct {
 	Name    string `yaml:"name"`
 	Rule    string `yaml:"rule"`
 	Message string `yaml:"message,omitempty"`
 }
 
-// CodegenPlugin represents a WASM plugin configuration
+// CodegenPlugin represents a WASM plugin configuration.
 type CodegenPlugin struct {
 	WASM    string            `yaml:"wasm,omitempty"`
 	SHA256  string            `yaml:"sha256,omitempty"`
@@ -129,7 +129,7 @@ type CodegenPlugin struct {
 }
 
 // ApplyEmitOptions applies emit options to a GoGenConfig in a type-safe manner
-// This is a type-safe operation that eliminates field-by-field copying (DRY principle)
+// This is a type-safe operation that eliminates field-by-field copying (DRY principle).
 func ApplyEmitOptions(opts *generated.EmitOptions, cfg *GoGenConfig) {
 	if opts.EmitJSONTags {
 		cfg.EmitJSONTags = opts.EmitJSONTags

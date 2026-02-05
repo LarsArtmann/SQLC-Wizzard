@@ -12,7 +12,7 @@ import (
 )
 
 // SQLCAdapter defines interface for sqlc operations
-// This isolates direct sqlc usage and enables testing
+// This isolates direct sqlc usage and enables testing.
 type SQLCAdapter interface {
 	// Generate generates Go code from SQL files
 	Generate(ctx context.Context, cfg *config.SqlcConfig) error
@@ -28,7 +28,7 @@ type SQLCAdapter interface {
 }
 
 // DatabaseAdapter defines interface for database operations
-// This isolates database-specific logic and enables testing
+// This isolates database-specific logic and enables testing.
 type DatabaseAdapter interface {
 	// TestConnection tests database connectivity
 	TestConnection(ctx context.Context, cfg *config.DatabaseConfig) error
@@ -47,7 +47,7 @@ type DatabaseAdapter interface {
 }
 
 // CLIAdapter defines interface for CLI operations
-// This isolates CLI-specific logic and enables testing
+// This isolates CLI-specific logic and enables testing.
 type CLIAdapter interface {
 	// RunCommand executes a CLI command
 	RunCommand(ctx context.Context, cmd string, args ...string) (string, error)
@@ -60,10 +60,13 @@ type CLIAdapter interface {
 
 	// Install installs a CLI tool
 	Install(ctx context.Context, cmd string) error
+
+	// Println prints a message to output
+	Println(ctx context.Context, message string) error
 }
 
 // TemplateAdapter defines interface for template operations
-// This isolates template logic and enables testing
+// This isolates template logic and enables testing.
 type TemplateAdapter interface {
 	// GetTemplate retrieves a template by type
 	GetTemplate(projectType generated.ProjectType) (templates.Template, error)
@@ -82,7 +85,7 @@ type TemplateAdapter interface {
 }
 
 // FileSystemAdapter defines interface for file system operations
-// This isolates file system logic and enables testing
+// This isolates file system logic and enables testing.
 type FileSystemAdapter interface {
 	// ReadFile reads a file
 	ReadFile(ctx context.Context, path string) ([]byte, error)
@@ -90,8 +93,12 @@ type FileSystemAdapter interface {
 	// WriteFile writes a file
 	WriteFile(ctx context.Context, path string, data []byte, perm fs.FileMode) error
 
-	// CreateDirectory creates a directory
+	// CreateDirectory creates a directory.
+	// Deprecated: Use MkdirAll instead. This method will be removed in a future breaking change.
 	CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error
+
+	// MkdirAll creates a directory and all parent directories
+	MkdirAll(ctx context.Context, path string, perm fs.FileMode) error
 
 	// Exists checks if a path exists
 	Exists(ctx context.Context, path string) (bool, error)

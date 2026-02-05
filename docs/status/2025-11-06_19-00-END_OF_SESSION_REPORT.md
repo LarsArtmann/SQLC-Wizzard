@@ -44,6 +44,7 @@
 ### 1d. What could you still improve?
 
 **Immediately:**
+
 - Add comprehensive Ginkgo tests (0% → 80%+ coverage)
 - Fix type safety (remove all `interface{}`)
 - Consolidate split brains
@@ -51,6 +52,7 @@
 - Add smart constructors
 
 **Soon:**
+
 - Railway-Oriented Programming with `mo.Result`
 - CI/CD workflows
 - Architecture linting with go-arch-lint
@@ -72,6 +74,7 @@
 ### 1f. How can we be less stupid?
 
 **Process:**
+
 1. **TDD/BDD mandatory** - Write tests BEFORE code
 2. **Architecture Decision Records (ADRs)** - Document why
 3. **Pre-commit hooks** - Enforce quality gates
@@ -79,6 +82,7 @@
 5. **Code review checklist** - Type safety, tests, errors
 
 **Technical:**
+
 1. **Use `mo.Result[T, error]`** - Railway-Oriented everywhere
 2. **Smart constructors** - Validate at construction
 3. **Newtypes** - Wrap primitives for type safety
@@ -97,6 +101,7 @@
 6. ✅ **SQL template files** - Exist but read as Go constants instead ⚠️
 
 **Action:**
+
 - **Remove:** `samber/do` (we don't need DI for CLI)
 - **Implement:** `errors/` package (provides value)
 - **Implement:** `detectors/` package (smart defaults)
@@ -109,11 +114,13 @@
 **YES, we are creeping!**
 
 **Original MVP:**
+
 - ✅ Init command
 - ✅ Validate command
 - ✅ One template (microservice)
 
 **Scope Creep in README:**
+
 - ❌ 8 templates (we have 1)
 - ❌ Doctor command
 - ❌ Plugin system
@@ -126,6 +133,7 @@
 ### 1i. Did we remove something that was actually useful?
 
 **NO**, but we **didn't use** useful things:
+
 - `go-arch-lint` - Not configured
 - `viper` - Imported, not used for config files
 - `samber/mo` - Should use `Result` everywhere
@@ -136,6 +144,7 @@
 **YES, THREE SPLIT BRAINS:**
 
 #### Split Brain #1: SafetyRules vs RuleConfig
+
 ```go
 // templates/types.go
 type SafetyRules struct { NoSelectStar bool }
@@ -143,9 +152,11 @@ type SafetyRules struct { NoSelectStar bool }
 // config/types.go
 type RuleConfig struct { Name, Rule, Message string }
 ```
+
 **Problem:** Must manually sync! Easy to forget!
 
 #### Split Brain #2: Features vs GoGenConfig
+
 ```go
 // templates/types.go
 type Features struct { EmitInterface bool }
@@ -153,13 +164,16 @@ type Features struct { EmitInterface bool }
 // config/types.go
 type GoGenConfig struct { EmitInterface bool }
 ```
+
 **Problem:** Which is source of truth? Can they conflict? YES!
 
 #### Split Brain #3: Database type validation
+
 ```go
 type DatabaseType string // Any string!
 Engine string `yaml:"engine"` // Also any string!
 ```
+
 **Problem:** No compile-time type safety!
 
 ### 1k. How are we doing on tests? What can we do better?
@@ -179,6 +193,7 @@ Coverage: 0%
 ```
 
 **What we need:**
+
 1. **Ginkgo BDD tests** for all packages
 2. **Table-driven tests** for database variants
 3. **Property-based tests** with gopter
@@ -223,6 +238,7 @@ Coverage: 0%
 ## 📈 METRICS
 
 **Code Quality:**
+
 - Lines of Code: ~2,700
 - Files: ~35
 - Commits: 13
@@ -232,6 +248,7 @@ Coverage: 0%
 - Documentation: **8/10** ✅
 
 **Functionality:**
+
 - Init Command: **9/10** ✅
 - Validate Command: **8/10** ✅
 - Template System: **7/10** ⚠️
@@ -258,6 +275,7 @@ Coverage: 0%
 ## 🎯 NEXT SESSION PRIORITIES
 
 **Start with:**
+
 1. 🔥 **Add Ginkgo tests** (4 hours) - HIGHEST PRIORITY
 2. 🔥 **Fix type safety** (2 hours)
 3. 🔥 **Fix split brains** (2 hours)
@@ -273,16 +291,19 @@ Coverage: 0%
 ## 📦 DELIVERABLES
 
 **Git:**
+
 - Branch: `claude/create-sqlc-wizard-011CUrcBQqi6inaWUqF2XMM8`
 - Commits: 13 (all pushed ✅)
 - Status: Up to date with origin
 
 **Files:**
+
 - Source code: ~2,700 LOC
 - Documentation: ~2,500 LOC
 - Total: ~5,200 LOC
 
 **Functionality:**
+
 - Working CLI tool
 - 2 commands (init, validate)
 - 1 template (microservice)
@@ -325,6 +346,7 @@ Coverage: 0%
 ## 🚀 READY FOR TOMORROW
 
 **All documentation is in GitHub:**
+
 - ✅ GITHUB_ISSUES.md - Detailed issue list
 - ✅ TODO_NEXT_SESSION.md - Prioritized checklist
 - ✅ ARCHITECTURE.md - Design decisions
@@ -338,6 +360,7 @@ Coverage: 0%
 ## 🙏 THANK YOU
 
 Great session today! We built a **working CLI tool** that provides **real customer value**:
+
 - Setup time: 2 hours → **2 minutes** ⚡
 - Best practices: Manual → **Automatic** 🎯
 - User experience: Complex → **Beautiful** 🎨
@@ -351,6 +374,7 @@ Now let's make it **production-quality** by fixing the critical issues!
 ## 📝 QUICK REFERENCE
 
 **To start next session:**
+
 1. Read `TODO_NEXT_SESSION.md`
 2. Start with item #1: Add Ginkgo tests
 3. Follow checklist
@@ -358,12 +382,14 @@ Now let's make it **production-quality** by fixing the critical issues!
 5. Update TODO as you complete items
 
 **To understand codebase:**
+
 1. Read `ARCHITECTURE.md`
 2. Check package structure
 3. Review dependency rules
 4. Follow design principles
 
 **To fix issues:**
+
 1. Read `GITHUB_ISSUES.md`
 2. Start with P0 (Critical) items
 3. Fix type safety first

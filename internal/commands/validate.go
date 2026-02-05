@@ -8,14 +8,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// ValidateOptions contains options for the validate command
+// ValidateOptions contains options for the validate command.
 type ValidateOptions struct {
 	ConfigPath string
 	Fix        bool
 	Strict     bool
 }
 
-// NewValidateCommand creates the validate command
+// NewValidateCommand creates the validate command.
 func NewValidateCommand() *cobra.Command {
 	opts := &ValidateOptions{}
 

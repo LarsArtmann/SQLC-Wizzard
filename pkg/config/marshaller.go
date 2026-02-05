@@ -7,7 +7,7 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
-// Marshal converts a SqlcConfig to YAML bytes
+// Marshal converts a SqlcConfig to YAML bytes.
 func Marshal(cfg *SqlcConfig) ([]byte, error) {
 	data, err := yaml.Marshal(cfg)
 	if err != nil {
@@ -17,7 +17,7 @@ func Marshal(cfg *SqlcConfig) ([]byte, error) {
 	return data, nil
 }
 
-// WriteFile writes a SqlcConfig to a file
+// WriteFile writes a SqlcConfig to a file.
 func WriteFile(cfg *SqlcConfig, path string) error {
 	data, err := Marshal(cfg)
 	if err != nil {
@@ -31,7 +31,7 @@ func WriteFile(cfg *SqlcConfig, path string) error {
 	return nil
 }
 
-// WriteFileFormatted writes a SqlcConfig with better formatting
+// WriteFileFormatted writes a SqlcConfig with better formatting.
 func WriteFileFormatted(cfg *SqlcConfig, path string) error {
 	// Use yaml.Encoder for better control over formatting
 	file, err := os.Create(path)

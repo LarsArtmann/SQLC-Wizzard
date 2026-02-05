@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// NewMigrateCommand creates migrate command
+// NewMigrateCommand creates migrate command.
 func NewMigrateCommand() *cobra.Command {
 	var (
 		source      string
@@ -56,7 +56,7 @@ existing SQLC projects to latest version.`,
 	return cmd
 }
 
-// MigrationConfig represents migration configuration
+// MigrationConfig represents migration configuration.
 type MigrationConfig struct {
 	Source      string
 	Destination string
@@ -66,7 +66,7 @@ type MigrationConfig struct {
 	DryRun      bool
 }
 
-// runMigration executes the migration process
+// runMigration executes the migration process.
 func runMigration(config *MigrationConfig) error {
 	if config.DryRun {
 		fmt.Println("🔍 DRY RUN MODE - No changes will be made")
@@ -101,7 +101,7 @@ func runMigration(config *MigrationConfig) error {
 		default:
 			return &MigrationError{
 				Code:    "INVALID_DATABASE",
-				Message: fmt.Sprintf("Invalid database type: %s", config.Database),
+				Message: "Invalid database type: " + config.Database,
 			}
 		}
 	}

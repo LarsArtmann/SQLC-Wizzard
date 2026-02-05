@@ -10,14 +10,14 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// GenerateOptions contains options for generate command
+// GenerateOptions contains options for generate command.
 type GenerateOptions struct {
 	configPath string
 	outputDir  string
 	force      bool
 }
 
-// NewGenerateCommand creates the generate command
+// NewGenerateCommand creates the generate command.
 func NewGenerateCommand() *cobra.Command {
 	opts := &GenerateOptions{}
 

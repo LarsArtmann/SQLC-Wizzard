@@ -7,13 +7,13 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-// DatabaseStep handles database selection and configuration
+// DatabaseStep handles database selection and configuration.
 type DatabaseStep struct {
 	theme *huh.Theme
 	ui    *UIHelper
 }
 
-// NewDatabaseStep creates a new database step
+// NewDatabaseStep creates a new database step.
 func NewDatabaseStep(theme *huh.Theme, ui *UIHelper) *DatabaseStep {
 	return &DatabaseStep{
 		theme: theme,
@@ -21,7 +21,7 @@ func NewDatabaseStep(theme *huh.Theme, ui *UIHelper) *DatabaseStep {
 	}
 }
 
-// Execute runs the database selection step
+// Execute runs the database selection step.
 func (s *DatabaseStep) Execute(data *generated.TemplateData) error {
 	s.ui.ShowStepHeader("Database Selection")
 
@@ -57,7 +57,7 @@ func (s *DatabaseStep) Execute(data *generated.TemplateData) error {
 	return s.configureDatabaseOptions(data)
 }
 
-// configureDatabaseOptions configures database-specific options
+// configureDatabaseOptions configures database-specific options.
 func (s *DatabaseStep) configureDatabaseOptions(data *generated.TemplateData) error {
 	switch data.Database.Engine {
 	case generated.DatabaseTypePostgreSQL:
@@ -71,7 +71,7 @@ func (s *DatabaseStep) configureDatabaseOptions(data *generated.TemplateData) er
 	}
 }
 
-// configurePostgreSQL configures PostgreSQL-specific options
+// configurePostgreSQL configures PostgreSQL-specific options.
 func (s *DatabaseStep) configurePostgreSQL(data *generated.TemplateData) error {
 	s.ui.ShowInfo("Configuring PostgreSQL options...")
 
@@ -85,7 +85,7 @@ func (s *DatabaseStep) configurePostgreSQL(data *generated.TemplateData) error {
 	return nil
 }
 
-// configureSQLite configures SQLite-specific options
+// configureSQLite configures SQLite-specific options.
 func (s *DatabaseStep) configureSQLite(data *generated.TemplateData) error {
 	s.ui.ShowInfo("Configuring SQLite options...")
 
@@ -99,7 +99,7 @@ func (s *DatabaseStep) configureSQLite(data *generated.TemplateData) error {
 	return nil
 }
 
-// configureMySQL configures MySQL-specific options
+// configureMySQL configures MySQL-specific options.
 func (s *DatabaseStep) configureMySQL(data *generated.TemplateData) error {
 	s.ui.ShowInfo("Configuring MySQL options...")
 

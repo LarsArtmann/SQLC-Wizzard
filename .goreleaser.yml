@@ -1,0 +1,133 @@
+# The GoReleaser Configuration File
+# Documentation: https://goreleaser.com
+
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - go generate ./...
+
+builds:
+  - env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: darwin
+        goarch: "386"
+      - goos: windows
+        goarch: arm64
+    binary: sqlc-wizard
+    ldflags:
+      - -s -w
+      - -X main.Version={{.Version}}
+      - -X main.Commit={{.Commit}}
+      - -X main.BuildDate={{.Date}}
+
+archives:
+  - format: tar.gz
+    name_template: >-
+      {{ .ProjectName }}_{{ .Version }}_
+      {{- title .Os }}_{{ .Arch }}
+    format_overrides:
+      - goos: windows
+        format: zip
+    files:
+      - README.md
+      - LICENSE
+      - docs/*
+
+checksum:
+  name_template: "checksums.txt"
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - Merge pull request
+      - Merge branch
+
+# Homebrew formula
+brews:
+  - name: sqlc-wizard
+    homepage: https://github.com/LarsArtmann/SQLC-Wizzard
+    repository:
+      owner: LarsArtmann
+      name: homebrew-tap
+    commit_author:
+      name: goreleaserbot
+      email: goreleaser@carlosbecker.com
+    folder: Formula
+    install: |
+      bin.install "sqlc-wizard"
+
+# Docker images
+dockers:
+  - image_templates:
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}"
+      - "ghcr.io/larsartmann/sqlc-wizard:v{{ .Major }}"
+      - "ghcr.io/larsartmann/sqlc-wizard:v{{ .Major }}.{{ .Minor }}"
+      - "ghcr.io/larsartmann/sqlc-wizard:latest"
+    dockerfile: Dockerfile
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/amd64"
+
+# GitHub release
+release:
+  github:
+    owner: LarsArtmann
+    name: SQLC-Wizard
+  draft: false
+  prerelease: auto
+  name_template: "{{.ProjectName}} v{{.Version}}"
+  header: |
+    ## SQLC-Wizard {{.Version}}
+
+    🧙‍♂️ An interactive CLI wizard that generates perfect sqlc configurations in minutes, not hours.
+
+    ### 📦 Installation
+
+    **Homebrew:**
+    ```bash
+    brew install sqlc-wizard
+    ```
+
+    **Go Install:**
+    ```bash
+    go install github.com/LarsArtmann/SQLC-Wizzard@{{.Version}}
+    ```
+
+    **Binary:**
+    Download the appropriate binary for your platform from the assets below.
+
+    ### 🚀 What's New
+
+    {{ .Changelog }}
+
+# Configure notification
+notification:
+  slack:
+    webhook_url: https://hooks.slack.com/...
+    channel: "#releases"
+    message: |
+      🚀 SQLC-Wizard {{.Version}} has been released!
+      Download it here: {{ .ReleaseURL }}

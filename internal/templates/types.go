@@ -2,7 +2,7 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
@@ -16,7 +16,7 @@ type (
 	SafetyRules  = generated.SafetyRules
 )
 
-// Helper functions for validation
+// Helper functions for validation.
 func IsValidProjectType(projectType string) bool {
 	return generated.ProjectType(projectType).IsValid()
 }
@@ -25,7 +25,7 @@ func IsValidDatabaseType(database string) bool {
 	return generated.DatabaseType(database).IsValid()
 }
 
-// Template interface defines behavior for all template implementations
+// Template interface defines behavior for all template implementations.
 type Template interface {
 	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
 	DefaultData() generated.TemplateData
@@ -38,7 +38,7 @@ type Template interface {
 func NewProjectType(projectType string) (ProjectType, error) {
 	pt := ProjectType(projectType)
 	if !pt.IsValid() {
-		return "", errors.ValidationError("project_type", projectType)
+		return "", apperrors.ValidationError("project_type", projectType)
 	}
 	return pt, nil
 }
@@ -46,12 +46,12 @@ func NewProjectType(projectType string) (ProjectType, error) {
 func NewDatabaseType(database string) (DatabaseType, error) {
 	dt := DatabaseType(database)
 	if !dt.IsValid() {
-		return "", errors.ValidationError("database", database)
+		return "", apperrors.ValidationError("database", database)
 	}
 	return dt, nil
 }
 
-// MustNew constructors - PANIC on invalid input (for constants)
+// MustNew constructors - PANIC on invalid input (for constants).
 func MustNewProjectType(projectType string) ProjectType {
 	pt, err := NewProjectType(projectType)
 	if err != nil {
@@ -68,18 +68,18 @@ func MustNewDatabaseType(database string) DatabaseType {
 	return dt
 }
 
-// Constants - use generated types, NO MANUAL STRINGS!
+// Constants - use generated types directly, NO MANUAL STRINGS!
 const (
-	ProjectTypeHobby        = ProjectType(generated.ProjectTypeHobby)
-	ProjectTypeMicroservice = ProjectType(generated.ProjectTypeMicroservice)
-	ProjectTypeEnterprise   = ProjectType(generated.ProjectTypeEnterprise)
-	ProjectTypeAPIFirst     = ProjectType(generated.ProjectTypeAPIFirst)
-	ProjectTypeAnalytics    = ProjectType(generated.ProjectTypeAnalytics)
-	ProjectTypeTesting      = ProjectType(generated.ProjectTypeTesting)
-	ProjectTypeMultiTenant  = ProjectType(generated.ProjectTypeMultiTenant)
-	ProjectTypeLibrary      = ProjectType(generated.ProjectTypeLibrary)
+	ProjectTypeHobby        = generated.ProjectTypeHobby
+	ProjectTypeMicroservice = generated.ProjectTypeMicroservice
+	ProjectTypeEnterprise   = generated.ProjectTypeEnterprise
+	ProjectTypeAPIFirst     = generated.ProjectTypeAPIFirst
+	ProjectTypeAnalytics    = generated.ProjectTypeAnalytics
+	ProjectTypeTesting      = generated.ProjectTypeTesting
+	ProjectTypeMultiTenant  = generated.ProjectTypeMultiTenant
+	ProjectTypeLibrary      = generated.ProjectTypeLibrary
 
-	DatabaseTypePostgreSQL = DatabaseType(generated.DatabaseTypePostgreSQL)
-	DatabaseTypeMySQL      = DatabaseType(generated.DatabaseTypeMySQL)
-	DatabaseTypeSQLite     = DatabaseType(generated.DatabaseTypeSQLite)
+	DatabaseTypePostgreSQL = generated.DatabaseTypePostgreSQL
+	DatabaseTypeMySQL      = generated.DatabaseTypeMySQL
+	DatabaseTypeSQLite     = generated.DatabaseTypeSQLite
 )

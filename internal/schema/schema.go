@@ -6,7 +6,7 @@ import (
 )
 
 // Schema represents a database schema with proper type safety
-// Eliminates interface{} returns from adapter methods
+// Eliminates interface{} returns from adapter methods.
 type Schema struct {
 	Name        string         `json:"name"`
 	Tables      []Table        `json:"tables"`
@@ -17,7 +17,7 @@ type Schema struct {
 	Metadata    SchemaMetadata `json:"metadata"`
 }
 
-// Table represents a database table with typed columns
+// Table represents a database table with typed columns.
 type Table struct {
 	Name        string       `json:"name"`
 	Columns     []Column     `json:"columns"`
@@ -26,7 +26,7 @@ type Table struct {
 	ForeignKeys []ForeignKey `json:"foreign_keys,omitempty"`
 }
 
-// Column represents a database column with type safety
+// Column represents a database column with type safety.
 type Column struct {
 	Name       string     `json:"name"`
 	Type       ColumnType `json:"type"`
@@ -36,7 +36,7 @@ type Column struct {
 	Unique     bool       `json:"unique"`
 }
 
-// ColumnType represents strongly-typed column types
+// ColumnType represents strongly-typed column types.
 type ColumnType string
 
 const (
@@ -55,7 +55,7 @@ const (
 	ColumnTypeBlob      ColumnType = "blob"
 )
 
-// IsValid returns true if ColumnType is valid
+// IsValid returns true if ColumnType is valid.
 func (ct ColumnType) IsValid() bool {
 	switch ct {
 	case ColumnTypeString, ColumnTypeInteger, ColumnTypeBigInt, ColumnTypeFloat,
@@ -67,14 +67,14 @@ func (ct ColumnType) IsValid() bool {
 	}
 }
 
-// View represents a database view
+// View represents a database view.
 type View struct {
 	Name       string   `json:"name"`
 	Definition string   `json:"definition"`
 	Columns    []Column `json:"columns"`
 }
 
-// Index represents a database index
+// Index represents a database index.
 type Index struct {
 	Name    string    `json:"name"`
 	Table   string    `json:"table"`
@@ -83,7 +83,7 @@ type Index struct {
 	Type    IndexType `json:"type"`
 }
 
-// IndexType represents index types
+// IndexType represents index types.
 type IndexType string
 
 const (
@@ -94,7 +94,7 @@ const (
 	IndexTypeBRIN  IndexType = "brin"
 )
 
-// ForeignKey represents a foreign key constraint
+// ForeignKey represents a foreign key constraint.
 type ForeignKey struct {
 	Name           string `json:"name"`
 	SourceTable    string `json:"source_table"`
@@ -105,7 +105,7 @@ type ForeignKey struct {
 	OnUpdateAction string `json:"on_update_action"`
 }
 
-// Constraint represents a database constraint
+// Constraint represents a database constraint.
 type Constraint struct {
 	Name       string           `json:"name"`
 	Type       ConstraintType   `json:"type"`
@@ -115,7 +115,7 @@ type Constraint struct {
 	Check      *CheckConstraint `json:"check,omitempty"`
 }
 
-// ConstraintType represents constraint types
+// ConstraintType represents constraint types.
 type ConstraintType string
 
 const (
@@ -126,18 +126,18 @@ const (
 	ConstraintTypeNotNull    ConstraintType = "not_null"
 )
 
-// CheckConstraint represents check constraint details
+// CheckConstraint represents check constraint details.
 type CheckConstraint struct {
 	Condition string `json:"condition"`
 }
 
-// Enum represents an enum type
+// Enum represents an enum type.
 type Enum struct {
 	Name   string   `json:"name"`
 	Values []string `json:"values"`
 }
 
-// SchemaMetadata contains metadata about the schema
+// SchemaMetadata contains metadata about the schema.
 type SchemaMetadata struct {
 	DatabaseEngine string `json:"database_engine"`
 	Version        string `json:"version"`
@@ -145,7 +145,7 @@ type SchemaMetadata struct {
 	UpdatedAt      string `json:"updated_at"`
 }
 
-// NewSchema creates a new Schema with validation
+// NewSchema creates a new Schema with validation.
 func NewSchema(name string, tables []Table) (*Schema, error) {
 	if strings.TrimSpace(name) == "" {
 		return nil, &SchemaError{
@@ -179,7 +179,7 @@ func NewSchema(name string, tables []Table) (*Schema, error) {
 
 		if len(table.Columns) == 0 {
 			return nil, &SchemaError{
-				Code:    fmt.Sprintf("NO_COLUMNS_%s", table.Name),
+				Code:    "NO_COLUMNS_" + table.Name,
 				Message: fmt.Sprintf("Table %s must contain at least one column", table.Name),
 			}
 		}
@@ -195,7 +195,7 @@ func NewSchema(name string, tables []Table) (*Schema, error) {
 	}, nil
 }
 
-// GetTable returns a table by name
+// GetTable returns a table by name.
 func (s *Schema) GetTable(name string) (*Table, bool) {
 	for _, table := range s.Tables {
 		if table.Name == name {
@@ -205,7 +205,7 @@ func (s *Schema) GetTable(name string) (*Table, bool) {
 	return nil, false
 }
 
-// GetColumn returns a column from a specific table
+// GetColumn returns a column from a specific table.
 func (s *Schema) GetColumn(tableName, columnName string) (*Column, bool) {
 	table, found := s.GetTable(tableName)
 	if !found {
@@ -220,7 +220,7 @@ func (s *Schema) GetColumn(tableName, columnName string) (*Column, bool) {
 	return nil, false
 }
 
-// SchemaError represents schema-specific errors
+// SchemaError represents schema-specific apperrors.
 type SchemaError struct {
 	Code    string `json:"code"`
 	Message string `json:"message"`
@@ -230,7 +230,7 @@ func (e *SchemaError) Error() string {
 	return e.Message
 }
 
-// Validate validates the entire schema
+// Validate validates the entire schema.
 func (s *Schema) Validate() error {
 	if s == nil {
 		return &SchemaError{
@@ -273,7 +273,7 @@ func (s *Schema) Validate() error {
 	return nil
 }
 
-// Validate validates a table
+// Validate validates a table.
 func (t *Table) Validate() error {
 	if strings.TrimSpace(t.Name) == "" {
 		return &SchemaError{
@@ -302,7 +302,7 @@ func (t *Table) Validate() error {
 	return nil
 }
 
-// Validate validates a column
+// Validate validates a column.
 func (c *Column) Validate() error {
 	if strings.TrimSpace(c.Name) == "" {
 		return &SchemaError{

@@ -6,7 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// newMigrateListCommand creates migrate list command
+// newMigrateListCommand creates migrate list command.
 func newMigrateListCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:   "list",
@@ -18,7 +18,7 @@ func newMigrateListCommand() *cobra.Command {
 	}
 }
 
-// runMigrationList displays available migration options
+// runMigrationList displays available migration options.
 func runMigrationList() {
 	fmt.Println("📋 Available Migration Targets:")
 	fmt.Println("\n🔧 Configuration Migrations:")

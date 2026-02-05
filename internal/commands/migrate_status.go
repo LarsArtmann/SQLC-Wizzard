@@ -8,7 +8,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// newMigrateStatusCommand creates migrate status command
+// newMigrateStatusCommand creates migrate status command.
 func newMigrateStatusCommand() *cobra.Command {
 	var (
 		source   string
@@ -37,13 +37,13 @@ func newMigrateStatusCommand() *cobra.Command {
 	return cmd
 }
 
-// StatusConfig represents status check configuration
+// StatusConfig represents status check configuration.
 type StatusConfig struct {
 	Source   string
 	Database string
 }
 
-// runStatusCheck executes migration status check
+// runStatusCheck executes migration status check.
 func runStatusCheck(config *StatusConfig) error {
 	if config.Source == "" {
 		return &MigrationError{

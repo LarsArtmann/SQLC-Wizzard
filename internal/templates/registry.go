@@ -1,44 +1,48 @@
 package templates
 
 import (
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 )
 
-// Registry manages available templates
+// Registry manages available templates.
 type Registry struct {
 	templates map[ProjectType]Template
 }
 
-// NewRegistry creates a new template registry
+// NewRegistry creates a new template registry.
 func NewRegistry() *Registry {
 	r := &Registry{
 		templates: make(map[ProjectType]Template),
 	}
 
 	// Register built-in templates
+	r.Register(NewHobbyTemplate())
 	r.Register(NewMicroserviceTemplate())
-	// TODO: Register other templates
-	// r.Register(NewHobbyTemplate())
-	// r.Register(NewEnterpriseTemplate())
+	r.Register(NewEnterpriseTemplate())
+	r.Register(NewAPIFirstTemplate())
+	r.Register(NewAnalyticsTemplate())
+	r.Register(NewTestingTemplate())
+	r.Register(NewMultiTenantTemplate())
+	r.Register(NewLibraryTemplate())
 
 	return r
 }
 
-// Register adds a template to the registry
+// Register adds a template to the registry.
 func (r *Registry) Register(tmpl Template) {
 	r.templates[ProjectType(tmpl.Name())] = tmpl
 }
 
-// Get retrieves a template by project type
+// Get retrieves a template by project type.
 func (r *Registry) Get(projectType ProjectType) (Template, error) {
 	tmpl, ok := r.templates[projectType]
 	if !ok {
-		return nil, errors.TemplateNotFoundError(string(projectType))
+		return nil, apperrors.TemplateNotFoundError(string(projectType))
 	}
 	return tmpl, nil
 }
 
-// List returns all available templates
+// List returns all available templates.
 func (r *Registry) List() []Template {
 	templates := make([]Template, 0, len(r.templates))
 	for _, tmpl := range r.templates {
@@ -47,25 +51,25 @@ func (r *Registry) List() []Template {
 	return templates
 }
 
-// HasTemplate checks if a template exists
+// HasTemplate checks if a template exists.
 func (r *Registry) HasTemplate(projectType ProjectType) bool {
 	_, ok := r.templates[projectType]
 	return ok
 }
 
-// DefaultRegistry returns the default template registry
+// DefaultRegistry returns the default template registry.
 var defaultRegistry *Registry
 
 func init() {
 	defaultRegistry = NewRegistry()
 }
 
-// GetTemplate is a convenience function to get a template from the default registry
+// GetTemplate is a convenience function to get a template from the default registry.
 func GetTemplate(projectType ProjectType) (Template, error) {
 	return defaultRegistry.Get(projectType)
 }
 
-// ListTemplates returns all templates from the default registry
+// ListTemplates returns all templates from the default registry.
 func ListTemplates() []Template {
 	return defaultRegistry.List()
 }

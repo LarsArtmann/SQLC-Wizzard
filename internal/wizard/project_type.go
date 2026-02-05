@@ -7,13 +7,13 @@ import (
 	"github.com/charmbracelet/huh"
 )
 
-// ProjectTypeStep handles project type selection
+// ProjectTypeStep handles project type selection.
 type ProjectTypeStep struct {
 	theme *huh.Theme
 	ui    *UIHelper
 }
 
-// NewProjectTypeStep creates a new project type step
+// NewProjectTypeStep creates a new project type step.
 func NewProjectTypeStep(theme *huh.Theme, ui *UIHelper) *ProjectTypeStep {
 	return &ProjectTypeStep{
 		theme: theme,
@@ -21,7 +21,7 @@ func NewProjectTypeStep(theme *huh.Theme, ui *UIHelper) *ProjectTypeStep {
 	}
 }
 
-// Execute runs the project type selection step
+// Execute runs the project type selection step.
 func (s *ProjectTypeStep) Execute(data *generated.TemplateData) error {
 	s.ui.ShowStepHeader("Project Type Selection")
 

@@ -23,9 +23,14 @@ func TestRealSQLCAdapter_CheckInstallation(t *testing.T) {
 	adapter := adapters.NewRealSQLCAdapter()
 
 	err := adapter.CheckInstallation(context.Background())
-	// sqlc might not be installed in test environment
+	// sqlc might not be installed in test environment - that's OK for unit tests
+	// We just verify the method doesn't panic
 	if err != nil {
-		assert.Contains(t, err.Error(), "which: sqlc")
+		// Error message varies by system ("which: sqlc" or "exec: ... not found")
+		assert.Contains(t, err.Error(), "sqlc")
+	} else {
+		// If sqlc is installed, check should pass
+		assert.NoError(t, err)
 	}
 }
 
@@ -203,4 +208,24 @@ func TestRealFileSystemAdapter_ReadWriteFile(t *testing.T) {
 	data, err := adapter.ReadFile(ctx, filePath)
 	require.NoError(t, err)
 	assert.Equal(t, testData, data)
+}
+
+// Extended CLI tests
+func TestRealCLIAdapter_Install(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+	ctx := context.Background()
+
+	// Test Install - should return error as not implemented
+	err := adapter.Install(ctx, "testcmd")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "auto-install not implemented")
+}
+
+func TestRealCLIAdapter_Println(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+	ctx := context.Background()
+
+	// Test Println - should print message without error
+	err := adapter.Println(ctx, "test message")
+	assert.NoError(t, err)
 }

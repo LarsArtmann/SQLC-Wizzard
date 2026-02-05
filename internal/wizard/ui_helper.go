@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
@@ -12,19 +12,19 @@ import (
 	"github.com/charmbracelet/lipgloss"
 )
 
-// UIHelper manages UI styling and display
+// UIHelper manages UI styling and display.
 type UIHelper struct {
 	theme *huh.Theme
 }
 
-// NewUIHelper creates a new UI helper
+// NewUIHelper creates a new UI helper.
 func NewUIHelper() *UIHelper {
 	return &UIHelper{
 		theme: huh.ThemeBase(),
 	}
 }
 
-// ShowStepHeader displays a step header
+// ShowStepHeader displays a step header.
 func (ui *UIHelper) ShowStepHeader(title string) {
 	titleStyle := lipgloss.NewStyle().
 		Bold(true).
@@ -35,7 +35,7 @@ func (ui *UIHelper) ShowStepHeader(title string) {
 	fmt.Println(titleStyle.Render("📍 " + title))
 }
 
-// ShowStepComplete displays a step completion message
+// ShowStepComplete displays a step completion message.
 func (ui *UIHelper) ShowStepComplete(title, message string) {
 	titleStyle := lipgloss.NewStyle().
 		Bold(true).
@@ -51,7 +51,7 @@ func (ui *UIHelper) ShowStepComplete(title, message string) {
 	fmt.Println()
 }
 
-// ShowSection displays a section header
+// ShowSection displays a section header.
 func (ui *UIHelper) ShowSection(title string) {
 	titleStyle := lipgloss.NewStyle().
 		Bold(true).
@@ -62,7 +62,7 @@ func (ui *UIHelper) ShowSection(title string) {
 	fmt.Println(titleStyle.Render("📍 " + title))
 }
 
-// ShowInfo displays information
+// ShowInfo displays information.
 func (ui *UIHelper) ShowInfo(message string) {
 	infoStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("240")).
@@ -73,7 +73,7 @@ func (ui *UIHelper) ShowInfo(message string) {
 	fmt.Println(infoStyle.Render(message))
 }
 
-// showWelcome displays welcome banner
+// showWelcome displays welcome banner.
 func (ui *UIHelper) ShowWelcome() {
 	titleStyle := lipgloss.NewStyle().
 		Bold(true).
@@ -88,7 +88,7 @@ func (ui *UIHelper) ShowWelcome() {
 	fmt.Println(descStyle.Render("Let's create a perfect sqlc setup for your project!\n"))
 }
 
-// showPreview displays configuration preview
+// showPreview displays configuration preview.
 func (ui *UIHelper) ShowPreview(data *templates.TemplateData, cfg *config.SqlcConfig) string {
 	titleStyle := lipgloss.NewStyle().
 		Bold(true).
@@ -128,7 +128,7 @@ func (ui *UIHelper) ShowPreview(data *templates.TemplateData, cfg *config.SqlcCo
 	return preview
 }
 
-// getConfirmation shows final confirmation
+// getConfirmation shows final confirmation.
 func (ui *UIHelper) GetConfirmation() (bool, error) {
 	var confirmed bool
 
@@ -145,13 +145,13 @@ func (ui *UIHelper) GetConfirmation() (bool, error) {
 	}
 
 	if !confirmed {
-		return false, fmt.Errorf("configuration cancelled by user")
+		return false, apperrors.NewError(apperrors.ErrorCodeValidationError, "configuration cancelled by user")
 	}
 
 	return true, nil
 }
 
-// formatConfigurationSummary formats configuration for display
+// formatConfigurationSummary formats configuration for display.
 func (ui *UIHelper) formatConfigurationSummary(cfg *schema.Schema, data generated.TemplateData) string {
 	summaryStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#FF7E67")).
@@ -161,26 +161,26 @@ func (ui *UIHelper) formatConfigurationSummary(cfg *schema.Schema, data generate
 	summary += "\n" + fmt.Sprintf("Schema: %s (Tables: %d)", cfg.Name, len(cfg.Tables))
 	summary += "\n" + fmt.Sprintf("Project: %s (%s)", data.ProjectName, data.ProjectType)
 	summary += "\n" + fmt.Sprintf("Database: %s", data.Database.Engine)
-	summary += "\n" + fmt.Sprintf("Output: %s", data.Output.BaseDir)
+	summary += "\n" + "Output: " + data.Output.BaseDir
 
 	return summary
 }
 
-// formatCompletionDetails formats completion details for display
+// formatCompletionDetails formats completion details for display.
 func (ui *UIHelper) formatCompletionDetails(cfg *schema.Schema, data generated.TemplateData) string {
 	detailStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#99")).
 		PaddingLeft(2)
 
 	details := detailStyle.Render("Generated Files:")
-	details += "\n" + fmt.Sprintf("- sqlc.yaml configuration")
+	details += "\n" + "- sqlc.yaml configuration"
 	details += "\n" + fmt.Sprintf("- Database schema (%d tables)", len(cfg.Tables))
-	details += "\n" + fmt.Sprintf("- Query files (based on schema)")
+	details += "\n" + "- Query files (based on schema)"
 
 	return details
 }
 
-// showErrorWithSchemaDetails displays schema errors
+// showErrorWithSchemaDetails displays schema apperrors.
 func (ui *UIHelper) showErrorWithSchemaDetails(err *schema.SchemaError) {
 	errorStyle := lipgloss.NewStyle().
 		Bold(true).
@@ -192,12 +192,12 @@ func (ui *UIHelper) showErrorWithSchemaDetails(err *schema.SchemaError) {
 		PaddingLeft(2)
 
 	fmt.Println(errorStyle.Render("❌ Schema Error"))
-	fmt.Println(detailStyle.Render(fmt.Sprintf("Code: %s", err.Code)))
-	fmt.Println(detailStyle.Render(fmt.Sprintf("Message: %s", err.Message)))
+	fmt.Println(detailStyle.Render("Code: " + err.Code))
+	fmt.Println(detailStyle.Render("Message: " + err.Message))
 }
 
-// showErrorWithTypedDetails displays typed errors
-func (ui *UIHelper) showErrorWithTypedDetails(err *errors.Error) {
+// showErrorWithTypedDetails displays typed apperrors.
+func (ui *UIHelper) showErrorWithTypedDetails(err *apperrors.Error) {
 	errorStyle := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("#FF5555")).
@@ -208,10 +208,10 @@ func (ui *UIHelper) showErrorWithTypedDetails(err *errors.Error) {
 		PaddingLeft(2)
 
 	fmt.Println(errorStyle.Render("❌ Error"))
-	fmt.Println(detailStyle.Render(fmt.Sprintf("Code: %s", string(err.Code))))
-	fmt.Println(detailStyle.Render(fmt.Sprintf("Message: %s", err.Message)))
+	fmt.Println(detailStyle.Render("Code: " + string(err.Code)))
+	fmt.Println(detailStyle.Render("Message: " + err.Message))
 
 	if err.Description != "" {
-		fmt.Println(detailStyle.Render(fmt.Sprintf("Description: %s", err.Description)))
+		fmt.Println(detailStyle.Render("Description: " + err.Description))
 	}
 }
