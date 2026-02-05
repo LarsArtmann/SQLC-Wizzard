@@ -22,20 +22,21 @@ func (t *BaseTemplate) BuildGoGenConfig(data generated.TemplateData, sqlPackage 
 	}
 }
 
-// GetSQLPackage returns the appropriate SQL package for the database.
-func (t *BaseTemplate) GetSQLPackage(db DatabaseType) string {
+// GetSQLPackage returns appropriate SQL package for database.
+// PostgreSQL uses pgx/v5 for better performance and feature support.
+// MySQL and SQLite use database/sql for compatibility.
+func (t *BaseTemplate) GetSQLPackage(db generated.DatabaseType) string {
 	switch db {
-	case DatabaseTypePostgreSQL:
+	case generated.DatabaseTypePostgreSQL:
+		return "pgx/v5"
+	case generated.DatabaseTypeMySQL:
 		return "database/sql"
-	case DatabaseTypeMySQL:
-		return "database/sql"
-	case DatabaseTypeSQLite:
+	case generated.DatabaseTypeSQLite:
 		return "database/sql"
 	default:
 		return "database/sql"
 	}
 }
-
 // GetBuildTags returns appropriate build tags based on database type.
 func (t *BaseTemplate) GetBuildTags(data generated.TemplateData) string {
 	switch data.Database.Engine {
