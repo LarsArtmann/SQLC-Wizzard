@@ -5,7 +5,7 @@ import (
 	"unicode"
 )
 
-// StringToCamelCase converts snake_case to CamelCase
+// StringToCamelCase converts snake_case to CamelCase.
 func StringToCamelCase(s string) string {
 	if s == "" {
 		return ""
@@ -24,41 +24,34 @@ func StringToCamelCase(s string) string {
 	return strings.Join(words, "")
 }
 
-// StringToSnakeCase converts CamelCase to snake_case
+// stringToCase converts CamelCase to specified case with separator.
+func stringToCase(s string, separator rune) string {
+	if s == "" {
+		return ""
+	}
+
+	var result []rune
+	for i, r := range s {
+		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
+			result = append(result, separator)
+		}
+		result = append(result, unicode.ToLower(r))
+	}
+
+	return string(result)
+}
+
+// StringToSnakeCase converts CamelCase to snake_case.
 func StringToSnakeCase(s string) string {
-	if s == "" {
-		return ""
-	}
-
-	var result []rune
-	for i, r := range s {
-		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
-			result = append(result, '_')
-		}
-		result = append(result, unicode.ToLower(r))
-	}
-
-	return string(result)
+	return stringToCase(s, '_')
 }
 
-// StringToKebabCase converts CamelCase to kebab-case
+// StringToKebabCase converts CamelCase to kebab-case.
 func StringToKebabCase(s string) string {
-	if s == "" {
-		return ""
-	}
-
-	var result []rune
-	for i, r := range s {
-		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
-			result = append(result, '-')
-		}
-		result = append(result, unicode.ToLower(r))
-	}
-
-	return string(result)
+	return stringToCase(s, '-')
 }
 
-// Pluralize converts a noun to its plural form (simplified)
+// Pluralize converts a noun to its plural form (simplified).
 func Pluralize(word string) string {
 	if word == "" {
 		return ""
@@ -103,7 +96,7 @@ func Pluralize(word string) string {
 	return word + "s"
 }
 
-// Singularize converts a plural noun to its singular form (simplified)
+// Singularize converts a plural noun to its singular form (simplified).
 func Singularize(word string) string {
 	if word == "" {
 		return ""
@@ -147,7 +140,7 @@ func Singularize(word string) string {
 	return word
 }
 
-// IsValidIdentifier checks if a string is a valid Go identifier
+// IsValidIdentifier checks if a string is a valid Go identifier.
 func IsValidIdentifier(s string) bool {
 	if s == "" {
 		return false
@@ -168,12 +161,12 @@ func IsValidIdentifier(s string) bool {
 	return true
 }
 
-// EscapeSQLIdentifier escapes a SQL identifier with double quotes
+// EscapeSQLIdentifier escapes a SQL identifier with double quotes.
 func EscapeSQLIdentifier(s string) string {
 	return `"` + s + `"`
 }
 
-// GetFileExtension returns the file extension including the dot
+// GetFileExtension returns the file extension including the dot.
 func GetFileExtension(path string) string {
 	dot := strings.LastIndex(path, ".")
 	if dot == -1 || dot == len(path)-1 {
@@ -183,7 +176,7 @@ func GetFileExtension(path string) string {
 	return path[dot:]
 }
 
-// HasExtension checks if a path has a specific extension
+// HasExtension checks if a path has a specific extension.
 func HasExtension(path, ext string) bool {
 	if !strings.HasPrefix(ext, ".") {
 		ext = "." + ext
@@ -192,7 +185,7 @@ func HasExtension(path, ext string) bool {
 	return strings.HasSuffix(strings.ToLower(path), strings.ToLower(ext))
 }
 
-// TruncateString truncates a string to a specific length
+// TruncateString truncates a string to a specific length.
 func TruncateString(s string, length int) string {
 	if len(s) <= length {
 		return s
@@ -205,7 +198,7 @@ func TruncateString(s string, length int) string {
 	return s[:length-3] + "..."
 }
 
-// PadString pads a string to a specific length with the given character
+// PadString pads a string to a specific length with the given character.
 func PadString(s string, length int, char string) string {
 	if len(s) >= length {
 		return s

@@ -5,14 +5,38 @@ import (
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/charmbracelet/huh"
 )
 
-// CreateProjectTypeStep creates project type selection step
+// createValidatedInput creates a validated input field with common error checking.
+func createValidatedInput(title, description, placeholder, fieldName string, value *string) *huh.Input {
+	var localValue string
+	if value != nil {
+		localValue = *value
+	}
+	return huh.NewInput().
+		Title(title).
+		Description(description).
+		Value(&localValue).
+		Placeholder(placeholder).
+		Validate(func(val string) error {
+			if val == "" {
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, fieldName+" cannot be empty")
+			}
+			return nil
+		})
+}
+
+// CreateProjectTypeStep creates project type selection step.
 func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
+	projectType := generated.ProjectTypeMicroservice
+	if data != nil {
+		projectType = data.ProjectType
+	}
 	projectTypePtr := new(string)
-	*projectTypePtr = string(data.ProjectType)
+	*projectTypePtr = string(projectType)
 
 	return huh.NewSelect[string]().
 		Title("Select Project Type").
@@ -36,10 +60,14 @@ func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 		})
 }
 
-// CreateDatabaseStep creates database selection step
+// CreateDatabaseStep creates database selection step.
 func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
+	engine := generated.DatabaseTypePostgreSQL
+	if data != nil {
+		engine = data.Database.Engine
+	}
 	databasePtr := new(string)
-	*databasePtr = string(data.Database.Engine)
+	*databasePtr = string(engine)
 
 	return huh.NewSelect[string]().
 		Title("Select Database Engine").
@@ -58,131 +86,160 @@ func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 		})
 }
 
-// CreateProjectNameStep creates project name input step
+// CreateProjectNameStep creates project name input step.
 func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
+	projectName := ""
+	if data != nil {
+		projectName = data.ProjectName
+	}
 	return huh.NewInput().
 		Title("Project Name").
 		Description("Enter the name for your project").
-		Value(&data.ProjectName).
+		Value(&projectName).
 		Validate(func(name string) error {
 			if name == "" {
-				return fmt.Errorf("project name cannot be empty")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name cannot be empty")
 			}
 			if len(name) < 2 {
-				return fmt.Errorf("project name must be at least 2 characters")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be at least 2 characters")
 			}
 			if len(name) > 50 {
-				return fmt.Errorf("project name must be less than 50 characters")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be less than 50 characters")
 			}
-			// Simple validation for now
 			return nil
 		})
 }
 
-// CreatePackageNameStep creates package name input step
+// CreatePackageNameStep creates package name input step.
 func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
-	return huh.NewInput().
-		Title("Package Name").
-		Description("Enter the Go package name for generated code").
-		Value(&data.Package.Name).
-		Placeholder("db").
-		Validate(func(name string) error {
-			if name == "" {
-				return fmt.Errorf("package name cannot be empty")
-			}
-			// Simple validation for now
-			return nil
-		})
+	var packageName string
+	if data != nil {
+		packageName = data.Package.Name
+	}
+	return createValidatedInput(
+		"Package Name",
+		"Enter the Go package name for generated code",
+		"db",
+		"package name",
+		&packageName,
+	)
 }
 
-// CreatePackagePathStep creates package path input step
+// CreatePackagePathStep creates package path input step.
 func CreatePackagePathStep(data *generated.TemplateData) *huh.Input {
-	return huh.NewInput().
-		Title("Package Path").
-		Description("Enter the Go module path for your project").
-		Value(&data.Package.Path).
-		Placeholder("github.com/username/project").
-		Validate(func(path string) error {
-			if path == "" {
-				return fmt.Errorf("package path cannot be empty")
-			}
-			// Simple validation for now
-			return nil
-		})
+	var packagePath string
+	if data != nil {
+		packagePath = data.Package.Path
+	}
+	return createValidatedInput(
+		"Package Path",
+		"Enter the Go module path for your project",
+		"github.com/username/project",
+		"package path",
+		&packagePath,
+	)
 }
 
-// CreateOutputDirStep creates output directory input step
+// CreateOutputDirStep creates output directory input step.
 func CreateOutputDirStep(data *generated.TemplateData) *huh.Input {
-	return huh.NewInput().
-		Title("Output Directory").
-		Description("Enter the directory where generated files will be placed").
-		Value(&data.Output.BaseDir).
-		Placeholder("internal/db").
-		Validate(func(dir string) error {
-			if dir == "" {
-				return fmt.Errorf("output directory cannot be empty")
-			}
-			return nil
-		})
+	var outputDir string
+	if data != nil {
+		outputDir = data.Output.BaseDir
+	}
+	return createValidatedInput(
+		"Output Directory",
+		"Enter the directory where generated files will be placed",
+		"internal/db",
+		"output directory",
+		&outputDir,
+	)
 }
 
-// CreateDatabaseURLStep creates database URL input step
+// CreateDatabaseURLStep creates database URL input step.
 func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
+	engine := generated.DatabaseTypePostgreSQL
+	if data != nil {
+		engine = data.Database.Engine
+	}
 	placeholder := "postgresql://localhost:5432/dbname"
 	description := "Enter the database connection URL (use environment variables in production)"
 
-	if data.Database.Engine == "sqlite" {
+	switch engine {
+	case generated.DatabaseTypePostgreSQL:
+		placeholder = "postgresql://localhost:5432/dbname"
+		description = "Enter the PostgreSQL connection URL (use environment variables in production)"
+	case generated.DatabaseTypeSQLite:
 		placeholder = "./data.db"
 		description = "Enter the SQLite database file path"
-	} else if data.Database.Engine == "mysql" {
+	case generated.DatabaseTypeMySQL:
 		placeholder = "mysql://localhost:3306/dbname"
 		description = "Enter the MySQL connection URL (use environment variables in production)"
 	}
 
+	var databaseURL string
+	if data != nil {
+		databaseURL = data.Database.URL
+	}
 	return huh.NewInput().
 		Title("Database URL").
 		Description(description).
-		Value(&data.Database.URL).
+		Value(&databaseURL).
 		Placeholder(placeholder).
 		Validate(func(url string) error {
 			if url == "" {
-				return fmt.Errorf("database URL cannot be empty")
+				return apperrors.NewError(apperrors.ErrorCodeValidationError, "database URL cannot be empty")
 			}
 			return nil
 		})
 }
 
-// CreateFeatureSteps creates feature selection steps
+// CreateFeatureSteps creates feature selection steps.
 func CreateFeatureSteps(data *generated.TemplateData) []huh.Field {
+	useUUIDs := true
+	useJSON := true
+	useArrays := false
+	useFullText := false
+	strictFunctions := false
+	strictOrderBy := false
+
+	if data != nil {
+		useUUIDs = data.Database.UseUUIDs
+		useJSON = data.Database.UseJSON
+		useArrays = data.Database.UseArrays
+		useFullText = data.Database.UseFullText
+		strictFunctions = data.Validation.StrictFunctions
+		strictOrderBy = data.Validation.StrictOrderBy
+	}
+
 	return []huh.Field{
 		huh.NewConfirm().
 			Title("Use UUIDs").
 			Description("Generate UUID support for primary keys").
-			Value(&data.Database.UseUUIDs),
+			Value(&useUUIDs),
 
 		huh.NewConfirm().
 			Title("Use JSON").
 			Description("Generate JSON support for flexible columns").
-			Value(&data.Database.UseJSON),
+			Value(&useJSON),
 
 		huh.NewConfirm().
 			Title("Use Arrays").
 			Description("Generate array support (PostgreSQL specific)").
-			Value(&data.Database.UseArrays),
+			Value(&useArrays),
 
 		huh.NewConfirm().
 			Title("Use Full-Text Search").
 			Description("Generate full-text search support (PostgreSQL specific)").
-			Value(&data.Database.UseFullText),
+			Value(&useFullText),
 
 		huh.NewConfirm().
 			Title("Strict Function Checks").
 			Description("Enable strict function validation in SQL").
-			Value(&data.Validation.StrictFunctions),
+			Value(&strictFunctions),
 
 		huh.NewConfirm().
 			Title("Strict Order By").
 			Description("Enable strict ORDER BY validation").
-			Value(&data.Validation.StrictOrderBy),
+			Value(&strictOrderBy),
 	}
 }

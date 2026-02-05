@@ -9,7 +9,7 @@ import (
 )
 
 var (
-	// Version information (set via ldflags during build)
+	// Version information (set via ldflags during build).
 	Version   = "dev"
 	Commit    = "unknown"
 	BuildDate = "unknown"
@@ -41,11 +41,10 @@ Generate perfect sqlc.yaml configurations in minutes, not hours!`,
 	rootCmd.AddCommand(commands.NewValidateCommand())
 	rootCmd.AddCommand(commands.NewGenerateCommand())
 	rootCmd.AddCommand(commands.NewDoctorCommand())
-
-	rootCmd.AddCommand(commands.NewPluginsCommand())
 	rootCmd.AddCommand(commands.NewMigrateCommand())
-	// TODO: Add plugins command (COMPLETED)
-	// TODO: Add migrate command (COMPLETED)
+
+	// NOTE: Plugin system removed - unclear value proposition
+	// If needed in future, add to roadmap with clear use cases
 
 	return rootCmd
 }

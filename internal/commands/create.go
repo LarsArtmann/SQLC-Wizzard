@@ -1,19 +1,21 @@
 package commands
 
 import (
+	"context"
 	"fmt"
 	"os"
 	"path/filepath"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/creators"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/charmbracelet/lipgloss"
 	"github.com/spf13/cobra"
 )
 
-// CreateOptions contains options for the create command
+// CreateOptions contains options for the create command.
 type CreateOptions struct {
 	ProjectType     string
 	Database        string
@@ -24,7 +26,7 @@ type CreateOptions struct {
 	Force           bool
 }
 
-// NewCreateCommand creates the create command for complete project generation
+// NewCreateCommand creates the create command for complete project generation.
 func NewCreateCommand() *cobra.Command {
 	opts := &CreateOptions{}
 
@@ -79,7 +81,7 @@ Examples:
 func runCreate(projectName string, opts *CreateOptions) error {
 	// Validate project name
 	if projectName == "" {
-		return fmt.Errorf("project name cannot be empty")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "project name cannot be empty")
 	}
 
 	// Create output directory if needed
@@ -93,12 +95,14 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	if err := os.Chdir(outputPath); err != nil {
 		return fmt.Errorf("failed to change to project directory: %w", err)
 	}
-	defer os.Chdir(originalDir)
+	defer func() {
+		_ = os.Chdir(originalDir)
+	}()
 
 	// Check if directory is empty (unless force is used)
 	if !opts.Force {
 		if entries, err := os.ReadDir("."); err == nil && len(entries) > 0 {
-			return fmt.Errorf("directory is not empty. Use --force to overwrite")
+			return apperrors.NewError(apperrors.ErrorCodeInternalServer, "directory is not empty. Use --force to overwrite")
 		}
 	}
 
@@ -129,8 +133,8 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	}
 
 	// Create project creator with real adapters
-	fs := adapters.NewRealFileSystem()
-	cli := adapters.NewRealCLI()
+	fs := adapters.NewRealFileSystemAdapter()
+	cli := adapters.NewRealCLIAdapter()
 
 	creator := creators.NewProjectCreator(fs, cli)
 	createConfig := &creators.CreateConfig{
@@ -145,7 +149,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	}
 
 	// Create the complete project
-	if err := creator.CreateProject(createConfig); err != nil {
+	if err := creator.CreateProject(context.Background(), createConfig); err != nil {
 		return fmt.Errorf("failed to create project: %w", err)
 	}
 

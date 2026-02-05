@@ -9,19 +9,19 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
-// Generator handles file generation
+// Generator handles file generation.
 type Generator struct {
 	outputDir string
 }
 
-// NewGenerator creates a new generator
+// NewGenerator creates a new generator.
 func NewGenerator(outputDir string) *Generator {
 	return &Generator{
 		outputDir: outputDir,
 	}
 }
 
-// GenerateAll generates all files (config, queries, schema)
+// GenerateAll generates all files (config, queries, schema).
 func (g *Generator) GenerateAll(cfg *config.SqlcConfig, data templates.TemplateData, includeQueries, includeSchema bool) error {
 	// Generate sqlc.yaml
 	if err := g.GenerateSqlcConfig(cfg); err != nil {
@@ -45,7 +45,7 @@ func (g *Generator) GenerateAll(cfg *config.SqlcConfig, data templates.TemplateD
 	return nil
 }
 
-// GenerateSqlcConfig writes the sqlc.yaml file
+// GenerateSqlcConfig writes the sqlc.yaml file.
 func (g *Generator) GenerateSqlcConfig(cfg *config.SqlcConfig) error {
 	path := filepath.Join(g.outputDir, "sqlc.yaml")
 
@@ -62,7 +62,7 @@ func (g *Generator) GenerateSqlcConfig(cfg *config.SqlcConfig) error {
 	return nil
 }
 
-// generateFileWithTemplate is a helper to generate files with templates
+// generateFileWithTemplate is a helper to generate files with templates.
 func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey, defaultDir, templateType, filename string) error {
 	// Determine directory
 	var dir string
@@ -110,17 +110,17 @@ func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey
 	return nil
 }
 
-// GenerateExampleQueries copies example query files
+// GenerateExampleQueries copies example query files.
 func (g *Generator) GenerateExampleQueries(data templates.TemplateData) error {
 	return g.generateFileWithTemplate(data, "queries", "internal/db/queries", "queries", "users.sql")
 }
 
-// GenerateExampleSchema copies example schema files
+// GenerateExampleSchema copies example schema files.
 func (g *Generator) GenerateExampleSchema(data templates.TemplateData) error {
 	return g.generateFileWithTemplate(data, "schema", "internal/db/schema", "schema", "001_users_table.sql")
 }
 
-// GenerateSummary creates a summary of what was generated
+// GenerateSummary creates a summary of what was generated.
 func (g *Generator) GenerateSummary(cfg *config.SqlcConfig, includeQueries, includeSchema bool) string {
 	summary := "✓ Generated files:\n"
 	summary += fmt.Sprintf("  • sqlc.yaml (%d SQL configuration(s))\n", len(cfg.SQL))

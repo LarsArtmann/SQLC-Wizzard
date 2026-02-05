@@ -2,29 +2,32 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/samber/lo"
 )
 
-// MicroserviceTemplate generates sqlc config for microservice projects
-type MicroserviceTemplate struct{}
+// MicroserviceTemplate generates sqlc config for microservice projects.
+type MicroserviceTemplate struct {
+	BaseTemplate
+}
 
-// NewMicroserviceTemplate creates a new microservice template
+// NewMicroserviceTemplate creates a new microservice template.
 func NewMicroserviceTemplate() *MicroserviceTemplate {
 	return &MicroserviceTemplate{}
 }
 
-// Name returns the template name
+// Name returns the template name.
 func (t *MicroserviceTemplate) Name() string {
 	return "microservice"
 }
 
-// Description returns a human-readable description
+// Description returns a human-readable description.
 func (t *MicroserviceTemplate) Description() string {
 	return "Single database, container-optimized configuration for API services and microservices"
 }
 
-// Generate creates a SqlcConfig from template data
+// Generate creates a SqlcConfig from template data.
 func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	// Set defaults
 	packageConfig := data.Package
@@ -57,7 +60,7 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 	}
 
 	// Determine SQL package based on database type
-	sqlPackage := t.getSQLPackage(databaseConfig.Engine)
+	sqlPackage := t.GetSQLPackage(databaseConfig.Engine)
 
 	// Build config
 	cfg := &config.SqlcConfig{
@@ -75,7 +78,7 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 					Managed: databaseConfig.UseManaged,
 				},
 				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data, sqlPackage),
+					Go: t.BuildGoGenConfig(data, sqlPackage),
 				},
 				Rules: []config.RuleConfig{}, // Will be set after conversion
 			},
@@ -85,8 +88,9 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 	// Apply emit options using type-safe helper function
 	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
 
-	// Convert rule types
-	rules := data.Validation.SafetyRules.ToRuleConfigs()
+	// Convert rule types using the centralized transformer (eliminates split brain)
+	transformer := validation.NewRuleTransformer()
+	rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
 	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
 		return config.RuleConfig{
 			Name:    r.Name,
@@ -99,7 +103,7 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 	return cfg, nil
 }
 
-// DefaultData returns default TemplateData for microservice template
+// DefaultData returns default TemplateData for microservice template.
 func (t *MicroserviceTemplate) DefaultData() TemplateData {
 	return generated.TemplateData{
 		ProjectName: "",
@@ -135,104 +139,11 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 	}
 }
 
-// RequiredFeatures returns which features this template requires
+// RequiredFeatures returns which features this template requires.
 func (t *MicroserviceTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "prepared_queries", "json_tags"}
 }
 
-// buildGoGenConfig builds the GoGenConfig from template data.
-// This eliminates split brain by using Validation.EmitOptions.ApplyToGoGenConfig().
-func (t *MicroserviceTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
-	cfg := &config.GoGenConfig{
-		Package:    data.Package.Name,
-		Out:        data.Output.BaseDir,
-		SQLPackage: sqlPackage,
-		BuildTags:  t.getBuildTags(data),
-		Overrides:  t.getTypeOverrides(data),
-		Rename:     t.getRenameRules(),
-	}
-
-	return cfg
-}
-
-// getSQLPackage returns the appropriate SQL package for the database
-func (t *MicroserviceTemplate) getSQLPackage(db DatabaseType) string {
-	switch db {
-	case DatabaseTypePostgreSQL:
-		return "pgx/v5"
-	case DatabaseTypeMySQL:
-		return "database/sql"
-	case DatabaseTypeSQLite:
-		return "database/sql"
-	default:
-		return "database/sql"
-	}
-}
-
-// getBuildTags returns appropriate build tags
-func (t *MicroserviceTemplate) getBuildTags(data TemplateData) string {
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		return "postgres,pgx"
-	case DatabaseTypeMySQL:
-		return "mysql"
-	case DatabaseTypeSQLite:
-		return "sqlite"
-	default:
-		return ""
-	}
-}
-
-// getTypeOverrides returns database-specific type overrides
-func (t *MicroserviceTemplate) getTypeOverrides(data TemplateData) []config.Override {
-	var overrides []config.Override
-
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		// UUID support
-		if data.Database.UseUUIDs {
-			overrides = append(overrides, config.Override{
-				DBType:       "uuid",
-				GoType:       "UUID",
-				GoImportPath: "github.com/google/uuid",
-			})
-		}
-
-		// JSONB support
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "jsonb",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
-
-	case DatabaseTypeMySQL:
-		// JSON support for MySQL
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "json",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
-
-	case DatabaseTypeSQLite:
-		// SQLite specific overrides if needed
-	}
-
-	return overrides
-}
-
-// getRenameRules returns common rename rules for better Go naming
-func (t *MicroserviceTemplate) getRenameRules() map[string]string {
-	return map[string]string{
-		"id":   "ID",
-		"uuid": "UUID",
-		"url":  "URL",
-		"uri":  "URI",
-		"json": "JSON",
-		"api":  "API",
 		"http": "HTTP",
 		"db":   "DB",
 	}

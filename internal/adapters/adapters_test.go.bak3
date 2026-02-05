@@ -1,0 +1,328 @@
+// Package adapters_test provides testing infrastructure for adapter pattern
+package adapters_test
+
+import (
+	"context"
+	"os"
+	"testing"
+
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+	"github.com/stretchr/testify/assert"
+	"github.com/stretchr/testify/require"
+)
+
+func TestRealSQLCAdapter_NewRealSQLCAdapter(t *testing.T) {
+	adapter := adapters.NewRealSQLCAdapter()
+
+	assert.NotNil(t, adapter)
+	assert.IsType(t, &adapters.RealSQLCAdapter{}, adapter)
+}
+
+func TestRealSQLCAdapter_CheckInstallation(t *testing.T) {
+	adapter := adapters.NewRealSQLCAdapter()
+
+	err := adapter.CheckInstallation(context.Background())
+	// sqlc might not be installed in test environment - that's OK for unit tests
+	// We just verify the method doesn't panic
+	if err != nil {
+		// Error message varies by system ("which: sqlc" or "exec: ... not found")
+		assert.Contains(t, err.Error(), "sqlc")
+	} else {
+		// If sqlc is installed, check should pass
+		assert.NoError(t, err)
+	}
+}
+
+func TestRealSQLCAdapter_Version(t *testing.T) {
+	adapter := adapters.NewRealSQLCAdapter()
+
+	version, err := adapter.Version(context.Background())
+	// sqlc might not be installed
+	if err != nil {
+		assert.Contains(t, err.Error(), "sqlc")
+		assert.Empty(t, version)
+	}
+}
+
+func TestRealDatabaseAdapter_NewRealDatabaseAdapter(t *testing.T) {
+	adapter := adapters.NewRealDatabaseAdapter()
+
+	assert.NotNil(t, adapter)
+	assert.IsType(t, &adapters.RealDatabaseAdapter{}, adapter)
+}
+
+func TestRealDatabaseAdapter_TestConnection(t *testing.T) {
+	adapter := adapters.NewRealDatabaseAdapter()
+
+	// Test with empty config (should fail)
+	cfg := &config.DatabaseConfig{URI: ""}
+	err := adapter.TestConnection(context.Background(), cfg)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "database URI is required")
+
+	// Test with valid config
+	cfg.URI = "postgresql://localhost:5432/test"
+	_ = adapter.TestConnection(context.Background(), cfg)
+	// Implementation is basic, so this might pass
+	// In real implementation, would actually test connection
+}
+
+func TestRealDatabaseAdapter_CreateDatabase(t *testing.T) {
+	adapter := adapters.NewRealDatabaseAdapter()
+
+	cfg := &config.DatabaseConfig{URI: "postgresql://localhost:5432/test"}
+	err := adapter.CreateDatabase(context.Background(), cfg)
+	assert.NoError(t, err) // CreateDatabase now succeeds (simulated)
+}
+
+func TestRealCLIAdapter_NewRealCLIAdapter(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+
+	assert.NotNil(t, adapter)
+	assert.IsType(t, &adapters.RealCLIAdapter{}, adapter)
+}
+
+func TestRealCLIAdapter_CheckCommand(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+
+	// Test with existing command (should pass)
+	err := adapter.CheckCommand(context.Background(), "echo")
+	assert.NoError(t, err)
+
+	// Test with non-existing command (should fail)
+	err = adapter.CheckCommand(context.Background(), "nonexistentcommand123")
+	assert.Error(t, err)
+}
+
+func TestRealCLIAdapter_RunCommand(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+
+	output, err := adapter.RunCommand(context.Background(), "echo", "test")
+	require.NoError(t, err)
+	assert.Equal(t, "test\n", output)
+}
+
+func TestRealCLIAdapter_GetVersion(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+
+	version, err := adapter.GetVersion(context.Background(), "echo")
+	// echo doesn't have version, so this might fail
+	if err != nil {
+		assert.Empty(t, version)
+	}
+}
+
+func TestRealTemplateAdapter_NewRealTemplateAdapter(t *testing.T) {
+	adapter := adapters.NewRealTemplateAdapter()
+
+	assert.NotNil(t, adapter)
+	assert.IsType(t, &adapters.RealTemplateAdapter{}, adapter)
+}
+
+func TestRealTemplateAdapter_ValidateTemplateData(t *testing.T) {
+	adapter := adapters.NewRealTemplateAdapter()
+
+	// Test with valid data
+	data := generated.TemplateData{
+		ProjectType: generated.ProjectTypeMicroservice,
+		Database: generated.DatabaseConfig{
+			Engine: generated.DatabaseTypePostgreSQL,
+		},
+		Package: generated.PackageConfig{
+			Name: "db",
+		},
+	}
+
+	err := adapter.ValidateTemplateData(context.Background(), data)
+	assert.NoError(t, err)
+
+	// Test with invalid project type
+	data.ProjectType = "invalid"
+	err = adapter.ValidateTemplateData(context.Background(), data)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid project type")
+
+	// Test with invalid database type
+	data.ProjectType = generated.ProjectTypeMicroservice
+	data.Database.Engine = "invalid"
+	err = adapter.ValidateTemplateData(context.Background(), data)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "invalid database type")
+
+	// Test with empty package name
+	data.Database.Engine = generated.DatabaseTypePostgreSQL
+	data.Package.Name = ""
+	err = adapter.ValidateTemplateData(context.Background(), data)
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "package name is required")
+}
+
+func TestRealFileSystemAdapter_NewRealFileSystemAdapter(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+
+	assert.NotNil(t, adapter)
+	assert.IsType(t, &adapters.RealFileSystemAdapter{}, adapter)
+}
+
+func TestRealFileSystemAdapter_Exists(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+	ctx := context.Background()
+
+	// Test with existing directory
+	exists, err := adapter.Exists(ctx, ".")
+	require.NoError(t, err)
+	assert.True(t, exists)
+
+	// Test with non-existing file
+	exists, err = adapter.Exists(ctx, "/nonexistent/path")
+	require.NoError(t, err)
+	assert.False(t, exists)
+}
+
+func TestRealFileSystemAdapter_TempDir(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+
+	tempDir, err := adapter.TempDir(context.Background(), "test")
+	require.NoError(t, err)
+	assert.NotEmpty(t, tempDir)
+	assert.Contains(t, tempDir, "test")
+
+	// Clean up
+	err = adapter.Remove(context.Background(), tempDir)
+	require.NoError(t, err)
+}
+
+func TestRealFileSystemAdapter_ReadWriteFile(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+	ctx := context.Background()
+
+	// Test write and read
+	testData := []byte("test content")
+	tempDir := t.TempDir()
+	filePath := tempDir + "/test.txt"
+
+	err := adapter.WriteFile(ctx, filePath, testData, 0o644)
+	require.NoError(t, err)
+
+	data, err := adapter.ReadFile(ctx, filePath)
+	require.NoError(t, err)
+	assert.Equal(t, testData, data)
+}
+
+// Extended filesystem tests
+func TestRealFileSystemAdapter_MkdirAll(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+	ctx := context.Background()
+
+	// Test create single directory
+	tmpDir := t.TempDir()
+	dirPath := tmpDir + "/testdir"
+	err := adapter.MkdirAll(ctx, dirPath, 0o755)
+	assert.NoError(t, err)
+	assert.True(t, exists(dirPath))
+
+	// Test nested directories
+	nestedPath := tmpDir + "/parent/child/grandchild"
+	err = adapter.MkdirAll(ctx, nestedPath, 0o755)
+	assert.NoError(t, err)
+	assert.True(t, exists(nestedPath))
+
+	// Test existing directory
+	err = adapter.MkdirAll(ctx, dirPath, 0o755)
+	assert.NoError(t, err)
+}
+
+func TestRealFileSystemAdapter_ListFiles(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+	ctx := context.Background()
+	tmpDir := t.TempDir()
+
+	// Test list files
+	os.WriteFile(tmpDir+"/file1.txt", []byte("test"), 0o644)
+	os.WriteFile(tmpDir+"/file2.txt", []byte("test"), 0o644)
+	os.Mkdir(tmpDir+"/subdir", 0o755)
+
+	files, err := adapter.ListFiles(ctx, tmpDir)
+	assert.NoError(t, err)
+	assert.Equal(t, 2, len(files))
+
+	// Test empty directory
+	emptyDir := tmpDir + "/empty"
+	os.Mkdir(emptyDir, 0o755)
+	files, err = adapter.ListFiles(ctx, emptyDir)
+	assert.NoError(t, err)
+	assert.Equal(t, 0, len(files))
+
+	// Test non-existent directory
+	files, err = adapter.ListFiles(ctx, "/nonexistent/path")
+	assert.Error(t, err)
+	assert.Nil(t, files)
+}
+
+func TestRealFileSystemAdapter_Remove(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+	ctx := context.Background()
+	tmpDir := t.TempDir()
+
+	// Test remove file
+	filePath := tmpDir + "/testfile.txt"
+	os.WriteFile(filePath, []byte("test"), 0o644)
+	err := adapter.Remove(ctx, filePath)
+	assert.NoError(t, err)
+	assert.False(t, exists(filePath))
+
+	// Test remove directory
+	dirPath := tmpDir + "/testdir"
+	os.Mkdir(dirPath, 0o755)
+	err = adapter.Remove(ctx, dirPath)
+	assert.NoError(t, err)
+	assert.False(t, exists(dirPath))
+
+	// Test non-existent path
+	err = adapter.Remove(ctx, "/nonexistent/path")
+	assert.NoError(t, err) // os.RemoveAll doesn't error
+}
+
+func TestRealFileSystemAdapter_Copy(t *testing.T) {
+	adapter := adapters.NewRealFileSystemAdapter()
+	ctx := context.Background()
+	tmpDir := t.TempDir()
+
+	// Test copy file
+	srcFile := tmpDir + "/source.txt"
+	dstFile := tmpDir + "/dest.txt"
+	os.WriteFile(srcFile, []byte("test content"), 0o644)
+	err := adapter.Copy(ctx, srcFile, dstFile)
+	assert.NoError(t, err)
+	assert.True(t, exists(dstFile))
+
+	// Test copy directory
+	srcDir := tmpDir + "/source"
+	dstDir := tmpDir + "/dest"
+	os.Mkdir(srcDir, 0o755)
+	os.WriteFile(srcDir+"/file.txt", []byte("test"), 0o644)
+	err = adapter.Copy(ctx, srcDir, dstDir)
+	assert.NoError(t, err)
+	assert.True(t, isDir(dstDir))
+
+	// Test non-existent source
+	err = adapter.Copy(ctx, "/nonexistent/source.txt", dstFile)
+	assert.Error(t, err)
+	assert.False(t, exists(dstFile))
+}
+
+// Helper functions
+func exists(path string) bool {
+	_, err := os.Stat(path)
+	return err == nil
+}
+
+func isDir(path string) bool {
+	info, err := os.Stat(path)
+	if err != nil {
+		return false
+	}
+	return info.IsDir()
+}

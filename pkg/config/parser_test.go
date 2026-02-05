@@ -8,7 +8,7 @@ import (
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
@@ -91,7 +91,7 @@ sql:
 				_, err := config.Parse(yamlData)
 
 				Expect(err).To(HaveOccurred())
-				Expect(errors.Is(err, errors.ErrConfigParseFailed)).To(BeTrue())
+				Expect(apperrors.Is(err, apperrors.ErrConfigParseFailed)).To(BeTrue())
 			})
 
 			It("should return error for empty data", func() {
@@ -141,7 +141,7 @@ sql:
 				_, err := config.ParseFile(nonExistentPath)
 
 				Expect(err).To(HaveOccurred())
-				Expect(errors.Is(err, errors.ErrFileNotFound)).To(BeTrue())
+				Expect(apperrors.Is(err, apperrors.ErrFileNotFound)).To(BeTrue())
 			})
 		})
 
@@ -159,7 +159,7 @@ sql:
 				_, err = config.ParseFile(configPath)
 
 				Expect(err).To(HaveOccurred())
-				Expect(errors.Is(err, errors.ErrConfigParseFailed)).To(BeTrue())
+				Expect(apperrors.Is(err, apperrors.ErrConfigParseFailed)).To(BeTrue())
 			})
 		})
 	})

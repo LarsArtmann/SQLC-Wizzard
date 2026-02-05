@@ -7,7 +7,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 )
 
-// BenchmarkRealFileSystemAdapter_ReadWriteFile benchmarks file read/write operations
+// BenchmarkRealFileSystemAdapter_ReadWriteFile benchmarks file read/write operations.
 func BenchmarkRealFileSystemAdapter_ReadWriteFile(b *testing.B) {
 	fs := adapters.NewRealFileSystemAdapter()
 	content := []byte("test content for benchmarking")
@@ -28,7 +28,7 @@ func BenchmarkRealFileSystemAdapter_ReadWriteFile(b *testing.B) {
 	}
 }
 
-// BenchmarkRealFileSystemAdapter_Exists benchmarks file existence checks
+// BenchmarkRealFileSystemAdapter_Exists benchmarks file existence checks.
 func BenchmarkRealFileSystemAdapter_Exists(b *testing.B) {
 	fs := adapters.NewRealFileSystemAdapter()
 	ctx := context.Background()
@@ -38,7 +38,7 @@ func BenchmarkRealFileSystemAdapter_Exists(b *testing.B) {
 	}
 }
 
-// BenchmarkRealSQLCAdapter_CheckInstallation benchmarks sqlc installation checks
+// BenchmarkRealSQLCAdapter_CheckInstallation benchmarks sqlc installation checks.
 func BenchmarkRealSQLCAdapter_CheckInstallation(b *testing.B) {
 	sqlcAdapter := adapters.NewRealSQLCAdapter()
 	ctx := context.Background()
@@ -48,7 +48,7 @@ func BenchmarkRealSQLCAdapter_CheckInstallation(b *testing.B) {
 	}
 }
 
-// BenchmarkRealCLIAdapter_RunCommand benchmarks CLI command execution
+// BenchmarkRealCLIAdapter_RunCommand benchmarks CLI command execution.
 func BenchmarkRealCLIAdapter_RunCommand(b *testing.B) {
 	cliAdapter := adapters.NewRealCLIAdapter()
 	ctx := context.Background()

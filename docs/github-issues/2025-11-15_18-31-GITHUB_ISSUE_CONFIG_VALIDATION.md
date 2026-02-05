@@ -10,6 +10,7 @@
 ## 🎯 **Problem Statement**
 
 SQLC configuration (`sqlc.yaml`) is complex and users struggle with:
+
 - Configuration validation errors (hard to debug)
 - Missing optimal settings
 - Version compatibility issues
@@ -46,6 +47,7 @@ sqlc-wizard config suggest --file sqlc.yaml
 ## 🏗️ **Technical Implementation**
 
 ### **Phase 1: Validation Engine**
+
 ```go
 type ConfigValidator struct {
     rules     []ValidationRule
@@ -68,6 +70,7 @@ type ValidationRule interface {
 ```
 
 ### **Phase 2: Optimization Engine**
+
 ```go
 type ConfigOptimizer struct {
     database  DatabaseType
@@ -89,6 +92,7 @@ type OptimizationSuggestion struct {
 ```
 
 ### **Phase 3: Extension System**
+
 ```go
 type ConfigExtension interface {
     Name() string
@@ -107,6 +111,7 @@ type SQLiteExtension struct{}
 ## 🧪 **Example Usage & Output**
 
 ### **Validation Example**
+
 ```bash
 sqlc-wizard config validate --file sqlc.yaml
 
@@ -130,6 +135,7 @@ sqlc-wizard config validate --file sqlc.yaml
 ```
 
 ### **Optimization Example**
+
 ```bash
 sqlc-wizard config optimize --file sqlc.yaml --performance
 
@@ -159,6 +165,7 @@ MEDIUM: Missing development optimizations
 ```
 
 ### **Auto-Fix Example**
+
 ```bash
 sqlc-wizard config fix --file sqlc.yaml --auto
 
@@ -179,6 +186,7 @@ Configuration fixed and validated successfully! ✅
 ## 🎯 **Core Features**
 
 ### **1. Comprehensive Validation**
+
 ```go
 type ValidationRules struct {
     SyntaxValidation    // YAML syntax checking
@@ -191,6 +199,7 @@ type ValidationRules struct {
 ```
 
 ### **2. Performance Optimization**
+
 ```go
 type OptimizationRules struct {
     DatabaseOptimizations // PostgreSQL, MySQL, SQLite specific
@@ -201,6 +210,7 @@ type OptimizationRules struct {
 ```
 
 ### **3. Configuration Extensions**
+
 ```go
 type Extensions struct {
     DatabaseExtensions   // Database-specific settings
@@ -215,6 +225,7 @@ type Extensions struct {
 ## 📁 **Configuration Templates**
 
 ### **By Database Type**
+
 ```yaml
 # PostgreSQL optimized
 version: "2"
@@ -233,6 +244,7 @@ sql:
 ```
 
 ### **By Project Type**
+
 ```yaml
 # Microservice optimized
 sql:
@@ -247,6 +259,7 @@ sql:
 ```
 
 ### **By Use Case**
+
 ```yaml
 # API development optimized
 sql:
@@ -262,18 +275,21 @@ sql:
 ## 🛠️ **Implementation Plan**
 
 ### **Day 1: Validation Engine**
+
 - [ ] Create `ConfigValidator` core structure
 - [ ] Implement basic validation rules
 - [ ] Add YAML parsing and error reporting
 - [ ] Create CLI validation command
 
 ### **Day 2: Optimization Engine**
+
 - [ ] Implement `ConfigOptimizer` structure
 - [ ] Add database-specific optimization rules
 - [ ] Create performance analysis logic
 - [ ] Add auto-fix capabilities
 
 ### **Day 3: Extension System**
+
 - [ ] Create extension interface and registry
 - [ ] Implement database-specific extensions
 - [ ] Add project-type specific extensions
@@ -284,6 +300,7 @@ sql:
 ## 🔧 **Technical Architecture**
 
 ### **New Components**
+
 ```go
 // internal/commands/config.go
 func NewConfigCommand() *cobra.Command
@@ -299,6 +316,7 @@ type OptimizationRule interface {}
 ```
 
 ### **Integration Points**
+
 - Extend `pkg/config/` with validation logic
 - Use `generated/` types for optimization rules
 - Leverage `internal/adapters/` for file operations
@@ -309,24 +327,28 @@ type OptimizationRule interface {}
 ## 🎯 **Acceptance Criteria**
 
 ### **Validation Features**
+
 - [ ] Detects all common sqlc.yaml configuration errors
 - [ ] Provides clear, actionable error messages
 - [ ] Auto-fixes common configuration issues
 - [ ] Validates SQLC version compatibility
 
 ### **Optimization Features**
+
 - [ ] Suggests database-specific optimizations
 - [ ] Provides performance impact estimates
 - [ ] Applies optimizations automatically with user consent
 - [ ] Validates optimized configurations
 
 ### **Extension Features**
+
 - [ ] Supports PostgreSQL, MySQL, SQLite specific settings
 - [ ] Provides project-type specific customizations
 - [ ] Creates configuration templates from existing projects
 - [ ] Allows custom rule/extension definitions
 
 ### **User Experience**
+
 - [ ] Commands work without requiring SQLC expertise
 - [ ] Provides clear explanations for all suggestions
 - [ ] Allows selective application of optimizations
@@ -337,16 +359,19 @@ type OptimizationRule interface {}
 ## 📊 **Success Metrics**
 
 ### **Configuration Quality**
+
 - [ ] Reduction in configuration errors (> 80%)
 - [ ] Improvement in user-generated config quality
 - [ ] Adoption of optimization suggestions (> 70%)
 
 ### **User Experience**
+
 - [ ] Time to valid configuration < 1 minute
 - [ ] User satisfaction rate > 4.5/5
 - [ ] Support ticket reduction for config issues
 
 ### **Performance Impact**
+
 - [ ] Measurable query performance improvements
 - [ ] Development experience improvements
 - [ ] Production deployment success rate
@@ -384,6 +409,6 @@ This feature is **HIGHLY VALUABLE** because:
 
 ---
 
-*Created: 2025-11-15*  
-*Priority: HIGH (#2)*  
-*Ready for implementation* 🎯
+_Created: 2025-11-15_  
+_Priority: HIGH (#2)_  
+_Ready for implementation_ 🎯

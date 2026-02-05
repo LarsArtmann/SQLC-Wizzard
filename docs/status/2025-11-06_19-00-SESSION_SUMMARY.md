@@ -57,6 +57,7 @@
 **Status:** All pushed to remote ✅
 
 **End-to-End Test:**
+
 ```bash
 $ sqlc-wizard init --non-interactive \
     --project-type=microservice \
@@ -67,6 +68,7 @@ $ sqlc-wizard init --non-interactive \
 ```
 
 **Output:**
+
 - `sqlc.yaml` (production-ready with best practices)
 - `internal/db/queries/users.sql` (example CRUD)
 - `internal/db/schema/001_users_table.sql` (example schema)
@@ -116,6 +118,7 @@ $ sqlc-wizard init --non-interactive \
 ## 📋 COMPREHENSIVE TODO LIST
 
 See `GITHUB_ISSUES.md` for detailed breakdown of:
+
 - 13 Critical Issues (P0)
 - 6 High Priority Items (P1)
 - 5 Medium Priority Items (P2)
@@ -177,15 +180,15 @@ See `GITHUB_ISSUES.md` for detailed breakdown of:
 
 ## 📊 PROJECT HEALTH
 
-| Metric | Score | Notes |
-|--------|-------|-------|
-| **Functionality** | 9/10 | Works end-to-end ✅ |
-| **Type Safety** | 6/10 | interface{} usage ⚠️ |
-| **Test Coverage** | 0/10 | Zero tests ❌ |
-| **Code Quality** | 7/10 | Clean but issues ⚠️ |
-| **Documentation** | 6/10 | README good, API docs missing ⚠️ |
-| **Architecture** | 8/10 | DDD but split brains ⚠️ |
-| **Observability** | 2/10 | No logging/tracing ❌ |
+| Metric            | Score | Notes                            |
+| ----------------- | ----- | -------------------------------- |
+| **Functionality** | 9/10  | Works end-to-end ✅              |
+| **Type Safety**   | 6/10  | interface{} usage ⚠️             |
+| **Test Coverage** | 0/10  | Zero tests ❌                    |
+| **Code Quality**  | 7/10  | Clean but issues ⚠️              |
+| **Documentation** | 6/10  | README good, API docs missing ⚠️ |
+| **Architecture**  | 8/10  | DDD but split brains ⚠️          |
+| **Observability** | 2/10  | No logging/tracing ❌            |
 
 **Overall:** 6.5/10 - "MVP works but needs quality improvements"
 

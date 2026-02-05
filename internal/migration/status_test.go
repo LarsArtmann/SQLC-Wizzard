@@ -182,6 +182,53 @@ func TestMigrationStatus_HelperMethods(t *testing.T) {
 	}
 }
 
+func TestMigrationStatus_IsDirty_SplitBrainPrevention(t *testing.T) {
+	status, err := NewMigrationStatus("test", "test")
+	if err != nil {
+		t.Fatalf("Failed to create MigrationStatus: %v", err)
+	}
+
+	// Test 1: Database-level dirty flag is true
+	status.WithDirty(true)
+	if !status.IsDirty() {
+		t.Error("IsDirty should return true when database-level dirty flag is true")
+	}
+
+	// Test 2: Database-level dirty is false, but one migration is dirty (SPLIT BRAIN SCENARIO)
+	status.WithDirty(false)
+	status.WithMigrations([]Migration{
+		{Version: 1, Applied: true, Dirty: false, Name: "clean_migration"},
+		{Version: 2, Applied: false, Dirty: true, Name: "dirty_migration"}, // This migration is dirty!
+	})
+
+	// IsDirty() should detect the dirty migration even though database-level flag is false
+	// This prevents split brain where Migration.Dirty=true but MigrationStatus.Dirty=false
+	if !status.IsDirty() {
+		t.Error("IsDirty should return true when ANY migration is dirty (split brain prevention)")
+	}
+
+	// Test 3: Both database-level and all migrations are clean
+	status.WithDirty(false)
+	status.WithMigrations([]Migration{
+		{Version: 1, Applied: true, Dirty: false, Name: "clean1"},
+		{Version: 2, Applied: false, Dirty: false, Name: "clean2"},
+	})
+
+	if status.IsDirty() {
+		t.Error("IsDirty should return false when both database and all migrations are clean")
+	}
+
+	// Test 4: Database-level dirty is true AND a migration is dirty (both sources agree)
+	status.WithDirty(true)
+	status.WithMigrations([]Migration{
+		{Version: 1, Applied: true, Dirty: true, Name: "dirty1"},
+	})
+
+	if !status.IsDirty() {
+		t.Error("IsDirty should return true when both database and migration are dirty")
+	}
+}
+
 func TestValidationError(t *testing.T) {
 	err := &ValidationError{
 		Field:   "test_field",

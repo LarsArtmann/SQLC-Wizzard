@@ -3,39 +3,39 @@ package config
 import (
 	"os"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"gopkg.in/yaml.v3"
 )
 
-// ParseFile reads and parses a sqlc.yaml file
+// ParseFile reads and parses a sqlc.yaml file.
 func ParseFile(path string) (*SqlcConfig, error) {
 	data, err := os.ReadFile(path)
 	if err != nil {
 		if os.IsNotExist(err) {
-			return nil, errors.FileNotFoundError(path)
+			return nil, apperrors.FileNotFoundError(path)
 		}
-		return nil, errors.FileReadError(path, err)
+		return nil, apperrors.FileReadError(path, err)
 	}
 
 	cfg, err := Parse(data)
 	if err != nil {
-		return nil, errors.ConfigParseError(path, err)
+		return nil, apperrors.ConfigParseError(path, err)
 	}
 
 	return cfg, nil
 }
 
-// Parse parses YAML data into a SqlcConfig
+// Parse parses YAML data into a SqlcConfig.
 func Parse(data []byte) (*SqlcConfig, error) {
 	var cfg SqlcConfig
 	if err := yaml.Unmarshal(data, &cfg); err != nil {
-		return nil, errors.Wrapf(err, errors.ErrConfigParseFailed, "failed to parse YAML")
+		return nil, apperrors.Wrapf(err, apperrors.ErrConfigParseFailed, "failed to parse YAML")
 	}
 
 	return &cfg, nil
 }
 
-// LoadOrDefault attempts to load a config file, returns default config if not found
+// LoadOrDefault attempts to load a config file, returns default config if not found.
 func LoadOrDefault(path string) (*SqlcConfig, error) {
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return DefaultConfig(), nil
@@ -44,7 +44,7 @@ func LoadOrDefault(path string) (*SqlcConfig, error) {
 	return ParseFile(path)
 }
 
-// DefaultConfig returns a basic default configuration
+// DefaultConfig returns a basic default configuration.
 func DefaultConfig() *SqlcConfig {
 	return &SqlcConfig{
 		Version: "2",

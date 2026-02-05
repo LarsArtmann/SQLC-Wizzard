@@ -8,6 +8,7 @@
 ## 📐 Architecture Overview
 
 SQLC-Wizard follows **Domain-Driven Design (DDD)** principles with clear separation between:
+
 - **Domain logic** (business rules, templates, validation)
 - **Application logic** (commands, workflows)
 - **Infrastructure** (file I/O, YAML parsing, TUI)
@@ -51,8 +52,7 @@ sqlc-wizard/
 │   │   └── embedded_templates.go  # Embedded SQL templates
 │   │
 │   ├── errors/                     # Error handling (⚠️ EMPTY - TODO)
-│   ├── detectors/                  # Project detection (⚠️ EMPTY - TODO)
-│   └── plugins/                    # Plugin system (⚠️ EMPTY - TODO)
+│   └── detectors/                  # Project detection (⚠️ EMPTY - TODO)
 │
 ├── pkg/                            # Public reusable packages
 │   ├── config/                    # sqlc.yaml config (domain model)
@@ -170,11 +170,13 @@ User Output (colored terminal)
 ### 1. Make Illegal States Unrepresentable
 
 **Bad (Current):**
+
 ```go
 type ProjectType string // Any string is valid!
 ```
 
 **Good (TODO):**
+
 ```go
 type ProjectType struct {
     value string
@@ -191,6 +193,7 @@ func NewProjectType(s string) (ProjectType, error) {
 ### 2. Single Source of Truth
 
 **Bad (Current - Split Brain):**
+
 ```go
 // Two representations of same concept!
 type SafetyRules struct { NoSelectStar bool }
@@ -198,6 +201,7 @@ type RuleConfig struct { Name string, Rule string }
 ```
 
 **Good (TODO):**
+
 ```go
 type SafetyRule interface {
     ToRuleConfig() RuleConfig
@@ -207,6 +211,7 @@ type SafetyRule interface {
 ### 3. Composition Over Inheritance
 
 **Good (Current):**
+
 ```go
 type Template interface {
     Generate(data TemplateData) (*SqlcConfig, error)
@@ -221,6 +226,7 @@ func (t *MicroserviceTemplate) Generate(...) { }
 **Current:** Direct dependencies everywhere
 
 **TODO:** Use interfaces
+
 ```go
 type ConfigWriter interface {
     Write(cfg *SqlcConfig, path string) error
@@ -313,6 +319,7 @@ var _ = Describe("Microservice Template", func() {
 - **Max 5 parameters per function**
 
 **Current violations:**
+
 - `internal/generators/embedded_templates.go` - 270 lines ⚠️
 - `internal/wizard/wizard.go` - 290 lines ⚠️
 
@@ -346,7 +353,7 @@ var projectName string
 
 2. **Event-Driven Architecture**
    - Emit events for extensibility
-   - Plugin system via events
+   - Configuration via events
 
 3. **CQRS**
    - Separate read/write models
@@ -374,6 +381,7 @@ var projectName string
 **Decision:** Use `spf13/cobra` for CLI framework
 
 **Rationale:**
+
 - Industry standard (used by kubectl, gh, docker)
 - Excellent documentation
 - Automatic completion generation
@@ -386,6 +394,7 @@ var projectName string
 **Decision:** Use `charmbracelet/huh` for TUI
 
 **Rationale:**
+
 - Beautiful out-of-the-box styling
 - Modern, actively maintained
 - Consistent with charmbracelet ecosystem (lipgloss, bubbletea)
@@ -398,11 +407,13 @@ var projectName string
 **Decision:** Embed SQL templates as Go string constants
 
 **Rationale:**
+
 - No runtime file dependencies
 - Single binary distribution
 - Fast access (no I/O)
 
 **Concerns:**
+
 - Should use `//go:embed` instead for real files
 - Easier to edit as actual .sql files
 - Better syntax highlighting

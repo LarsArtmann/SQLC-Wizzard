@@ -2,18 +2,20 @@ package wizard
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/charmbracelet/huh"
 )
 
-// ProjectDetailsStep handles project name and configuration details
+// ProjectDetailsStep handles project name and configuration details.
 type ProjectDetailsStep struct {
 	theme *huh.Theme
 	ui    *UIHelper
 }
 
-// NewProjectDetailsStep creates a new project details step
+// NewProjectDetailsStep creates a new project details step.
 func NewProjectDetailsStep(theme *huh.Theme, ui *UIHelper) *ProjectDetailsStep {
 	return &ProjectDetailsStep{
 		theme: theme,
@@ -21,7 +23,7 @@ func NewProjectDetailsStep(theme *huh.Theme, ui *UIHelper) *ProjectDetailsStep {
 	}
 }
 
-// Execute runs project details configuration step
+// Execute runs project details configuration step.
 func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 	s.ui.ShowStepHeader("Project Details")
 
@@ -35,10 +37,10 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Value(&projectName).
 				Validate(func(str string) error {
 					if len(str) < 2 {
-						return fmt.Errorf("project name must be at least 2 characters")
+						return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be at least 2 characters")
 					}
 					if len(str) > 50 {
-						return fmt.Errorf("project name must be less than 50 characters")
+						return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be less than 50 characters")
 					}
 					return nil
 				}),
@@ -61,7 +63,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Value(&packageName).
 				Validate(func(str string) error {
 					if len(str) < 2 {
-						return fmt.Errorf("package name must be at least 2 characters")
+						return apperrors.NewError(apperrors.ErrorCodeValidationError, "package name must be at least 2 characters")
 					}
 					return nil
 				}),
@@ -83,7 +85,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 	return nil
 }
 
-// generatePackageName converts project name to valid Go package name
+// generatePackageName converts project name to valid Go package name.
 func (s *ProjectDetailsStep) generatePackageName(projectName string) string {
 	// Simple conversion: replace spaces and hyphens with underscores, remove invalid characters
 	packageName := projectName
@@ -98,20 +100,20 @@ func (s *ProjectDetailsStep) generatePackageName(projectName string) string {
 	return packageName
 }
 
-// replaceInvalidChars replaces characters invalid in Go package names
+// replaceInvalidChars replaces characters invalid in Go package names.
 func (s *ProjectDetailsStep) replaceInvalidChars(input string) string {
-	result := ""
+	var result strings.Builder
 	for _, char := range input {
 		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_' || (char >= '0' && char <= '9') {
-			result += string(char)
+			result.WriteRune(char)
 		} else {
-			result += "_"
+			result.WriteString("_")
 		}
 	}
-	return result
+	return result.String()
 }
 
-// lowerCaseFirst converts first character to lowercase if it's uppercase
+// lowerCaseFirst converts first character to lowercase if it's uppercase.
 func (s *ProjectDetailsStep) lowerCaseFirst(input string) string {
 	if len(input) == 0 {
 		return input
@@ -122,7 +124,7 @@ func (s *ProjectDetailsStep) lowerCaseFirst(input string) string {
 	return input
 }
 
-// isGoKeyword checks if string is a Go keyword
+// isGoKeyword checks if string is a Go keyword.
 func (s *ProjectDetailsStep) isGoKeyword(keyword string) bool {
 	keywords := map[string]bool{
 		"break": true, "case": true, "chan": true, "const": true, "continue": true,

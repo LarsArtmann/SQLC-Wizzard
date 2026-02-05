@@ -6,8 +6,8 @@ import (
 	"path/filepath"
 	"testing"
 
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/errors"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -98,7 +98,7 @@ var _ = Describe("Generate Command Execution", func() {
 
 	AfterEach(func() {
 		if tempDir != "" {
-			os.RemoveAll(tempDir)
+			_ = os.RemoveAll(tempDir)
 		}
 	})
 
@@ -149,9 +149,9 @@ var _ = Describe("Doctor Command Checks", func() {
 			// This test assumes the current Go version is compatible
 			result := checkGoVersion(context.Background())
 
-			Expect(result.Status).To(Equal("PASS"))
+			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
 			Expect(result.Message).To(ContainSubstring("compatible"))
-			Expect(result.Error).To(BeNil())
+			Expect(result.Error).ToNot(HaveOccurred())
 		})
 	})
 
@@ -159,9 +159,9 @@ var _ = Describe("Doctor Command Checks", func() {
 		It("should return PASS when filesystem is writable", func() {
 			result := checkFileSystemPermissions(context.Background())
 
-			Expect(result.Status).To(Equal("PASS"))
+			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
 			Expect(result.Message).To(ContainSubstring("OK"))
-			Expect(result.Error).To(BeNil())
+			Expect(result.Error).ToNot(HaveOccurred())
 		})
 	})
 
@@ -169,8 +169,11 @@ var _ = Describe("Doctor Command Checks", func() {
 		It("should return PASS or WARN based on available memory", func() {
 			result := checkMemoryAvailability(context.Background())
 
-			Expect(result.Status).To(BeElementOf("PASS", "WARN"))
-			Expect(result.Error).To(BeNil())
+			Expect(result.Status).To(Or(
+				Equal(commands.DoctorStatusPass),
+				Equal(commands.DoctorStatusWarn),
+			))
+			Expect(result.Error).ToNot(HaveOccurred())
 		})
 	})
 })
@@ -215,7 +218,7 @@ var _ = Describe("Command Integration", func() {
 	})
 })
 
-// Helper functions for testing (mirroring internal functions)
+// Helper functions for testing (mirroring internal functions).
 func checkGoVersion(ctx context.Context) *commands.DoctorResult {
 	// Simplified version for testing
 	return &commands.DoctorResult{
@@ -246,7 +249,7 @@ func generateExampleFiles(outputDir string, force bool) error {
 		if _, err := os.Stat(outputDir); err == nil {
 			files, err := os.ReadDir(outputDir)
 			if err == nil && len(files) > 0 {
-				return errors.NewError(errors.ErrorCodeInternalServer, "directory_not_empty").WithDescription("output directory is not empty")
+				return apperrors.NewError(apperrors.ErrorCodeInternalServer, "directory_not_empty").WithDescription("output directory is not empty")
 			}
 		}
 	}
