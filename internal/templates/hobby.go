@@ -8,7 +8,9 @@ import (
 )
 
 // HobbyTemplate generates sqlc config for hobby/personal projects.
-type HobbyTemplate struct{}
+type HobbyTemplate struct {
+	BaseTemplate
+}
 
 // NewHobbyTemplate creates a new hobby template.
 func NewHobbyTemplate() *HobbyTemplate {
