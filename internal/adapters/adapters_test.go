@@ -209,3 +209,23 @@ func TestRealFileSystemAdapter_ReadWriteFile(t *testing.T) {
 	require.NoError(t, err)
 	assert.Equal(t, testData, data)
 }
+
+// Extended CLI tests
+func TestRealCLIAdapter_Install(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+	ctx := context.Background()
+
+	// Test Install - should return error as not implemented
+	err := adapter.Install(ctx, "testcmd")
+	assert.Error(t, err)
+	assert.Contains(t, err.Error(), "auto-install not implemented")
+}
+
+func TestRealCLIAdapter_Println(t *testing.T) {
+	adapter := adapters.NewRealCLIAdapter()
+	ctx := context.Background()
+
+	// Test Println - should print message without error
+	err := adapter.Println(ctx, "test message")
+	assert.NoError(t, err)
+}
