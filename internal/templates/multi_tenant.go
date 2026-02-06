@@ -2,9 +2,7 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/samber/lo"
 )
 
 // MultiTenantTemplate generates sqlc config for multi-tenant SaaS applications.
@@ -29,7 +27,7 @@ func (t *MultiTenantTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Multi-tenant-specific defaults
+	// Apply multi-tenant-specific defaults
 	if data.Package.Name == "" {
 		data.Package.Name = "db"
 	}
@@ -49,45 +47,20 @@ func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.Sql
 		data.Database.URL = "${DATABASE_URL}"
 	}
 
-	// Build config
-	cfg := &config.SqlcConfig{
-		Version: "2",
-		SQL: []config.SQLConfig{
-			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "multi-tenant"),
-				Engine:               string(data.Database.Engine),
-				Queries:              config.NewPathOrPaths([]string{data.Output.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{data.Output.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(true),
-				StrictOrderBy:        lo.ToPtr(true),
-				Database: &config.DatabaseConfig{
-					URI:     data.Database.URL,
-					Managed: data.Database.UseManaged,
-				},
-				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data),
-				},
-				Rules: []config.RuleConfig{},
-			},
-		},
+	// Build base config using shared builder
+	builder := &ConfigBuilder{
+		Data:             data,
+		DefaultName:      "multi-tenant",
+		DefaultDatabaseURL: "${DATABASE_URL}",
+		Strict:           true,
 	}
+	cfg, _ := builder.Build()
 
-	// Apply emit options using type-safe helper function
-	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
+	// Generate Go config with template-specific settings
+	cfg.SQL[0].Gen.Go = t.buildGoGenConfig(data)
 
-	// Convert rule types using the centralized transformer
-	transformer := validation.NewRuleTransformer()
-	rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
-	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
-		return config.RuleConfig{
-			Name:    r.Name,
-			Rule:    r.Rule,
-			Message: r.Message,
-		}
-	})
-	cfg.SQL[0].Rules = configRules
-
-	return cfg, nil
+	// Apply validation rules using base helper
+	return t.ApplyValidationRules(cfg, data)
 }
 
 // DefaultData returns default TemplateData for multi-tenant template.

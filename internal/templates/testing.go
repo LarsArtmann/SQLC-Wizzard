@@ -2,9 +2,7 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/samber/lo"
 )
 
 // TestingTemplate generates sqlc config for test projects and fixtures.
@@ -29,7 +27,7 @@ func (t *TestingTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Testing-specific defaults
+	// Apply testing-specific defaults
 	if data.Package.Name == "" {
 		data.Package.Name = "testdata"
 	}
@@ -49,45 +47,20 @@ func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 		data.Database.URL = "file:testdata/test.db"
 	}
 
-	// Build config
-	cfg := &config.SqlcConfig{
-		Version: "2",
-		SQL: []config.SQLConfig{
-			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "test"),
-				Engine:               string(data.Database.Engine),
-				Queries:              config.NewPathOrPaths([]string{data.Output.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{data.Output.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(false),
-				StrictOrderBy:        lo.ToPtr(false),
-				Database: &config.DatabaseConfig{
-					URI:     data.Database.URL,
-					Managed: data.Database.UseManaged,
-				},
-				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data),
-				},
-				Rules: []config.RuleConfig{},
-			},
-		},
+	// Build base config using shared builder
+	builder := &ConfigBuilder{
+		Data:             data,
+		DefaultName:      "test",
+		DefaultDatabaseURL: "file:testdata/test.db",
+		Strict:           false,
 	}
+	cfg, _ := builder.Build()
 
-	// Apply emit options using type-safe helper function
-	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
+	// Generate Go config with template-specific settings
+	cfg.SQL[0].Gen.Go = t.buildGoGenConfig(data)
 
-	// Convert rule types using the centralized transformer
-	transformer := validation.NewRuleTransformer()
-	rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
-	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
-		return config.RuleConfig{
-			Name:    r.Name,
-			Rule:    r.Rule,
-			Message: r.Message,
-		}
-	})
-	cfg.SQL[0].Rules = configRules
-
-	return cfg, nil
+	// Apply validation rules using base helper
+	return t.ApplyValidationRules(cfg, data)
 }
 
 // DefaultData returns default TemplateData for testing template.
