@@ -63,55 +63,29 @@ func (t *APIFirstTemplate) Generate(data generated.TemplateData) (*config.SqlcCo
 
 // DefaultData returns default TemplateData for API-first template.
 func (t *APIFirstTemplate) DefaultData() TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType("api-first"),
-
-		Package: generated.PackageConfig{
-			Name: "db",
-			Path: "internal/db",
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("postgresql"),
-			URL:         "${DATABASE_URL}",
-			UseManaged:  true,
-			UseUUIDs:    true,
-			UseJSON:     true,
-			UseArrays:   true,
-			UseFullText: false,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    "internal/db",
-			QueriesDir: "internal/db/queries",
-			SchemaDir:  "internal/db/schema",
-		},
-
-		Validation: generated.ValidationConfig{
-			StrictFunctions: false,
-			StrictOrderBy:   false,
-			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      true,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: true,
-				EmitParamsStructPointers: true,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "camel",
-			},
-			SafetyRules: generated.SafetyRules{
-				NoSelectStar: true,
-				RequireWhere: true,
-				NoDropTable:  true,
-				NoTruncate:   true,
-				RequireLimit: false,
-				Rules:        []generated.SafetyRule{},
-			},
-		},
-	}
+	return createDefaultTemplateData(
+		"api-first",
+		"db",
+		"internal/db",
+		"${DATABASE_URL}",
+		"postgresql",
+		true,   // useManaged
+		true,   // useUUIDs
+		true,   // useJSON
+		true,   // useArrays
+		false,  // useFullText
+		"internal/db",
+		false,  // strictFunctions
+		false,  // strictOrderBy
+		true,   // emitPreparedQueries
+		true,   // emitResultPointers
+		true,   // emitParamsPointers
+		true,   // emitEnumValidMethod
+		"camel",
+		true,   // noSelectStar
+		true,   // requireWhere
+		false,  // requireLimit
+	)
 }
 
 // RequiredFeatures returns which features this template requires.

@@ -65,55 +65,29 @@ func (t *AnalyticsTemplate) Generate(data generated.TemplateData) (*config.SqlcC
 
 // DefaultData returns default TemplateData for analytics template.
 func (t *AnalyticsTemplate) DefaultData() TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType("analytics"),
-
-		Package: generated.PackageConfig{
-			Name: "analytics",
-			Path: "internal/analytics",
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("postgresql"),
-			URL:         "${ANALYTICS_DATABASE_URL}",
-			UseManaged:  false,
-			UseUUIDs:    false,
-			UseJSON:     true,
-			UseArrays:   true,
-			UseFullText: true,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    "internal/analytics",
-			QueriesDir: "internal/analytics/queries",
-			SchemaDir:  "internal/analytics/schema",
-		},
-
-		Validation: generated.ValidationConfig{
-			StrictFunctions: true,
-			StrictOrderBy:   true,
-			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      false,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      false,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "snake",
-			},
-			SafetyRules: generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				NoDropTable:  true,
-				NoTruncate:   true,
-				RequireLimit: true,
-				Rules:        []generated.SafetyRule{},
-			},
-		},
-	}
+	return createDefaultTemplateData(
+		"analytics",
+		"analytics",
+		"internal/analytics",
+		"${ANALYTICS_DATABASE_URL}",
+		"postgresql",
+		false,  // useManaged
+		false,  // useUUIDs
+		true,   // useJSON
+		true,   // useArrays
+		true,   // useFullText
+		"internal/analytics",
+		true,   // strictFunctions
+		true,   // strictOrderBy
+		false,  // emitPreparedQueries
+		false,  // emitResultPointers
+		false,  // emitParamsPointers
+		false,  // emitEnumValidMethod
+		"snake",
+		false,  // noSelectStar
+		false,  // requireWhere
+		true,   // requireLimit
+	)
 }
 
 // RequiredFeatures returns which features this template requires.
