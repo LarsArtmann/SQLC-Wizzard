@@ -65,6 +65,10 @@ func (t *APIFirstTemplate) Generate(data generated.TemplateData) (*config.SqlcCo
 func (t *APIFirstTemplate) DefaultData() generated.TemplateData {
 	return t.BuildDefaultData(
 		"api-first",
+		"postgresql",
+		"${DATABASE_URL}",
+		"internal/db",
+		"internal/db",
 		true,   // useManaged
 		true,   // useUUIDs
 		true,   // useJSON

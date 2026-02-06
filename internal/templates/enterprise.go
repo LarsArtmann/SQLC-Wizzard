@@ -65,17 +65,21 @@ func (t *EnterpriseTemplate) Generate(data generated.TemplateData) (*config.Sqlc
 func (t *EnterpriseTemplate) DefaultData() generated.TemplateData {
 	return t.BuildDefaultData(
 		"enterprise",
-		true,   // useManaged
-		true,   // useUUIDs
-		true,   // useJSON
-		true,   // useArrays
-		true,   // useFullText
-		true,   // emitPreparedQueries
-		true,   // emitResultStructPointers
-		true,   // emitParamsStructPointers
-		true,   // noSelectStar
-		true,   // requireWhere
-		true,   // requireLimit
+		"postgresql",
+		"${DATABASE_URL}",
+		"internal/db",
+		"internal/db",
+		true,  // useManaged
+		true,  // useUUIDs
+		true,  // useJSON
+		true,  // useArrays
+		true,  // useFullText
+		true,  // emitPreparedQueries
+		true,  // emitResultStructPointers
+		true,  // emitParamsStructPointers
+		true,  // noSelectStar
+		true,  // requireWhere
+		true,  // requireLimit
 	)
 }
 

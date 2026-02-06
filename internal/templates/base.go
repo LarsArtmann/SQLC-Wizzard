@@ -204,6 +204,10 @@ func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generat
 // a template method that accepts the variable configuration values.
 func (t *BaseTemplate) BuildDefaultData(
 	projectType string,
+	dbEngine string,
+	databaseURL string,
+	packagePath string,
+	baseOutputDir string,
 	useManaged, useUUIDs, useJSON, useArrays, useFullText bool,
 	emitPreparedQueries, emitResultStructPointers, emitParamsStructPointers bool,
 	noSelectStar, requireWhere, requireLimit bool,
@@ -214,12 +218,12 @@ func (t *BaseTemplate) BuildDefaultData(
 
 		Package: generated.PackageConfig{
 			Name: "db",
-			Path: "internal/db",
+			Path: packagePath,
 		},
 
 		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("postgresql"),
-			URL:         "${DATABASE_URL}",
+			Engine:      MustNewDatabaseType(dbEngine),
+			URL:         databaseURL,
 			UseManaged:  useManaged,
 			UseUUIDs:    useUUIDs,
 			UseJSON:     useJSON,
@@ -228,9 +232,9 @@ func (t *BaseTemplate) BuildDefaultData(
 		},
 
 		Output: generated.OutputConfig{
-			BaseDir:    "internal/db",
-			QueriesDir: "internal/db/queries",
-			SchemaDir:  "internal/db/schema",
+			BaseDir:    baseOutputDir,
+			QueriesDir: baseOutputDir + "/queries",
+			SchemaDir:  baseOutputDir + "/schema",
 		},
 
 		Validation: generated.ValidationConfig{

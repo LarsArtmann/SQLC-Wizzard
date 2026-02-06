@@ -50,6 +50,10 @@ func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.Sql
 func (t *MultiTenantTemplate) DefaultData() generated.TemplateData {
 	return t.BuildDefaultData(
 		"multi-tenant",
+		"postgresql",
+		"${DATABASE_URL}",
+		"internal/db",
+		"internal/db",
 		true,  // useManaged
 		true,  // useUUIDs
 		true,  // useJSON

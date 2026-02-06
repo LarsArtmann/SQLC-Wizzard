@@ -50,6 +50,10 @@ func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 func (t *LibraryTemplate) DefaultData() generated.TemplateData {
 	return t.BuildDefaultData(
 		"library",
+		"postgresql",
+		"${DATABASE_URL}",
+		"internal/db",
+		"internal/db",
 		false, // useManaged
 		false, // useUUIDs
 		false, // useJSON
