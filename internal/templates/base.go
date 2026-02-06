@@ -146,6 +146,13 @@ func (t *BaseTemplate) GetRenameRules() map[string]string {
 	}
 }
 
+// BuildGoConfigWithOverrides builds a GoGenConfig with template-specific overrides.
+// Template implementations can override this to provide custom rename rules.
+func (t *BaseTemplate) BuildGoConfigWithOverrides(data generated.TemplateData) *config.GoGenConfig {
+	sqlPackage := t.GetSQLPackage(data.Database.Engine)
+	return t.BuildGoGenConfig(data, sqlPackage)
+}
+
 // ApplyValidationRules applies emit options and safety rules to a config.
 // This eliminates the duplicated validation code across all templates.
 func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generated.TemplateData) (*config.SqlcConfig, error) {

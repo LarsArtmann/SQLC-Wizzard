@@ -3,7 +3,6 @@ package templates
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/samber/lo"
 )
 
 // AnalyticsTemplate generates sqlc config for analytics and data warehouse projects.
@@ -28,7 +27,7 @@ func (t *AnalyticsTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *AnalyticsTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Analytics-specific defaults
+	// Apply analytics-specific defaults
 	if data.Package.Name == "" {
 		data.Package.Name = "analytics"
 	}
@@ -48,30 +47,19 @@ func (t *AnalyticsTemplate) Generate(data generated.TemplateData) (*config.SqlcC
 		data.Database.URL = "${ANALYTICS_DATABASE_URL}"
 	}
 
-	// Build config
-	cfg := &config.SqlcConfig{
-		Version: "2",
-		SQL: []config.SQLConfig{
-			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "analytics"),
-				Engine:               string(data.Database.Engine),
-				Queries:              config.NewPathOrPaths([]string{data.Output.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{data.Output.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(true),
-				StrictOrderBy:        lo.ToPtr(true),
-				Database: &config.DatabaseConfig{
-					URI:     data.Database.URL,
-					Managed: data.Database.UseManaged,
-				},
-				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data),
-				},
-				Rules: []config.RuleConfig{},
-			},
-		},
+	// Build base config using shared builder
+	builder := &ConfigBuilder{
+		Data:             data,
+		DefaultName:      "analytics",
+		DefaultDatabaseURL: "${ANALYTICS_DATABASE_URL}",
+		Strict:           true,
 	}
+	cfg, _ := builder.Build()
 
-	// Apply validation rules using helper to eliminate duplication
+	// Generate Go config with template-specific settings
+	cfg.SQL[0].Gen.Go = t.BuildGoConfigWithOverrides(data)
+
+	// Apply validation rules using base helper
 	return t.ApplyValidationRules(cfg, data)
 }
 
@@ -131,20 +119,4 @@ func (t *AnalyticsTemplate) DefaultData() TemplateData {
 // RequiredFeatures returns which features this template requires.
 func (t *AnalyticsTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "json_tags", "full_text_search", "strict_checks"}
-}
-
-// buildGoGenConfig builds the GoGenConfig from template data.
-func (t *AnalyticsTemplate) buildGoGenConfig(data generated.TemplateData) *config.GoGenConfig {
-	sqlPackage := t.GetSQLPackage(data.Database.Engine)
-	cfg := t.BuildGoGenConfig(data, sqlPackage)
-
-	// Analytics uses specific rename rules
-	cfg.Rename = map[string]string{
-		"id":   "ID",
-		"json": "JSON",
-		"api":  "API",
-		"http": "HTTP",
-	}
-
-	return cfg
 }

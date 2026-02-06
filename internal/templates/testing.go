@@ -57,7 +57,7 @@ func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 	cfg, _ := builder.Build()
 
 	// Generate Go config with template-specific settings
-	cfg.SQL[0].Gen.Go = t.buildGoGenConfig(data)
+	cfg.SQL[0].Gen.Go = t.BuildGoConfigWithOverrides(data)
 
 	// Apply validation rules using base helper
 	return t.ApplyValidationRules(cfg, data)
@@ -119,17 +119,4 @@ func (t *TestingTemplate) DefaultData() TemplateData {
 // RequiredFeatures returns which features this template requires.
 func (t *TestingTemplate) RequiredFeatures() []string {
 	return []string{"empty_slices"}
-}
-
-// buildGoGenConfig builds the GoGenConfig from template data.
-func (t *TestingTemplate) buildGoGenConfig(data generated.TemplateData) *config.GoGenConfig {
-	sqlPackage := t.GetSQLPackage(data.Database.Engine)
-	cfg := t.BuildGoGenConfig(data, sqlPackage)
-
-	// Testing uses minimal rename rules
-	cfg.Rename = map[string]string{
-		"id": "ID",
-	}
-
-	return cfg
 }
