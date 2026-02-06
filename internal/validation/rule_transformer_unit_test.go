@@ -38,6 +38,15 @@ func createBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 	}
 }
 
+// expectSingleRule verifies that a single rule with the expected name and rule expression is generated.
+func expectSingleRule(transformer *validation.RuleTransformer, rules *domain.TypeSafeSafetyRules, expectedName, expectedRule string) {
+	configRules := transformer.TransformTypeSafeSafetyRules(rules)
+
+	Expect(configRules).To(HaveLen(1))
+	Expect(configRules[0].Name).To(Equal(expectedName))
+	Expect(configRules[0].Rule).To(Equal(expectedRule))
+}
+
 // assertIdenticalRules checks that boolean-based and type-safe rule transformations produce identical results.
 func assertIdenticalRules(boolResult, typeSafeResult []generated.RuleConfig, expectedRule string) {
 	Expect(boolResult).To(HaveLen(1))
@@ -279,22 +288,14 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		rules := createBaseTypeSafeSafetyRules()
 		rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
 
-		configRules := transformer.TransformTypeSafeSafetyRules(rules)
-
-		Expect(configRules).To(HaveLen(1))
-		Expect(configRules[0].Name).To(Equal("require-limit"))
-		Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && !query.hasLimitClause()"))
+		expectSingleRule(transformer, rules, "require-limit", "query.type == 'SELECT' && !query.hasLimitClause()")
 	})
 
 	It("should transform MaxRowsWithoutLimit correctly", func() {
 		rules := createBaseTypeSafeSafetyRules()
 		rules.SafetyRules.MaxRowsWithoutLimit = 100
 
-		configRules := transformer.TransformTypeSafeSafetyRules(rules)
-
-		Expect(configRules).To(HaveLen(1))
-		Expect(configRules[0].Name).To(Equal("max-rows-without-limit"))
-		Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)"))
+		expectSingleRule(transformer, rules, "max-rows-without-limit", "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)")
 	})
 	})
 
