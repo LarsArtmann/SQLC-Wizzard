@@ -27,22 +27,17 @@ func (t *EnterpriseTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *EnterpriseTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Set defaults
-	cb := ConfigBuilder{
-		Data:               data,
-		DefaultName:        "enterprise",
-		DefaultDatabaseURL: "${DATABASE_URL}",
-		Strict:             true,
-	}
-
-	// Build config using base builder
-	cfg, err := cb.Build()
-	if err != nil {
-		return nil, err
-	}
-
-	// Apply validation rules using base template helper
-	return t.ApplyValidationRules(cfg, data)
+	return t.BaseTemplate.GenerateWithDefaults(
+		data,
+		"db",                          // packageName
+		"internal/db",                 // packagePath
+		"internal/db",                 // baseDir
+		"internal/db/queries",         // queriesDir
+		"internal/db/schema",          // schemaDir
+		"${DATABASE_URL}",             // databaseURL
+		"enterprise",                  // projectName
+		true,                          // strict
+	)
 }
 
 // DefaultData returns default TemplateData for enterprise template.

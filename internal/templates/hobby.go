@@ -27,25 +27,17 @@ func (t *HobbyTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Set defaults using ConfigBuilder to eliminate duplication
-	cb := ConfigBuilder{
-		Data:               data,
-		DefaultName:        "hobby",
-		DefaultDatabaseURL: "file:dev.db",
-		Strict:             false,
-	}
-
-	// Build config using base builder
-	cfg, err := cb.Build()
-	if err != nil {
-		return nil, err
-	}
-
-	// Apply emit options using type-safe helper function
-	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
-
-	// Apply validation rules using base template helper
-	return t.ApplyValidationRules(cfg, data)
+	return t.BaseTemplate.GenerateWithDefaults(
+		data,
+		"db",                          // packageName
+		"db",                          // packagePath
+		"db",                          // baseDir
+		"db/queries",                  // queriesDir
+		"db/schema",                   // schemaDir
+		"file:dev.db",                 // databaseURL
+		"hobby",                       // projectName
+		false,                         // strict
+	)
 }
 
 // DefaultData returns default TemplateData for hobby template.
