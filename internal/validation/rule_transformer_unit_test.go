@@ -231,19 +231,8 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should transform SelectStarPolicy.ForbidsSelectStar() correctly", func() {
-			rules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarForbidden,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseNever,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 0,
-				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
+			rules := createBaseTypeSafeSafetyRules()
+			rules.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
 
 			configRules := transformer.TransformTypeSafeSafetyRules(rules)
 
