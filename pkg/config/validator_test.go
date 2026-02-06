@@ -33,6 +33,30 @@ func createBasicSqlcConfig(engine string) *SqlcConfig {
 	}
 }
 
+// Helper function to add test entries (errors or warnings) and validate them.
+// This eliminates duplicate validation code patterns across tests.
+func validateTestEntries(result *ValidationResult, entryType, field1, message1, field2, message2 string, isValid bool) {
+	if entryType == "error" {
+		result.AddError(field1, message1)
+		result.AddError(field2, message2)
+		Expect(result.Errors).To(HaveLen(2))
+		Expect(result.Errors[0].Field).To(Equal(field1))
+		Expect(result.Errors[0].Message).To(Equal(message1))
+		Expect(result.Errors[1].Field).To(Equal(field2))
+		Expect(result.Errors[1].Message).To(Equal(message2))
+		Expect(result.IsValid()).To(Equal(isValid))
+	} else if entryType == "warning" {
+		result.AddWarning(field1, message1)
+		result.AddWarning(field2, message2)
+		Expect(result.Warnings).To(HaveLen(2))
+		Expect(result.Warnings[0].Field).To(Equal(field1))
+		Expect(result.Warnings[0].Message).To(Equal(message1))
+		Expect(result.Warnings[1].Field).To(Equal(field2))
+		Expect(result.Warnings[1].Message).To(Equal(message2))
+		Expect(result.IsValid()).To(Equal(isValid))
+	}
+}
+
 var _ = Describe("Validator", func() {
 	Context("ValidationResult", func() {
 		It("should initialize with empty errors and warnings", func() {
@@ -57,23 +81,9 @@ var _ = Describe("Validator", func() {
 					result := &ValidationResult{}
 
 					if strings.Contains(tc.name, "error") {
-						result.AddError(tc.addField1, tc.addMessage1)
-						result.AddError(tc.addField2, tc.addMessage2)
-						Expect(result.Errors).To(HaveLen(2))
-						Expect(result.Errors[0].Field).To(Equal(tc.addField1))
-						Expect(result.Errors[0].Message).To(Equal(tc.addMessage1))
-						Expect(result.Errors[1].Field).To(Equal(tc.addField2))
-						Expect(result.Errors[1].Message).To(Equal(tc.addMessage2))
-						Expect(result.IsValid()).To(BeFalse())
+						validateTestEntries(result, "error", tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, false)
 					} else {
-						result.AddWarning(tc.addField1, tc.addMessage1)
-						result.AddWarning(tc.addField2, tc.addMessage2)
-						Expect(result.Warnings).To(HaveLen(2))
-						Expect(result.Warnings[0].Field).To(Equal(tc.addField1))
-						Expect(result.Warnings[0].Message).To(Equal(tc.addMessage1))
-						Expect(result.Warnings[1].Field).To(Equal(tc.addField2))
-						Expect(result.Warnings[1].Message).To(Equal(tc.addMessage2))
-						Expect(result.IsValid()).To(BeTrue()) // Warnings don't make it invalid
+						validateTestEntries(result, "warning", tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, true)
 					}
 				},
 				Entry("should add errors correctly", testCase{
