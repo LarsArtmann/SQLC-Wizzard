@@ -47,6 +47,19 @@ func assertIdenticalRules(boolResult, typeSafeResult []generated.RuleConfig, exp
 	Expect(boolResult[0].Rule).To(Equal(expectedRule))
 }
 
+// runParityTest runs a parity test between boolean and type-safe safety rules.
+func runParityTest(
+	transformer *validation.RuleTransformer,
+	boolRules *generated.SafetyRules,
+	setupTypeSafeRules func() *domain.TypeSafeSafetyRules,
+	expectedExpression string,
+) {
+	boolResult := transformer.TransformSafetyRules(boolRules)
+	typeSafeRules := setupTypeSafeRules()
+	typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
+	assertIdenticalRules(boolResult, typeSafeResult, expectedExpression)
+}
+
 func TestValidation(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Validation Unit Suite")
@@ -289,100 +302,55 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		// These tests verify that equivalent configurations produce identical expressions
 		// following the "violation when true" convention consistently across both transformers
 
-		// Helper function to assert that boolean-based and type-safe rules produce identical expressions
-		assertIdenticalRules := func(boolResult, typeSafeResult []generated.RuleConfig, expectedExpression string) {
-			Expect(boolResult).To(HaveLen(1))
-			Expect(typeSafeResult).To(HaveLen(1))
-			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
-			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
-			Expect(boolResult[0].Rule).To(Equal(expectedExpression))
-		}
-
 		It("should produce identical expressions for NoSelectStar vs ForbidsSelectStar", func() {
-			// Boolean-based rule
-			boolRules := &generated.SafetyRules{
-				NoSelectStar: true,
-				RequireWhere: false,
-				RequireLimit: false,
-			}
-			boolResult := transformer.TransformSafetyRules(boolRules)
-
-			// Type-safe rule (equivalent policy)
-			typeSafeRules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarForbidden,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+			runParityTest(
+				transformer,
+				&generated.SafetyRules{
+					NoSelectStar: true,
+					RequireWhere: false,
+					RequireLimit: false,
 				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseNever,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 0,
+				func() *domain.TypeSafeSafetyRules {
+					rules := createBaseTypeSafeSafetyRules()
+					rules.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
+					return rules
 				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
-			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
-
-			// Both should produce identical expressions
-			assertIdenticalRules(boolResult, typeSafeResult, "!query.contains('SELECT *')")
+				"!query.contains('SELECT *')",
+			)
 		})
 
 		It("should produce identical expressions for RequireWhere vs RequiresOnDestructive", func() {
-			// Boolean-based rule
-			boolRules := &generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: true,
-				RequireLimit: false,
-			}
-			boolResult := transformer.TransformSafetyRules(boolRules)
-
-			// Type-safe rule (equivalent policy)
-			typeSafeRules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarAllowed,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+			runParityTest(
+				transformer,
+				&generated.SafetyRules{
+					NoSelectStar: false,
+					RequireWhere: true,
+					RequireLimit: false,
 				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseOnDestructive,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 0,
+				func() *domain.TypeSafeSafetyRules {
+					rules := createBaseTypeSafeSafetyRules()
+					rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
+					return rules
 				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
-			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
-
-			// Both should produce identical expressions
-			assertIdenticalRules(boolResult, typeSafeResult, "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()")
+				"query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
+			)
 		})
 
 		It("should produce identical expressions for RequireLimit vs RequiresOnSelect", func() {
-			// Boolean-based rule
-			boolRules := &generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				RequireLimit: true,
-			}
-			boolResult := transformer.TransformSafetyRules(boolRules)
-
-			// Type-safe rule (equivalent policy)
-			typeSafeRules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarAllowed,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
+			runParityTest(
+				transformer,
+				&generated.SafetyRules{
+					NoSelectStar: false,
+					RequireWhere: false,
+					RequireLimit: true,
 				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseNever,
-					LimitRequirement:    domain.LimitClauseOnSelect,
-					MaxRowsWithoutLimit: 0,
+				func() *domain.TypeSafeSafetyRules {
+					rules := createBaseTypeSafeSafetyRules()
+					rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
+					return rules
 				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
-			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
-
-			// Both should produce identical expressions
-			assertIdenticalRules(boolResult, typeSafeResult, "query.type == 'SELECT' && !query.hasLimitClause()")
+				"query.type == 'SELECT' && !query.hasLimitClause()",
+			)
 		})
 
 		It("should follow consistent violation polarity convention", func() {
