@@ -21,6 +21,23 @@ func runRuleTransformationTest(transformer *validation.RuleTransformer, ruleName
 	Expect(configRules[0].Message).To(Equal(expectedMessage))
 }
 
+// createBaseTypeSafeSafetyRules creates a default TypeSafeSafetyRules structure for test reuse.
+func createBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
+	return &domain.TypeSafeSafetyRules{
+		StyleRules: domain.QueryStyleRules{
+			SelectStarPolicy:   domain.SelectStarAllowed,
+			ColumnExplicitness: domain.ColumnExplicitnessDefault,
+		},
+		SafetyRules: domain.QuerySafetyRules{
+			WhereRequirement:    domain.WhereClauseNever,
+			LimitRequirement:    domain.LimitClauseNever,
+			MaxRowsWithoutLimit: 0,
+		},
+		DestructiveOps: domain.DestructiveAllowed,
+		CustomRules:    []generated.SafetyRule{},
+	}
+}
+
 func TestValidation(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Validation Unit Suite")
@@ -236,71 +253,38 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			Expect(configRules[0].Message).To(ContainSubstring("explicit column names"))
 		})
 
-		It("should transform WhereRequirement.RequiresOnDestructive() correctly", func() {
-			rules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarAllowed,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseOnDestructive,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 0,
-				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
+	It("should transform WhereRequirement.RequiresOnDestructive() correctly", func() {
+		rules := createBaseTypeSafeSafetyRules()
+		rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
 
-			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+		configRules := transformer.TransformTypeSafeSafetyRules(rules)
 
-			Expect(configRules).To(HaveLen(1))
-			Expect(configRules[0].Name).To(Equal("require-where"))
-			Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
-		})
+		Expect(configRules).To(HaveLen(1))
+		Expect(configRules[0].Name).To(Equal("require-where"))
+		Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
+	})
 
-		It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
-			rules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarAllowed,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseNever,
-					LimitRequirement:    domain.LimitClauseOnSelect,
-					MaxRowsWithoutLimit: 0,
-				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
+	It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
+		rules := createBaseTypeSafeSafetyRules()
+		rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
 
-			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+		configRules := transformer.TransformTypeSafeSafetyRules(rules)
 
-			Expect(configRules).To(HaveLen(1))
-			Expect(configRules[0].Name).To(Equal("require-limit"))
-			Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && !query.hasLimitClause()"))
-		})
+		Expect(configRules).To(HaveLen(1))
+		Expect(configRules[0].Name).To(Equal("require-limit"))
+		Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && !query.hasLimitClause()"))
+	})
 
-		It("should transform MaxRowsWithoutLimit correctly", func() {
-			rules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarAllowed,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseNever,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 100,
-				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
+	It("should transform MaxRowsWithoutLimit correctly", func() {
+		rules := createBaseTypeSafeSafetyRules()
+		rules.SafetyRules.MaxRowsWithoutLimit = 100
 
-			configRules := transformer.TransformTypeSafeSafetyRules(rules)
+		configRules := transformer.TransformTypeSafeSafetyRules(rules)
 
-			Expect(configRules).To(HaveLen(1))
-			Expect(configRules[0].Name).To(Equal("max-rows-without-limit"))
-			Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)"))
-		})
+		Expect(configRules).To(HaveLen(1))
+		Expect(configRules[0].Name).To(Equal("max-rows-without-limit"))
+		Expect(configRules[0].Rule).To(Equal("query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)"))
+	})
 	})
 
 	Context("Transformer Parity Tests", func() {
