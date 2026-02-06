@@ -204,7 +204,7 @@ func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generat
 // a template method that accepts the variable configuration values.
 func (t *BaseTemplate) BuildDefaultData(
 	projectType string,
-	useManaged, useUUIDs, useJSON, useArrays bool,
+	useManaged, useUUIDs, useJSON, useArrays, useFullText bool,
 	emitPreparedQueries, emitResultStructPointers, emitParamsStructPointers bool,
 	noSelectStar, requireWhere, requireLimit bool,
 ) generated.TemplateData {
@@ -224,7 +224,7 @@ func (t *BaseTemplate) BuildDefaultData(
 			UseUUIDs:    useUUIDs,
 			UseJSON:     useJSON,
 			UseArrays:   useArrays,
-			UseFullText: false,
+			UseFullText: useFullText,
 		},
 
 		Output: generated.OutputConfig{

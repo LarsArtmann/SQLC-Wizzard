@@ -47,13 +47,14 @@ func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 }
 
 // DefaultData returns default TemplateData for library template.
-func (t *LibraryTemplate) DefaultData() TemplateData {
+func (t *LibraryTemplate) DefaultData() generated.TemplateData {
 	return t.BuildDefaultData(
 		"library",
 		false, // useManaged
 		false, // useUUIDs
 		false, // useJSON
 		false, // useArrays
+		false, // useFullText
 		false, // emitPreparedQueries
 		false, // emitResultStructPointers
 		false, // emitParamsStructPointers

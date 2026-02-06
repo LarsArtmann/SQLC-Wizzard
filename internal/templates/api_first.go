@@ -62,29 +62,17 @@ func (t *APIFirstTemplate) Generate(data generated.TemplateData) (*config.SqlcCo
 }
 
 // DefaultData returns default TemplateData for API-first template.
-func (t *APIFirstTemplate) DefaultData() TemplateData {
-	return createDefaultTemplateData(
+func (t *APIFirstTemplate) DefaultData() generated.TemplateData {
+	return t.BuildDefaultData(
 		"api-first",
-		"db",
-		"internal/db",
-		"${DATABASE_URL}",
-		"postgresql",
 		true,   // useManaged
 		true,   // useUUIDs
 		true,   // useJSON
 		true,   // useArrays
 		false,  // useFullText
-		"internal/db",
-		false,  // strictFunctions
-		false,  // strictOrderBy
-		true,   // emitJSONTags
-		true,   // emitInterface
-		true,   // emitAllEnumValues
 		true,   // emitPreparedQueries
-		true,   // emitResultPointers
-		true,   // emitParamsPointers
-		true,   // emitEnumValidMethod
-		"camel",
+		true,   // emitResultStructPointers
+		true,   // emitParamsStructPointers
 		true,   // noSelectStar
 		true,   // requireWhere
 		false,  // requireLimit

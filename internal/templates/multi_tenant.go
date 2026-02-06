@@ -47,13 +47,14 @@ func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.Sql
 }
 
 // DefaultData returns default TemplateData for multi-tenant template.
-func (t *MultiTenantTemplate) DefaultData() TemplateData {
+func (t *MultiTenantTemplate) DefaultData() generated.TemplateData {
 	return t.BuildDefaultData(
 		"multi-tenant",
 		true,  // useManaged
 		true,  // useUUIDs
 		true,  // useJSON
 		true,  // useArrays
+		false, // useFullText
 		true,  // emitPreparedQueries
 		true,  // emitResultStructPointers
 		true,  // emitParamsStructPointers
