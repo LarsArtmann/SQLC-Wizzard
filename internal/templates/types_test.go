@@ -372,24 +372,18 @@ func TestMultiTenantTemplate_DefaultData(t *testing.T) {
 }
 
 func TestMultiTenantTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.MultiTenantTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "multi-tenant-app"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "multi-tenant-app", sqlConfig.Name)
-	assert.Equal(t, "postgresql", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
-	assert.True(t, *sqlConfig.StrictFunctionChecks)
-	assert.True(t, *sqlConfig.StrictOrderBy)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.MultiTenantTemplate{},
+		ExpectedProjectType: generated.ProjectType("multi-tenant"),
+		ExpectedProjectName: "multi-tenant-app",
+		ExpectedEngine:      "postgresql",
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        true,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+		ExpectStrictChecks:  true,
+	})
 }
 
 // LibraryTemplate Tests
