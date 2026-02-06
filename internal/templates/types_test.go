@@ -7,6 +7,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
+	internal_testing "github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -235,40 +236,31 @@ func TestAPIFirstTemplate_Description(t *testing.T) {
 }
 
 func TestAPIFirstTemplate_DefaultData(t *testing.T) {
-	template := &templates.APIFirstTemplate{}
-	data := template.DefaultData()
-
-	assert.Equal(t, generated.ProjectType("api-first"), data.ProjectType)
-	assert.Equal(t, "db", data.Package.Name)
-	assert.Equal(t, "internal/db", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
-	assert.True(t, data.Database.UseUUIDs)
-	assert.True(t, data.Database.UseJSON)
-	assert.True(t, data.Database.UseArrays)
-	assert.True(t, data.Validation.EmitOptions.EmitJSONTags)
-	assert.True(t, data.Validation.EmitOptions.EmitPreparedQueries)
-	assert.Equal(t, "camel", data.Validation.EmitOptions.JSONTagsCaseStyle)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.APIFirstTemplate{},
+		ExpectedProjectType: generated.ProjectType("api-first"),
+		ExpectedProjectName: "api-service",
+		ExpectedEngine:      "postgresql",
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        true,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+	})
 }
 
 func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.APIFirstTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "api-service"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "api-service", sqlConfig.Name)
-	assert.Equal(t, "postgresql", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
-	assert.False(t, *sqlConfig.StrictFunctionChecks)
-	assert.False(t, *sqlConfig.StrictOrderBy)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.APIFirstTemplate{},
+		ExpectedProjectType: generated.ProjectType("api-first"),
+		ExpectedProjectName: "api-service",
+		ExpectedEngine:      "postgresql",
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        true,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+	}, "api-service")
 }
 
 // AnalyticsTemplate Tests
