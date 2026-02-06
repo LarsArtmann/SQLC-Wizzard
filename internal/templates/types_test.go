@@ -260,8 +260,7 @@ func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
 		ExpectArrays:        true,
 		ExpectJSONTags:      true,
 		ExpectInterface:     true,
-	}, "api-service")
-}
+	})
 
 // AnalyticsTemplate Tests
 func TestAnalyticsTemplate_Name(t *testing.T) {
@@ -416,38 +415,27 @@ func TestLibraryTemplate_Description(t *testing.T) {
 }
 
 func TestLibraryTemplate_DefaultData(t *testing.T) {
-	template := &templates.LibraryTemplate{}
-	data := template.DefaultData()
-
-	assert.Equal(t, generated.ProjectType("library"), data.ProjectType)
-	assert.Equal(t, "db", data.Package.Name)
-	assert.Equal(t, "internal/db", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
-	assert.False(t, data.Database.UseUUIDs)
-	assert.False(t, data.Database.UseJSON)
-	assert.False(t, data.Database.UseArrays)
-	assert.True(t, data.Validation.EmitOptions.EmitJSONTags)
-	assert.True(t, data.Validation.EmitOptions.EmitInterface)
-	assert.Equal(t, "camel", data.Validation.EmitOptions.JSONTagsCaseStyle)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.LibraryTemplate{},
+		ExpectedProjectType: generated.ProjectType("library"),
+		ExpectUUID:          false,
+		ExpectJSON:          false,
+		ExpectArrays:        false,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+	})
 }
 
 func TestLibraryTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.LibraryTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "library-module"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "library-module", sqlConfig.Name)
-	assert.Equal(t, "postgresql", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
-	assert.False(t, *sqlConfig.StrictFunctionChecks)
-	assert.False(t, *sqlConfig.StrictOrderBy)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.LibraryTemplate{},
+		ExpectedProjectType: generated.ProjectType("library"),
+		ExpectedProjectName: "library-module",
+		ExpectedEngine:      "postgresql",
+		ExpectUUID:          false,
+		ExpectJSON:          false,
+		ExpectArrays:        false,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+	})
 }
