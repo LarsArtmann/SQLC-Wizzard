@@ -325,24 +325,18 @@ func TestTestingTemplate_DefaultData(t *testing.T) {
 }
 
 func TestTestingTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.TestingTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "test-project"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "test-project", sqlConfig.Name)
-	assert.Equal(t, "sqlite", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
-	assert.False(t, *sqlConfig.StrictFunctionChecks)
-	assert.False(t, *sqlConfig.StrictOrderBy)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.TestingTemplate{},
+		ExpectedProjectType: generated.ProjectType("testing"),
+		ExpectedProjectName: "test-project",
+		ExpectedEngine:      "sqlite",
+		ExpectUUID:          false,
+		ExpectJSON:          false,
+		ExpectArrays:        false,
+		ExpectJSONTags:      false,
+		ExpectInterface:     false,
+		ExpectStrictChecks:  false,
+	})
 }
 
 // MultiTenantTemplate Tests
