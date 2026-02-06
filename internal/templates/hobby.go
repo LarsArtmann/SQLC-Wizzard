@@ -2,9 +2,7 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/samber/lo"
 )
 
 // HobbyTemplate generates sqlc config for hobby/personal projects.
@@ -46,19 +44,8 @@ func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfi
 	// Apply emit options using type-safe helper function
 	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
 
-	// Convert rule types using the centralized transformer
-	transformer := validation.NewRuleTransformer()
-	rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
-	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
-		return config.RuleConfig{
-			Name:    r.Name,
-			Rule:    r.Rule,
-			Message: r.Message,
-		}
-	})
-	cfg.SQL[0].Rules = configRules
-
-	return cfg, nil
+	// Apply validation rules using base template helper
+	return t.ApplyValidationRules(cfg, data)
 }
 
 // DefaultData returns default TemplateData for hobby template.
