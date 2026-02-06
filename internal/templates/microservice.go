@@ -143,8 +143,3 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 func (t *MicroserviceTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "prepared_queries", "json_tags"}
 }
-
-		"http": "HTTP",
-		"db":   "DB",
-	}
-}

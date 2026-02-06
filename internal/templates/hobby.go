@@ -29,60 +29,18 @@ func (t *HobbyTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Set defaults
-	packageConfig := data.Package
-	if packageConfig.Name == "" {
-		packageConfig.Name = "db"
-		data.Package = packageConfig
-	}
-	if packageConfig.Path == "" {
-		packageConfig.Path = "db"
-		data.Package = packageConfig
+	// Set defaults using ConfigBuilder to eliminate duplication
+	cb := ConfigBuilder{
+		Data:               data,
+		DefaultName:        "hobby",
+		DefaultDatabaseURL: "file:dev.db",
+		Strict:             false,
 	}
 
-	outputConfig := data.Output
-	if outputConfig.BaseDir == "" {
-		outputConfig.BaseDir = "db"
-		data.Output = outputConfig
-	}
-	if outputConfig.QueriesDir == "" {
-		outputConfig.QueriesDir = "db/queries"
-		data.Output = outputConfig
-	}
-	if outputConfig.SchemaDir == "" {
-		outputConfig.SchemaDir = "db/schema"
-		data.Output = outputConfig
-	}
-
-	databaseConfig := data.Database
-	if databaseConfig.URL == "" {
-		databaseConfig.URL = "file:dev.db"
-	}
-
-	// Determine SQL package based on database type
-	sqlPackage := t.getSQLPackage(databaseConfig.Engine)
-
-	// Build config
-	cfg := &config.SqlcConfig{
-		Version: "2",
-		SQL: []config.SQLConfig{
-			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "hobby"),
-				Engine:               string(databaseConfig.Engine),
-				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(false),
-				StrictOrderBy:        lo.ToPtr(false),
-				Database: &config.DatabaseConfig{
-					URI:     databaseConfig.URL,
-					Managed: databaseConfig.UseManaged,
-				},
-				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data, sqlPackage),
-				},
-				Rules: []config.RuleConfig{},
-			},
-		},
+	// Build config using base builder
+	cfg, err := cb.Build()
+	if err != nil {
+		return nil, err
 	}
 
 	// Apply emit options using type-safe helper function
@@ -161,80 +119,3 @@ func (t *HobbyTemplate) RequiredFeatures() []string {
 	return []string{}
 }
 
-// buildGoGenConfig builds the GoGenConfig from template data.
-func (t *HobbyTemplate) buildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
-	cfg := &config.GoGenConfig{
-		Package:    data.Package.Name,
-		Out:        data.Output.BaseDir,
-		SQLPackage: sqlPackage,
-		BuildTags:  t.getBuildTags(data),
-		Overrides:  t.getTypeOverrides(data),
-		Rename:     t.getRenameRules(),
-	}
-
-	return cfg
-}
-
-// getSQLPackage returns the appropriate SQL package for the database.
-func (t *HobbyTemplate) getSQLPackage(db DatabaseType) string {
-	switch db {
-	case DatabaseTypePostgreSQL:
-		return "database/sql"
-	case DatabaseTypeMySQL:
-		return "database/sql"
-	case DatabaseTypeSQLite:
-		return "database/sql"
-	default:
-		return "database/sql"
-	}
-}
-
-// getBuildTags returns appropriate build tags.
-func (t *HobbyTemplate) getBuildTags(data TemplateData) string {
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		return "postgres"
-	case DatabaseTypeMySQL:
-		return "mysql"
-	case DatabaseTypeSQLite:
-		return "sqlite"
-	default:
-		return ""
-	}
-}
-
-// getTypeOverrides returns database-specific type overrides.
-func (t *HobbyTemplate) getTypeOverrides(data TemplateData) []config.Override {
-	var overrides []config.Override
-
-	switch data.Database.Engine {
-	case DatabaseTypePostgreSQL:
-		if data.Database.UseUUIDs {
-			overrides = append(overrides, config.Override{
-				DBType:       "uuid",
-				GoType:       "UUID",
-				GoImportPath: "github.com/google/uuid",
-			})
-		}
-	case DatabaseTypeMySQL:
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "json",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
-	}
-
-	return overrides
-}
-
-// getRenameRules returns common rename rules for better Go naming.
-func (t *HobbyTemplate) getRenameRules() map[string]string {
-	return map[string]string{
-		"id":   "ID",
-		"uuid": "UUID",
-		"url":  "URL",
-		"uri":  "URI",
-	}
-}
