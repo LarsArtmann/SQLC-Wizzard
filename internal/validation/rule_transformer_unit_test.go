@@ -280,6 +280,15 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		// These tests verify that equivalent configurations produce identical expressions
 		// following the "violation when true" convention consistently across both transformers
 
+		// Helper function to assert that boolean-based and type-safe rules produce identical expressions
+		assertIdenticalRules := func(boolResult, typeSafeResult []generated.RuleConfig, expectedExpression string) {
+			Expect(boolResult).To(HaveLen(1))
+			Expect(typeSafeResult).To(HaveLen(1))
+			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
+			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
+			Expect(boolResult[0].Rule).To(Equal(expectedExpression))
+		}
+
 		It("should produce identical expressions for NoSelectStar vs ForbidsSelectStar", func() {
 			// Boolean-based rule
 			boolRules := &generated.SafetyRules{
@@ -306,12 +315,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
 
 			// Both should produce identical expressions
-			Expect(boolResult).To(HaveLen(1))
-			Expect(typeSafeResult).To(HaveLen(1))
-			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
-			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
-			// Expression: violation when SELECT * is present
-			Expect(boolResult[0].Rule).To(Equal("!query.contains('SELECT *')"))
+			assertIdenticalRules(boolResult, typeSafeResult, "!query.contains('SELECT *')")
 		})
 
 		It("should produce identical expressions for RequireWhere vs RequiresOnDestructive", func() {
@@ -340,12 +344,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
 
 			// Both should produce identical expressions
-			Expect(boolResult).To(HaveLen(1))
-			Expect(typeSafeResult).To(HaveLen(1))
-			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
-			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
-			// Expression: violation when WHERE clause is missing (!query.hasWhereClause() returns true when missing)
-			Expect(boolResult[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
+			assertIdenticalRules(boolResult, typeSafeResult, "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()")
 		})
 
 		It("should produce identical expressions for RequireLimit vs RequiresOnSelect", func() {
@@ -374,12 +373,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			typeSafeResult := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
 
 			// Both should produce identical expressions
-			Expect(boolResult).To(HaveLen(1))
-			Expect(typeSafeResult).To(HaveLen(1))
-			Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
-			Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
-			// Expression: violation when LIMIT clause is missing (!query.hasLimitClause() returns true when missing)
-			Expect(boolResult[0].Rule).To(Equal("query.type == 'SELECT' && !query.hasLimitClause()"))
+			assertIdenticalRules(boolResult, typeSafeResult, "query.type == 'SELECT' && !query.hasLimitClause()")
 		})
 
 		It("should follow consistent violation polarity convention", func() {
