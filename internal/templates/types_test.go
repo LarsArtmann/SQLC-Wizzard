@@ -115,22 +115,18 @@ func TestMicroserviceTemplate_DefaultData(t *testing.T) {
 }
 
 func TestMicroserviceTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.MicroserviceTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "test-service"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "test-service", sqlConfig.Name)
-	assert.Equal(t, "postgresql", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.MicroserviceTemplate{},
+		ExpectedProjectType: generated.ProjectTypeMicroservice,
+		ExpectedProjectName: "test-service",
+		ExpectedEngine:      "postgresql",
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        false,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+		ExpectStrictChecks:  false,
+	})
 }
 
 // HobbyTemplate Tests
@@ -159,22 +155,18 @@ func TestHobbyTemplate_DefaultData(t *testing.T) {
 }
 
 func TestHobbyTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.HobbyTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "my-hobby-project"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "my-hobby-project", sqlConfig.Name)
-	assert.Equal(t, "sqlite", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.HobbyTemplate{},
+		ExpectedProjectType: generated.ProjectTypeHobby,
+		ExpectedProjectName: "my-hobby-project",
+		ExpectedEngine:      "sqlite",
+		ExpectUUID:          false,
+		ExpectJSON:          false,
+		ExpectArrays:        false,
+		ExpectJSONTags:      false,
+		ExpectInterface:     false,
+		ExpectStrictChecks:  false,
+	})
 }
 
 // EnterpriseTemplate Tests
