@@ -38,6 +38,15 @@ func createBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 	}
 }
 
+// assertIdenticalRules checks that boolean-based and type-safe rule transformations produce identical results.
+func assertIdenticalRules(boolResult, typeSafeResult []generated.RuleConfig, expectedRule string) {
+	Expect(boolResult).To(HaveLen(1))
+	Expect(typeSafeResult).To(HaveLen(1))
+	Expect(boolResult[0].Rule).To(Equal(typeSafeResult[0].Rule))
+	Expect(boolResult[0].Name).To(Equal(typeSafeResult[0].Name))
+	Expect(boolResult[0].Rule).To(Equal(expectedRule))
+}
+
 func TestValidation(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Validation Unit Suite")
