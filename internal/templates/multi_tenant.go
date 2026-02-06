@@ -27,25 +27,8 @@ func (t *MultiTenantTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Apply multi-tenant-specific defaults
-	if data.Package.Name == "" {
-		data.Package.Name = "db"
-	}
-	if data.Package.Path == "" {
-		data.Package.Path = "internal/db"
-	}
-	if data.Output.BaseDir == "" {
-		data.Output.BaseDir = "internal/db"
-	}
-	if data.Output.QueriesDir == "" {
-		data.Output.QueriesDir = "internal/db/queries"
-	}
-	if data.Output.SchemaDir == "" {
-		data.Output.SchemaDir = "internal/db/schema"
-	}
-	if data.Database.URL == "" {
-		data.Database.URL = "${DATABASE_URL}"
-	}
+	// Apply default values first, before using them in ConfigBuilder
+	t.ApplyDefaultValues(&data)
 
 	// Build base config using shared builder
 	builder := &ConfigBuilder{

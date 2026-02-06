@@ -3,7 +3,6 @@ package templates
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/samber/lo"
 )
 
 // LibraryTemplate generates sqlc config for reusable Go libraries.
@@ -28,50 +27,22 @@ func (t *LibraryTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Library-specific defaults
-	if data.Package.Name == "" {
-		data.Package.Name = "db"
-	}
-	if data.Package.Path == "" {
-		data.Package.Path = "internal/db"
-	}
-	if data.Output.BaseDir == "" {
-		data.Output.BaseDir = "internal/db"
-	}
-	if data.Output.QueriesDir == "" {
-		data.Output.QueriesDir = "internal/db/queries"
-	}
-	if data.Output.SchemaDir == "" {
-		data.Output.SchemaDir = "internal/db/schema"
-	}
-	if data.Database.URL == "" {
-		data.Database.URL = "${DATABASE_URL}"
-	}
+	// Apply default values
+	t.ApplyDefaultValues(&data)
 
-	// Build config
-	cfg := &config.SqlcConfig{
-		Version: "2",
-		SQL: []config.SQLConfig{
-			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "library"),
-				Engine:               string(data.Database.Engine),
-				Queries:              config.NewPathOrPaths([]string{data.Output.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{data.Output.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(false),
-				StrictOrderBy:        lo.ToPtr(false),
-				Database: &config.DatabaseConfig{
-					URI:     data.Database.URL,
-					Managed: data.Database.UseManaged,
-				},
-				Gen: config.GenConfig{
-					Go: t.buildGoGenConfig(data),
-				},
-				Rules: []config.RuleConfig{},
-			},
-		},
+	// Build config using shared builder
+	builder := &ConfigBuilder{
+		Data:             data,
+		DefaultName:      "library",
+		DefaultDatabaseURL: "${DATABASE_URL}",
+		Strict:           false,
 	}
+	cfg, _ := builder.Build()
 
-	// Apply validation rules using helper to eliminate duplication
+	// Customize Go config with template-specific settings
+	cfg.SQL[0].Gen.Go = t.buildGoGenConfig(data)
+
+	// Apply validation rules
 	return t.ApplyValidationRules(cfg, data)
 }
 

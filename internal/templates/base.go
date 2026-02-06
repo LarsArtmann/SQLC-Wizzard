@@ -153,6 +153,29 @@ func (t *BaseTemplate) BuildGoConfigWithOverrides(data generated.TemplateData) *
 	return t.BuildGoGenConfig(data, sqlPackage)
 }
 
+// ApplyDefaultValues sets default values for empty fields in TemplateData.
+// This is used by template implementations to ensure consistent default behavior.
+func (t *BaseTemplate) ApplyDefaultValues(data *generated.TemplateData) {
+	if data.Package.Name == "" {
+		data.Package.Name = "db"
+	}
+	if data.Package.Path == "" {
+		data.Package.Path = "internal/db"
+	}
+	if data.Output.BaseDir == "" {
+		data.Output.BaseDir = "internal/db"
+	}
+	if data.Output.QueriesDir == "" {
+		data.Output.QueriesDir = "internal/db/queries"
+	}
+	if data.Output.SchemaDir == "" {
+		data.Output.SchemaDir = "internal/db/schema"
+	}
+	if data.Database.URL == "" {
+		data.Database.URL = "${DATABASE_URL}"
+	}
+}
+
 // ApplyValidationRules applies emit options and safety rules to a config.
 // This eliminates the duplicated validation code across all templates.
 func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generated.TemplateData) (*config.SqlcConfig, error) {
