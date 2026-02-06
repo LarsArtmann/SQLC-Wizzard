@@ -79,6 +79,9 @@ func (t *AnalyticsTemplate) DefaultData() TemplateData {
 		"internal/analytics",
 		true,   // strictFunctions
 		true,   // strictOrderBy
+		true,   // emitJSONTags
+		true,   // emitInterface
+		true,   // emitAllEnumValues
 		false,  // emitPreparedQueries
 		false,  // emitResultPointers
 		false,  // emitParamsPointers

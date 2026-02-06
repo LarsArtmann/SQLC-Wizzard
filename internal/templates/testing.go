@@ -65,55 +65,32 @@ func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 
 // DefaultData returns default TemplateData for testing template.
 func (t *TestingTemplate) DefaultData() TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType("testing"),
-
-		Package: generated.PackageConfig{
-			Name: "testdata",
-			Path: "testdata/db",
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("sqlite"),
-			URL:         "file:testdata/test.db",
-			UseManaged:  false,
-			UseUUIDs:    false,
-			UseJSON:     false,
-			UseArrays:   false,
-			UseFullText: false,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    "testdata/db",
-			QueriesDir: "testdata/queries",
-			SchemaDir:  "testdata/schema",
-		},
-
-		Validation: generated.ValidationConfig{
-			StrictFunctions: false,
-			StrictOrderBy:   false,
-			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             false,
-				EmitPreparedQueries:      false,
-				EmitInterface:            false,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      false,
-				EmitAllEnumValues:        false,
-				JSONTagsCaseStyle:        "snake",
-			},
-			SafetyRules: generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				NoDropTable:  true,
-				NoTruncate:   true,
-				RequireLimit: false,
-				Rules:        []generated.SafetyRule{},
-			},
-		},
-	}
+	return createDefaultTemplateData(
+		"testing",
+		"testdata",
+		"testdata/db",
+		"file:testdata/test.db",
+		"sqlite",
+		false,  // useManaged
+		false,  // useUUIDs
+		false,  // useJSON
+		false,  // useArrays
+		false,  // useFullText
+		"testdata/db",
+		false,  // strictFunctions
+		false,  // strictOrderBy
+		false,  // emitJSONTags
+		false,  // emitInterface
+		false,  // emitAllEnumValues
+		false,  // emitPreparedQueries
+		false,  // emitResultPointers
+		false,  // emitParamsPointers
+		false,  // emitEnumValidMethod
+		"snake",
+		false,  // noSelectStar
+		false,  // requireWhere
+		false,  // requireLimit
+	)
 }
 
 // RequiredFeatures returns which features this template requires.

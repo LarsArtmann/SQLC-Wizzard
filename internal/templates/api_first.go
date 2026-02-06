@@ -77,6 +77,9 @@ func (t *APIFirstTemplate) DefaultData() TemplateData {
 		"internal/db",
 		false,  // strictFunctions
 		false,  // strictOrderBy
+		true,   // emitJSONTags
+		true,   // emitInterface
+		true,   // emitAllEnumValues
 		true,   // emitPreparedQueries
 		true,   // emitResultPointers
 		true,   // emitParamsPointers
