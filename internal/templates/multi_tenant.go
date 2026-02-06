@@ -48,55 +48,19 @@ func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.Sql
 
 // DefaultData returns default TemplateData for multi-tenant template.
 func (t *MultiTenantTemplate) DefaultData() TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType("multi-tenant"),
-
-		Package: generated.PackageConfig{
-			Name: "db",
-			Path: "internal/db",
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("postgresql"),
-			URL:         "${DATABASE_URL}",
-			UseManaged:  true,
-			UseUUIDs:    true,
-			UseJSON:     true,
-			UseArrays:   true,
-			UseFullText: false,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    "internal/db",
-			QueriesDir: "internal/db/queries",
-			SchemaDir:  "internal/db/schema",
-		},
-
-		Validation: generated.ValidationConfig{
-			StrictFunctions: true,
-			StrictOrderBy:   true,
-			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      true,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: true,
-				EmitParamsStructPointers: true,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "camel",
-			},
-			SafetyRules: generated.SafetyRules{
-				NoSelectStar: true,
-				RequireWhere: true,
-				NoDropTable:  true,
-				NoTruncate:   true,
-				RequireLimit: true,
-				Rules:        []generated.SafetyRule{},
-			},
-		},
-	}
+	return t.BuildDefaultData(
+		"multi-tenant",
+		true,  // useManaged
+		true,  // useUUIDs
+		true,  // useJSON
+		true,  // useArrays
+		true,  // emitPreparedQueries
+		true,  // emitResultStructPointers
+		true,  // emitParamsStructPointers
+		true,  // noSelectStar
+		true,  // requireWhere
+		true,  // requireLimit
+	)
 }
 
 // RequiredFeatures returns which features this template requires.

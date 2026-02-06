@@ -198,3 +198,63 @@ func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generat
 
 	return cfg, nil
 }
+
+// BuildDefaultData creates default TemplateData with the provided parameters.
+// This eliminates duplication in template DefaultData() methods by providing
+// a template method that accepts the variable configuration values.
+func (t *BaseTemplate) BuildDefaultData(
+	projectType string,
+	useManaged, useUUIDs, useJSON, useArrays bool,
+	emitPreparedQueries, emitResultStructPointers, emitParamsStructPointers bool,
+	noSelectStar, requireWhere, requireLimit bool,
+) generated.TemplateData {
+	return generated.TemplateData{
+		ProjectName: "",
+		ProjectType: MustNewProjectType(projectType),
+
+		Package: generated.PackageConfig{
+			Name: "db",
+			Path: "internal/db",
+		},
+
+		Database: generated.DatabaseConfig{
+			Engine:      MustNewDatabaseType("postgresql"),
+			URL:         "${DATABASE_URL}",
+			UseManaged:  useManaged,
+			UseUUIDs:    useUUIDs,
+			UseJSON:     useJSON,
+			UseArrays:   useArrays,
+			UseFullText: false,
+		},
+
+		Output: generated.OutputConfig{
+			BaseDir:    "internal/db",
+			QueriesDir: "internal/db/queries",
+			SchemaDir:  "internal/db/schema",
+		},
+
+		Validation: generated.ValidationConfig{
+			StrictFunctions: useManaged, // Match strict mode to UseManaged for consistency
+			StrictOrderBy:   useManaged,
+			EmitOptions: generated.EmitOptions{
+				EmitJSONTags:             true,
+				EmitPreparedQueries:      emitPreparedQueries,
+				EmitInterface:            true,
+				EmitEmptySlices:          true,
+				EmitResultStructPointers: emitResultStructPointers,
+				EmitParamsStructPointers: emitParamsStructPointers,
+				EmitEnumValidMethod:      true,
+				EmitAllEnumValues:        true,
+				JSONTagsCaseStyle:        "camel",
+			},
+			SafetyRules: generated.SafetyRules{
+				NoSelectStar: noSelectStar,
+				RequireWhere: requireWhere,
+				NoDropTable:  true,
+				NoTruncate:   true,
+				RequireLimit: requireLimit,
+				Rules:        []generated.SafetyRule{},
+			},
+		},
+	}
+}

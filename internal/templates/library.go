@@ -48,55 +48,19 @@ func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 
 // DefaultData returns default TemplateData for library template.
 func (t *LibraryTemplate) DefaultData() TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType("library"),
-
-		Package: generated.PackageConfig{
-			Name: "db",
-			Path: "internal/db",
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("postgresql"),
-			URL:         "${DATABASE_URL}",
-			UseManaged:  false,
-			UseUUIDs:    false,
-			UseJSON:     false,
-			UseArrays:   false,
-			UseFullText: false,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    "internal/db",
-			QueriesDir: "internal/db/queries",
-			SchemaDir:  "internal/db/schema",
-		},
-
-		Validation: generated.ValidationConfig{
-			StrictFunctions: false,
-			StrictOrderBy:   false,
-			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      false,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "camel",
-			},
-			SafetyRules: generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				NoDropTable:  true,
-				NoTruncate:   true,
-				RequireLimit: false,
-				Rules:        []generated.SafetyRule{},
-			},
-		},
-	}
+	return t.BuildDefaultData(
+		"library",
+		false, // useManaged
+		false, // useUUIDs
+		false, // useJSON
+		false, // useArrays
+		false, // emitPreparedQueries
+		false, // emitResultStructPointers
+		false, // emitParamsStructPointers
+		false, // noSelectStar
+		false, // requireWhere
+		false, // requireLimit
+	)
 }
 
 // RequiredFeatures returns which features this template requires.
