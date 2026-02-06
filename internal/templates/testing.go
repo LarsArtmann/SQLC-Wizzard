@@ -27,40 +27,17 @@ func (t *TestingTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Apply testing-specific defaults
-	if data.Package.Name == "" {
-		data.Package.Name = "testdata"
-	}
-	if data.Package.Path == "" {
-		data.Package.Path = "testdata/db"
-	}
-	if data.Output.BaseDir == "" {
-		data.Output.BaseDir = "testdata/db"
-	}
-	if data.Output.QueriesDir == "" {
-		data.Output.QueriesDir = "testdata/queries"
-	}
-	if data.Output.SchemaDir == "" {
-		data.Output.SchemaDir = "testdata/schema"
-	}
-	if data.Database.URL == "" {
-		data.Database.URL = "file:testdata/test.db"
-	}
-
-	// Build base config using shared builder
-	builder := &ConfigBuilder{
-		Data:             data,
-		DefaultName:      "test",
-		DefaultDatabaseURL: "file:testdata/test.db",
-		Strict:           false,
-	}
-	cfg, _ := builder.Build()
-
-	// Generate Go config with template-specific settings
-	cfg.SQL[0].Gen.Go = t.BuildGoConfigWithOverrides(data)
-
-	// Apply validation rules using base helper
-	return t.ApplyValidationRules(cfg, data)
+	return t.GenerateWithDefaults(
+		data,
+		"testdata",
+		"testdata/db",
+		"testdata/db",
+		"testdata/queries",
+		"testdata/schema",
+		"file:testdata/test.db",
+		"test",
+		false,
+	)
 }
 
 // DefaultData returns default TemplateData for testing template.

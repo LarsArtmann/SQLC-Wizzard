@@ -27,40 +27,17 @@ func (t *AnalyticsTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *AnalyticsTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Apply analytics-specific defaults
-	if data.Package.Name == "" {
-		data.Package.Name = "analytics"
-	}
-	if data.Package.Path == "" {
-		data.Package.Path = "internal/analytics"
-	}
-	if data.Output.BaseDir == "" {
-		data.Output.BaseDir = "internal/analytics"
-	}
-	if data.Output.QueriesDir == "" {
-		data.Output.QueriesDir = "internal/analytics/queries"
-	}
-	if data.Output.SchemaDir == "" {
-		data.Output.SchemaDir = "internal/analytics/schema"
-	}
-	if data.Database.URL == "" {
-		data.Database.URL = "${ANALYTICS_DATABASE_URL}"
-	}
-
-	// Build base config using shared builder
-	builder := &ConfigBuilder{
-		Data:             data,
-		DefaultName:      "analytics",
-		DefaultDatabaseURL: "${ANALYTICS_DATABASE_URL}",
-		Strict:           true,
-	}
-	cfg, _ := builder.Build()
-
-	// Generate Go config with template-specific settings
-	cfg.SQL[0].Gen.Go = t.BuildGoConfigWithOverrides(data)
-
-	// Apply validation rules using base helper
-	return t.ApplyValidationRules(cfg, data)
+	return t.GenerateWithDefaults(
+		data,
+		"analytics",
+		"internal/analytics",
+		"internal/analytics",
+		"internal/analytics/queries",
+		"internal/analytics/schema",
+		"${ANALYTICS_DATABASE_URL}",
+		"analytics",
+		true,
+	)
 }
 
 // DefaultData returns default TemplateData for analytics template.

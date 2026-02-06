@@ -262,3 +262,68 @@ func (t *BaseTemplate) BuildDefaultData(
 		},
 	}
 }
+// GenerateWithDefaults is a template method that eliminates duplicated code in template implementations.
+// It applies template-specific defaults to the data and builds a SqlcConfig using the shared ConfigBuilder.
+// Template implementations should call this method with their specific values.
+//
+// Parameters:
+//   - data: The template data to apply defaults to
+//   - packageName: Default package name to use when data.Package.Name is empty
+//   - packagePath: Default package path to use when data.Package.Path is empty
+//   - baseDir: Default base directory to use when data.Output.BaseDir is empty
+//   - queriesDir: Default queries directory to use when data.Output.QueriesDir is empty
+//   - schemaDir: Default schema directory to use when data.Output.SchemaDir is empty
+//   - databaseURL: Default database URL to use when data.Database.URL is empty
+//   - projectName: Default project name to use when data.ProjectName is empty
+//   - strict: Whether to enable strict mode settings
+//
+// Returns: A SqlcConfig configured with the provided values, or an error if building fails
+func (t *BaseTemplate) GenerateWithDefaults(
+	data generated.TemplateData,
+	packageName string,
+	packagePath string,
+	baseDir string,
+	queriesDir string,
+	schemaDir string,
+	databaseURL string,
+	projectName string,
+	strict bool,
+) (*config.SqlcConfig, error) {
+	// Apply template-specific defaults to the data
+	if data.Package.Name == "" {
+		data.Package.Name = packageName
+	}
+	if data.Package.Path == "" {
+		data.Package.Path = packagePath
+	}
+	if data.Output.BaseDir == "" {
+		data.Output.BaseDir = baseDir
+	}
+	if data.Output.QueriesDir == "" {
+		data.Output.QueriesDir = queriesDir
+	}
+	if data.Output.SchemaDir == "" {
+		data.Output.SchemaDir = schemaDir
+	}
+	if data.Database.URL == "" {
+		data.Database.URL = databaseURL
+	}
+
+	// Build base config using shared builder
+	builder := &ConfigBuilder{
+		Data:               data,
+		DefaultName:        projectName,
+		DefaultDatabaseURL: databaseURL,
+		Strict:             strict,
+	}
+	cfg, err := builder.Build()
+	if err != nil {
+		return nil, err
+	}
+
+	// Generate Go config with template-specific settings
+	cfg.SQL[0].Gen.Go = t.BuildGoConfigWithOverrides(data)
+
+	// Apply validation rules using base helper
+	return t.ApplyValidationRules(cfg, data)
+}
