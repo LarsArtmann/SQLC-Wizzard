@@ -27,22 +27,17 @@ func (t *APIFirstTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *APIFirstTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	// Set defaults
-	cb := ConfigBuilder{
-		Data:               data,
-		DefaultName:        "api",
-		DefaultDatabaseURL: "${DATABASE_URL}",
-		Strict:             false,
-	}
-
-	// Build config using base builder
-	cfg, err := cb.Build()
-	if err != nil {
-		return nil, err
-	}
-
-	// Apply validation rules using base template helper
-	return t.ApplyValidationRules(cfg, data)
+	return t.BaseTemplate.GenerateWithDefaults(
+		data,
+		"api",           // packageName
+		"internal/db",   // packagePath
+		"internal/db",   // baseDir
+		"internal/db/queries", // queriesDir
+		"internal/db/schema",  // schemaDir
+		"${DATABASE_URL}", // databaseURL
+		"api",           // projectName
+		false,           // strict
+	)
 }
 
 // DefaultData returns default TemplateData for API-first template.
