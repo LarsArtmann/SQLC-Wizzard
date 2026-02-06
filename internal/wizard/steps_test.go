@@ -132,26 +132,16 @@ var _ = Describe("CreateProjectNameStep", func() {
 var _ = Describe("CreatePackageNameStep", func() {
 	Context("with default template data", func() {
 		It("should create a valid step", func() {
-			data := &generated.TemplateData{
-				Package: generated.PackageConfig{
-					Name: "db",
-				},
-			}
-
-			step := CreatePackageNameStep(data)
-
+			step := CreatePackageNameStep(&generated.TemplateData{
+				Package: generated.PackageConfig{Name: "db"},
+			})
 			Expect(step).ToNot(BeNil())
 		})
 
 		It("should bind to package name field", func() {
-			data := &generated.TemplateData{
-				Package: generated.PackageConfig{
-					Name: "mypackage",
-				},
-			}
-
-			step := CreatePackageNameStep(data)
-
+			step := CreatePackageNameStep(&generated.TemplateData{
+				Package: generated.PackageConfig{Name: "mypackage"},
+			})
 			Expect(step).ToNot(BeNil())
 		})
 	})
@@ -167,26 +157,16 @@ var _ = Describe("CreatePackageNameStep", func() {
 var _ = Describe("CreatePackagePathStep", func() {
 	Context("with default template data", func() {
 		It("should create a valid step", func() {
-			data := &generated.TemplateData{
-				Package: generated.PackageConfig{
-					Path: "github.com/myorg/myproject",
-				},
-			}
-
-			step := CreatePackagePathStep(data)
-
+			step := CreatePackagePathStep(&generated.TemplateData{
+				Package: generated.PackageConfig{Path: "github.com/myorg/myproject"},
+			})
 			Expect(step).ToNot(BeNil())
 		})
 
 		It("should bind to package path field", func() {
-			data := &generated.TemplateData{
-				Package: generated.PackageConfig{
-					Path: "github.com/example/project",
-				},
-			}
-
-			step := CreatePackagePathStep(data)
-
+			step := CreatePackagePathStep(&generated.TemplateData{
+				Package: generated.PackageConfig{Path: "github.com/example/project"},
+			})
 			Expect(step).ToNot(BeNil())
 		})
 	})
@@ -202,26 +182,16 @@ var _ = Describe("CreatePackagePathStep", func() {
 var _ = Describe("CreateOutputDirStep", func() {
 	Context("with default template data", func() {
 		It("should create a valid step", func() {
-			data := &generated.TemplateData{
-				Output: generated.OutputConfig{
-					BaseDir: "./internal/db",
-				},
-			}
-
-			step := CreateOutputDirStep(data)
-
+			step := CreateOutputDirStep(&generated.TemplateData{
+				Output: generated.OutputConfig{BaseDir: "./internal/db"},
+			})
 			Expect(step).ToNot(BeNil())
 		})
 
 		It("should bind to output directory field", func() {
-			data := &generated.TemplateData{
-				Output: generated.OutputConfig{
-					BaseDir: "./gen/db",
-				},
-			}
-
-			step := CreateOutputDirStep(data)
-
+			step := CreateOutputDirStep(&generated.TemplateData{
+				Output: generated.OutputConfig{BaseDir: "./gen/db"},
+			})
 			Expect(step).ToNot(BeNil())
 		})
 	})
