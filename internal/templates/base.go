@@ -3,7 +3,50 @@ package templates
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+	"github.com/samber/lo"
 )
+
+// ConfigBuilder helps construct sqlc configurations with common patterns.
+// This eliminates duplication across template implementations.
+type ConfigBuilder struct {
+	// Data holds the template configuration data.
+	Data generated.TemplateData
+	// DefaultName is used when ProjectName is empty.
+	DefaultName string
+	// DefaultDatabaseURL is used when Database.URL is empty.
+	DefaultDatabaseURL string
+	// Strict controls strict mode settings.
+	Strict bool
+}
+
+// Build creates a SqlcConfig from the configured values.
+func (cb *ConfigBuilder) Build() (*config.SqlcConfig, error) {
+	base := &BaseTemplate{}
+
+	config := &config.SqlcConfig{
+		Version: "2",
+		SQL: []config.SQLConfig{
+			{
+				Name:                 lo.Ternary(cb.Data.ProjectName != "", cb.Data.ProjectName, cb.DefaultName),
+				Engine:               string(cb.Data.Database.Engine),
+				Queries:              config.NewPathOrPaths([]string{cb.Data.Output.QueriesDir}),
+				Schema:               config.NewPathOrPaths([]string{cb.Data.Output.SchemaDir}),
+				StrictFunctionChecks: lo.ToPtr(cb.Strict),
+				StrictOrderBy:        lo.ToPtr(cb.Strict),
+				Database: &config.DatabaseConfig{
+					URI:     lo.Ternary(cb.Data.Database.URL != "", cb.Data.Database.URL, cb.DefaultDatabaseURL),
+					Managed: cb.Data.Database.UseManaged,
+				},
+				Gen: config.GenConfig{
+					Go: base.BuildGoGenConfig(cb.Data, base.GetSQLPackage(cb.Data.Database.Engine)),
+				},
+				Rules: []config.RuleConfig{},
+			},
+		},
+	}
+
+	return config, nil
+}
 
 // BaseTemplate provides common functionality for all templates.
 // Embed this struct in template implementations to inherit helper methods.
@@ -27,16 +70,17 @@ func (t *BaseTemplate) BuildGoGenConfig(data generated.TemplateData, sqlPackage 
 // MySQL and SQLite use database/sql for compatibility.
 func (t *BaseTemplate) GetSQLPackage(db generated.DatabaseType) string {
 	switch db {
-	case generated.DatabaseTypePostgreSQL:
+	case DatabaseTypePostgreSQL:
 		return "pgx/v5"
-	case generated.DatabaseTypeMySQL:
+	case DatabaseTypeMySQL:
 		return "database/sql"
-	case generated.DatabaseTypeSQLite:
+	case DatabaseTypeSQLite:
 		return "database/sql"
 	default:
 		return "database/sql"
 	}
 }
+
 // GetBuildTags returns appropriate build tags based on database type.
 func (t *BaseTemplate) GetBuildTags(data generated.TemplateData) string {
 	switch data.Database.Engine {
@@ -79,6 +123,8 @@ func (t *BaseTemplate) GetTypeOverrides(data generated.TemplateData) []config.Ov
 				GoImportPath: "encoding/json",
 			})
 		}
+	default:
+		// No default overrides
 	}
 
 	return overrides
@@ -94,5 +140,7 @@ func (t *BaseTemplate) GetRenameRules() map[string]string {
 		"api":  "API",
 		"http": "HTTP",
 		"json": "JSON",
+		"db":   "DB",
+		"otp":  "OTP",
 	}
 }
