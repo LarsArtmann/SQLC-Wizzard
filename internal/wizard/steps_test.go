@@ -2,9 +2,44 @@ package wizard
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/charmbracelet/huh"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
+
+// stepTestCase represents a test case for step creation
+type stepTestCase struct {
+	data        *generated.TemplateData
+	description string
+}
+
+// generateStepTests generates common step creation tests for the given step function
+func generateStepTests(describeName string, stepFunc func(*generated.TemplateData) *huh.Input, testCases []stepTestCase) {
+	Describe(describeName, func() {
+		Context("with default template data", func() {
+			It("should create a valid step", func() {
+				for _, tc := range testCases {
+					step := stepFunc(tc.data)
+					Expect(step).ToNot(BeNil())
+				}
+			})
+
+			It("should bind to fields", func() {
+				for _, tc := range testCases {
+					step := stepFunc(tc.data)
+					Expect(step).ToNot(BeNil())
+				}
+			})
+		})
+
+		Context("with nil template data", func() {
+			It("should not panic", func() {
+				step := stepFunc(nil)
+				Expect(step).ToNot(BeNil())
+			})
+		})
+	})
+}
 
 var _ = Describe("CreateProjectTypeStep", func() {
 	Context("with default template data", func() {
@@ -130,53 +165,45 @@ var _ = Describe("CreateProjectNameStep", func() {
 })
 
 var _ = Describe("CreatePackageNameStep", func() {
-	Context("with default template data", func() {
-		It("should create a valid step", func() {
-			step := CreatePackageNameStep(&generated.TemplateData{
-				Package: generated.PackageConfig{Name: "db"},
-			})
-			Expect(step).ToNot(BeNil())
-		})
-
-		It("should bind to package name field", func() {
-			step := CreatePackageNameStep(&generated.TemplateData{
-				Package: generated.PackageConfig{Name: "mypackage"},
-			})
-			Expect(step).ToNot(BeNil())
-		})
-	})
-
-	Context("with nil template data", func() {
-		It("should not panic", func() {
-			step := CreatePackageNameStep(nil)
-			Expect(step).ToNot(BeNil())
-		})
-	})
+	generateStepTests(
+		"CreatePackageNameStep",
+		CreatePackageNameStep,
+		[]stepTestCase{
+			{
+				data: &generated.TemplateData{
+					Package: generated.PackageConfig{Name: "db"},
+				},
+				description: "package name field",
+			},
+			{
+				data: &generated.TemplateData{
+					Package: generated.PackageConfig{Name: "mypackage"},
+				},
+				description: "package name field",
+			},
+		},
+	)
 })
 
 var _ = Describe("CreatePackagePathStep", func() {
-	Context("with default template data", func() {
-		It("should create a valid step", func() {
-			step := CreatePackagePathStep(&generated.TemplateData{
-				Package: generated.PackageConfig{Path: "github.com/myorg/myproject"},
-			})
-			Expect(step).ToNot(BeNil())
-		})
-
-		It("should bind to package path field", func() {
-			step := CreatePackagePathStep(&generated.TemplateData{
-				Package: generated.PackageConfig{Path: "github.com/example/project"},
-			})
-			Expect(step).ToNot(BeNil())
-		})
-	})
-
-	Context("with nil template data", func() {
-		It("should not panic", func() {
-			step := CreatePackagePathStep(nil)
-			Expect(step).ToNot(BeNil())
-		})
-	})
+	generateStepTests(
+		"CreatePackagePathStep",
+		CreatePackagePathStep,
+		[]stepTestCase{
+			{
+				data: &generated.TemplateData{
+					Package: generated.PackageConfig{Path: "github.com/myorg/myproject"},
+				},
+				description: "package path field",
+			},
+			{
+				data: &generated.TemplateData{
+					Package: generated.PackageConfig{Path: "github.com/example/project"},
+				},
+				description: "package path field",
+			},
+		},
+	)
 })
 
 var _ = Describe("CreateOutputDirStep", func() {
