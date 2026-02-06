@@ -261,6 +261,7 @@ func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
 		ExpectJSONTags:      true,
 		ExpectInterface:     true,
 	})
+}
 
 // AnalyticsTemplate Tests
 func TestAnalyticsTemplate_Name(t *testing.T) {
