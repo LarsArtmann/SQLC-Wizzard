@@ -204,24 +204,18 @@ func TestEnterpriseTemplate_DefaultData(t *testing.T) {
 }
 
 func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.EnterpriseTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "enterprise-service"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "enterprise-service", sqlConfig.Name)
-	assert.Equal(t, "postgresql", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
-	assert.True(t, *sqlConfig.StrictFunctionChecks)
-	assert.True(t, *sqlConfig.StrictOrderBy)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.EnterpriseTemplate{},
+		ExpectedProjectType: generated.ProjectType("enterprise"),
+		ExpectedProjectName: "enterprise-service",
+		ExpectedEngine:      "postgresql",
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        true,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+		ExpectStrictChecks:  true,
+	})
 }
 
 // APIFirstTemplate Tests
@@ -290,24 +284,18 @@ func TestAnalyticsTemplate_DefaultData(t *testing.T) {
 }
 
 func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
-	template := &templates.AnalyticsTemplate{}
-	data := template.DefaultData()
-	data.ProjectName = "analytics-service"
-
-	result, err := template.Generate(data)
-
-	require.NoError(t, err)
-	require.NotNil(t, result)
-
-	assert.Equal(t, "2", result.Version)
-	assert.Len(t, result.SQL, 1)
-
-	sqlConfig := result.SQL[0]
-	assert.Equal(t, "analytics-service", sqlConfig.Name)
-	assert.Equal(t, "postgresql", sqlConfig.Engine)
-	assert.NotNil(t, sqlConfig.Database)
-	assert.True(t, *sqlConfig.StrictFunctionChecks)
-	assert.True(t, *sqlConfig.StrictOrderBy)
+	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.AnalyticsTemplate{},
+		ExpectedProjectType: generated.ProjectType("analytics"),
+		ExpectedProjectName: "analytics-service",
+		ExpectedEngine:      "postgresql",
+		ExpectUUID:          false,
+		ExpectJSON:          true,
+		ExpectArrays:        true,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+		ExpectStrictChecks:  true,
+	})
 }
 
 // TestingTemplate Tests

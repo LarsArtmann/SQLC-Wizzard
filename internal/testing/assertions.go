@@ -24,6 +24,7 @@ type TemplateTestHelper struct {
 	ExpectArrays        bool
 	ExpectJSONTags      bool
 	ExpectInterface     bool // EmitPreparedQueries for APIFirst, EmitInterface for Library
+	ExpectStrictChecks  bool // StrictFunctionChecks and StrictOrderBy
 }
 
 // AssertTemplateDefaultData verifies common template DefaultData() expectations.
@@ -65,6 +66,11 @@ func AssertTemplateGenerateBasic(t *testing.T, helper TemplateTestHelper) {
 	assert.Equal(t, helper.ExpectedProjectName, sqlConfig.Name)
 	assert.Equal(t, helper.ExpectedEngine, sqlConfig.Engine)
 	assert.NotNil(t, sqlConfig.Database)
-	assert.False(t, *sqlConfig.StrictFunctionChecks)
-	assert.False(t, *sqlConfig.StrictOrderBy)
+	if helper.ExpectStrictChecks {
+		assert.True(t, *sqlConfig.StrictFunctionChecks)
+		assert.True(t, *sqlConfig.StrictOrderBy)
+	} else {
+		assert.False(t, *sqlConfig.StrictFunctionChecks)
+		assert.False(t, *sqlConfig.StrictOrderBy)
+	}
 }
