@@ -2,7 +2,6 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/samber/lo"
 )
@@ -49,7 +48,7 @@ func (t *AnalyticsTemplate) Generate(data generated.TemplateData) (*config.SqlcC
 		data.Database.URL = "${ANALYTICS_DATABASE_URL}"
 	}
 
-		// Build config
+	// Build config
 	cfg := &config.SqlcConfig{
 		Version: "2",
 		SQL: []config.SQLConfig{
@@ -72,22 +71,8 @@ func (t *AnalyticsTemplate) Generate(data generated.TemplateData) (*config.SqlcC
 		},
 	}
 
-	// Apply emit options using type-safe helper function
-	config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
-
-	// Convert rule types using the centralized transformer
-	transformer := validation.NewRuleTransformer()
-	rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
-	configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
-		return config.RuleConfig{
-			Name:    r.Name,
-			Rule:    r.Rule,
-			Message: r.Message,
-		}
-	})
-	cfg.SQL[0].Rules = configRules
-
-	return cfg, nil
+	// Apply validation rules using helper to eliminate duplication
+	return t.ApplyValidationRules(cfg, data)
 }
 
 // DefaultData returns default TemplateData for analytics template.

@@ -2,6 +2,7 @@ package templates
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/samber/lo"
 )
@@ -143,4 +144,27 @@ func (t *BaseTemplate) GetRenameRules() map[string]string {
 		"db":   "DB",
 		"otp":  "OTP",
 	}
+}
+
+// ApplyValidationRules applies emit options and safety rules to a config.
+// This eliminates the duplicated validation code across all templates.
+func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generated.TemplateData) (*config.SqlcConfig, error) {
+	// Apply emit options using type-safe helper function
+	if len(cfg.SQL) > 0 {
+		config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
+
+		// Convert rule types using the centralized transformer
+		transformer := validation.NewRuleTransformer()
+		rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
+		configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
+			return config.RuleConfig{
+				Name:    r.Name,
+				Rule:    r.Rule,
+				Message: r.Message,
+			}
+		})
+		cfg.SQL[0].Rules = configRules
+	}
+
+	return cfg, nil
 }
