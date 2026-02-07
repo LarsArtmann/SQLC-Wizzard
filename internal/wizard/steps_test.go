@@ -7,13 +7,13 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// stepTestCase represents a test case for step creation
+// stepTestCase represents a test case for step creation.
 type stepTestCase struct {
 	data        *generated.TemplateData
 	description string
 }
 
-// generateStepTests generates common step creation tests for the given step function
+// generateStepTests generates common step creation tests for the given step function.
 func generateStepTests(describeName string, stepFunc func(*generated.TemplateData) *huh.Input, testCases []stepTestCase) {
 	Describe(describeName, func() {
 		Context("with default template data", func() {
@@ -237,7 +237,7 @@ var _ = Describe("CreateDatabaseURLStep", func() {
 			data := &generated.TemplateData{
 				Database: generated.DatabaseConfig{
 					Engine: generated.DatabaseTypePostgreSQL,
-					URL:     "postgresql://localhost:5432/mydb",
+					URL:    "postgresql://localhost:5432/mydb",
 				},
 			}
 
@@ -252,7 +252,7 @@ var _ = Describe("CreateDatabaseURLStep", func() {
 			data := &generated.TemplateData{
 				Database: generated.DatabaseConfig{
 					Engine: generated.DatabaseTypeSQLite,
-					URL:     "./data.db",
+					URL:    "./data.db",
 				},
 			}
 
@@ -267,7 +267,7 @@ var _ = Describe("CreateDatabaseURLStep", func() {
 			data := &generated.TemplateData{
 				Database: generated.DatabaseConfig{
 					Engine: generated.DatabaseTypeMySQL,
-					URL:     "mysql://localhost:3306/mydb",
+					URL:    "mysql://localhost:3306/mydb",
 				},
 			}
 
@@ -304,7 +304,7 @@ var _ = Describe("CreateFeatureSteps", func() {
 			steps := CreateFeatureSteps(data)
 
 			Expect(steps).ToNot(BeNil())
-			Expect(len(steps)).To(BeNumerically(">", 0))
+			Expect(steps).ToNot(BeEmpty())
 		})
 
 		It("should create exactly 6 feature steps", func() {
@@ -312,7 +312,7 @@ var _ = Describe("CreateFeatureSteps", func() {
 
 			steps := CreateFeatureSteps(data)
 
-			Expect(len(steps)).To(Equal(6))
+			Expect(steps).To(HaveLen(6))
 		})
 	})
 
@@ -334,7 +334,7 @@ var _ = Describe("CreateFeatureSteps", func() {
 			steps := CreateFeatureSteps(data)
 
 			Expect(steps).ToNot(BeNil())
-			Expect(len(steps)).To(Equal(6))
+			Expect(steps).To(HaveLen(6))
 		})
 	})
 
@@ -356,7 +356,7 @@ var _ = Describe("CreateFeatureSteps", func() {
 			steps := CreateFeatureSteps(data)
 
 			Expect(steps).ToNot(BeNil())
-			Expect(len(steps)).To(Equal(6))
+			Expect(steps).To(HaveLen(6))
 		})
 	})
 

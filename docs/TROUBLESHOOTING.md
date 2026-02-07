@@ -613,9 +613,10 @@ What actually happens?
 - Database: PostgreSQL 15
 
 ## Logs
-
 ```
+
 Paste relevant log output here
+
 ```
 
 ---
@@ -649,3 +650,4 @@ Most issues can be resolved by:
 - [SQLC Docs](https://docs.sqlc.dev/)
 - [PostgreSQL Docs](https://www.postgresql.org/docs/)
 - [Go Database/SQL Package](https://pkg.go.dev/database/sql)
+```

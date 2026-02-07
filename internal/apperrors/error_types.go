@@ -163,7 +163,7 @@ func NewError(code ErrorCode, message string) *Error {
 	}
 }
 
-// inferSeverity attempts to assign severity based on error code patterns
+// inferSeverity attempts to assign severity based on error code patterns.
 func inferSeverity(code ErrorCode) ErrorSeverity {
 	// Critical system errors
 	if code == ErrorCodeTimeout || code == ErrorCodePermissionDenied {
@@ -186,7 +186,7 @@ func Newf(code ErrorCode, format string, args ...any) *Error {
 	// This prevents format string injection attacks
 	if !isValidFormatString(format) {
 		// Fall back to safe formatting if format string is invalid
-		return NewError(code, fmt.Sprintf("invalid format string: %s", format))
+		return NewError(code, "invalid format string: "+format)
 	}
 
 	message := fmt.Sprintf(format, args...)
@@ -194,7 +194,7 @@ func Newf(code ErrorCode, format string, args ...any) *Error {
 }
 
 // isValidFormatString checks if the format string is safe
-// It should only contain % verb specifiers that match the number of args
+// It should only contain % verb specifiers that match the number of args.
 func isValidFormatString(format string) bool {
 	// Check for obvious format string injection attempts
 	if len(format) == 0 {
@@ -206,7 +206,7 @@ func isValidFormatString(format string) bool {
 	// The real concern is %n (write to memory) and %% followed by unexpected patterns
 
 	// Block %n which could be used for injection
-	for i := 0; i < len(format)-1; i++ {
+	for i := range len(format) - 1 {
 		if format[i] == '%' && format[i+1] == 'n' {
 			return false
 		}

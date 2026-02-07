@@ -32,10 +32,10 @@ func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcCon
 
 	// Build config using shared builder
 	builder := &ConfigBuilder{
-		Data:             data,
-		DefaultName:      "library",
+		Data:               data,
+		DefaultName:        "library",
 		DefaultDatabaseURL: "${DATABASE_URL}",
-		Strict:           false,
+		Strict:             false,
 	}
 	cfg, _ := builder.Build()
 

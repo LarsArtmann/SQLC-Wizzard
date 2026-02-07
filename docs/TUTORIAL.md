@@ -186,6 +186,7 @@ tree internal/db/
 ```
 
 Output structure:
+
 ```
 internal/db/
 ├── db.go              # Database connection utilities

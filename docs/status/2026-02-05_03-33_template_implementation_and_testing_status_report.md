@@ -12,6 +12,7 @@
 Successfully implemented all 8 project templates with comprehensive test coverage. All templates are functional, properly registered, and generate valid sqlc configurations. Critical infrastructure improvements needed to reduce code duplication and improve maintainability.
 
 ### Key Achievements ✅
+
 - ✅ All 8 templates implemented and working
 - ✅ 100% test coverage for registry functionality
 - ✅ Comprehensive unit tests for all templates
@@ -19,6 +20,7 @@ Successfully implemented all 8 project templates with comprehensive test coverag
 - ✅ All tests passing (except validation tests with compilation error)
 
 ### Critical Issues 🔴
+
 - 🔴 40%+ code duplication across templates
 - 🔴 No shared template utilities/helpers
 - 🔴 template_validation_test.go has compilation error (needs fix)
@@ -33,18 +35,19 @@ Successfully implemented all 8 project templates with comprehensive test coverag
 
 #### Templates Implemented (8 Total)
 
-| Template | File | Purpose | Database Default | Key Features |
-|----------|------|---------|------------------|---------------|
-| **Hobby** | `hobby.go` | Personal projects | SQLite | Minimal dependencies, simple defaults |
-| **Microservice** | `microservice.go` | API services | PostgreSQL | Prepared queries, JSON tags, interfaces |
-| **Enterprise** | `enterprise.go` | Production apps | PostgreSQL | Strict validation, UUIDs, JSONB, arrays, full-text search |
-| **API First** | `api_first.go` | REST/GraphQL APIs | PostgreSQL | JSON support, camelCase naming, prepared queries |
-| **Analytics** | `analytics.go` | Data analytics | PostgreSQL | Arrays, full-text search, JSON support |
-| **Testing** | `testing.go` | Test fixtures | SQLite | Minimal features, testdb path |
-| **Multi Tenant** | `multi_tenant.go` | SaaS platforms | PostgreSQL | Tenant isolation, UUIDs, arrays, JSON support |
-| **Library** | `library.go` | Reusable libraries | PostgreSQL | Minimal dependencies, JSON tags, interfaces |
+| Template         | File              | Purpose            | Database Default | Key Features                                              |
+| ---------------- | ----------------- | ------------------ | ---------------- | --------------------------------------------------------- |
+| **Hobby**        | `hobby.go`        | Personal projects  | SQLite           | Minimal dependencies, simple defaults                     |
+| **Microservice** | `microservice.go` | API services       | PostgreSQL       | Prepared queries, JSON tags, interfaces                   |
+| **Enterprise**   | `enterprise.go`   | Production apps    | PostgreSQL       | Strict validation, UUIDs, JSONB, arrays, full-text search |
+| **API First**    | `api_first.go`    | REST/GraphQL APIs  | PostgreSQL       | JSON support, camelCase naming, prepared queries          |
+| **Analytics**    | `analytics.go`    | Data analytics     | PostgreSQL       | Arrays, full-text search, JSON support                    |
+| **Testing**      | `testing.go`      | Test fixtures      | SQLite           | Minimal features, testdb path                             |
+| **Multi Tenant** | `multi_tenant.go` | SaaS platforms     | PostgreSQL       | Tenant isolation, UUIDs, arrays, JSON support             |
+| **Library**      | `library.go`      | Reusable libraries | PostgreSQL       | Minimal dependencies, JSON tags, interfaces               |
 
 **Implementation Details:**
+
 - Each template implements `Template` interface:
   - `Name() string` - Template identifier
   - `Description() string` - Human-readable description
@@ -57,6 +60,7 @@ Successfully implemented all 8 project templates with comprehensive test coverag
 - Appropriate default settings for each use case
 
 **Files Modified:**
+
 ```
 internal/templates/
 ├── api_first.go         (NEW - 230 lines)
@@ -81,15 +85,16 @@ internal/templates/
 **File:** `internal/templates/types_test.go`
 **Tests Added:** 20 new test functions (5 templates × 4 tests each)
 
-| Template | Tests | Status | Coverage |
-|----------|--------|--------|----------|
-| API First | 4 | ✅ Passing | 100% |
-| Analytics | 4 | ✅ Passing | 100% |
-| Testing | 4 | ✅ Passing | 100% |
-| Multi Tenant | 4 | ✅ Passing | 100% |
-| Library | 4 | ✅ Passing | 100% |
+| Template     | Tests | Status     | Coverage |
+| ------------ | ----- | ---------- | -------- |
+| API First    | 4     | ✅ Passing | 100%     |
+| Analytics    | 4     | ✅ Passing | 100%     |
+| Testing      | 4     | ✅ Passing | 100%     |
+| Multi Tenant | 4     | ✅ Passing | 100%     |
+| Library      | 4     | ✅ Passing | 100%     |
 
 **Test Pattern Per Template:**
+
 ```go
 func Test[Template]Name(t *testing.T)              // Verifies name matches
 func Test[Template]Description(t *testing.T)        // Verifies description contains keywords
@@ -104,16 +109,16 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 **File:** `internal/templates/registry_test.go` (NEW)
 **Tests Added:** 9 comprehensive test functions
 
-| Test | Purpose | Status |
-|-------|---------|--------|
-| `TestNewRegistry` | Registry initialization | ✅ Passing |
-| `TestNewRegistry_RegistersAllTemplates` | Template registration | ✅ Passing |
-| `TestRegistry_Get_ExistingTemplate` | Template retrieval | ✅ Passing |
-| `TestRegistry_HasTemplate_Existing` | Template existence check | ✅ Passing |
-| `TestRegistry_HasTemplate_NonExisting` | Non-existing templates | ✅ Passing |
-| `TestRegistry_List` | Template listing | ✅ Passing |
-| `TestRegistry_Register_Duplicate` | Duplicate handling | ✅ Passing |
-| `TestGetTemplate_ConvenienceFunction` | GetTemplate() function | ✅ Passing |
+| Test                                    | Purpose                  | Status     |
+| --------------------------------------- | ------------------------ | ---------- |
+| `TestNewRegistry`                       | Registry initialization  | ✅ Passing |
+| `TestNewRegistry_RegistersAllTemplates` | Template registration    | ✅ Passing |
+| `TestRegistry_Get_ExistingTemplate`     | Template retrieval       | ✅ Passing |
+| `TestRegistry_HasTemplate_Existing`     | Template existence check | ✅ Passing |
+| `TestRegistry_HasTemplate_NonExisting`  | Non-existing templates   | ✅ Passing |
+| `TestRegistry_List`                     | Template listing         | ✅ Passing |
+| `TestRegistry_Register_Duplicate`       | Duplicate handling       | ✅ Passing |
+| `TestGetTemplate_ConvenienceFunction`   | GetTemplate() function   | ✅ Passing |
 | `TestListTemplates_ConvenienceFunction` | ListTemplates() function | ✅ Passing |
 
 **Registry Coverage:** 100%
@@ -123,18 +128,19 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 **File:** `internal/templates/template_validation_test.go` (NEW - INCOMPLETE)
 **Tests Planned:** 8 comprehensive validation test functions
 
-| Test | Purpose | Status |
-|-------|---------|--------|
-| `TestAllTemplates_GenerateValidConfig` | Valid config generation | ❌ Compilation Error |
-| `TestAllTemplates_GenerateWithCustomData` | Custom data handling | ❌ Compilation Error |
-| `TestTemplates_ProduceConsistentNaming` | Go naming conventions | ❌ Compilation Error |
-| `TestTemplates_SupportAllDatabaseTypes` | Database compatibility | ❌ Compilation Error |
-| `TestTemplates_GenerateValidYAML` | YAML structure validity | ❌ Compilation Error |
-| `TestTemplates_DatabaseURLsAreCorrect` | Default database URLs | ❌ Compilation Error |
-| `TestTemplates_ValidationConfigurations` | Validation settings | ❌ Compilation Error |
-| `TestTemplates_OutputPaths` | Output path settings | ❌ Compilation Error |
+| Test                                      | Purpose                 | Status               |
+| ----------------------------------------- | ----------------------- | -------------------- |
+| `TestAllTemplates_GenerateValidConfig`    | Valid config generation | ❌ Compilation Error |
+| `TestAllTemplates_GenerateWithCustomData` | Custom data handling    | ❌ Compilation Error |
+| `TestTemplates_ProduceConsistentNaming`   | Go naming conventions   | ❌ Compilation Error |
+| `TestTemplates_SupportAllDatabaseTypes`   | Database compatibility  | ❌ Compilation Error |
+| `TestTemplates_GenerateValidYAML`         | YAML structure validity | ❌ Compilation Error |
+| `TestTemplates_DatabaseURLsAreCorrect`    | Default database URLs   | ❌ Compilation Error |
+| `TestTemplates_ValidationConfigurations`  | Validation settings     | ❌ Compilation Error |
+| `TestTemplates_OutputPaths`               | Output path settings    | ❌ Compilation Error |
 
 **CRITICAL ISSUE:**
+
 - File has compilation error: `declared and not used: allTemplates`
 - Variable naming inconsistency between functions
 - Attempted sed fixes but failed silently
@@ -150,18 +156,21 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 #### 3.1 Wizard Test Suite Duplicate RunSpecs Error (FIXED) ✅
 
 **Problem:**
+
 - `internal/wizard/steps_test.go` had `TestWizardSteps()` calling `RunSpecs()`
 - Also had Ginkgo specs using `var _ = Describe(...)`
 - Ginkgo complained: "calling RunSpecs more than once"
 - Caused all wizard tests to fail
 
 **Solution:**
+
 - Removed `TestWizardSteps()` function
 - Removed `RunSpecs(t, "Wizard Steps Suite")` call
 - Removed unused `"testing"` import
 - Ginkgo specs now discovered automatically
 
 **Files Modified:**
+
 - `internal/wizard/steps_test.go` (7 deletions)
 
 **Result:** ✅ Wizard tests run cleanly without errors
@@ -169,15 +178,18 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 #### 3.2 Library Template Description Test (FIXED) ✅
 
 **Problem:**
+
 - Test asserted description contains "library" (lowercase)
 - Actual description contains "Library" (uppercase)
 - Test failed with assertion error
 
 **Solution:**
+
 - Changed assertion from "library" to "Library"
 - Test now passes
 
 **Files Modified:**
+
 - `internal/templates/types_test.go` (1 line changed)
 
 **Result:** ✅ All template tests passing
@@ -189,10 +201,12 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 ### 4. Code Refactoring (NOT STARTED) 🚫
 
 #### 4.1 Extract Common Type Overrides (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** HIGH - Reduces ~200 lines of duplication
 **Work Required:** 1 hour
-**Approach:** 
+**Approach:**
+
 - Create `internal/templates/overrides.go` with factory functions
 - Implement `GetPostgresOverrides(data) []Override`
 - Implement `GetMySQLOverrides(data) []Override`
@@ -200,20 +214,24 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 - Update all 8 templates to use factory functions
 
 #### 4.2 Create Rename Rules Registry (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** HIGH - Reduces ~150 lines of duplication
 **Work Required:** 1 hour
 **Approach:**
+
 - Create `internal/templates/rename_rules.go`
 - Implement `GetRenameRules(templateType) map[string]string`
 - Move all rename rules to shared location
 - Update templates to use registry
 
 #### 4.3 Extract Base Template Helpers (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** HIGH - Reduces ~400 lines of duplication
 **Work Required:** 2 hours
 **Approach:**
+
 - Create `internal/templates/helpers.go`
 - Implement shared helper functions
 - Extract common logic from all templates
@@ -224,12 +242,14 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 ### 5. Documentation (NOT STARTED) 🚫
 
 #### 5.1 Template Usage Guide (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** HIGH - Improves developer experience
 **Work Required:** 1 hour
 **Deliverable:** `docs/templates/usage.md`
 
 **Planned Content:**
+
 - When to use each template
 - Template feature comparison
 - Example usage code
@@ -237,12 +257,14 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 - Troubleshooting section
 
 #### 5.2 Template Comparison Matrix (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** MEDIUM - Visual comparison aid
 **Work Required:** 1 hour
 **Deliverable:** `docs/templates/comparison.md`
 
 **Planned Content:**
+
 - Features matrix per template
 - Database defaults per template
 - Validation settings per template
@@ -250,12 +272,14 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 - Use case recommendations
 
 #### 5.3 Template Examples (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** MEDIUM - Learning resources
 **Work Required:** 1 hour
 **Deliverable:** `docs/templates/examples/` directory
 
 **Planned Content:**
+
 - Example sqlc.yaml for each template
 - Example database schemas
 - Example usage code
@@ -266,18 +290,21 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 ### 6. Testing Enhancements (NOT STARTED) 🚫
 
 #### 6.1 Snapshot Tests (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** HIGH - Prevents regressions
 **Work Required:** 1 hour
 **Deliverable:** `internal/templates/snapshot_test.go`
 
 #### 6.2 Benchmark Tests (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** LOW - Performance monitoring
 **Work Required:** 1 hour
 **Deliverable:** `internal/templates/bench_test.go`
 
 #### 6.3 Integration Tests (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** MEDIUM - End-to-end validation
 **Work Required:** 2 hours
@@ -288,16 +315,19 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 ### 7. Quality Improvements (NOT STARTED) 🚫
 
 #### 7.1 Error Message Improvements (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** MEDIUM - Better debugging experience
 **Work Required:** 1 hour
 
 #### 7.2 Template Data Validation (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** MEDIUM - Fail fast on bad data
 **Work Required:** 1 hour
 
 #### 7.3 Regression Test Suite (NOT STARTED)
+
 **Status:** Planned but not implemented
 **Impact:** LOW - Prevent future breakage
 **Work Required:** 2 hours
@@ -308,17 +338,17 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 
 ### Current State
 
-| Metric | Value | Target | Status |
-|--------|-------|--------|--------|
-| Templates Implemented | 8/8 | 8 | ✅ |
-| Template Test Coverage | 100% | >90% | ✅ |
-| Registry Test Coverage | 100% | >95% | ✅ |
-| Code Duplication | ~40% | <20% | 🔴 Critical |
-| Lines of Template Code | ~1,440 | - | - |
-| Lines of Test Code | ~750 | - | - |
-| Documentation Coverage | 0% | >80% | 🔴 Missing |
-| Snapshot Tests | 0 | 8 templates | 🔴 Missing |
-| Integration Tests | 0 | Full workflow | 🔴 Missing |
+| Metric                 | Value  | Target        | Status      |
+| ---------------------- | ------ | ------------- | ----------- |
+| Templates Implemented  | 8/8    | 8             | ✅          |
+| Template Test Coverage | 100%   | >90%          | ✅          |
+| Registry Test Coverage | 100%   | >95%          | ✅          |
+| Code Duplication       | ~40%   | <20%          | 🔴 Critical |
+| Lines of Template Code | ~1,440 | -             | -           |
+| Lines of Test Code     | ~750   | -             | -           |
+| Documentation Coverage | 0%     | >80%          | 🔴 Missing  |
+| Snapshot Tests         | 0      | 8 templates   | 🔴 Missing  |
+| Integration Tests      | 0      | Full workflow | 🔴 Missing  |
 
 ### Technical Debt
 
@@ -471,7 +501,7 @@ A  internal/templates/template_validation_test.go (NEW - 350 lines - HAS COMPILA
 16. ⏳ **Implement template version compatibility** (3 hours)
 17. ⏳ **Create template customization guide** (2 hours)
 18. ⏳ **Add template linting tool** (3 hours)
-19-25. ⏳ **Long-term improvements** (15 hours total)
+    19-25. ⏳ **Long-term improvements** (15 hours total)
 
 ---
 
@@ -480,12 +510,14 @@ A  internal/templates/template_validation_test.go (NEW - 350 lines - HAS COMPILA
 ### Question: Which architectural pattern should I use for template code extraction?
 
 **Context:**
+
 - Currently have 8 templates with ~40% code duplication
 - All share identical method structures: `Generate()`, `buildGoGenConfig()`, `getSQLPackage()`, `getBuildTags()`, `getTypeOverrides()`, `getRenameRules()`
 - Need to extract shared code to improve maintainability
 - Three potential approaches, each with different trade-offs:
 
 #### Option 1: BaseTemplate (Inheritance)
+
 ```go
 type BaseTemplate struct {
     // Common fields and methods
@@ -506,12 +538,14 @@ func (t *HobbyTemplate) getSQLPackage(db DatabaseType) string {
 ```
 
 **Pros:**
+
 - Simple, easy to understand
 - Clear inheritance hierarchy
 - Easy to add new templates
 - Familiar OOP pattern
 
 **Cons:**
+
 - Tight coupling between templates
 - Hard to override individual methods without affecting all
 - Not very Go-idiomatic (Go favors composition)
@@ -519,6 +553,7 @@ func (t *HobbyTemplate) getSQLPackage(db DatabaseType) string {
 - Base template becomes god object over time
 
 #### Option 2: Helper Functions (Composition)
+
 ```go
 // internal/templates/helpers.go
 func BuildGoGenConfig(data TemplateData, sqlPackage string) *config.GoGenConfig {
@@ -536,6 +571,7 @@ func (t *HobbyTemplate) buildGoGenConfig(...) *config.GoGenConfig {
 ```
 
 **Pros:**
+
 - Very Go-idiomatic
 - Flexible - easy to mix and match functionality
 - Each template has clear composition
@@ -544,6 +580,7 @@ func (t *HobbyTemplate) buildGoGenConfig(...) *config.GoGenConfig {
 - Easy to add template-specific behavior
 
 **Cons:**
+
 - More verbose (many small function calls)
 - Harder to understand control flow
 - Requires careful API design
@@ -551,6 +588,7 @@ func (t *HobbyTemplate) buildGoGenConfig(...) *config.GoGenConfig {
 - Easy to create inconsistent combinations
 
 #### Option 3: TemplateBuilder (Builder Pattern)
+
 ```go
 type TemplateBuilder struct {
     config *SqlcConfig
@@ -578,6 +616,7 @@ func (b *TemplateBuilder) Build() *SqlcConfig {
 ```
 
 **Pros:**
+
 - Most flexible
 - Fluent, expressive API
 - Easy to build configs incrementally
@@ -585,6 +624,7 @@ func (b *TemplateBuilder) Build() *SqlcConfig {
 - Clear separation of concerns
 
 **Cons:**
+
 - More complex than current approach
 - Overkill for simple templates with defaults
 - Doesn't fit Template interface well (has Generate method, not Build)

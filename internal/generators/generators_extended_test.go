@@ -27,9 +27,9 @@ func TestGenerateConfig_Basic(t *testing.T) {
 	gen := generators.NewGenerator(tempDir)
 
 	// Test basic config generation
-	config := map[string]interface{}{
+	config := map[string]any{
 		"version": "2",
-		"sql": []map[string]interface{}{
+		"sql": []map[string]any{
 			{
 				"name":   "test",
 				"engine": "postgresql",
@@ -47,7 +47,7 @@ func TestGenerateConfig_Invalid(t *testing.T) {
 	gen := generators.NewGenerator(tempDir)
 
 	// Test invalid config
-	config := map[string]interface{}{
+	config := map[string]any{
 		"version": "invalid",
 	}
 
@@ -100,6 +100,6 @@ func TestValidatePaths_Relative(t *testing.T) {
 	queriesDir := "./sql/queries"
 
 	// Verify they are valid relative paths
-	assert.True(t, len(baseDir) > 0)
-	assert.True(t, len(queriesDir) > 0)
+	assert.Positive(t, len(baseDir))
+	assert.Positive(t, len(queriesDir))
 }

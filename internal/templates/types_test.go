@@ -129,7 +129,7 @@ func TestMicroserviceTemplate_Generate_Basic(t *testing.T) {
 	})
 }
 
-// HobbyTemplate Tests
+// HobbyTemplate Tests.
 func TestHobbyTemplate_Name(t *testing.T) {
 	template := &templates.HobbyTemplate{}
 	assert.Equal(t, "hobby", template.Name())
@@ -169,7 +169,7 @@ func TestHobbyTemplate_Generate_Basic(t *testing.T) {
 	})
 }
 
-// EnterpriseTemplate Tests
+// EnterpriseTemplate Tests.
 func TestEnterpriseTemplate_Name(t *testing.T) {
 	template := &templates.EnterpriseTemplate{}
 	assert.Equal(t, "enterprise", template.Name())
@@ -210,7 +210,7 @@ func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
 	})
 }
 
-// APIFirstTemplate Tests
+// APIFirstTemplate Tests.
 func TestAPIFirstTemplate_Name(t *testing.T) {
 	template := &templates.APIFirstTemplate{}
 	assert.Equal(t, "api-first", template.Name())
@@ -249,7 +249,7 @@ func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
 	})
 }
 
-// AnalyticsTemplate Tests
+// AnalyticsTemplate Tests.
 func TestAnalyticsTemplate_Name(t *testing.T) {
 	template := &templates.AnalyticsTemplate{}
 	assert.Equal(t, "analytics", template.Name())
@@ -290,7 +290,7 @@ func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
 	})
 }
 
-// TestingTemplate Tests
+// TestingTemplate Tests.
 func TestTestingTemplate_Name(t *testing.T) {
 	template := &templates.TestingTemplate{}
 	assert.Equal(t, "testing", template.Name())
@@ -331,7 +331,7 @@ func TestTestingTemplate_Generate_Basic(t *testing.T) {
 	})
 }
 
-// MultiTenantTemplate Tests
+// MultiTenantTemplate Tests.
 func TestMultiTenantTemplate_Name(t *testing.T) {
 	template := &templates.MultiTenantTemplate{}
 	assert.Equal(t, "multi-tenant", template.Name())
@@ -372,7 +372,7 @@ func TestMultiTenantTemplate_Generate_Basic(t *testing.T) {
 	})
 }
 
-// LibraryTemplate Tests
+// LibraryTemplate Tests.
 func TestLibraryTemplate_Name(t *testing.T) {
 	template := &templates.LibraryTemplate{}
 	assert.Equal(t, "library", template.Name())

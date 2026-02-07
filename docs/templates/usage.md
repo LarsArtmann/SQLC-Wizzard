@@ -12,16 +12,16 @@ SQLC-Wizard provides **8 pre-configured templates** optimized for different use 
 
 ## Quick Template Reference
 
-| Template | Best For | Database | Complexity | Features |
-|----------|-----------|-----------|------------|----------|
-| **Hobby** | Personal projects, small apps | SQLite | Simple, minimal dependencies |
-| **Microservice** | API services, REST/GraphQL | PostgreSQL | Prepared queries, JSON tags, interfaces |
-| **Enterprise** | Production systems, critical apps | PostgreSQL | Strict validation, UUIDs, JSONB, arrays, full-text |
-| **API First** | REST/GraphQL APIs (API-first design) | PostgreSQL | JSON support, camelCase naming, prepared queries |
-| **Analytics** | Data analytics, warehousing | PostgreSQL | Arrays, full-text search, JSON support |
-| **Testing** | Test fixtures, mock data | SQLite | Minimal features, testdb path |
-| **Multi Tenant** | SaaS platforms, multi-tenant apps | PostgreSQL | Tenant isolation, UUIDs, arrays, JSON support |
-| **Library** | Reusable Go libraries | PostgreSQL | Minimal dependencies, JSON tags, interfaces |
+| Template         | Best For                             | Database   | Complexity                                         | Features |
+| ---------------- | ------------------------------------ | ---------- | -------------------------------------------------- | -------- |
+| **Hobby**        | Personal projects, small apps        | SQLite     | Simple, minimal dependencies                       |
+| **Microservice** | API services, REST/GraphQL           | PostgreSQL | Prepared queries, JSON tags, interfaces            |
+| **Enterprise**   | Production systems, critical apps    | PostgreSQL | Strict validation, UUIDs, JSONB, arrays, full-text |
+| **API First**    | REST/GraphQL APIs (API-first design) | PostgreSQL | JSON support, camelCase naming, prepared queries   |
+| **Analytics**    | Data analytics, warehousing          | PostgreSQL | Arrays, full-text search, JSON support             |
+| **Testing**      | Test fixtures, mock data             | SQLite     | Minimal features, testdb path                      |
+| **Multi Tenant** | SaaS platforms, multi-tenant apps    | PostgreSQL | Tenant isolation, UUIDs, arrays, JSON support      |
+| **Library**      | Reusable Go libraries                | PostgreSQL | Minimal dependencies, JSON tags, interfaces        |
 
 ---
 
@@ -36,6 +36,7 @@ SQLC-Wizard provides **8 pre-configured templates** optimized for different use 
 **Database Default:** SQLite (file:dev.db)
 
 **Key Features:**
+
 - Minimal Go dependencies
 - Simple `database/sql` driver
 - No UUID, JSON, or array support
@@ -43,12 +44,14 @@ SQLC-Wizard provides **8 pre-configured templates** optimized for different use 
 - Easy to get started
 
 **When to Use:**
+
 - Building personal apps
 - Learning sqlc
 - Quick prototypes
 - Projects with simple data models
 
 **When NOT to Use:**
+
 - Production systems
 - Multi-user applications
 - Complex data relationships
@@ -78,6 +81,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `database/sql` package
 - No custom imports for UUID/JSON
 - Basic Go types (no UUID, no RawMessage)
@@ -94,6 +98,7 @@ sql:
 **Database Default:** PostgreSQL (pgx/v5)
 
 **Key Features:**
+
 - PostgreSQL with `pgx/v5` driver (high performance)
 - Prepared queries (security & performance)
 - JSON tag support (API responses)
@@ -102,6 +107,7 @@ sql:
 - Internal package structure (`internal/db`)
 
 **When to Use:**
+
 - Building REST APIs
 - Building GraphQL APIs
 - Microservice architecture
@@ -109,6 +115,7 @@ sql:
 - Production APIs
 
 **When NOT to Use:**
+
 - Analytics platforms (use Analytics template)
 - SaaS platforms (use Multi-Tenant template)
 - Simple single-file apps (use Hobby template)
@@ -148,6 +155,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `pgx/v5` package (high-performance PostgreSQL driver)
 - Prepared query methods (`Query(ctx, ...)`)
 - Interface generation (`Querier` interface)
@@ -166,17 +174,19 @@ sql:
 **Database Default:** PostgreSQL (pgx/v5)
 
 **Key Features:**
+
 - PostgreSQL with `pgx/v5` driver
 - UUID support (for primary keys)
 - JSONB support (for document storage)
 - Array support (for many-to-many relationships)
 - Full-text search support (for search)
 - Strict validation (fail-fast on issues)
-- All safety rules enabled (no SELECT *, no DROP TABLE, etc.)
+- All safety rules enabled (no SELECT \*, no DROP TABLE, etc.)
 - Interface generation
 - Internal package structure (`internal/db`)
 
 **When to Use:**
+
 - Production applications
 - Enterprise systems
 - Critical infrastructure
@@ -184,6 +194,7 @@ sql:
 - Compliance-heavy environments
 
 **When NOT to Use:**
+
 - Personal projects (use Hobby template)
 - Simple prototypes (use Hobby template)
 - Analytics platforms (use Analytics template)
@@ -223,7 +234,7 @@ sql:
             go_type: RawMessage
             go_import_path: encoding/json
           - db_type: _text
-            go_type: '[]string'
+            go_type: "[]string"
             nullable: true
         rename:
           id: ID
@@ -241,6 +252,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `pgx/v5` package (high-performance PostgreSQL driver)
 - UUID types for primary keys (`uuid.UUID`)
 - JSON types for document storage (`json.RawMessage`)
@@ -263,6 +275,7 @@ sql:
 **Database Default:** PostgreSQL (pgx/v5)
 
 **Key Features:**
+
 - PostgreSQL with `pgx/v5` driver
 - JSON tag support (essential for APIs)
 - CamelCase JSON field names (API standard)
@@ -272,6 +285,7 @@ sql:
 - Internal package structure (`internal/db`)
 
 **When to Use:**
+
 - Building REST APIs
 - Building GraphQL APIs
 - API-first development methodology
@@ -279,6 +293,7 @@ sql:
 - Projects needing camelCase field names
 
 **When NOT to Use:**
+
 - Analytics platforms (use Analytics template)
 - Multi-tenant SaaS (use Multi-Tenant template)
 - Hobby projects (use Hobby template)
@@ -317,7 +332,7 @@ sql:
             go_type: RawMessage
             go_import_path: encoding/json
           - db_type: _text
-            go_type: '[]string'
+            go_type: "[]string"
             nullable: true
         rename:
           id: ID
@@ -332,6 +347,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `pgx/v5` package
 - JSON tags with camelCase naming (`json:"fieldName"`)
 - Enum validation methods
@@ -351,6 +367,7 @@ sql:
 **Database Default:** PostgreSQL (pgx/v5)
 
 **Key Features:**
+
 - PostgreSQL with `pgx/v5` driver
 - Array support (for time-series data)
 - JSONB support (for document storage)
@@ -360,6 +377,7 @@ sql:
 - Internal package structure (`internal/analytics`)
 
 **When to Use:**
+
 - Data analytics platforms
 - Warehousing solutions
 - Reporting systems
@@ -368,6 +386,7 @@ sql:
 - Complex data relationships (arrays)
 
 **When NOT to Use:**
+
 - Simple CRUD apps (use Hobby/Microservice templates)
 - API services (use API First template)
 - Multi-tenant SaaS (use Multi-Tenant template)
@@ -400,7 +419,7 @@ sql:
             go_type: RawMessage
             go_import_path: encoding/json
           - db_type: _text
-            go_type: '[]string'
+            go_type: "[]string"
             nullable: true
           - db_type: tsvector
             go_type: string
@@ -416,6 +435,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `pgx/v5` package
 - Array types (`[]string`) for time-series data
 - JSONB types (`json.RawMessage`) for document storage
@@ -435,6 +455,7 @@ sql:
 **Database Default:** SQLite (file:testdata/test.db)
 
 **Key Features:**
+
 - Minimal Go dependencies
 - Simple `database/sql` driver
 - Test database paths (`testdata/test.db`)
@@ -443,6 +464,7 @@ sql:
 - Easy to set up and tear down
 
 **When to Use:**
+
 - Writing test fixtures
 - Creating mock data
 - Integration tests
@@ -450,6 +472,7 @@ sql:
 - Test-first development
 
 **When NOT to Use:**
+
 - Production systems (use Enterprise template)
 - API services (use Microservice template)
 - Multi-tenant SaaS (use Multi-Tenant template)
@@ -480,6 +503,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `database/sql` package
 - Test database paths (`testdata/`)
 - No advanced types or features
@@ -497,6 +521,7 @@ sql:
 **Database Default:** PostgreSQL (pgx/v5)
 
 **Key Features:**
+
 - PostgreSQL with `pgx/v5` driver
 - UUID support (for tenant IDs)
 - JSONB support (for tenant metadata)
@@ -506,6 +531,7 @@ sql:
 - Internal package structure (`internal/db`)
 
 **When to Use:**
+
 - SaaS platforms
 - Multi-tenant applications
 - B2B systems
@@ -513,6 +539,7 @@ sql:
 - User-per-organization models
 
 **When NOT to Use:**
+
 - Single-tenant apps (use Hobby/Microservice templates)
 - Analytics platforms (use Analytics template)
 - Hobby projects (use Hobby template)
@@ -549,7 +576,7 @@ sql:
             go_type: RawMessage
             go_import_path: encoding/json
           - db_type: _text
-            go_type: '[]string'
+            go_type: "[]string"
             nullable: true
         rename:
           id: ID
@@ -565,6 +592,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `pgx/v5` package
 - UUID types for tenant IDs (`uuid.UUID`)
 - JSONB types for tenant metadata (`json.RawMessage`)
@@ -585,6 +613,7 @@ sql:
 **Database Default:** PostgreSQL (pgx/v5)
 
 **Key Features:**
+
 - PostgreSQL with `pgx/v5` driver
 - JSON tag support (library consumers)
 - Interface generation (flexibility for library users)
@@ -593,6 +622,7 @@ sql:
 - Internal package structure (`internal/db`)
 
 **When to Use:**
+
 - Creating reusable Go libraries
 - Building SDKs
 - Developing shared packages
@@ -600,6 +630,7 @@ sql:
 - Projects requiring interface flexibility
 
 **When NOT to Use:**
+
 - Full applications (use Hobby/Microservice templates)
 - Production systems with strict requirements (use Enterprise template)
 - Multi-tenant SaaS (use Multi-Tenant template)
@@ -641,6 +672,7 @@ sql:
 ```
 
 **Go Generated Code Characteristics:**
+
 - Uses `pgx/v5` package
 - JSON tags for library consumers
 - Interface generation (library users can mock)
@@ -709,11 +741,13 @@ See [Template Comparison Matrix](./comparison.md) for detailed feature compariso
 All templates support customization through `TemplateData`:
 
 ### Changing Database
+
 ```go
 data.Database.Engine = templates.DatabaseTypeMySQL
 ```
 
 ### Enabling Features
+
 ```go
 data.Database.UseUUIDs = true
 data.Database.UseJSON = true
@@ -721,6 +755,7 @@ data.Database.UseArrays = true
 ```
 
 ### Adjusting Output Paths
+
 ```go
 data.Output.BaseDir = "custom/path"
 data.Output.QueriesDir = "custom/queries"
@@ -728,6 +763,7 @@ data.Output.SchemaDir = "custom/schema"
 ```
 
 ### Changing Package
+
 ```go
 data.Package.Name = "custompackage"
 data.Package.Path = "github.com/your/repo/custompackage"
@@ -740,6 +776,7 @@ See [Template Customization Guide](./customization.md) for more details.
 ## Common Patterns
 
 ### Pattern 1: Switching Databases
+
 All templates support PostgreSQL, MySQL, and SQLite. Switch databases by changing the engine type:
 
 ```go
@@ -750,6 +787,7 @@ data.Database.Engine = templates.DatabaseTypePostgreSQL
 ```
 
 ### Pattern 2: Mixing Templates
+
 You can start with one template and customize settings from another:
 
 ```go
@@ -765,11 +803,12 @@ data.Validation.StrictOrderBy = true
 ```
 
 ### Pattern 3: Environment-Specific Configuration
+
 Use environment variables for database URLs and sensitive data:
 
 ```yaml
 database:
-  uri: ${DATABASE_URL}  # Set from environment
+  uri: ${DATABASE_URL} # Set from environment
 ```
 
 ---

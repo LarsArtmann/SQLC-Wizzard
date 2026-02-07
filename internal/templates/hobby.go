@@ -27,16 +27,16 @@ func (t *HobbyTemplate) Description() string {
 
 // Generate creates a SqlcConfig from template data.
 func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
-	return t.BaseTemplate.GenerateWithDefaults(
+	return t.GenerateWithDefaults(
 		data,
-		"db",                          // packageName
-		"db",                          // packagePath
-		"db",                          // baseDir
-		"db/queries",                  // queriesDir
-		"db/schema",                   // schemaDir
-		"file:dev.db",                 // databaseURL
-		"hobby",                       // projectName
-		false,                         // strict
+		"db",          // packageName
+		"db",          // packagePath
+		"db",          // baseDir
+		"db/queries",  // queriesDir
+		"db/schema",   // schemaDir
+		"file:dev.db", // databaseURL
+		"hobby",       // projectName
+		false,         // strict
 	)
 }
 
@@ -97,4 +97,3 @@ func (t *HobbyTemplate) DefaultData() TemplateData {
 func (t *HobbyTemplate) RequiredFeatures() []string {
 	return []string{}
 }
-

@@ -27,10 +27,10 @@ func NewEnterpriseTemplate() *EnterpriseTemplate {
 			DbEngine:    "postgresql",
 
 			// Database features
-			UseManaged: true,
-			UseUUIDs:   true,
-			UseJSON:    true,
-			UseArrays:  true,
+			UseManaged:  true,
+			UseUUIDs:    true,
+			UseJSON:     true,
+			UseArrays:   true,
 			UseFullText: true,
 
 			// Emit options

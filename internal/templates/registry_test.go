@@ -49,7 +49,7 @@ func TestRegistry_Get_ExistingTemplate(t *testing.T) {
 	// Test each template type
 	testCases := []struct {
 		projectType string
-		name       string
+		name        string
 	}{
 		{"hobby", "HobbyTemplate"},
 		{"microservice", "MicroserviceTemplate"},

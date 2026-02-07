@@ -12,7 +12,7 @@ import (
 
 // TemplateTestHelper contains parameters for generic template tests using testify.
 type TemplateTestHelper struct {
-	Template            interface {
+	Template interface {
 		DefaultData() generated.TemplateData
 		Generate(data generated.TemplateData) (*config.SqlcConfig, error)
 	}

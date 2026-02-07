@@ -209,6 +209,7 @@ export DATABASE_URL="${DATABASE_SECRET}"
 If migrating from Hobby template:
 
 1. **Change database engine:**
+
 ```yaml
 # From
 database:
@@ -220,6 +221,7 @@ database:
 ```
 
 2. **Enable features:**
+
 ```yaml
 # Add JSON support
 data.Database.UseJSON = true
@@ -261,7 +263,7 @@ func TestHandler_GetUser(t *testing.T) {
 ### Docker Compose
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:

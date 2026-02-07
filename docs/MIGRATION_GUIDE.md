@@ -6,10 +6,10 @@ This guide helps you migrate between different versions of SQLC-Wizzard and upgr
 
 ## Version History
 
-| Version | Release Date | Major Changes | Migration Guide |
-| -------- | -------------- | -------------- | --------------- |
-| 1.0.0 | TBD | Initial release | N/A |
-| 0.9.0 | 2024-01 | Beta features | N/A |
+| Version | Release Date | Major Changes   | Migration Guide |
+| ------- | ------------ | --------------- | --------------- |
+| 1.0.0   | TBD          | Initial release | N/A             |
+| 0.9.0   | 2024-01      | Beta features   | N/A             |
 
 ## Upgrading from Previous Versions
 
@@ -45,6 +45,7 @@ git branch backup-before-upgrade
 **Step 2: Update sqlc.yaml**
 
 Old format (0.9.0):
+
 ```yaml
 version: "1"
 sql:
@@ -55,6 +56,7 @@ sql:
 ```
 
 New format (1.0.0):
+
 ```yaml
 version: "2"
 sql:
@@ -70,6 +72,7 @@ sql:
 ```
 
 **Changes to make:**
+
 - Change version from "1" to "2"
 - Add `./` prefix to paths (or use absolute paths)
 - Add `gen.go` section with configuration
@@ -77,6 +80,7 @@ sql:
 **Step 3: Reorganize File Structure**
 
 Old structure (0.9.0):
+
 ```
 my-sqlc-project/
 ├── sqlc.yaml
@@ -86,6 +90,7 @@ my-sqlc-project/
 ```
 
 New structure (1.0.0):
+
 ```
 my-sqlc-project/
 ├── sqlc.yaml
@@ -96,6 +101,7 @@ my-sqlc-project/
 ```
 
 **Migration:**
+
 ```bash
 # Create new structure
 mkdir -p sql/queries sql/schema
@@ -113,16 +119,19 @@ tree sql/
 If your Go code imports generated package:
 
 Old (0.9.0):
+
 ```go
 import "github.com/username/project/db"
 ```
 
 New (1.0.0):
+
 ```go
 import "github.com/username/project/internal/db"
 ```
 
 **Migration:**
+
 ```bash
 # Update imports throughout your codebase
 find . -name "*.go" -exec sed -i '' 's|project/db|project/internal/db|g' {} +
@@ -178,6 +187,7 @@ git branch -D backup-before-upgrade
 **Cause:** Using old SQLC version
 
 **Solution:**
+
 ```bash
 # Update SQLC to latest version
 go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
@@ -191,6 +201,7 @@ sqlc version
 **Cause:** Using relative paths without `./` prefix
 
 **Solution:**
+
 ```yaml
 # ❌ OLD - doesn't work
 queries: "sql/queries"
@@ -207,6 +218,7 @@ queries: "/path/to/project/sql/queries"
 **Cause:** Package path mismatch between go.mod and sqlc.yaml
 
 **Solution:**
+
 ```yaml
 # In sqlc.yaml
 gen:
@@ -222,6 +234,7 @@ module github.com/username/project  # Should include "internal/db" path
 **Cause:** File structure changed, code still references old paths
 
 **Solution:**
+
 ```bash
 # Find all files referencing old paths
 grep -r "queries/" --include="*.go"
@@ -319,6 +332,7 @@ sqlc generate
 Update your CI/CD configuration for new format:
 
 **GitHub Actions Example:**
+
 ```yaml
 name: Test SQLC Project
 
@@ -332,7 +346,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: '1.21'
+          go-version: "1.21"
       - name: Install SQLC
         run: go install github.com/sqlc-dev/sqlc/cmd/sqlc@latest
       - name: Generate code
@@ -344,16 +358,19 @@ jobs:
 ## Getting Help
 
 ### Documentation
+
 - [User Guide](./USER_GUIDE.md)
 - [Best Practices](./BEST_PRACTICES.md)
 - [Troubleshooting](./TROUBLESHOOTING.md)
 
 ### Community
+
 - [GitHub Issues](https://github.com/LarsArtmann/SQLC-Wizzard/issues)
 - [GitHub Discussions](https://github.com/LarsArtmann/SQLC-Wizzard/discussions)
 - [SQLC Documentation](https://docs.sqlc.dev/)
 
 ### Support
+
 If you encounter issues not covered in this guide:
 
 1. Check the [Troubleshooting](./TROUBLESHOOTING.md) guide
@@ -364,11 +381,13 @@ If you encounter issues not covered in this guide:
 ## Best Practices for Migration
 
 1. **Always Backup First**
+
    ```bash
    cp -r project project.backup
    ```
 
 2. **Test Migration on Copy**
+
    ```bash
    cp -r project project.test
    cd project.test

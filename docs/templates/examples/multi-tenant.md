@@ -36,7 +36,7 @@ sql:
             go_type: RawMessage
             go_import_path: encoding/json
           - db_type: _text
-            go_type: '[]string'
+            go_type: "[]string"
             nullable: true
         rename:
           id: ID
@@ -378,6 +378,7 @@ func main() {
 Use schema-per-tenant or shared schema with tenant_id:
 
 **Option A: Shared Schema** (current Multi-Tenant template)
+
 ```sql
 -- Single database with tenant_id foreign keys
 CREATE TABLE users (
@@ -388,6 +389,7 @@ CREATE TABLE users (
 ```
 
 **Option B: Schema-per-Tenant** (for high isolation)
+
 ```sql
 -- Each tenant gets its own schema
 CREATE SCHEMA tenant_1;

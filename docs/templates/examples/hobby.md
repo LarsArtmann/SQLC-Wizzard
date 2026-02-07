@@ -38,16 +38,19 @@ sql:
 ## Usage
 
 1. **Initialize project:**
+
 ```bash
 sqlc-wizard init --template hobby
 ```
 
 2. **Generate Go code:**
+
 ```bash
 sqlc generate
 ```
 
 3. **Use generated code:**
+
 ```go
 package main
 

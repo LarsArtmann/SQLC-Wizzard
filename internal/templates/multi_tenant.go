@@ -32,10 +32,10 @@ func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.Sql
 
 	// Build base config using shared builder
 	builder := &ConfigBuilder{
-		Data:             data,
-		DefaultName:      "multi-tenant",
+		Data:               data,
+		DefaultName:        "multi-tenant",
 		DefaultDatabaseURL: "${DATABASE_URL}",
-		Strict:           true,
+		Strict:             true,
 	}
 	cfg, _ := builder.Build()
 

@@ -48,25 +48,25 @@ func (t *AnalyticsTemplate) DefaultData() TemplateData {
 		"internal/analytics",
 		"${ANALYTICS_DATABASE_URL}",
 		"postgresql",
-		false,  // useManaged
-		false,  // useUUIDs
-		true,   // useJSON
-		true,   // useArrays
-		true,   // useFullText
+		false, // useManaged
+		false, // useUUIDs
+		true,  // useJSON
+		true,  // useArrays
+		true,  // useFullText
 		"internal/analytics",
-		true,   // strictFunctions
-		true,   // strictOrderBy
-		true,   // emitJSONTags
-		true,   // emitInterface
-		true,   // emitAllEnumValues
-		false,  // emitPreparedQueries
-		false,  // emitResultPointers
-		false,  // emitParamsPointers
-		false,  // emitEnumValidMethod
+		true,  // strictFunctions
+		true,  // strictOrderBy
+		true,  // emitJSONTags
+		true,  // emitInterface
+		true,  // emitAllEnumValues
+		false, // emitPreparedQueries
+		false, // emitResultPointers
+		false, // emitParamsPointers
+		false, // emitEnumValidMethod
 		"snake",
-		false,  // noSelectStar
-		false,  // requireWhere
-		true,   // requireLimit
+		false, // noSelectStar
+		false, // requireWhere
+		true,  // requireLimit
 	)
 }
 

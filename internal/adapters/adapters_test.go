@@ -210,7 +210,7 @@ func TestRealFileSystemAdapter_ReadWriteFile(t *testing.T) {
 	assert.Equal(t, testData, data)
 }
 
-// Extended CLI tests
+// Extended CLI tests.
 func TestRealCLIAdapter_Install(t *testing.T) {
 	adapter := adapters.NewRealCLIAdapter()
 	ctx := context.Background()

@@ -48,25 +48,25 @@ func (t *TestingTemplate) DefaultData() TemplateData {
 		"testdata/db",
 		"file:testdata/test.db",
 		"sqlite",
-		false,  // useManaged
-		false,  // useUUIDs
-		false,  // useJSON
-		false,  // useArrays
-		false,  // useFullText
+		false, // useManaged
+		false, // useUUIDs
+		false, // useJSON
+		false, // useArrays
+		false, // useFullText
 		"testdata/db",
-		false,  // strictFunctions
-		false,  // strictOrderBy
-		false,  // emitJSONTags
-		false,  // emitInterface
-		false,  // emitAllEnumValues
-		false,  // emitPreparedQueries
-		false,  // emitResultPointers
-		false,  // emitParamsPointers
-		false,  // emitEnumValidMethod
+		false, // strictFunctions
+		false, // strictOrderBy
+		false, // emitJSONTags
+		false, // emitInterface
+		false, // emitAllEnumValues
+		false, // emitPreparedQueries
+		false, // emitResultPointers
+		false, // emitParamsPointers
+		false, // emitEnumValidMethod
 		"snake",
-		false,  // noSelectStar
-		false,  // requireWhere
-		false,  // requireLimit
+		false, // noSelectStar
+		false, // requireWhere
+		false, // requireLimit
 	)
 }
 

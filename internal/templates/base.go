@@ -262,6 +262,7 @@ func (t *BaseTemplate) BuildDefaultData(
 		},
 	}
 }
+
 // GenerateWithDefaults is a template method that eliminates duplicated code in template implementations.
 // It applies template-specific defaults to the data and builds a SqlcConfig using the shared ConfigBuilder.
 // Template implementations should call this method with their specific values.
@@ -277,7 +278,7 @@ func (t *BaseTemplate) BuildDefaultData(
 //   - projectName: Default project name to use when data.ProjectName is empty
 //   - strict: Whether to enable strict mode settings
 //
-// Returns: A SqlcConfig configured with the provided values, or an error if building fails
+// Returns: A SqlcConfig configured with the provided values, or an error if building fails.
 func (t *BaseTemplate) GenerateWithDefaults(
 	data generated.TemplateData,
 	packageName string,

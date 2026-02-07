@@ -1,6 +1,7 @@
 package templates_test
 
 import (
+	"slices"
 	"testing"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
@@ -60,7 +61,7 @@ func TestAllTemplates_GenerateWithCustomData(t *testing.T) {
 
 	testCases := []struct {
 		templateName string
-		projectName string
+		projectName  string
 	}{
 		{"hobby", "my-hobby-app"},
 		{"microservice", "api-service"},
@@ -110,8 +111,8 @@ func TestTemplates_ProduceConsistentNaming(t *testing.T) {
 		goConfig := sqlConfig.Gen.Go
 
 		// Verify common fields follow Go conventions
-		assert.True(t, len(goConfig.Package) > 0, "Template %s should have valid package name", tmpl.Name())
-		assert.True(t, len(goConfig.Out) > 0, "Template %s should have valid output path", tmpl.Name())
+		assert.Positive(t, len(goConfig.Package), "Template %s should have valid package name", tmpl.Name())
+		assert.Positive(t, len(goConfig.Out), "Template %s should have valid output path", tmpl.Name())
 
 		// Verify no empty names
 		assert.NotEmpty(t, goConfig.Package, "Template %s should have non-empty package name", tmpl.Name())
@@ -182,7 +183,7 @@ func TestTemplates_DatabaseURLsAreCorrect(t *testing.T) {
 	// Verify that templates set appropriate database URLs for their default databases
 	testCases := []struct {
 		templateName string
-		expectedURL string
+		expectedURL  string
 	}{
 		{"hobby", "file:dev.db"},
 		{"microservice", "${DATABASE_URL}"},
@@ -230,14 +231,11 @@ func TestTemplates_ValidationConfigurations(t *testing.T) {
 
 		// Templates with strict_checks feature should have StrictFunctionChecks enabled
 		hasStrictChecks := false
-		for _, feature := range features {
-			if feature == "strict_checks" {
-				hasStrictChecks = true
-				assert.NotNil(t, sqlConfig.StrictFunctionChecks, "Template %s with strict_checks feature should have StrictFunctionChecks set", tmpl.Name())
-				if sqlConfig.StrictFunctionChecks != nil {
-					assert.True(t, *sqlConfig.StrictFunctionChecks, "Template %s with strict_checks should have StrictFunctionChecks = true", tmpl.Name())
-				}
-				break
+		if slices.Contains(features, "strict_checks") {
+			hasStrictChecks = true
+			assert.NotNil(t, sqlConfig.StrictFunctionChecks, "Template %s with strict_checks feature should have StrictFunctionChecks set", tmpl.Name())
+			if sqlConfig.StrictFunctionChecks != nil {
+				assert.True(t, *sqlConfig.StrictFunctionChecks, "Template %s with strict_checks should have StrictFunctionChecks = true", tmpl.Name())
 			}
 		}
 
@@ -271,9 +269,9 @@ func TestTemplates_OutputPaths(t *testing.T) {
 		// Verify output path matches template expectations
 		expectedPaths := map[string]string{
 			"hobby":        "db",
-			"microservice":  "internal/db",
-			"enterprise":    "internal/db",
-			"api-first":     "internal/db",
+			"microservice": "internal/db",
+			"enterprise":   "internal/db",
+			"api-first":    "internal/db",
 			"analytics":    "internal/analytics",
 			"testing":      "testdata/db",
 			"multi-tenant": "internal/db",

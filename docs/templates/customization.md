@@ -12,19 +12,19 @@ SQLC-Wizard templates provide sensible defaults, but you often need to customize
 
 ## Quick Reference
 
-| Customization | Files Affected | Complexity | Impact |
-|----------------|-----------------|------------|--------|
-| **Database Engine** | TemplateData | Low | High (SQLite → PostgreSQL → MySQL) |
-| **Database URL** | TemplateData | Low | Medium (dev → staging → production) |
-| **Package Name** | TemplateData | Low | Medium (db → mypackage) |
-| **Output Paths** | TemplateData | Low | Low (directory structure) |
-| **Features** | TemplateData | Medium | High (add UUID, JSON, arrays, etc.) |
-| **Code Generation Options** | TemplateData | Medium | High (prepared queries, interfaces, etc.) |
-| **Validation Rules** | TemplateData | High | High (strict vs flexible) |
-| **Type Overrides** | TemplateData | Medium | High (custom Go types for DB types) |
-| **Rename Rules** | TemplateData | Low | Medium (snake_case → camelCase) |
-| **Safety Rules** | TemplateData | High | High (allow/disallow queries) |
-| **Build Tags** | TemplateData | Low | Medium (postgres, pgx, etc.) |
+| Customization               | Files Affected | Complexity | Impact                                    |
+| --------------------------- | -------------- | ---------- | ----------------------------------------- |
+| **Database Engine**         | TemplateData   | Low        | High (SQLite → PostgreSQL → MySQL)        |
+| **Database URL**            | TemplateData   | Low        | Medium (dev → staging → production)       |
+| **Package Name**            | TemplateData   | Low        | Medium (db → mypackage)                   |
+| **Output Paths**            | TemplateData   | Low        | Low (directory structure)                 |
+| **Features**                | TemplateData   | Medium     | High (add UUID, JSON, arrays, etc.)       |
+| **Code Generation Options** | TemplateData   | Medium     | High (prepared queries, interfaces, etc.) |
+| **Validation Rules**        | TemplateData   | High       | High (strict vs flexible)                 |
+| **Type Overrides**          | TemplateData   | Medium     | High (custom Go types for DB types)       |
+| **Rename Rules**            | TemplateData   | Low        | Medium (snake_case → camelCase)           |
+| **Safety Rules**            | TemplateData   | High       | High (allow/disallow queries)             |
+| **Build Tags**              | TemplateData   | Low        | Medium (postgres, pgx, etc.)              |
 
 ---
 
@@ -35,11 +35,13 @@ SQLC-Wizard templates provide sensible defaults, but you often need to customize
 Change the database engine used by template.
 
 **Supported Engines:**
+
 - `postgres` (PostgreSQL)
 - `mysql` (MySQL)
 - `sqlite` (SQLite)
 
 **When to Customize:**
+
 - Switching from SQLite (Hobby/Testing) to PostgreSQL (Enterprise/API First)
 - Switching between PostgreSQL and MySQL
 - Changing database vendor
@@ -72,6 +74,7 @@ engine: mysql
 ```
 
 **Impact:**
+
 - ✅ Switches database driver
 - ✅ Updates type overrides (different per database)
 - ✅ Updates build tags (different per database)
@@ -79,6 +82,7 @@ engine: mysql
 - ❌ May require code changes (different SQL dialects)
 
 **Considerations:**
+
 1. **SQL Dialect:** PostgreSQL, MySQL, and SQLite have different SQL syntax
 2. **Type Support:** Not all features available in all databases (e.g., PostgreSQL arrays vs MySQL JSON)
 3. **Driver Compatibility:** Ensure your Go driver matches database
@@ -91,6 +95,7 @@ engine: mysql
 Change the database connection string.
 
 **When to Customize:**
+
 - Development vs. staging vs. production databases
 - Different environments (local, Docker, Kubernetes)
 - Using connection pooling (custom URL parameters)
@@ -148,6 +153,7 @@ database:
 ```
 
 **Impact:**
+
 - ✅ Switches database environment
 - ✅ Supports environment variables (recommended)
 - ✅ Supports connection pooling parameters
@@ -156,6 +162,7 @@ database:
 - ❌ Database must be accessible
 
 **Best Practices:**
+
 1. **Use Environment Variables** → Never hardcode database URLs in code
 2. **Use Connection Pooling** → Add pool parameters to URL
 3. **Use SSL in Production** → Always use `sslmode=require` or `sslmode=verify-full`
@@ -197,6 +204,7 @@ data.Database.URL = dbURL
 Change the Go package name for generated code.
 
 **When to Customize:**
+
 - Changing default `db` package to something more specific
 - Multiple databases in same project (avoid naming conflicts)
 - Library development (package name is public API)
@@ -229,12 +237,14 @@ gen:
 ```
 
 **Impact:**
+
 - ✅ Changes import path in generated code
 - ✅ Allows multiple databases in same project
 - ✅ Provides public API name for libraries
 - ❌ Requires updating import paths in application code
 
 **Best Practices:**
+
 1. **Use Descriptive Names** → `users`, `products`, `orders` not `models`, `db`, `data`
 2. **Avoid Conflicts** → Use unique package names if multiple databases
 3. **Use Nested Packages** → `myproject/db` is better than `mydb`
@@ -261,6 +271,7 @@ analyticsData.Database.URL = os.Getenv("ANALYTICS_DB_URL")
 Change where generated code is written.
 
 **When to Customize:**
+
 - Different directory structure (internal/db → db)
 - Shared output directory for multiple templates
 - Monorepo setup (packages/)
@@ -321,6 +332,7 @@ output:
 ```
 
 **Impact:**
+
 - ✅ Changes where generated code is written
 - ✅ Allows custom directory structures
 - ✅ Supports monorepos and multi-package projects
@@ -328,6 +340,7 @@ output:
 - ❌ May require adjusting Go module paths
 
 **Best Practices:**
+
 1. **Use Internal Structure** → `internal/db` is Go best practice
 2. **Separate Directories** → `internal/db` is better than flat `db`
 3. **Testing Paths** → Use `testdata/` for test fixtures
@@ -371,6 +384,7 @@ testdata/
 Enable or disable database features (UUID, JSON, arrays, full-text search, etc.).
 
 **Available Features:**
+
 - `UseUUIDs` - Use UUID types for primary keys
 - `UseJSON` - Use JSONB (PostgreSQL) or JSON (MySQL) types
 - `UseArrays` - Use array types (PostgreSQL)
@@ -378,6 +392,7 @@ Enable or disable database features (UUID, JSON, arrays, full-text search, etc.)
 - `UseManaged` - Use managed database mode
 
 **When to Customize:**
+
 - Adding UUID support for distributed systems
 - Adding JSON document storage
 - Adding array support for many-to-many relationships
@@ -436,6 +451,7 @@ database:
 ```
 
 **Impact:**
+
 - ✅ Enables advanced database features
 - ✅ Adds appropriate type overrides (UUID → uuid.UUID, etc.)
 - ✅ Enables use of complex data types
@@ -444,6 +460,7 @@ database:
 - ❌ May require schema changes (add UUID columns, etc.)
 
 **Best Practices:**
+
 1. **Enable Features in Pairs** → UUID + JSON, Arrays + Full-Text
 2. **Test Feature Combinations** → Not all combinations may work
 3. **Document Feature Usage** → Keep track of which features are enabled
@@ -498,6 +515,7 @@ ALTER TABLE users ADD COLUMN tags TEXT[];
 Customize how sqlc generates Go code.
 
 **Available Options:**
+
 - `EmitJSONTags` - Generate JSON tags on structs
 - `EmitPreparedQueries` - Generate prepared query methods
 - `EmitInterface` - Generate Querier interface
@@ -510,6 +528,7 @@ Customize how sqlc generates Go code.
 - `BuildTags` - Build tags for conditional compilation
 
 **When to Customize:**
+
 - Enabling/disabling JSON tags (API vs internal use)
 - Enabling/disabling prepared queries (performance vs flexibility)
 - Enabling/disabling interface generation (mocking vs simplicity)
@@ -596,6 +615,7 @@ gen:
 ```
 
 **Impact:**
+
 - ✅ Changes generated code structure
 - ✅ Enables/disables advanced features
 - ✅ Changes JSON serialization behavior
@@ -605,6 +625,7 @@ gen:
 - ❌ More complex generated code with all features enabled
 
 **Best Practices:**
+
 1. **APIs Use JSON Tags** → Enable `emit_json_tags` for public APIs
 2. **Internal Code May Not** → Disable if JSON not needed
 3. **Prepared Queries are Safer** → Always enable in production
@@ -645,6 +666,7 @@ data.Validation.EmitOptions.EmitParamsStructPointers = false
 Customize database validation settings.
 
 **Available Rules:**
+
 - `StrictFunctions` - Enable strict function validation
 - `StrictOrderBy` - Enable strict ORDER BY validation
 - `NoSelectStar` - Disallow `SELECT *`
@@ -654,6 +676,7 @@ Customize database validation settings.
 - `RequireLimit` - Require LIMIT clause
 
 **When to Customize:**
+
 - Enabling production-level validation (Enterprise template)
 - Enabling strict mode for data integrity
 - Enabling safety rules to prevent dangerous queries
@@ -704,6 +727,7 @@ rules:
 ```
 
 **Impact:**
+
 - ✅ Enforces data integrity
 - ✅ Prevents dangerous queries
 - ✅ Improves code quality
@@ -712,6 +736,7 @@ rules:
 - ❌ May break existing queries (development vs production)
 
 **Best Practices:**
+
 1. **Enable Strict Mode in Production** → All safety rules enabled
 2. **Disable Strict Mode in Development** → Allow any query for flexibility
 3. **Use Environment-Based Rules** → Different rules for dev vs prod
@@ -742,6 +767,7 @@ if os.Getenv("APP_ENV") == "development" {
 Customize how database types map to Go types.
 
 **When to Customize:**
+
 - Adding custom type for specific database type
 - Using different Go library for a type
 - Mapping JSON types to custom structs
@@ -811,6 +837,7 @@ overrides:
 ```
 
 **Impact:**
+
 - ✅ Allows custom Go types for database columns
 - ✅ Supports nullable behavior
 - ✅ Can use alternative Go libraries
@@ -820,6 +847,7 @@ overrides:
 - ❌ Less common patterns (harder to understand)
 
 **Best Practices:**
+
 1. **Use Standard Types** → Prefer `uuid.UUID`, `json.RawMessage` over custom
 2. **Document Custom Types** → Clearly document why you're overriding defaults
 3. **Test Custom Types** → Verify they work with sqlc and Go
@@ -833,6 +861,7 @@ overrides:
 Customize how database columns are renamed to Go fields.
 
 **When to Customize:**
+
 - Changing field naming convention (snake_case → camelCase)
 - Adding custom rename rules for specific columns
 - Adding common rename rules (id → ID, url → URL, etc.)
@@ -887,6 +916,7 @@ rename: {}
 ```
 
 **Impact:**
+
 - ✅ Changes Go field names
 - ✅ Enforces naming conventions
 - ✅ Prevents common naming issues (id → ID)
@@ -896,6 +926,7 @@ rename: {}
 - ❌ Requires consistency across project
 
 **Best Practices:**
+
 1. **Follow Go Naming** → Use `ID`, `URL`, `UUID` for common fields
 2. **API Naming** → Use camelCase for JSON fields
 3. **Internal Naming** → Use snake_case for internal code
@@ -909,6 +940,7 @@ rename: {}
 Customize Go build tags for conditional compilation.
 
 **When to Customize:**
+
 - Different builds for different databases
 - Conditional compilation of features
 - Testing with different build tags
@@ -953,6 +985,7 @@ build_tags: test,mysql
 ```
 
 **Impact:**
+
 - ✅ Enables conditional compilation
 - ✅ Allows different builds for different databases
 - ✅ Supports testing with build tags
@@ -962,6 +995,7 @@ build_tags: test,mysql
 - ❌ May require Makefile or build script
 
 **Best Practices:**
+
 1. **Use Database-Specific Tags** → `postgres`, `mysql`, `sqlite`
 2. **Use Standard Tags** → `test`, `prod`, `debug`
 3. **Document Build Tags** → Clearly document what each tag does
@@ -1028,12 +1062,14 @@ config, err := template.Generate(data)
 ```
 
 **Pros:**
+
 - ✅ Faster than starting from scratch
 - ✅ Uses proven defaults
 - ✅ Incremental customization
 - ✅ Easier to understand full configuration
 
 **Cons:**
+
 - ❌ May carry unnecessary features from base template
 - ❌ May need to disable some defaults
 - ❌ Less flexibility than building from scratch
@@ -1064,12 +1100,14 @@ config, err := templates.NewHobbyTemplate().Generate(data)
 ```
 
 **Pros:**
+
 - ✅ Mix and match features from different templates
 - ✅ Customize exactly what you need
 - ✅ Leverage multiple template patterns
 - ✅ Create hybrid solutions
 
 **Cons:**
+
 - ❌ Requires understanding of all templates
 - ❌ May create inconsistent combinations
 - ❌ Harder to debug if issues arise
@@ -1125,6 +1163,7 @@ sqlcConfig, err := config.Generate(config)
 ```
 
 **Pros:**
+
 - ✅ Separate configs for each environment
 - ✅ Production uses environment variables
 - ✅ Development is flexible
@@ -1132,6 +1171,7 @@ sqlcConfig, err := config.Generate(config)
 - ✅ Prevents production config in code
 
 **Cons:**
+
 - ❌ More complex code
 - ❌ Requires managing multiple configs
 - ❌ Easy to misconfigure wrong environment
@@ -1172,6 +1212,7 @@ if config.SQL[0].Gen.Go.SQLPackage != "pgx/v5" {
 ```
 
 **Pros:**
+
 - ✅ Test each change incrementally
 - ✅ Easier to debug if issues
 - ✅ Can stop at any point
@@ -1179,6 +1220,7 @@ if config.SQL[0].Gen.Go.SQLPackage != "pgx/v5" {
 - ✅ Learn template customization step-by-step
 
 **Cons:**
+
 - ❌ Takes longer to reach final config
 - ❌ More iterations to manage
 - ❌ May leave unfinished customization
@@ -1234,6 +1276,7 @@ func main() {
 ```
 
 **Pros:**
+
 - ✅ Reusable customization functions
 - ✅ Clear separation of concerns
 - ✅ Easy to compose features
@@ -1241,6 +1284,7 @@ func main() {
 - ✅ Mix and match as needed
 
 **Cons:**
+
 - ❌ More complex code
 - ❌ Requires understanding of all templates
 - ❌ May create inconsistent combinations
@@ -1342,11 +1386,13 @@ func TestCustomizationWorkflow(t *testing.T) {
 ### Issue: Customizations Not Applied
 
 **Symptoms:**
+
 - Generated config doesn't show customizations
 - Type overrides missing
 - Rename rules not working
 
 **Solutions:**
+
 1. **Check Template Implementation** → Ensure template uses custom data fields
 2. **Verify DefaultData()** → Check if template overrides your customizations
 3. **Check Generate() Method** → Ensure template uses `data` correctly
@@ -1370,11 +1416,13 @@ if err != nil {
 ### Issue: Generated Code Won't Compile
 
 **Symptoms:**
+
 - Import errors for custom types
 - Type mismatches
 - Missing imports
 
 **Solutions:**
+
 1. **Check Type Overrides** → Ensure Go types exist and are imported
 2. **Check Build Tags** → Ensure build tags are valid
 3. **Check Import Paths** → Ensure Go module paths are correct
@@ -1391,11 +1439,13 @@ go build -v ./...
 ### Issue: Database Connection Fails
 
 **Symptoms:**
+
 - Connection refused
 - Authentication failed
 - Database not found
 
 **Solutions:**
+
 1. **Check Database URL** → Ensure connection string is correct
 2. **Check Database Accessibility** → Ensure database is running and accessible
 3. **Check SSL Settings** → Use `sslmode=disable` for local, `sslmode=require` for production
@@ -1415,11 +1465,13 @@ docker ps | grep postgres  # Check if PostgreSQL is running
 ### Issue: Type Overrides Not Working
 
 **Symptoms:**
+
 - Generated code uses wrong types
 - Custom types not applied
 - Default types used instead
 
 **Solutions:**
+
 1. **Check DBType Matching** → Ensure database type matches (uuid vs UUID vs text vs TEXT)
 2. **Check Case Sensitivity** → Ensure DBType case matches exactly
 3. **Check Template Implementation** → Ensure template applies type overrides

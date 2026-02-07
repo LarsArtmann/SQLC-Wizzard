@@ -22,13 +22,13 @@ SQLC-Wizard is an interactive CLI tool for generating production-ready sqlc conf
 
 ## Recent Activity (Last 5 Commits)
 
-| Commit | Description | Impact |
-|--------|-------------|--------|
-| `7587618` | docs: add migration and advanced features guides | 📚 Documentation +
-| `eef7939` | docs: add complete hobby project example | 📚 Documentation ++
-| `3de35f9` | fix: resolve templates package compilation errors | 🔧 Build Fix |
-| `e3fb4c8` | fix(templates): add BaseTemplate and fix broken implementations | 🔧 Major Fix |
-| `4b7390a` | fix: resolve templates package test conflicts | 🔧 Test Fix |
+| Commit    | Description                                                     | Impact              |
+| --------- | --------------------------------------------------------------- | ------------------- |
+| `7587618` | docs: add migration and advanced features guides                | 📚 Documentation +  |
+| `eef7939` | docs: add complete hobby project example                        | 📚 Documentation ++ |
+| `3de35f9` | fix: resolve templates package compilation errors               | 🔧 Build Fix        |
+| `e3fb4c8` | fix(templates): add BaseTemplate and fix broken implementations | 🔧 Major Fix        |
+| `4b7390a` | fix: resolve templates package test conflicts                   | 🔧 Test Fix         |
 
 **Key Achievement:** Fixed critical compilation errors in templates package by creating `BaseTemplate` base struct with shared helper methods.
 
@@ -38,24 +38,24 @@ SQLC-Wizard is an interactive CLI tool for generating production-ready sqlc conf
 
 ### Core Application
 
-| Package | Lines | Tests | Coverage | Status |
-|---------|-------|-------|----------|--------|
-| `cmd/sqlc-wizard` | ~62 | 0 | 0.0% | ⚠️ No tests |
-| `internal/adapters` | ~800 | 15 | 23.0% | 🟡 Partial |
-| `internal/apperrors` | ~200 | 25 | 72.6% | ✅ Good |
-| `internal/commands` | ~900 | 20 | 38.1% | 🟡 Partial |
-| `internal/creators` | ~400 | 8 | 23.7% | 🟡 Partial |
-| `internal/domain` | ~600 | 45 | 83.6% | ✅ Excellent |
-| `internal/generators` | ~500 | 15 | 47.6% | 🟡 Partial |
-| `internal/integration` | ~200 | 0 | N/A | ⚠️ Skeleton |
-| `internal/migration` | ~400 | 30 | 96.0% | ✅ Excellent |
-| `internal/schema` | ~500 | 40 | 98.1% | ✅ Excellent |
-| `internal/templates` | ~1200 | 50 | 79.3% | ✅ Good |
-| `internal/testing` | ~100 | 0 | 0.0% | 📦 Helpers only |
-| `internal/utils` | ~300 | 35 | 92.9% | ✅ Excellent |
-| `internal/validation` | ~400 | 35 | 91.4% | ✅ Excellent |
-| `internal/wizard` | ~1500 | 5 | 0.2% | 🔴 CRITICAL |
-| `pkg/config` | ~800 | 25 | 61.0% | ✅ Good |
+| Package                | Lines | Tests | Coverage | Status          |
+| ---------------------- | ----- | ----- | -------- | --------------- |
+| `cmd/sqlc-wizard`      | ~62   | 0     | 0.0%     | ⚠️ No tests     |
+| `internal/adapters`    | ~800  | 15    | 23.0%    | 🟡 Partial      |
+| `internal/apperrors`   | ~200  | 25    | 72.6%    | ✅ Good         |
+| `internal/commands`    | ~900  | 20    | 38.1%    | 🟡 Partial      |
+| `internal/creators`    | ~400  | 8     | 23.7%    | 🟡 Partial      |
+| `internal/domain`      | ~600  | 45    | 83.6%    | ✅ Excellent    |
+| `internal/generators`  | ~500  | 15    | 47.6%    | 🟡 Partial      |
+| `internal/integration` | ~200  | 0     | N/A      | ⚠️ Skeleton     |
+| `internal/migration`   | ~400  | 30    | 96.0%    | ✅ Excellent    |
+| `internal/schema`      | ~500  | 40    | 98.1%    | ✅ Excellent    |
+| `internal/templates`   | ~1200 | 50    | 79.3%    | ✅ Good         |
+| `internal/testing`     | ~100  | 0     | 0.0%     | 📦 Helpers only |
+| `internal/utils`       | ~300  | 35    | 92.9%    | ✅ Excellent    |
+| `internal/validation`  | ~400  | 35    | 91.4%    | ✅ Excellent    |
+| `internal/wizard`      | ~1500 | 5     | 0.2%     | 🔴 CRITICAL     |
+| `pkg/config`           | ~800  | 25    | 61.0%    | ✅ Good         |
 
 **Total:** ~71 source files, ~50 test files
 
@@ -66,6 +66,7 @@ SQLC-Wizard is an interactive CLI tool for generating production-ready sqlc conf
 ### 🔴 CRITICAL (Block Release)
 
 #### 1. Wizard Test Coverage: 0.2%
+
 - **Impact:** Core user interface completely untested
 - **Evidence:** `go test ./internal/wizard/...` shows `[no tests to run]`
 - **Files Affected:** All wizard step files, wizard.go, ui_helper.go
@@ -73,16 +74,19 @@ SQLC-Wizard is an interactive CLI tool for generating production-ready sqlc conf
 - **Risk:** Cannot guarantee wizard works in production
 
 #### 2. No CI/CD Pipeline
+
 - **Impact:** Zero automated quality assurance
 - **Status:** No GitHub Actions, no automated testing on PRs
 - **Risk:** Manual testing only, high regression risk
 
 #### 3. No Release Automation
+
 - **Impact:** Cannot distribute to users
 - **Status:** No goreleaser, no GitHub releases, no binaries
 - **Risk:** Tool is unusable by anyone except developers
 
 #### 4. golangci-lint CRASH
+
 - **Impact:** Cannot run linting in CI
 - **Error:** `panic: file requires newer Go version go1.26 (application built with go1.25)`
 - **Status:** Blocks static analysis
@@ -133,34 +137,34 @@ SQLC-Wizard is an interactive CLI tool for generating production-ready sqlc conf
 
 ### ✅ Complete Features
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Interactive Wizard | ✅ Working | charmbracelet/huh TUI |
-| 8 Project Templates | ✅ Working | All compile and generate valid configs |
-| Config Validation | ✅ Working | Schema validation, rule checking |
-| Database Schema Analysis | ✅ Working | PostgreSQL, MySQL, SQLite support |
-| Migration System | ✅ Working | Config version migrations |
-| File Generation | ✅ Working | sqlc.yaml, queries, schema files |
-| Error Handling | ✅ Working | Structured errors throughout |
+| Feature                  | Status     | Notes                                  |
+| ------------------------ | ---------- | -------------------------------------- |
+| Interactive Wizard       | ✅ Working | charmbracelet/huh TUI                  |
+| 8 Project Templates      | ✅ Working | All compile and generate valid configs |
+| Config Validation        | ✅ Working | Schema validation, rule checking       |
+| Database Schema Analysis | ✅ Working | PostgreSQL, MySQL, SQLite support      |
+| Migration System         | ✅ Working | Config version migrations              |
+| File Generation          | ✅ Working | sqlc.yaml, queries, schema files       |
+| Error Handling           | ✅ Working | Structured errors throughout           |
 
 ### ⚠️ Partial Features
 
-| Feature | Status | Notes |
-|---------|--------|-------|
-| Examples | 2/8 | hobby only; missing enterprise, microservice, etc. |
-| Integration Tests | Skeleton | Framework exists, minimal coverage |
-| Documentation | 80% | Good but missing video tutorials |
+| Feature           | Status   | Notes                                              |
+| ----------------- | -------- | -------------------------------------------------- |
+| Examples          | 2/8      | hobby only; missing enterprise, microservice, etc. |
+| Integration Tests | Skeleton | Framework exists, minimal coverage                 |
+| Documentation     | 80%      | Good but missing video tutorials                   |
 
 ### ❌ Not Started
 
-| Feature | Priority | Notes |
-|---------|----------|-------|
-| CI/CD (GitHub Actions) | 🔴 Critical | Blocks all releases |
-| Release Automation | 🔴 Critical | No distribution mechanism |
-| Homebrew Formula | 🟡 High | Distribution channel |
-| Docker Image | 🟡 High | Container deployment |
-| Security Audit | 🟡 High | Enterprise requirement |
-| Performance Benchmarks | 🟡 High | Unknown at scale |
+| Feature                | Priority    | Notes                     |
+| ---------------------- | ----------- | ------------------------- |
+| CI/CD (GitHub Actions) | 🔴 Critical | Blocks all releases       |
+| Release Automation     | 🔴 Critical | No distribution mechanism |
+| Homebrew Formula       | 🟡 High     | Distribution channel      |
+| Docker Image           | 🟡 High     | Container deployment      |
+| Security Audit         | 🟡 High     | Enterprise requirement    |
+| Performance Benchmarks | 🟡 High     | Unknown at scale          |
 
 ---
 
@@ -190,25 +194,25 @@ Poor (<30%):       ████     4 packages (creators, wizard, cmd, testing)
 
 ### External Dependencies (Stable)
 
-| Package | Version | Purpose |
-|---------|---------|---------|
-| `github.com/spf13/cobra` | v1.8.1 | CLI framework |
-| `github.com/charmbracelet/huh` | v0.6.0 | Interactive TUI |
-| `github.com/charmbracelet/lipgloss` | v2.0.0 | Styling |
-| `github.com/samber/lo` | v1.47.0 | Functional utilities |
-| `github.com/samber/mo` | v1.13.0 | Optional types |
-| `gopkg.in/yaml.v3` | v3.0.1 | YAML parsing |
-| `github.com/onsi/ginkgo/v2` | v2.22.0 | BDD testing |
-| `github.com/onsi/gomega` | v1.36.0 | Test matchers |
+| Package                             | Version | Purpose              |
+| ----------------------------------- | ------- | -------------------- |
+| `github.com/spf13/cobra`            | v1.8.1  | CLI framework        |
+| `github.com/charmbracelet/huh`      | v0.6.0  | Interactive TUI      |
+| `github.com/charmbracelet/lipgloss` | v2.0.0  | Styling              |
+| `github.com/samber/lo`              | v1.47.0 | Functional utilities |
+| `github.com/samber/mo`              | v1.13.0 | Optional types       |
+| `gopkg.in/yaml.v3`                  | v3.0.1  | YAML parsing         |
+| `github.com/onsi/ginkgo/v2`         | v2.22.0 | BDD testing          |
+| `github.com/onsi/gomega`            | v1.36.0 | Test matchers        |
 
 ### Build Tools
 
-| Tool | Status | Notes |
-|------|--------|-------|
-| Go 1.24.7 | ✅ Required | Specified in go.mod |
-| golangci-lint | 🔴 Broken | Version mismatch panic |
-| just | ✅ Working | Build automation |
-| TypeSpec | ✅ Working | Type generation |
+| Tool          | Status      | Notes                  |
+| ------------- | ----------- | ---------------------- |
+| Go 1.24.7     | ✅ Required | Specified in go.mod    |
+| golangci-lint | 🔴 Broken   | Version mismatch panic |
+| just          | ✅ Working  | Build automation       |
+| TypeSpec      | ✅ Working  | Type generation        |
 
 ---
 
@@ -297,15 +301,15 @@ Poor (<30%):       ████     4 packages (creators, wizard, cmd, testing)
 
 ## Confidence Assessment
 
-| Component | Confidence | Reason |
-|-----------|------------|--------|
-| Templates | 90% | Well-tested (79%), all working |
-| Schema Analysis | 95% | Excellent coverage (98%) |
-| Migration | 95% | Excellent coverage (96%) |
-| Config | 75% | Good coverage (61%), needs edge cases |
-| Commands | 60% | Partial coverage (38%), manual testing works |
-| Wizard | 30% | Almost no tests (0.2%), core component! |
-| Integration | 40% | Skeleton only, minimal testing |
+| Component       | Confidence | Reason                                       |
+| --------------- | ---------- | -------------------------------------------- |
+| Templates       | 90%        | Well-tested (79%), all working               |
+| Schema Analysis | 95%        | Excellent coverage (98%)                     |
+| Migration       | 95%        | Excellent coverage (96%)                     |
+| Config          | 75%        | Good coverage (61%), needs edge cases        |
+| Commands        | 60%        | Partial coverage (38%), manual testing works |
+| Wizard          | 30%        | Almost no tests (0.2%), core component!      |
+| Integration     | 40%        | Skeleton only, minimal testing               |
 
 **Overall Confidence: 65%**
 
@@ -373,6 +377,7 @@ SQLC-Wizard has a **solid foundation** with excellent architecture and working f
 **Estimated time to v1.0: 2-3 weeks of focused work**
 
 **Primary focus:**
+
 1. Fix and add wizard tests
 2. Set up CI/CD pipeline
 3. Implement release automation
@@ -381,5 +386,5 @@ Once these are complete, the project will be ready for public release.
 
 ---
 
-*Report generated by Crush AI Assistant*  
-*Next report recommended: After wizard test coverage reaches 80%*
+_Report generated by Crush AI Assistant_  
+_Next report recommended: After wizard test coverage reaches 80%_

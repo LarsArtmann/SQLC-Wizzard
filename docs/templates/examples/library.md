@@ -547,7 +547,7 @@ export DATABASE_URL="postgres://user:password@localhost:5432/mylib"
 ### Docker Compose
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -594,8 +594,8 @@ module github.com/your/mylib
 go 1.21
 
 require (
-    github.com/google/uuid v1.5.0
-    github.com/jackc/pgx/v5 v5.5.0
+github.com/google/uuid v1.5.0
+github.com/jackc/pgx/v5 v5.5.0
 )
 ```
 
@@ -845,8 +845,8 @@ module github.com/your/mylib
 go 1.21
 
 require (
-    github.com/google/uuid v1.5.0
-    github.com/jackc/pgx/v5 v5.5.0
+github.com/google/uuid v1.5.0
+github.com/jackc/pgx/v5 v5.5.0
 )
 
 replace github.com/your/mylib => ../.
@@ -856,7 +856,7 @@ replace github.com/your/mylib => ../.
 
 Create `README.md`:
 
-```markdown
+````markdown
 # My Library
 
 A reusable Go library for user management.
@@ -875,6 +875,7 @@ A reusable Go library for user management.
 ```bash
 go get github.com/your/mylib
 ```
+````
 
 ## Quick Start
 
@@ -910,7 +911,8 @@ func main() {
 ## API Reference
 
 See [API.md](./api.md) for detailed documentation.
-```
+
+````
 
 ### 3. CI/CD
 
@@ -951,7 +953,7 @@ jobs:
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.out
-```
+````
 
 ### 4. Release
 
@@ -971,6 +973,7 @@ gh release create v1.0.0 --generate-notes
 ## Summary
 
 The Library template provides:
+
 - ✅ Minimal dependencies (broad compatibility)
 - ✅ High-performance PostgreSQL driver (pgx/v5)
 - ✅ JSON tags (library consumers)
@@ -982,6 +985,7 @@ The Library template provides:
 - ✅ Comprehensive examples and best practices
 
 Use this template when you need:
+
 - Reusable Go libraries
 - SDKs
 - Packages

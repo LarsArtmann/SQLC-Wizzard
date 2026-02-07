@@ -38,7 +38,7 @@ sql:
             go_type: RawMessage
             go_import_path: encoding/json
           - db_type: _text
-            go_type: '[]string'
+            go_type: "[]string"
             nullable: true
         rename:
           id: ID
@@ -290,7 +290,7 @@ export DATABASE_URL="postgres://user:password@pgbouncer:6432/enterprise?sslmode=
 ### Using Docker Compose
 
 ```yaml
-version: '3.8'
+version: "3.8"
 
 services:
   postgres:
@@ -359,33 +359,33 @@ spec:
         app: enterprise-app
     spec:
       containers:
-      - name: app
-        image: enterprise:latest
-        env:
-          - name: DATABASE_URL
-            valueFrom:
-              secretKeyRef:
-                name: database-credentials
-                key: username
-        resources:
-          limits:
-            memory: "512Mi"
-            cpu: "500m"
-          requests:
-            memory: "256Mi"
-            cpu: "250m"
-        livenessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 30
-          periodSeconds: 10
-        readinessProbe:
-          httpGet:
-            path: /health
-            port: 8080
-          initialDelaySeconds: 5
-          periodSeconds: 5
+        - name: app
+          image: enterprise:latest
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: database-credentials
+                  key: username
+          resources:
+            limits:
+              memory: "512Mi"
+              cpu: "500m"
+            requests:
+              memory: "256Mi"
+              cpu: "250m"
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 30
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
       restartPolicy: Always
 ```
 
@@ -394,6 +394,7 @@ spec:
 ### From Hobby to Enterprise
 
 1. **Change database engine:**
+
 ```yaml
 # From
 database:
@@ -405,6 +406,7 @@ database:
 ```
 
 2. **Enable ALL enterprise features:**
+
 ```yaml
 # UUID support
 data.Database.UseUUIDs = true
@@ -420,6 +422,7 @@ data.Database.UseFullText = true
 ```
 
 3. **Enable strict validation:**
+
 ```yaml
 # Strict function checks
 data.Validation.StrictFunctions = true
@@ -438,6 +441,7 @@ data.Validation.SafetyRules.RequireLimit = true
 ### From Microservice to Enterprise
 
 1. **Add missing features:**
+
 ```yaml
 # Add arrays
 data.Database.UseArrays = true
@@ -447,12 +451,14 @@ data.Database.UseFullText = true
 ```
 
 2. **Enable strict validation:**
+
 ```yaml
 data.Validation.StrictFunctions = true
 data.Validation.StrictOrderBy = true
 ```
 
 3. **Enable all safety rules:**
+
 ```yaml
 data.Validation.SafetyRules.NoSelectStar = true
 # etc...
@@ -858,8 +864,8 @@ version: "2"
 sql:
   - engine: postgresql
     database:
-      uri: ${DATABASE_URL}  # Production database URL
-      managed: true  # Enable managed mode
+      uri: ${DATABASE_URL} # Production database URL
+      managed: true # Enable managed mode
     strict_function_checks: true
     strict_order_by: true
     gen:
@@ -917,6 +923,7 @@ COMMIT;
 ## Summary
 
 The Enterprise template provides:
+
 - ✅ Production-ready configuration
 - ✅ ALL features enabled (UUID, JSONB, Arrays, Full-Text)
 - ✅ Strict validation and all safety rules
@@ -925,6 +932,7 @@ The Enterprise template provides:
 - ✅ Best practices for production systems
 
 Use this template when you need:
+
 - Enterprise-grade data integrity
 - Comprehensive feature set
 - Strict validation rules

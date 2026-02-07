@@ -273,30 +273,30 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			Expect(configRules[0].Message).To(ContainSubstring("explicit column names"))
 		})
 
-	It("should transform WhereRequirement.RequiresOnDestructive() correctly", func() {
-		rules := createBaseTypeSafeSafetyRules()
-		rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
+		It("should transform WhereRequirement.RequiresOnDestructive() correctly", func() {
+			rules := createBaseTypeSafeSafetyRules()
+			rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
 
-		configRules := transformer.TransformTypeSafeSafetyRules(rules)
+			configRules := transformer.TransformTypeSafeSafetyRules(rules)
 
-		Expect(configRules).To(HaveLen(1))
-		Expect(configRules[0].Name).To(Equal("require-where"))
-		Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
-	})
+			Expect(configRules).To(HaveLen(1))
+			Expect(configRules[0].Name).To(Equal("require-where"))
+			Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
+		})
 
-	It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
-		rules := createBaseTypeSafeSafetyRules()
-		rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
+		It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
+			rules := createBaseTypeSafeSafetyRules()
+			rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
 
-		expectSingleRule(transformer, rules, "require-limit", "query.type == 'SELECT' && !query.hasLimitClause()")
-	})
+			expectSingleRule(transformer, rules, "require-limit", "query.type == 'SELECT' && !query.hasLimitClause()")
+		})
 
-	It("should transform MaxRowsWithoutLimit correctly", func() {
-		rules := createBaseTypeSafeSafetyRules()
-		rules.SafetyRules.MaxRowsWithoutLimit = 100
+		It("should transform MaxRowsWithoutLimit correctly", func() {
+			rules := createBaseTypeSafeSafetyRules()
+			rules.SafetyRules.MaxRowsWithoutLimit = 100
 
-		expectSingleRule(transformer, rules, "max-rows-without-limit", "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)")
-	})
+			expectSingleRule(transformer, rules, "max-rows-without-limit", "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)")
+		})
 	})
 
 	Context("Transformer Parity Tests", func() {

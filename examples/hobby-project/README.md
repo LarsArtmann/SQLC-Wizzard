@@ -76,6 +76,7 @@ tree internal/db/
 ```
 
 Expected output:
+
 ```
 internal/db/
 ├── db.go              # Database connection utilities
@@ -232,11 +233,11 @@ err := queries.DeleteUser(ctx, "user-123")
 
 This example works with multiple databases:
 
-| Database | SQL Package | Notes |
-| -------- | ----------- | ----- |
-| SQLite | database/sql | No external database required |
-| PostgreSQL | github.com/lib/pq | Requires PostgreSQL server |
-| MySQL | github.com/go-sql-driver/mysql | Requires MySQL server |
+| Database   | SQL Package                    | Notes                         |
+| ---------- | ------------------------------ | ----------------------------- |
+| SQLite     | database/sql                   | No external database required |
+| PostgreSQL | github.com/lib/pq              | Requires PostgreSQL server    |
+| MySQL      | github.com/go-sql-driver/mysql | Requires MySQL server         |
 
 ## Testing
 

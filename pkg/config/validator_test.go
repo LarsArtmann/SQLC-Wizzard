@@ -36,7 +36,8 @@ func createBasicSqlcConfig(engine string) *SqlcConfig {
 // Helper function to add test entries (errors or warnings) and validate them.
 // This eliminates duplicate validation code patterns across tests.
 func validateTestEntries(result *ValidationResult, entryType, field1, message1, field2, message2 string, isValid bool) {
-	if entryType == "error" {
+	switch entryType {
+	case "error":
 		result.AddError(field1, message1)
 		result.AddError(field2, message2)
 		Expect(result.Errors).To(HaveLen(2))
@@ -45,7 +46,7 @@ func validateTestEntries(result *ValidationResult, entryType, field1, message1, 
 		Expect(result.Errors[1].Field).To(Equal(field2))
 		Expect(result.Errors[1].Message).To(Equal(message2))
 		Expect(result.IsValid()).To(Equal(isValid))
-	} else if entryType == "warning" {
+	case "warning":
 		result.AddWarning(field1, message1)
 		result.AddWarning(field2, message2)
 		Expect(result.Warnings).To(HaveLen(2))

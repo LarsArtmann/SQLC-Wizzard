@@ -63,7 +63,7 @@ func (t *ConfiguredTemplate) Generate(data generated.TemplateData) (*config.Sqlc
 		defaultProjectName = "project"
 	}
 	strictMode := t.StrictMode
-	
+
 	packagePath := t.PackagePath
 	if packagePath == "" {
 		packagePath = "internal/db"
@@ -72,8 +72,8 @@ func (t *ConfiguredTemplate) Generate(data generated.TemplateData) (*config.Sqlc
 	if baseOutput == "" {
 		baseOutput = "internal/db"
 	}
-	
-	return t.BaseTemplate.GenerateWithDefaults(
+
+	return t.GenerateWithDefaults(
 		data,
 		defaultPackageName,
 		packagePath,
@@ -105,7 +105,7 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 	if baseOutput == "" {
 		baseOutput = "internal/db"
 	}
-	
+
 	return t.BuildDefaultData(
 		projectType,
 		dbEngine,

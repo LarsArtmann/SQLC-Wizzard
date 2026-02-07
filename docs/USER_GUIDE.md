@@ -108,7 +108,7 @@ The wizard will guide you through:
 - Project name and package configuration
 - Output directories (code, queries, schema)
 - Code generation options (interfaces, JSON tags, etc.)
-- Safety rules (no SELECT *, require WHERE, etc.)
+- Safety rules (no SELECT \*, require WHERE, etc.)
 - Database features (UUIDs, JSON, arrays, etc.)
 
 ### Step 4: Review and Generate
@@ -165,16 +165,16 @@ sql:
 
 Each template has optimized defaults:
 
-| Template | Database | Code Gen | Safety | Use Case |
-| --------- | -------- | --------- | ------ | --------- |
-| Hobby | SQLite | Basic | Relaxed | Side projects, MVPs |
-| Microservice | PostgreSQL | Advanced | Standard | Containerized services |
-| Enterprise | Multi-DB | Full | Strict | Production systems |
-| API-First | PostgreSQL | JSON-optimized | Standard | REST APIs |
-| Analytics | PostgreSQL | Read-optimized | Relaxed | Data warehouses |
-| Testing | SQLite | Isolated | Relaxed | Test suites |
-| Multi-Tenant | PostgreSQL | Advanced | Strict | SaaS platforms |
-| Library | Any | Minimal | Standard | Shared libraries |
+| Template     | Database   | Code Gen       | Safety   | Use Case               |
+| ------------ | ---------- | -------------- | -------- | ---------------------- |
+| Hobby        | SQLite     | Basic          | Relaxed  | Side projects, MVPs    |
+| Microservice | PostgreSQL | Advanced       | Standard | Containerized services |
+| Enterprise   | Multi-DB   | Full           | Strict   | Production systems     |
+| API-First    | PostgreSQL | JSON-optimized | Standard | REST APIs              |
+| Analytics    | PostgreSQL | Read-optimized | Relaxed  | Data warehouses        |
+| Testing      | SQLite     | Isolated       | Relaxed  | Test suites            |
+| Multi-Tenant | PostgreSQL | Advanced       | Strict   | SaaS platforms         |
+| Library      | Any        | Minimal        | Standard | Shared libraries       |
 
 ## Advanced Features
 
@@ -200,7 +200,7 @@ type DBTX interface {
 
 Enforce SQL best practices:
 
-- **No SELECT *** - Prevent fetching all columns
+- **No SELECT \*** - Prevent fetching all columns
 - **Require WHERE** - Ensure filtered queries
 - **Require LIMIT** - Prevent unlimited result sets
 - **Custom CEL Rules** - Add your own validation
@@ -235,6 +235,7 @@ func (dt DatabaseType) IsValid() bool {
 #### Issue: "sqlc not found"
 
 **Solution:**
+
 ```bash
 # Check if sqlc is installed
 which sqlc
@@ -250,6 +251,7 @@ sqlc version
 
 **Solution:**
 Ensure your Go module path matches your project:
+
 ```bash
 go mod init github.com/your-username/your-repo
 ```
@@ -257,6 +259,7 @@ go mod init github.com/your-username/your-repo
 #### Issue: "Database connection failed"
 
 **Solution:**
+
 ```bash
 # Check database is running
 psql -U postgres -c "SELECT 1"
@@ -269,6 +272,7 @@ postgresql://user:password@localhost:5432/dbname?sslmode=disable
 
 **Solution:**
 Ensure your query files follow naming conventions:
+
 ```sql
 -- File: sql/queries/users.sql
 -- name: GetUser :one

@@ -30,7 +30,7 @@ sql:
             go_type: RawMessage
             go_import_path: encoding/json
           - db_type: _text
-            go_type: '[]string'
+            go_type: "[]string"
             nullable: true
           - db_type: tsvector
             go_type: string

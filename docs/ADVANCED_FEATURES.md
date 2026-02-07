@@ -26,15 +26,15 @@ SQLC generates Go code based on your SQL queries. You can customize this generat
 ```yaml
 gen:
   go:
-    package: "db"              # Go package name
-    out: "./internal/db"         # Output directory
-    sql_package: "database/sql"   # SQL driver package
-    emit_interface: true          # Generate interface
-    emit_json_tags: true         # Add JSON tags
-    emit_prepared_queries: true   # Use prepared statements
-    emit_empty_slices: false      # Handle NULL arrays
-    emit_enum_valid_method: true  # Generate validation method
-    emit_all_enum_values: true   # Include all enum values
+    package: "db" # Go package name
+    out: "./internal/db" # Output directory
+    sql_package: "database/sql" # SQL driver package
+    emit_interface: true # Generate interface
+    emit_json_tags: true # Add JSON tags
+    emit_prepared_queries: true # Use prepared statements
+    emit_empty_slices: false # Handle NULL arrays
+    emit_enum_valid_method: true # Generate validation method
+    emit_all_enum_values: true # Include all enum values
 ```
 
 ### Custom Type Overrides
@@ -631,6 +631,7 @@ CREATE TABLE users (
 ### Issue: "Generated code doesn't compile"
 
 **Solutions:**
+
 - Check type overrides match Go syntax
 - Verify import paths are correct
 - Ensure `go.mod` has required dependencies
@@ -638,6 +639,7 @@ CREATE TABLE users (
 ### Issue: "Validation rules not being applied"
 
 **Solutions:**
+
 - Check rule syntax is correct
 - Verify rules in `sqlc.yaml`
 - Run `sqlc vet --verbose` to debug
@@ -645,6 +647,7 @@ CREATE TABLE users (
 ### Issue: "Performance is poor"
 
 **Solutions:**
+
 - Add indexes to frequently queried columns
 - Use prepared queries
 - Check query execution plan

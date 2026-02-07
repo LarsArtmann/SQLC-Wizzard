@@ -6,15 +6,15 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 
 ## Quick Comparison Table
 
-| Feature | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
-|----------|-------|-------------|------------|-----------|----------|--------|-------------|--------|
-| **Complexity** | Simple | Medium | High | Medium | Medium | Medium | Medium | Medium |
-| **Database** | SQLite | PostgreSQL | PostgreSQL | PostgreSQL | PostgreSQL | PostgreSQL | PostgreSQL |
-| **SQL Driver** | database/sql | pgx/v5 | pgx/v5 | pgx/v5 | pgx/v5 | pgx/v5 | pgx/v5 |
-| **Output Path** | db | internal/db | internal/db | internal/db | internal/analytics | testdata/db | internal/db | internal/db |
-| **Query Path** | db/queries | internal/db/queries | internal/db/queries | internal/db/queries | internal/analytics/queries | testdata/db/queries | internal/db/queries |
-| **Schema Path** | db/schema | internal/db/schema | internal/db/schema | internal/db/schema | internal/analytics/schema | testdata/db/schema | internal/db/schema | internal/db/schema |
-| **Default DB URL** | file:dev.db | ${DATABASE_URL} | ${DATABASE_URL} | ${DATABASE_URL} | ${ANALYTICS_DATABASE_URL} | file:testdata/test.db | ${DATABASE_URL} | ${DATABASE_URL} |
+| Feature            | Hobby        | Microservice        | Enterprise          | API First           | Analytics                  | Testing               | Multi Tenant        | Library            |
+| ------------------ | ------------ | ------------------- | ------------------- | ------------------- | -------------------------- | --------------------- | ------------------- | ------------------ |
+| **Complexity**     | Simple       | Medium              | High                | Medium              | Medium                     | Medium                | Medium              | Medium             |
+| **Database**       | SQLite       | PostgreSQL          | PostgreSQL          | PostgreSQL          | PostgreSQL                 | PostgreSQL            | PostgreSQL          |
+| **SQL Driver**     | database/sql | pgx/v5              | pgx/v5              | pgx/v5              | pgx/v5                     | pgx/v5                | pgx/v5              |
+| **Output Path**    | db           | internal/db         | internal/db         | internal/db         | internal/analytics         | testdata/db           | internal/db         | internal/db        |
+| **Query Path**     | db/queries   | internal/db/queries | internal/db/queries | internal/db/queries | internal/analytics/queries | testdata/db/queries   | internal/db/queries |
+| **Schema Path**    | db/schema    | internal/db/schema  | internal/db/schema  | internal/db/schema  | internal/analytics/schema  | testdata/db/schema    | internal/db/schema  | internal/db/schema |
+| **Default DB URL** | file:dev.db  | ${DATABASE_URL}     | ${DATABASE_URL}     | ${DATABASE_URL}     | ${ANALYTICS_DATABASE_URL}  | file:testdata/test.db | ${DATABASE_URL}     | ${DATABASE_URL}    |
 
 ---
 
@@ -22,70 +22,70 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 
 ### Core Features
 
-| Feature | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
-|----------|-------|-------------|------------|-----------|----------|--------|-------------|--------|
-| **UUID Support** | ❌ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| **JSON Support** | ❌ | ✅ | ✅ | ✅ | ❌ | ✅ | ✅ |
-| **Array Support** | ❌ | ❌ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| **Full-Text Search** | ❌ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ |
+| Feature              | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
+| -------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
+| **UUID Support**     | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |
+| **JSON Support**     | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ✅           |
+| **Array Support**    | ❌    | ❌           | ✅         | ✅        | ❌        | ✅      | ❌           |
+| **Full-Text Search** | ❌    | ❌           | ✅         | ❌        | ✅        | ❌      | ❌           |
 
 ### Code Generation Options
 
-| Option | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
-|---------|-------|-------------|------------|-----------|----------|--------|-------------|--------|
-| **Emit JSON Tags** | ❌ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Prepared Queries** | ❌ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| **Interface Generation** | ❌ | ✅ | ✅ | ✅ | ✅ | ❌ | ✅ |
-| **Empty Slices** | ✅ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Result Struct Pointers** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Params Struct Pointers** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Enum Validation** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ |
-| **All Enum Values** | ❌ | ❌ | ❌ | ✅ | ❌ | ❌ | ✅ |
-| **JSON Tags Case Style** | snake | camel | camel | camel | snake | snake | camel | camel |
+| Option                     | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
+| -------------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
+| **Emit JSON Tags**         | ❌    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |
+| **Prepared Queries**       | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |
+| **Interface Generation**   | ❌    | ✅           | ✅         | ✅        | ✅        | ❌      | ✅           |
+| **Empty Slices**           | ✅    | ✅           | ✅         | ✅        | ❌        | ❌      | ❌           |
+| **Result Struct Pointers** | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **Params Struct Pointers** | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **Enum Validation**        | ❌    | ❌           | ❌         | ✅        | ❌        | ❌      | ✅           |
+| **All Enum Values**        | ❌    | ❌           | ❌         | ✅        | ❌        | ❌      | ✅           |
+| **JSON Tags Case Style**   | snake | camel        | camel      | camel     | snake     | snake   | camel        | camel   |
 
 ### Validation Options
 
-| Validation | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
-|-----------|-------|-------------|------------|-----------|----------|--------|-------------|--------|
-| **Strict Functions** | ❌ | ❌ | ✅ | ❌ | ✅ | ❌ | ❌ |
-| **Strict Order By** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **No Select Star** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Require Where** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **No Drop Table** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **No Truncate** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Require Limit** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ |
+| Validation           | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
+| -------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
+| **Strict Functions** | ❌    | ❌           | ✅         | ❌        | ✅        | ❌      | ❌           |
+| **Strict Order By**  | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **No Select Star**   | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **Require Where**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **No Drop Table**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **No Truncate**      | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **Require Limit**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
 
 ### Type Overrides
 
-| Override Type | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
-|--------------|-------|-------------|------------|-----------|----------|--------|-------------|--------|
-| **UUID → uuid.UUID** | ❌ | ✅ | ✅ | ✅ | ❌ | ✅ | ❌ |
-| **JSON → json.RawMessage** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ❌ |
-| **Arrays → []string** | ❌ | ❌ | ✅ | ✅ | ❌ | ❌ | ❌ | ❌ |
-| **Full-Text → string** | ❌ | ❌ | ✅ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **Array Nullable** | - | - | ✅ | ✅ | - | - | ✅ | - |
+| Override Type              | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
+| -------------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
+| **UUID → uuid.UUID**       | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |
+| **JSON → json.RawMessage** | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ❌           |
+| **Arrays → []string**      | ❌    | ❌           | ✅         | ✅        | ❌        | ❌      | ❌           | ❌      |
+| **Full-Text → string**     | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           | ❌      |
+| **Array Nullable**         | -     | -            | ✅         | ✅        | -         | -       | ✅           | -       |
 
 ### Rename Rules
 
-| Rename Rule | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
-|-------------|-------|-------------|------------|-----------|----------|--------|-------------|--------|
-| **id → ID** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ✅ |
-| **uuid → UUID** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **url → URL** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **uri → URI** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **json → JSON** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **api → API** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **http → HTTP** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **db → DB** | ❌ | ✅ | ✅ | ✅ | ❌ | ❌ | ✅ | ❌ |
-| **otp → OTP** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
+| Rename Rule     | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
+| --------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
+| **id → ID**     | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ✅      |
+| **uuid → UUID** | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ❌      |
+| **url → URL**   | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ❌      |
+| **uri → URI**   | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ❌      |
+| **json → JSON** | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ❌      |
+| **api → API**   | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ❌      |
+| **http → HTTP** | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ❌      |
+| **db → DB**     | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ✅           | ❌      |
+| **otp → OTP**   | ❌    | ❌           | ❌         | ❌        | ❌        | ❌      | ✅           | ❌      |
 
 ### Database Engine Support
 
-| Database | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
-|----------|-------|-------------|------------|-----------|----------|--------|-------------|--------|
-| **PostgreSQL** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **MySQL** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **SQLite** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| Database       | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
+| -------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
+| **PostgreSQL** | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |
+| **MySQL**      | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |
+| **SQLite**     | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           | ✅      |
 
 ---
 
@@ -96,6 +96,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** Simple, lightweight template for personal projects and prototypes
 
 **Strengths:**
+
 - ✅ Minimal dependencies (database/sql)
 - ✅ Easy to set up and use
 - ✅ SQLite requires no database server
@@ -103,6 +104,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ Simple generated code
 
 **Weaknesses:**
+
 - ❌ No UUID support
 - ❌ No JSON support
 - ❌ No prepared queries
@@ -122,6 +124,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** Production-ready template for API services and microservices
 
 **Strengths:**
+
 - ✅ pgx/v5 driver (high performance PostgreSQL)
 - ✅ Prepared queries (security & performance)
 - ✅ JSON tags (API standard)
@@ -129,6 +132,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ Optimized for microservices
 
 **Weaknesses:**
+
 - ❌ No UUID support (need for distributed IDs)
 - ❌ No array support (many-to-many relationships)
 - ❌ No full-text search
@@ -147,6 +151,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** Strict, production-ready template for enterprise applications
 
 **Strengths:**
+
 - ✅ ALL features enabled (UUID, JSON, Arrays, Full-Text)
 - ✅ pgx/v5 driver (high performance PostgreSQL)
 - ✅ Strict validation (data integrity)
@@ -156,6 +161,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ Comprehensive type overrides
 
 **Weaknesses:**
+
 - ❌ Most complex generated code
 - ❌ Longer build times
 - ❌ More dependencies (uuid, pgx)
@@ -174,6 +180,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** API-optimized template with JSON serialization and camelCase naming
 
 **Strengths:**
+
 - ✅ pgx/v5 driver (high performance PostgreSQL)
 - ✅ JSON tags with camelCase (API standard)
 - ✅ Enum validation (type safety)
@@ -182,6 +189,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ Interface generation
 
 **Weaknesses:**
+
 - ❌ No UUID support
 - ❌ No array support (many-to-many relationships)
 - ❌ No strict validation
@@ -200,6 +208,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** Analytics-optimized template with array support, full-text search, and JSON storage
 
 **Strengths:**
+
 - ✅ Array support (time-series data)
 - ✅ Full-text search (analytics queries)
 - ✅ JSONB support (document storage)
@@ -208,6 +217,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ Interface generation
 
 **Weaknesses:**
+
 - ❌ No UUID support (time-series data may use other IDs)
 - ❌ No prepared queries
 - ❌ No enum validation
@@ -226,6 +236,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** Minimal template for test fixtures and mock data
 
 **Strengths:**
+
 - ✅ Minimal dependencies (database/sql)
 - ✅ Test database paths (testdata/)
 - ✅ Easy to set up and tear down
@@ -233,6 +244,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ Simple generated code
 
 **Weaknesses:**
+
 - ❌ No UUID support (tests use simple IDs)
 - ❌ No JSON support (tests use simple types)
 - ❌ No prepared queries
@@ -252,6 +264,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** SaaS-optimized template with UUID support and tenant isolation
 
 **Strengths:**
+
 - ✅ UUID support (for tenant IDs)
 - ✅ Array support (tenant relationships)
 - ✅ JSONB support (tenant metadata)
@@ -261,6 +274,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ Interface generation
 
 **Weaknesses:**
+
 - ❌ No full-text search
 - ❌ No enum validation
 - ❌ No all enum values
@@ -279,6 +293,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 **Summary:** Library-optimized template with minimal dependencies and interface generation
 
 **Strengths:**
+
 - ✅ Minimal dependencies (broad compatibility)
 - ✅ pgx/v5 driver (high performance)
 - ✅ Interface generation (library users can mock)
@@ -287,6 +302,7 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 - ✅ JSON tags (library consumers)
 
 **Weaknesses:**
+
 - ❌ No UUID support (libraries may use different ID types)
 - ❌ No array support
 - ❌ No full-text search
@@ -438,6 +454,7 @@ data.Validation.SafetyRules.RequireWhere = true
 - **Library**: Minimal deps, interface generation, broad compatibility
 
 **Choose template based on:**
+
 1. Project type (personal, API, SaaS, enterprise, etc.)
 2. Complexity requirements (simple, medium, complex)
 3. Database needs (SQLite, PostgreSQL, MySQL)

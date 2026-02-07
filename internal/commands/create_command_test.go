@@ -113,7 +113,7 @@ func TestCreateCommand_ForceFlag(t *testing.T) {
 	assert.True(t, flag.Changed)
 }
 
-// Helper functions
+// Helper functions.
 func isDirectory(path string) bool {
 	info, err := os.Stat(path)
 	if err != nil {
