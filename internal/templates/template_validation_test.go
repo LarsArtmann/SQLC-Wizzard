@@ -111,8 +111,8 @@ func TestTemplates_ProduceConsistentNaming(t *testing.T) {
 		goConfig := sqlConfig.Gen.Go
 
 		// Verify common fields follow Go conventions
-		assert.Positive(t, len(goConfig.Package), "Template %s should have valid package name", tmpl.Name())
-		assert.Positive(t, len(goConfig.Out), "Template %s should have valid output path", tmpl.Name())
+		assert.NotEmpty(t, goConfig.Package, "Template %s should have valid package name", tmpl.Name())
+		assert.NotEmpty(t, goConfig.Out, "Template %s should have valid output path", tmpl.Name())
 
 		// Verify no empty names
 		assert.NotEmpty(t, goConfig.Package, "Template %s should have non-empty package name", tmpl.Name())

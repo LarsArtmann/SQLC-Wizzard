@@ -100,6 +100,6 @@ func TestValidatePaths_Relative(t *testing.T) {
 	queriesDir := "./sql/queries"
 
 	// Verify they are valid relative paths
-	assert.Positive(t, len(baseDir))
-	assert.Positive(t, len(queriesDir))
+	assert.NotEmpty(t, baseDir)
+	assert.NotEmpty(t, queriesDir)
 }
