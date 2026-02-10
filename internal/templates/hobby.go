@@ -67,29 +67,24 @@ func (t *HobbyTemplate) DefaultData() TemplateData {
 			SchemaDir:  "db/schema",
 		},
 
-		Validation: generated.ValidationConfig{
-			StrictFunctions: false,
-			StrictOrderBy:   false,
-			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             false,
-				EmitPreparedQueries:      false,
-				EmitInterface:            false,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      false,
-				EmitAllEnumValues:        false,
-				JSONTagsCaseStyle:        "snake",
-			},
-			SafetyRules: generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				NoDropTable:  false,
-				NoTruncate:   false,
-				RequireLimit: false,
-				Rules:        []generated.SafetyRule{},
-			},
-		},
+		Validation: t.BuildValidationConfig(
+			false, // strictFunctions
+			false, // strictOrderBy
+			false, // emitJSONTags
+			false, // emitPreparedQueries
+			false, // emitInterface
+			true,  // emitEmptySlices
+			false, // emitResultStructPointers
+			false, // emitParamsStructPointers
+			false, // emitEnumValidMethod
+			false, // emitAllEnumValues
+			"snake",
+			false, // noSelectStar
+			false, // requireWhere
+			false, // noDropTable
+			false, // noTruncate
+			false, // requireLimit
+		),
 	}
 }
 

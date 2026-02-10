@@ -199,6 +199,40 @@ func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generat
 	return cfg, nil
 }
 
+// BuildValidationConfig creates a ValidationConfig with the provided parameters.
+// This eliminates duplication of validation configuration across templates.
+func (t *BaseTemplate) BuildValidationConfig(
+	strictFunctions, strictOrderBy bool,
+	emitJSONTags, emitPreparedQueries, emitInterface, emitEmptySlices,
+	emitResultStructPointers, emitParamsStructPointers, emitEnumValidMethod, emitAllEnumValues bool,
+	jsonTagsCaseStyle string,
+	noSelectStar, requireWhere, noDropTable, noTruncate, requireLimit bool,
+) generated.ValidationConfig {
+	return generated.ValidationConfig{
+		StrictFunctions: strictFunctions,
+		StrictOrderBy:   strictOrderBy,
+		EmitOptions: generated.EmitOptions{
+			EmitJSONTags:             emitJSONTags,
+			EmitPreparedQueries:      emitPreparedQueries,
+			EmitInterface:            emitInterface,
+			EmitEmptySlices:          emitEmptySlices,
+			EmitResultStructPointers: emitResultStructPointers,
+			EmitParamsStructPointers: emitParamsStructPointers,
+			EmitEnumValidMethod:      emitEnumValidMethod,
+			EmitAllEnumValues:        emitAllEnumValues,
+			JSONTagsCaseStyle:        jsonTagsCaseStyle,
+		},
+		SafetyRules: generated.SafetyRules{
+			NoSelectStar: noSelectStar,
+			RequireWhere: requireWhere,
+			NoDropTable:  noDropTable,
+			NoTruncate:   noTruncate,
+			RequireLimit: requireLimit,
+			Rules:        []generated.SafetyRule{},
+		},
+	}
+}
+
 // BuildDefaultData creates default TemplateData with the provided parameters.
 // This eliminates duplication in template DefaultData() methods by providing
 // a template method that accepts the variable configuration values.
@@ -237,29 +271,24 @@ func (t *BaseTemplate) BuildDefaultData(
 			SchemaDir:  baseOutputDir + "/schema",
 		},
 
-		Validation: generated.ValidationConfig{
-			StrictFunctions: useManaged, // Match strict mode to UseManaged for consistency
-			StrictOrderBy:   useManaged,
-			EmitOptions: generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      emitPreparedQueries,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: emitResultStructPointers,
-				EmitParamsStructPointers: emitParamsStructPointers,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "camel",
-			},
-			SafetyRules: generated.SafetyRules{
-				NoSelectStar: noSelectStar,
-				RequireWhere: requireWhere,
-				NoDropTable:  true,
-				NoTruncate:   true,
-				RequireLimit: requireLimit,
-				Rules:        []generated.SafetyRule{},
-			},
-		},
+		Validation: t.BuildValidationConfig(
+			useManaged, // Match strict mode to UseManaged for consistency
+			useManaged,
+			true,  // emitJSONTags
+			emitPreparedQueries,
+			true,  // emitInterface
+			true,  // emitEmptySlices
+			emitResultStructPointers,
+			emitParamsStructPointers,
+			true,  // emitEnumValidMethod
+			true,  // emitAllEnumValues
+			"camel",
+			noSelectStar,
+			requireWhere,
+			true,  // noDropTable
+			true,  // noTruncate
+			requireLimit,
+		),
 	}
 }
 
