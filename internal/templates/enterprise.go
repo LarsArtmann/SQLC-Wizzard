@@ -24,3 +24,13 @@ func NewEnterpriseTemplate() *EnterpriseTemplate {
 
 	return &EnterpriseTemplate{ConfiguredTemplate: base}
 }
+
+// Name returns the template name.
+func (t *EnterpriseTemplate) Name() string {
+	return "enterprise"
+}
+
+// Description returns a human-readable description.
+func (t *EnterpriseTemplate) Description() string {
+	return "Production-ready configuration with strict safety rules for enterprise applications"
+}

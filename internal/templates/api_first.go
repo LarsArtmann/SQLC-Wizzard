@@ -22,3 +22,13 @@ func NewAPIFirstTemplate() *APIFirstTemplate {
 
 	return &APIFirstTemplate{ConfiguredTemplate: base}
 }
+
+// Name returns the template name.
+func (t *APIFirstTemplate) Name() string {
+	return "api-first"
+}
+
+// Description returns a human-readable description.
+func (t *APIFirstTemplate) Description() string {
+	return "Optimized for REST/GraphQL API development with JSON support and camelCase naming"
+}
