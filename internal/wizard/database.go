@@ -61,54 +61,30 @@ func (s *DatabaseStep) Execute(data *generated.TemplateData) error {
 func (s *DatabaseStep) configureDatabaseOptions(data *generated.TemplateData) error {
 	switch data.Database.Engine {
 	case generated.DatabaseTypePostgreSQL:
-		return s.configurePostgreSQL(data)
+		return s.applyDatabaseConfig(data, "PostgreSQL", true, true, true, true, "UUIDs, JSON, Full-text, Arrays enabled")
 	case generated.DatabaseTypeSQLite:
-		return s.configureSQLite(data)
+		return s.applyDatabaseConfig(data, "SQLite", false, false, false, false, "Lightweight configuration applied")
 	case generated.DatabaseTypeMySQL:
-		return s.configureMySQL(data)
+		return s.applyDatabaseConfig(data, "MySQL", true, true, true, false, "UUIDs, JSON, Full-text enabled")
 	default:
 		return fmt.Errorf("unsupported database engine: %s", data.Database.Engine)
 	}
 }
 
-// configurePostgreSQL configures PostgreSQL-specific options.
-func (s *DatabaseStep) configurePostgreSQL(data *generated.TemplateData) error {
-	s.ui.ShowInfo("Configuring PostgreSQL options...")
+// applyDatabaseConfig applies database-specific configuration to the template data.
+func (s *DatabaseStep) applyDatabaseConfig(
+	data *generated.TemplateData,
+	engineName string,
+	useUUIDs, useJSON, useFullText, useArrays bool,
+	completionMessage string,
+) error {
+	s.ui.ShowInfo(fmt.Sprintf("Configuring %s options...", engineName))
 
-	// Default PostgreSQL configuration
-	data.Database.UseUUIDs = true
-	data.Database.UseJSON = true
-	data.Database.UseFullText = true
-	data.Database.UseArrays = true
+	data.Database.UseUUIDs = useUUIDs
+	data.Database.UseJSON = useJSON
+	data.Database.UseFullText = useFullText
+	data.Database.UseArrays = useArrays
 
-	s.ui.ShowStepComplete("PostgreSQL Config", "UUIDs, JSON, Full-text, Arrays enabled")
-	return nil
-}
-
-// configureSQLite configures SQLite-specific options.
-func (s *DatabaseStep) configureSQLite(data *generated.TemplateData) error {
-	s.ui.ShowInfo("Configuring SQLite options...")
-
-	// Default SQLite configuration - minimal features
-	data.Database.UseUUIDs = false
-	data.Database.UseJSON = false
-	data.Database.UseFullText = false
-	data.Database.UseArrays = false
-
-	s.ui.ShowStepComplete("SQLite Config", "Lightweight configuration applied")
-	return nil
-}
-
-// configureMySQL configures MySQL-specific options.
-func (s *DatabaseStep) configureMySQL(data *generated.TemplateData) error {
-	s.ui.ShowInfo("Configuring MySQL options...")
-
-	// Default MySQL configuration
-	data.Database.UseUUIDs = true
-	data.Database.UseJSON = true
-	data.Database.UseFullText = true
-	data.Database.UseArrays = false // MySQL arrays are not standard
-
-	s.ui.ShowStepComplete("MySQL Config", "UUIDs, JSON, Full-text enabled")
+	s.ui.ShowStepComplete(fmt.Sprintf("%s Config", engineName), completionMessage)
 	return nil
 }
