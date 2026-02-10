@@ -82,27 +82,7 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	w.showWelcome()
 
 	// Initialize template data with defaults
-	data := generated.TemplateData{
-		Package: generated.PackageConfig{
-			Name: "myproject",
-			Path: "github.com/myorg/myproject",
-		},
-		Database: generated.DatabaseConfig{
-			UseUUIDs:    true,
-			UseJSON:     true,
-			UseArrays:   false,
-			UseFullText: false,
-		},
-		Output: generated.OutputConfig{
-			BaseDir:    "./internal/db",
-			QueriesDir: "./sql/queries",
-			SchemaDir:  "./sql/schema",
-		},
-		Validation: generated.ValidationConfig{
-			EmitOptions: generated.DefaultEmitOptions(),
-			SafetyRules: generated.DefaultSafetyRules(),
-		},
-	}
+	data := generated.DefaultTemplateData()
 
 	// Execute wizard steps in order
 	steps := []struct {

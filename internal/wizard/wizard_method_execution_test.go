@@ -28,27 +28,7 @@ var _ = Describe("Wizard Method Execution Tests", func() {
 			Expect(result.GenerateSchema).To(BeTrue())
 
 			// Test default template data structure (covers lines 67-87 in Run())
-			result.TemplateData = generated.TemplateData{
-				Package: generated.PackageConfig{
-					Name: "myproject",                  // Default from Run()
-					Path: "github.com/myorg/myproject", // Default from Run()
-				},
-				Database: generated.DatabaseConfig{
-					UseUUIDs:    true,  // Default from Run()
-					UseJSON:     true,  // Default from Run()
-					UseArrays:   false, // Default from Run()
-					UseFullText: false, // Default from Run()
-				},
-				Output: generated.OutputConfig{
-					BaseDir:    "./internal/db", // Default from Run()
-					QueriesDir: "./sql/queries", // Default from Run()
-					SchemaDir:  "./sql/schema",  // Default from Run()
-				},
-				Validation: generated.ValidationConfig{
-					EmitOptions: generated.DefaultEmitOptions(), // Called in Run()
-					SafetyRules: generated.DefaultSafetyRules(), // Called in Run()
-				},
-			}
+			result.TemplateData = generated.DefaultTemplateData()
 
 			// Verify default initialization values
 			Expect(result.TemplateData.Package.Name).To(Equal("myproject"))

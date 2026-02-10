@@ -158,6 +158,31 @@ func DefaultSafetyRules() SafetyRules {
 	}
 }
 
+// DefaultTemplateData returns a TemplateData struct with default values
+func DefaultTemplateData() TemplateData {
+	return TemplateData{
+		Package: PackageConfig{
+			Name: "myproject",
+			Path: "github.com/myorg/myproject",
+		},
+		Database: DatabaseConfig{
+			UseUUIDs:    true,
+			UseJSON:     true,
+			UseArrays:   false,
+			UseFullText: false,
+		},
+		Output: OutputConfig{
+			BaseDir:    "./internal/db",
+			QueriesDir: "./sql/queries",
+			SchemaDir:  "./sql/schema",
+		},
+		Validation: ValidationConfig{
+			EmitOptions: DefaultEmitOptions(),
+			SafetyRules: DefaultSafetyRules(),
+		},
+	}
+}
+
 // TemplateData represents the complete data structure for template generation
 type TemplateData struct {
 	ProjectName string      `json:"project_name"`
