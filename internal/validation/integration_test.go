@@ -3,6 +3,7 @@ package validation_test
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -268,13 +269,9 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 			// This test demonstrates type-safe safety rules have same benefit
 			prodRules := domain.NewProductionSafetyRules()
 
-			// Clear semantic groupings:
-			Expect(prodRules.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())      // Code quality
-			Expect(prodRules.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeTrue()) // Prevent bugs
-			Expect(prodRules.DestructiveOps).To(Equal(domain.DestructiveForbidden))             // Security policy
-
-			// vs old way: NoSelectStar, RequireWhere, NoDropTable, NoTruncate
-			// (all flat booleans, no semantic grouping)
+			// Clear semantic groupings vs old flat booleans (NoSelectStar, RequireWhere, etc.)
+			testing.AssertProductionSafetyRules(prodRules,
+				"Type-safe safety rules should have clear semantic groupings")
 		})
 	})
 

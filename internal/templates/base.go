@@ -274,19 +274,19 @@ func (t *BaseTemplate) BuildDefaultData(
 		Validation: t.BuildValidationConfig(
 			useManaged, // Match strict mode to UseManaged for consistency
 			useManaged,
-			true,  // emitJSONTags
+			true, // emitJSONTags
 			emitPreparedQueries,
-			true,  // emitInterface
-			true,  // emitEmptySlices
+			true, // emitInterface
+			true, // emitEmptySlices
 			emitResultStructPointers,
 			emitParamsStructPointers,
-			true,  // emitEnumValidMethod
-			true,  // emitAllEnumValues
+			true, // emitEnumValidMethod
+			true, // emitAllEnumValues
 			"camel",
 			noSelectStar,
 			requireWhere,
-			true,  // noDropTable
-			true,  // noTruncate
+			true, // noDropTable
+			true, // noTruncate
 			requireLimit,
 		),
 	}

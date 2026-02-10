@@ -16,20 +16,20 @@ type TemplateTestHelper struct {
 		DefaultData() generated.TemplateData
 		Generate(data generated.TemplateData) (*config.SqlcConfig, error)
 	}
-	ExpectedProjectType  generated.ProjectType
-	ExpectedProjectName  string
-	ExpectedEngine       string
-	ExpectedPackageName  string // defaults to "db" if empty
-	ExpectedPackagePath  string // defaults to "internal/db" if empty
-	ExpectedDatabaseType generated.DatabaseType // defaults to PostgreSQL if empty
-	ExpectUUID           bool
-	ExpectJSON           bool
-	ExpectArrays         bool
-	ExpectFullText       bool // UseFullText for Enterprise and Analytics templates
-	ExpectJSONTags       bool
-	ExpectInterface      bool // EmitPreparedQueries for APIFirst, EmitInterface for Library
-	ExpectStrictChecks   bool // StrictFunctionChecks and StrictOrderBy
-	ExpectPreparedQueries bool // defaults to true if not specified
+	ExpectedProjectType       generated.ProjectType
+	ExpectedProjectName       string
+	ExpectedEngine            string
+	ExpectedPackageName       string                 // defaults to "db" if empty
+	ExpectedPackagePath       string                 // defaults to "internal/db" if empty
+	ExpectedDatabaseType      generated.DatabaseType // defaults to PostgreSQL if empty
+	ExpectUUID                bool
+	ExpectJSON                bool
+	ExpectArrays              bool
+	ExpectFullText            bool // UseFullText for Enterprise and Analytics templates
+	ExpectJSONTags            bool
+	ExpectInterface           bool   // EmitPreparedQueries for APIFirst, EmitInterface for Library
+	ExpectStrictChecks        bool   // StrictFunctionChecks and StrictOrderBy
+	ExpectPreparedQueries     bool   // defaults to true if not specified
 	ExpectedJSONTagsCaseStyle string // defaults to "camel" if empty
 }
 

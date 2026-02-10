@@ -120,10 +120,10 @@ func (DestructiveOperationPolicyTestSuite) GetTypeName() string {
 
 // destructivePolicyTestCase defines a test case for DestructiveOperationPolicy behavior.
 type destructivePolicyTestCase struct {
-	description      string
-	allowedPolicy    domain.DestructiveOperationPolicy
+	description       string
+	allowedPolicy     domain.DestructiveOperationPolicy
 	forbiddenPolicies []domain.DestructiveOperationPolicy
-	checker          func(domain.DestructiveOperationPolicy) bool
+	checker           func(domain.DestructiveOperationPolicy) bool
 }
 
 // testDestructivePolicyBehavior tests a destructive policy behavior against all policy values.
@@ -275,15 +275,7 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 
 		It("should have safe production defaults", func() {
 			defaults := domain.NewTypeSafeSafetyRules()
-
-			// Production-safe: No SELECT *
-			Expect(defaults.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
-
-			// Production-safe: Require WHERE
-			Expect(defaults.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(BeTrue())
-
-			// Production-safe: Block destructive ops
-			Expect(defaults.DestructiveOps).To(Equal(domain.DestructiveForbidden))
+			testing.AssertProductionSafetyRules(defaults, "Production defaults")
 		})
 	})
 

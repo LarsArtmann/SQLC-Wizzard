@@ -140,15 +140,15 @@ func TestHobbyTemplate_Description(t *testing.T) {
 
 func TestHobbyTemplate_DefaultData(t *testing.T) {
 	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.HobbyTemplate{},
-		ExpectedProjectType: generated.ProjectTypeHobby,
-		ExpectedPackagePath: "db",
+		Template:             &templates.HobbyTemplate{},
+		ExpectedProjectType:  generated.ProjectTypeHobby,
+		ExpectedPackagePath:  "db",
 		ExpectedDatabaseType: generated.DatabaseTypeSQLite,
-		ExpectUUID:          false,
-		ExpectJSON:          false,
-		ExpectArrays:        false,
-		ExpectJSONTags:      false,
-		ExpectInterface:     false,
+		ExpectUUID:           false,
+		ExpectJSON:           false,
+		ExpectArrays:         false,
+		ExpectJSONTags:       false,
+		ExpectInterface:      false,
 	})
 }
 
@@ -258,17 +258,17 @@ func TestAnalyticsTemplate_Description(t *testing.T) {
 
 func TestAnalyticsTemplate_DefaultData(t *testing.T) {
 	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:              &templates.AnalyticsTemplate{},
-		ExpectedProjectType:   generated.ProjectType("analytics"),
-		ExpectedPackageName:   "analytics",
-		ExpectedPackagePath:   "internal/analytics",
-		ExpectUUID:            false,
-		ExpectJSON:            true,
-		ExpectArrays:          true,
-		ExpectFullText:        true,
-		ExpectJSONTags:        true,
-		ExpectInterface:       true,
-		ExpectStrictChecks:    true,
+		Template:                  &templates.AnalyticsTemplate{},
+		ExpectedProjectType:       generated.ProjectType("analytics"),
+		ExpectedPackageName:       "analytics",
+		ExpectedPackagePath:       "internal/analytics",
+		ExpectUUID:                false,
+		ExpectJSON:                true,
+		ExpectArrays:              true,
+		ExpectFullText:            true,
+		ExpectJSONTags:            true,
+		ExpectInterface:           true,
+		ExpectStrictChecks:        true,
 		ExpectedJSONTagsCaseStyle: "snake",
 	})
 }

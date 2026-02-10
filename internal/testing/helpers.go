@@ -1,6 +1,7 @@
 package testing
 
 import (
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -63,4 +64,20 @@ func RunStringRepresentationTest(enumTestCases []EnumTestCase) {
 type EnumTestCase struct {
 	EnumValue      interface{ String() string }
 	ExpectedString string
+}
+
+// AssertProductionSafetyRules validates that safety rules have production-safe defaults.
+// This helper ensures consistent validation across integration and domain tests.
+func AssertProductionSafetyRules(rules domain.TypeSafeSafetyRules, description string) {
+	By(description + " - verifying code quality rules")
+	Expect(rules.StyleRules.SelectStarPolicy.ForbidsSelectStar()).
+		To(BeTrue(), description+": should forbid SELECT * for code quality")
+
+	By(description + " - verifying bug prevention rules")
+	Expect(rules.SafetyRules.WhereRequirement.RequiresOnDestructive()).
+		To(BeTrue(), description+": should require WHERE on destructive operations")
+
+	By(description + " - verifying security policy rules")
+	Expect(rules.DestructiveOps).
+		To(Equal(domain.DestructiveForbidden), description+": should forbid destructive operations")
 }
