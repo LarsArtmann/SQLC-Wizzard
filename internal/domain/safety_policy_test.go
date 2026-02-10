@@ -118,40 +118,55 @@ func (DestructiveOperationPolicyTestSuite) GetTypeName() string {
 	return "DestructiveOperationPolicy"
 }
 
+// destructivePolicyTestCase defines a test case for DestructiveOperationPolicy behavior.
+type destructivePolicyTestCase struct {
+	description      string
+	allowedPolicy    domain.DestructiveOperationPolicy
+	forbiddenPolicies []domain.DestructiveOperationPolicy
+	checker          func(domain.DestructiveOperationPolicy) bool
+}
+
+// testDestructivePolicyBehavior tests a destructive policy behavior against all policy values.
+func testDestructivePolicyBehavior(tc destructivePolicyTestCase) {
+	It(tc.description, func() {
+		Expect(tc.checker(tc.allowedPolicy)).To(BeTrue())
+	})
+
+	It(tc.description+" for other policies", func() {
+		for _, policy := range tc.forbiddenPolicies {
+			Expect(tc.checker(policy)).To(BeFalse())
+		}
+	})
+}
+
 var _ = Describe("DestructiveOperationPolicy", func() {
 	// Use generic validation test suite
 	testing.TestValidationSuite(DestructiveOperationPolicyTestSuite{})
 
 	Context("AllowsDropTable", func() {
-		It("should allow DROP TABLE only when policy is 'allowed'", func() {
-			Expect(domain.DestructiveAllowed.AllowsDropTable()).To(BeTrue())
-		})
-
-		It("should not allow DROP TABLE for other policies", func() {
-			Expect(domain.DestructiveWithConfirmation.AllowsDropTable()).To(BeFalse())
-			Expect(domain.DestructiveForbidden.AllowsDropTable()).To(BeFalse())
+		testDestructivePolicyBehavior(destructivePolicyTestCase{
+			description:       "should allow DROP TABLE only when policy is 'allowed'",
+			allowedPolicy:     domain.DestructiveAllowed,
+			forbiddenPolicies: []domain.DestructiveOperationPolicy{domain.DestructiveWithConfirmation, domain.DestructiveForbidden},
+			checker:           func(p domain.DestructiveOperationPolicy) bool { return p.AllowsDropTable() },
 		})
 	})
 
 	Context("AllowsTruncate", func() {
-		It("should allow TRUNCATE only when policy is 'allowed'", func() {
-			Expect(domain.DestructiveAllowed.AllowsTruncate()).To(BeTrue())
-		})
-
-		It("should not allow TRUNCATE for other policies", func() {
-			Expect(domain.DestructiveWithConfirmation.AllowsTruncate()).To(BeFalse())
-			Expect(domain.DestructiveForbidden.AllowsTruncate()).To(BeFalse())
+		testDestructivePolicyBehavior(destructivePolicyTestCase{
+			description:       "should allow TRUNCATE only when policy is 'allowed'",
+			allowedPolicy:     domain.DestructiveAllowed,
+			forbiddenPolicies: []domain.DestructiveOperationPolicy{domain.DestructiveWithConfirmation, domain.DestructiveForbidden},
+			checker:           func(p domain.DestructiveOperationPolicy) bool { return p.AllowsTruncate() },
 		})
 	})
 
 	Context("RequiresConfirmation", func() {
-		It("should require confirmation only for 'with_confirmation' policy", func() {
-			Expect(domain.DestructiveWithConfirmation.RequiresConfirmation()).To(BeTrue())
-		})
-
-		It("should not require confirmation for other policies", func() {
-			Expect(domain.DestructiveAllowed.RequiresConfirmation()).To(BeFalse())
-			Expect(domain.DestructiveForbidden.RequiresConfirmation()).To(BeFalse())
+		testDestructivePolicyBehavior(destructivePolicyTestCase{
+			description:       "should require confirmation only for 'with_confirmation' policy",
+			allowedPolicy:     domain.DestructiveWithConfirmation,
+			forbiddenPolicies: []domain.DestructiveOperationPolicy{domain.DestructiveAllowed, domain.DestructiveForbidden},
+			checker:           func(p domain.DestructiveOperationPolicy) bool { return p.RequiresConfirmation() },
 		})
 	})
 
