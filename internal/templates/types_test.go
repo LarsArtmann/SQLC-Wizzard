@@ -101,17 +101,15 @@ func TestMicroserviceTemplate_Description(t *testing.T) {
 }
 
 func TestMicroserviceTemplate_DefaultData(t *testing.T) {
-	template := &templates.MicroserviceTemplate{}
-	data := template.DefaultData()
-
-	// Verify defaults
-	assert.Equal(t, generated.ProjectTypeMicroservice, data.ProjectType)
-	assert.Equal(t, "db", data.Package.Name)
-	assert.Equal(t, "internal/db", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
-	assert.True(t, data.Database.UseUUIDs)
-	assert.True(t, data.Database.UseJSON)
-	assert.False(t, data.Database.UseArrays)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.MicroserviceTemplate{},
+		ExpectedProjectType: generated.ProjectTypeMicroservice,
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        false,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+	})
 }
 
 func TestMicroserviceTemplate_Generate_Basic(t *testing.T) {
@@ -141,17 +139,17 @@ func TestHobbyTemplate_Description(t *testing.T) {
 }
 
 func TestHobbyTemplate_DefaultData(t *testing.T) {
-	template := &templates.HobbyTemplate{}
-	data := template.DefaultData()
-
-	// Verify defaults
-	assert.Equal(t, generated.ProjectTypeHobby, data.ProjectType)
-	assert.Equal(t, "db", data.Package.Name)
-	assert.Equal(t, "db", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypeSQLite, data.Database.Engine)
-	assert.False(t, data.Database.UseUUIDs)
-	assert.False(t, data.Database.UseJSON)
-	assert.False(t, data.Database.UseArrays)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.HobbyTemplate{},
+		ExpectedProjectType: generated.ProjectTypeHobby,
+		ExpectedPackagePath: "db",
+		ExpectedDatabaseType: generated.DatabaseTypeSQLite,
+		ExpectUUID:          false,
+		ExpectJSON:          false,
+		ExpectArrays:        false,
+		ExpectJSONTags:      false,
+		ExpectInterface:     false,
+	})
 }
 
 func TestHobbyTemplate_Generate_Basic(t *testing.T) {
@@ -181,18 +179,16 @@ func TestEnterpriseTemplate_Description(t *testing.T) {
 }
 
 func TestEnterpriseTemplate_DefaultData(t *testing.T) {
-	template := &templates.EnterpriseTemplate{}
-	data := template.DefaultData()
-
-	// Verify defaults
-	assert.Equal(t, generated.ProjectTypeEnterprise, data.ProjectType)
-	assert.Equal(t, "db", data.Package.Name)
-	assert.Equal(t, "internal/db", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
-	assert.True(t, data.Database.UseUUIDs)
-	assert.True(t, data.Database.UseJSON)
-	assert.True(t, data.Database.UseArrays)
-	assert.True(t, data.Database.UseFullText)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.EnterpriseTemplate{},
+		ExpectedProjectType: generated.ProjectTypeEnterprise,
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        true,
+		ExpectFullText:      true,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+	})
 }
 
 func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
@@ -261,18 +257,20 @@ func TestAnalyticsTemplate_Description(t *testing.T) {
 }
 
 func TestAnalyticsTemplate_DefaultData(t *testing.T) {
-	template := &templates.AnalyticsTemplate{}
-	data := template.DefaultData()
-
-	assert.Equal(t, generated.ProjectType("analytics"), data.ProjectType)
-	assert.Equal(t, "analytics", data.Package.Name)
-	assert.Equal(t, "internal/analytics", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
-	assert.False(t, data.Database.UseUUIDs)
-	assert.True(t, data.Database.UseJSON)
-	assert.True(t, data.Database.UseArrays)
-	assert.True(t, data.Database.UseFullText)
-	assert.Equal(t, "snake", data.Validation.EmitOptions.JSONTagsCaseStyle)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:              &templates.AnalyticsTemplate{},
+		ExpectedProjectType:   generated.ProjectType("analytics"),
+		ExpectedPackageName:   "analytics",
+		ExpectedPackagePath:   "internal/analytics",
+		ExpectUUID:            false,
+		ExpectJSON:            true,
+		ExpectArrays:          true,
+		ExpectFullText:        true,
+		ExpectJSONTags:        true,
+		ExpectInterface:       true,
+		ExpectStrictChecks:    true,
+		ExpectedJSONTagsCaseStyle: "snake",
+	})
 }
 
 func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
@@ -302,18 +300,18 @@ func TestTestingTemplate_Description(t *testing.T) {
 }
 
 func TestTestingTemplate_DefaultData(t *testing.T) {
-	template := &templates.TestingTemplate{}
-	data := template.DefaultData()
-
-	assert.Equal(t, generated.ProjectType("testing"), data.ProjectType)
-	assert.Equal(t, "testdata", data.Package.Name)
-	assert.Equal(t, "testdata/db", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypeSQLite, data.Database.Engine)
-	assert.False(t, data.Database.UseUUIDs)
-	assert.False(t, data.Database.UseJSON)
-	assert.False(t, data.Database.UseArrays)
-	assert.False(t, data.Validation.EmitOptions.EmitJSONTags)
-	assert.False(t, data.Validation.EmitOptions.EmitPreparedQueries)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:              &templates.TestingTemplate{},
+		ExpectedProjectType:   generated.ProjectType("testing"),
+		ExpectedPackageName:   "testdata",
+		ExpectedPackagePath:   "testdata/db",
+		ExpectedDatabaseType:  generated.DatabaseTypeSQLite,
+		ExpectUUID:            false,
+		ExpectJSON:            false,
+		ExpectArrays:          false,
+		ExpectJSONTags:        false,
+		ExpectPreparedQueries: false,
+	})
 }
 
 func TestTestingTemplate_Generate_Basic(t *testing.T) {
@@ -343,18 +341,16 @@ func TestMultiTenantTemplate_Description(t *testing.T) {
 }
 
 func TestMultiTenantTemplate_DefaultData(t *testing.T) {
-	template := &templates.MultiTenantTemplate{}
-	data := template.DefaultData()
-
-	assert.Equal(t, generated.ProjectType("multi-tenant"), data.ProjectType)
-	assert.Equal(t, "db", data.Package.Name)
-	assert.Equal(t, "internal/db", data.Package.Path)
-	assert.Equal(t, generated.DatabaseTypePostgreSQL, data.Database.Engine)
-	assert.True(t, data.Database.UseUUIDs)
-	assert.True(t, data.Database.UseJSON)
-	assert.True(t, data.Database.UseArrays)
-	assert.True(t, data.Validation.EmitOptions.EmitJSONTags)
-	assert.Equal(t, "camel", data.Validation.EmitOptions.JSONTagsCaseStyle)
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
+		Template:            &templates.MultiTenantTemplate{},
+		ExpectedProjectType: generated.ProjectType("multi-tenant"),
+		ExpectUUID:          true,
+		ExpectJSON:          true,
+		ExpectArrays:        true,
+		ExpectJSONTags:      true,
+		ExpectInterface:     true,
+		ExpectStrictChecks:  true,
+	})
 }
 
 func TestMultiTenantTemplate_Generate_Basic(t *testing.T) {
