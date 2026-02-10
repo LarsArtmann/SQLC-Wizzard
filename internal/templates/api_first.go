@@ -7,44 +7,18 @@ type APIFirstTemplate struct {
 
 // NewAPIFirstTemplate creates a new API-first template.
 func NewAPIFirstTemplate() *APIFirstTemplate {
-	return &APIFirstTemplate{
-		ConfiguredTemplate: ConfiguredTemplate{
-			// Template identification
-			TemplateName:        "api-first",
-			TemplateDescription: "Optimized for REST/GraphQL API development with JSON support and camelCase naming",
+	base := NewConfiguredTemplate(
+		"api-first",
+		"Optimized for REST/GraphQL API development with JSON support and camelCase naming",
+		"api",
+		"api",
+		false,
+		"api-first",
+		"postgresql",
+	)
 
-			// Defaults for Generate()
-			DefaultPackageName: "api",
-			DefaultProjectName: "api",
-			StrictMode:         false,
+	// Override API-first specific settings
+	base.Features = []string{"emit_interface", "prepared_queries", "json_tags", "camel_case"}
 
-			// Paths
-			PackagePath: "internal/db",
-			BaseOutput:  "internal/db",
-
-			// Type and features
-			ProjectType: "api-first",
-			DbEngine:    "postgresql",
-
-			// Database features
-			UseManaged:  true,
-			UseUUIDs:    true,
-			UseJSON:     true,
-			UseArrays:   true,
-			UseFullText: false,
-
-			// Emit options
-			EmitPreparedQueries:      true,
-			EmitResultStructPointers: true,
-			EmitParamsStructPointers: true,
-
-			// Safety rules
-			NoSelectStar: true,
-			RequireWhere: true,
-			RequireLimit: false,
-
-			// Required features
-			Features: []string{"emit_interface", "prepared_queries", "json_tags", "camel_case"},
-		},
-	}
+	return &APIFirstTemplate{ConfiguredTemplate: base}
 }

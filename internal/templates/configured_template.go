@@ -41,6 +41,55 @@ type ConfiguredTemplate struct {
 	Features []string
 }
 
+// NewConfiguredTemplate creates a base ConfiguredTemplate with common defaults.
+// Template-specific constructors should call this and override fields as needed.
+// This eliminates the duplicate initialization code across template implementations.
+func NewConfiguredTemplate(
+	name, description string,
+	defaultPackageName, defaultProjectName string,
+	strictMode bool,
+	projectType, dbEngine string,
+) ConfiguredTemplate {
+	return ConfiguredTemplate{
+		// Template identification
+		TemplateName:        name,
+		TemplateDescription: description,
+
+		// Defaults for Generate()
+		DefaultPackageName: defaultPackageName,
+		DefaultProjectName: defaultProjectName,
+		StrictMode:         strictMode,
+
+		// Paths - common default for most templates
+		PackagePath: "internal/db",
+		BaseOutput:  "internal/db",
+
+		// Type and features
+		ProjectType: projectType,
+		DbEngine:    dbEngine,
+
+		// Database features - common defaults for PostgreSQL-based templates
+		UseManaged:  true,
+		UseUUIDs:    true,
+		UseJSON:     true,
+		UseArrays:   true,
+		UseFullText: false,
+
+		// Emit options - common defaults for production templates
+		EmitPreparedQueries:      true,
+		EmitResultStructPointers: true,
+		EmitParamsStructPointers: true,
+
+		// Safety rules - conservative defaults
+		NoSelectStar: true,
+		RequireWhere: true,
+		RequireLimit: false,
+
+		// Required features - minimal default set
+		Features: []string{"emit_interface", "prepared_queries", "json_tags"},
+	}
+}
+
 // Name returns the template name.
 func (t *ConfiguredTemplate) Name() string {
 	return t.TemplateName
