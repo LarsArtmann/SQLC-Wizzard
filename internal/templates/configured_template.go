@@ -43,6 +43,9 @@ type ConfiguredTemplate struct {
 
 	// Required features
 	Features []string
+
+	// Custom rename rules for Go codegen (optional override)
+	CustomRenameRules map[string]string
 }
 
 // NewConfiguredTemplate creates a base ConfiguredTemplate with common defaults.
@@ -266,6 +269,27 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 // RequiredFeatures returns which features this template requires.
 func (t *ConfiguredTemplate) RequiredFeatures() []string {
 	return t.Features
+}
+
+// GetRenameRules returns custom rename rules if set, otherwise falls back to base rules.
+func (t *ConfiguredTemplate) GetRenameRules() map[string]string {
+	if t.CustomRenameRules != nil {
+		return t.CustomRenameRules
+	}
+	return t.BaseTemplate.GetRenameRules()
+}
+
+// BuildGoConfigWithOverrides builds GoGenConfig with custom rename rules support.
+func (t *ConfiguredTemplate) BuildGoConfigWithOverrides(data generated.TemplateData) *config.GoGenConfig {
+	sqlPackage := t.GetSQLPackage(data.Database.Engine)
+	cfg := t.BuildGoGenConfig(data, sqlPackage)
+
+	// Use custom rename rules if set
+	if t.CustomRenameRules != nil {
+		cfg.Rename = t.CustomRenameRules
+	}
+
+	return cfg
 }
 
 // Compile-time interface compliance checks.

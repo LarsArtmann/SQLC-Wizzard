@@ -7,12 +7,58 @@ import (
 
 // MultiTenantTemplate generates sqlc config for multi-tenant SaaS applications.
 type MultiTenantTemplate struct {
-	BaseTemplate
+	ConfiguredTemplate
 }
 
 // NewMultiTenantTemplate creates a new multi-tenant template.
 func NewMultiTenantTemplate() *MultiTenantTemplate {
-	return &MultiTenantTemplate{}
+	t := &MultiTenantTemplate{}
+	t.ConfiguredTemplate = ConfiguredTemplate{
+		TemplateName:        "multi-tenant",
+		TemplateDescription: "Optimized for SaaS multi-tenant architecture with tenant isolation and strict safety rules",
+		DefaultPackageName:  "multi-tenant",
+		DefaultProjectName:  "multi-tenant-app",
+		StrictMode:          true,
+		ProjectType:         "multi-tenant",
+		DbEngine:            "postgresql",
+		PackagePath:         "internal/db",
+		BaseOutput:          "internal/db",
+		UseManaged:          true,
+		UseUUIDs:            true,
+		UseJSON:             true,
+		UseArrays:           true,
+		UseFullText:         false,
+		EmitJSONTags:        true,
+		EmitPreparedQueries: true,
+		EmitInterface:       true,
+		EmitEmptySlices:     false,
+		EmitResultStructPointers: true,
+		EmitParamsStructPointers: true,
+		EmitEnumValidMethod:      false,
+		EmitAllEnumValues:        false,
+		JSONTagsCaseStyle:        "camel",
+		StrictFunctions:         true,
+		StrictOrderBy:           true,
+		NoSelectStar:             true,
+		RequireWhere:             true,
+		NoDropTable:             true,
+		NoTruncate:              false,
+		RequireLimit:            true,
+		Features:                []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"},
+		CustomRenameRules: map[string]string{
+			"id":     "ID",
+			"uuid":   "UUID",
+			"tenant": "Tenant",
+			"url":    "URL",
+			"uri":    "URI",
+			"json":   "JSON",
+			"api":    "API",
+			"http":   "HTTP",
+			"db":     "DB",
+			"sql":    "SQL",
+		},
+	}
+	return t
 }
 
 // Name returns the template name.
@@ -39,8 +85,8 @@ func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.Sql
 	}
 	cfg, _ := builder.Build()
 
-	// Generate Go config with template-specific settings
-	cfg.SQL[0].Gen.Go = t.buildGoGenConfig(data)
+	// Generate Go config with template-specific settings (including custom rename rules)
+	cfg.SQL[0].Gen.Go = t.BuildGoConfigWithOverrides(data)
 
 	// Apply validation rules using base helper
 	return t.ApplyValidationRules(cfg, data)
@@ -81,26 +127,4 @@ func (t *MultiTenantTemplate) DefaultData() generated.TemplateData {
 // RequiredFeatures returns which features this template requires.
 func (t *MultiTenantTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"}
-}
-
-// buildGoGenConfig builds the GoGenConfig from template data.
-func (t *MultiTenantTemplate) buildGoGenConfig(data generated.TemplateData) *config.GoGenConfig {
-	sqlPackage := t.GetSQLPackage(data.Database.Engine)
-	cfg := t.BuildGoGenConfig(data, sqlPackage)
-
-	// Multi-tenant uses extended rename rules
-	cfg.Rename = map[string]string{
-		"id":     "ID",
-		"uuid":   "UUID",
-		"tenant": "Tenant",
-		"url":    "URL",
-		"uri":    "URI",
-		"json":   "JSON",
-		"api":    "API",
-		"http":   "HTTP",
-		"db":     "DB",
-		"sql":    "SQL",
-	}
-
-	return cfg
 }
