@@ -7,12 +7,40 @@ import (
 
 // AnalyticsTemplate generates sqlc config for analytics and data warehouse projects.
 type AnalyticsTemplate struct {
-	BaseTemplate
+	ConfiguredTemplate
 }
 
 // NewAnalyticsTemplate creates a new analytics template.
 func NewAnalyticsTemplate() *AnalyticsTemplate {
-	return &AnalyticsTemplate{}
+	base := NewConfiguredTemplate(
+		"analytics",
+		"Optimized for data analytics and reporting with full-text search and array support",
+		"analytics",
+		"analytics",
+		true, // strictMode - analytics needs strict checks
+		"analytics",
+		"postgresql",
+	)
+
+	// Override analytics-specific settings
+	base.UseManaged = false
+	base.UseUUIDs = false
+	base.UseJSON = true
+	base.UseArrays = true
+	base.UseFullText = true
+	base.EmitJSONTags = true
+	base.EmitInterface = true
+	base.EmitEmptySlices = false
+	base.EmitPreparedQueries = false
+	base.JSONTagsCaseStyle = "camel"
+	base.StrictFunctions = true
+	base.StrictOrderBy = true
+	base.NoSelectStar = false
+	base.RequireWhere = false
+	base.RequireLimit = true
+	base.Features = []string{"emit_interface", "json_tags", "full_text_search", "strict_checks"}
+
+	return &AnalyticsTemplate{ConfiguredTemplate: base}
 }
 
 // Name returns the template name.
@@ -20,7 +48,7 @@ func (t *AnalyticsTemplate) Name() string {
 	return "analytics"
 }
 
-// Description returns a human-readable description.
+// Description returns the template description.
 func (t *AnalyticsTemplate) Description() string {
 	return "Optimized for data analytics and reporting with full-text search and array support"
 }
@@ -72,5 +100,5 @@ func (t *AnalyticsTemplate) DefaultData() TemplateData {
 
 // RequiredFeatures returns which features this template requires.
 func (t *AnalyticsTemplate) RequiredFeatures() []string {
-	return []string{"emit_interface", "json_tags", "full_text_search", "strict_checks"}
+	return t.Features
 }
