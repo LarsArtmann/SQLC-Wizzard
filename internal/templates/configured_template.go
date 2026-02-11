@@ -267,3 +267,18 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 func (t *ConfiguredTemplate) RequiredFeatures() []string {
 	return t.Features
 }
+
+// Compile-time interface compliance checks.
+// These ensure all template types implement the Template interface.
+// If a template type is missing an interface method, this will fail to compile.
+var (
+	_ Template = (*ConfiguredTemplate)(nil)
+	_ Template = (*EnterpriseTemplate)(nil)
+	_ Template = (*APIFirstTemplate)(nil)
+	_ Template = (*MicroserviceTemplate)(nil)
+	_ Template = (*HobbyTemplate)(nil)
+	_ Template = (*LibraryTemplate)(nil)
+	_ Template = (*AnalyticsTemplate)(nil)
+	_ Template = (*TestingTemplate)(nil)
+	_ Template = (*MultiTenantTemplate)(nil)
+)
