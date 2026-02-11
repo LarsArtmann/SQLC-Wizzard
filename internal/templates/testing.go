@@ -63,7 +63,7 @@ func (t *TestingTemplate) DefaultData() TemplateData {
 		false, // emitResultPointers
 		false, // emitParamsPointers
 		false, // emitEnumValidMethod
-		"snake",
+		"camel",
 		false, // noSelectStar
 		false, // requireWhere
 		false, // requireLimit

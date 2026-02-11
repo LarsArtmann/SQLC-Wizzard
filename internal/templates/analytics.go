@@ -63,7 +63,7 @@ func (t *AnalyticsTemplate) DefaultData() TemplateData {
 		false, // emitResultPointers
 		false, // emitParamsPointers
 		false, // emitEnumValidMethod
-		"snake",
+		"camel",
 		false, // noSelectStar
 		false, // requireWhere
 		true,  // requireLimit

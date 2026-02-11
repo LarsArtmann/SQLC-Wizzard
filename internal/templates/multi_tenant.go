@@ -59,11 +59,21 @@ func (t *MultiTenantTemplate) DefaultData() generated.TemplateData {
 		true,  // useJSON
 		true,  // useArrays
 		false, // useFullText
+		true,  // emitJSONTags
 		true,  // emitPreparedQueries
+		true,  // emitInterface
+		false, // emitEmptySlices
 		true,  // emitResultStructPointers
 		true,  // emitParamsStructPointers
+		false, // emitEnumValidMethod
+		false, // emitAllEnumValues
+		"camel", // jsonTagsCaseStyle
+		true,  // strictFunctions
+		true,  // strictOrderBy
 		true,  // noSelectStar
 		true,  // requireWhere
+		true,  // noDropTable
+		false, // noTruncate
 		true,  // requireLimit
 	)
 }

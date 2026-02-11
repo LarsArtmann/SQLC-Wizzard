@@ -180,14 +180,15 @@ func TestEnterpriseTemplate_Description(t *testing.T) {
 
 func TestEnterpriseTemplate_DefaultData(t *testing.T) {
 	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.EnterpriseTemplate{},
-		ExpectedProjectType: generated.ProjectTypeEnterprise,
-		ExpectUUID:          true,
-		ExpectJSON:          true,
-		ExpectArrays:        true,
-		ExpectFullText:      true,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
+		Template:              &templates.EnterpriseTemplate{},
+		ExpectedProjectType:   generated.ProjectTypeEnterprise,
+		ExpectUUID:            true,
+		ExpectJSON:            true,
+		ExpectArrays:          true,
+		ExpectFullText:        true,
+		ExpectJSONTags:       true,
+		ExpectInterface:       true,
+		ExpectPreparedQueries: true,
 	})
 }
 
@@ -219,15 +220,16 @@ func TestAPIFirstTemplate_Description(t *testing.T) {
 
 func TestAPIFirstTemplate_DefaultData(t *testing.T) {
 	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.APIFirstTemplate{},
-		ExpectedProjectType: generated.ProjectType("api-first"),
-		ExpectedProjectName: "api-service",
-		ExpectedEngine:      "postgresql",
-		ExpectUUID:          true,
-		ExpectJSON:          true,
-		ExpectArrays:        true,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
+		Template:              &templates.APIFirstTemplate{},
+		ExpectedProjectType:   generated.ProjectType("api-first"),
+		ExpectedProjectName:   "api-service",
+		ExpectedEngine:        "postgresql",
+		ExpectUUID:           true,
+		ExpectJSON:           true,
+		ExpectArrays:         true,
+		ExpectJSONTags:       true,
+		ExpectInterface:      true,
+		ExpectPreparedQueries: true,
 	})
 }
 
@@ -262,14 +264,15 @@ func TestAnalyticsTemplate_DefaultData(t *testing.T) {
 		ExpectedProjectType:       generated.ProjectType("analytics"),
 		ExpectedPackageName:       "analytics",
 		ExpectedPackagePath:       "internal/analytics",
-		ExpectUUID:                false,
-		ExpectJSON:                true,
-		ExpectArrays:              true,
-		ExpectFullText:            true,
-		ExpectJSONTags:            true,
-		ExpectInterface:           true,
-		ExpectStrictChecks:        true,
-		ExpectedJSONTagsCaseStyle: "snake",
+		ExpectUUID:               false,
+		ExpectJSON:               true,
+		ExpectArrays:             true,
+		ExpectFullText:           true,
+		ExpectJSONTags:           true,
+		ExpectInterface:          true,
+		ExpectStrictChecks:       true,
+		ExpectedJSONTagsCaseStyle: "camel",
+		ExpectPreparedQueries:    false,
 	})
 }
 
@@ -342,14 +345,15 @@ func TestMultiTenantTemplate_Description(t *testing.T) {
 
 func TestMultiTenantTemplate_DefaultData(t *testing.T) {
 	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.MultiTenantTemplate{},
-		ExpectedProjectType: generated.ProjectType("multi-tenant"),
-		ExpectUUID:          true,
-		ExpectJSON:          true,
-		ExpectArrays:        true,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
-		ExpectStrictChecks:  true,
+		Template:              &templates.MultiTenantTemplate{},
+		ExpectedProjectType:   generated.ProjectType("multi-tenant"),
+		ExpectUUID:           true,
+		ExpectJSON:           true,
+		ExpectArrays:         true,
+		ExpectJSONTags:       true,
+		ExpectInterface:      true,
+		ExpectStrictChecks:   true,
+		ExpectPreparedQueries: true,
 	})
 }
 

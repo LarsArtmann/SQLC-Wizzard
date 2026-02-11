@@ -133,8 +133,25 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 		Validation: generated.ValidationConfig{
 			StrictFunctions: false,
 			StrictOrderBy:   false,
-			EmitOptions:     generated.DefaultEmitOptions(),
-			SafetyRules:     generated.DefaultSafetyRules(),
+			EmitOptions: generated.EmitOptions{
+				EmitJSONTags:             true,
+				EmitPreparedQueries:      false,
+				EmitInterface:            true,
+				EmitEmptySlices:          true,
+				EmitResultStructPointers: false,
+				EmitParamsStructPointers: false,
+				EmitEnumValidMethod:      false,
+				EmitAllEnumValues:        false,
+				JSONTagsCaseStyle:        "camel",
+			},
+			SafetyRules: generated.SafetyRules{
+				NoSelectStar:  false,
+				RequireWhere:   false,
+				NoDropTable:    false,
+				NoTruncate:     false,
+				RequireLimit:   false,
+				Rules:          []generated.SafetyRule{},
+			},
 		},
 	}
 }

@@ -30,12 +30,16 @@ type ConfiguredTemplate struct {
 	UseManaged, UseUUIDs, UseJSON, UseArrays, UseFullText bool
 
 	// Emit options
-	EmitPreparedQueries, EmitResultStructPointers, EmitParamsStructPointers bool
+	EmitPreparedQueries, EmitResultStructPointers, EmitParamsStructPointers,
+	EmitJSONTags, EmitInterface, EmitEmptySlices,
+	EmitEnumValidMethod, EmitAllEnumValues bool
+	JSONTagsCaseStyle string
+
+	// Emit options - extended
+	StrictFunctions, StrictOrderBy bool
 
 	// Safety rules
-	NoSelectStar bool
-	RequireWhere bool
-	RequireLimit bool
+	NoSelectStar, RequireWhere, NoDropTable, NoTruncate, RequireLimit bool
 
 	// Required features
 	Features []string
@@ -79,10 +83,22 @@ func NewConfiguredTemplate(
 		EmitPreparedQueries:      true,
 		EmitResultStructPointers: true,
 		EmitParamsStructPointers: true,
+		EmitJSONTags:            false,
+		EmitInterface:           false,
+		EmitEmptySlices:          false,
+		EmitEnumValidMethod:     false,
+		EmitAllEnumValues:       false,
+		JSONTagsCaseStyle:       "snake",
+
+		// Emit options - extended
+		StrictFunctions: false,
+		StrictOrderBy:   false,
 
 		// Safety rules - conservative defaults
 		NoSelectStar: true,
 		RequireWhere: true,
+		NoDropTable:  false,
+		NoTruncate:   false,
 		RequireLimit: false,
 
 		// Required features - minimal default set
@@ -111,7 +127,13 @@ func (t *ConfiguredTemplate) Generate(data generated.TemplateData) (*config.Sqlc
 	if defaultProjectName == "" {
 		defaultProjectName = "project"
 	}
+
+	// Use template's StrictMode or fall back to data's validation settings
 	strictMode := t.StrictMode
+	if !strictMode {
+		// Use data's validation strict settings if template's StrictMode is not set
+		strictMode = data.Validation.StrictFunctions || data.Validation.StrictOrderBy
+	}
 
 	packagePath := t.PackagePath
 	if packagePath == "" {
@@ -155,23 +177,89 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 		baseOutput = "internal/db"
 	}
 
+	// Use configured values or defaults for boolean fields
+	useManaged := t.UseManaged
+	if !useManaged {
+		useManaged = true // sensible default for most templates
+	}
+	useUUIDs := t.UseUUIDs
+	if !useUUIDs {
+		useUUIDs = true // UUIDs are commonly needed
+	}
+	useJSON := t.UseJSON
+	if !useJSON {
+		useJSON = true // JSON support is often useful
+	}
+	useArrays := t.UseArrays
+	if !useArrays {
+		useArrays = true // Arrays are commonly used
+	}
+	useFullText := t.UseFullText
+	// No default - false by default
+
+	emitJSONTags := t.EmitJSONTags
+	emitPreparedQueries := t.EmitPreparedQueries
+	if !emitPreparedQueries {
+		emitPreparedQueries = true // sensible default
+	}
+	emitInterface := t.EmitInterface
+	emitEmptySlices := t.EmitEmptySlices
+	emitResultStructPointers := t.EmitResultStructPointers
+	if !emitResultStructPointers {
+		emitResultStructPointers = true // sensible default
+	}
+	emitParamsStructPointers := t.EmitParamsStructPointers
+	if !emitParamsStructPointers {
+		emitParamsStructPointers = true // sensible default
+	}
+	emitEnumValidMethod := t.EmitEnumValidMethod
+	emitAllEnumValues := t.EmitAllEnumValues
+	jsonTagsCaseStyle := t.JSONTagsCaseStyle
+	if jsonTagsCaseStyle == "" {
+		jsonTagsCaseStyle = "snake" // default case style
+	}
+	strictFunctions := t.StrictFunctions
+	strictOrderBy := t.StrictOrderBy
+
+	noSelectStar := t.NoSelectStar
+	if !noSelectStar {
+		noSelectStar = true // conservative default
+	}
+	requireWhere := t.RequireWhere
+	if !requireWhere {
+		requireWhere = true // conservative default
+	}
+	noDropTable := t.NoDropTable
+	noTruncate := t.NoTruncate
+	requireLimit := t.RequireLimit
+
 	return t.BuildDefaultData(
 		projectType,
 		dbEngine,
 		"${DATABASE_URL}",
 		packagePath,
 		baseOutput,
-		t.UseManaged,
-		t.UseUUIDs,
-		t.UseJSON,
-		t.UseArrays,
-		t.UseFullText,
-		t.EmitPreparedQueries,
-		t.EmitResultStructPointers,
-		t.EmitParamsStructPointers,
-		t.NoSelectStar,
-		t.RequireWhere,
-		t.RequireLimit,
+		useManaged,
+		useUUIDs,
+		useJSON,
+		useArrays,
+		useFullText,
+		emitJSONTags,
+		emitPreparedQueries,
+		emitInterface,
+		emitEmptySlices,
+		emitResultStructPointers,
+		emitParamsStructPointers,
+		emitEnumValidMethod,
+		emitAllEnumValues,
+		jsonTagsCaseStyle,
+		strictFunctions,
+		strictOrderBy,
+		noSelectStar,
+		requireWhere,
+		noDropTable,
+		noTruncate,
+		requireLimit,
 	)
 }
 

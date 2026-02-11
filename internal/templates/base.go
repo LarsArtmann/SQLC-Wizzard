@@ -243,8 +243,11 @@ func (t *BaseTemplate) BuildDefaultData(
 	packagePath string,
 	baseOutputDir string,
 	useManaged, useUUIDs, useJSON, useArrays, useFullText bool,
-	emitPreparedQueries, emitResultStructPointers, emitParamsStructPointers bool,
-	noSelectStar, requireWhere, requireLimit bool,
+	emitJSONTags, emitPreparedQueries, emitInterface, emitEmptySlices bool,
+	emitResultStructPointers, emitParamsStructPointers, emitEnumValidMethod, emitAllEnumValues bool,
+	jsonTagsCaseStyle string,
+	strictFunctions, strictOrderBy bool,
+	noSelectStar, requireWhere, noDropTable, noTruncate, requireLimit bool,
 ) generated.TemplateData {
 	return generated.TemplateData{
 		ProjectName: "",
@@ -272,21 +275,21 @@ func (t *BaseTemplate) BuildDefaultData(
 		},
 
 		Validation: t.BuildValidationConfig(
-			useManaged, // Match strict mode to UseManaged for consistency
-			useManaged,
-			true, // emitJSONTags
+			strictFunctions,
+			strictOrderBy,
+			emitJSONTags,
 			emitPreparedQueries,
-			true, // emitInterface
-			true, // emitEmptySlices
+			emitInterface,
+			emitEmptySlices,
 			emitResultStructPointers,
 			emitParamsStructPointers,
-			true, // emitEnumValidMethod
-			true, // emitAllEnumValues
-			"camel",
+			emitEnumValidMethod,
+			emitAllEnumValues,
+			jsonTagsCaseStyle,
 			noSelectStar,
 			requireWhere,
-			true, // noDropTable
-			true, // noTruncate
+			noDropTable,
+			noTruncate,
 			requireLimit,
 		),
 	}

@@ -59,11 +59,21 @@ func (t *LibraryTemplate) DefaultData() generated.TemplateData {
 		false, // useJSON
 		false, // useArrays
 		false, // useFullText
+		true,  // emitJSONTags
 		false, // emitPreparedQueries
+		true,  // emitInterface
+		false, // emitEmptySlices
 		false, // emitResultStructPointers
 		false, // emitParamsStructPointers
+		true,  // emitEnumValidMethod
+		false, // emitAllEnumValues
+		"camel", // jsonTagsCaseStyle
+		false, // strictFunctions
+		false, // strictOrderBy
 		false, // noSelectStar
 		false, // requireWhere
+		false, // noDropTable
+		false, // noTruncate
 		false, // requireLimit
 	)
 }

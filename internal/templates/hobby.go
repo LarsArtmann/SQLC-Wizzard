@@ -42,50 +42,34 @@ func (t *HobbyTemplate) Generate(data generated.TemplateData) (*config.SqlcConfi
 
 // DefaultData returns default TemplateData for hobby template.
 func (t *HobbyTemplate) DefaultData() TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType("hobby"),
-
-		Package: generated.PackageConfig{
-			Name: "db",
-			Path: "db",
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType("sqlite"),
-			URL:         "file:dev.db",
-			UseManaged:  false,
-			UseUUIDs:    false,
-			UseJSON:     false,
-			UseArrays:   false,
-			UseFullText: false,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    "db",
-			QueriesDir: "db/queries",
-			SchemaDir:  "db/schema",
-		},
-
-		Validation: t.BuildValidationConfig(
-			false, // strictFunctions
-			false, // strictOrderBy
-			false, // emitJSONTags
-			false, // emitPreparedQueries
-			false, // emitInterface
-			true,  // emitEmptySlices
-			false, // emitResultStructPointers
-			false, // emitParamsStructPointers
-			false, // emitEnumValidMethod
-			false, // emitAllEnumValues
-			"snake",
-			false, // noSelectStar
-			false, // requireWhere
-			false, // noDropTable
-			false, // noTruncate
-			false, // requireLimit
-		),
-	}
+	return t.BuildDefaultData(
+		"hobby",        // projectType
+		"sqlite",       // dbEngine
+		"file:dev.db",  // databaseURL
+		"db",           // packagePath
+		"db",           // baseOutputDir
+		false,          // useManaged
+		false,          // useUUIDs
+		false,          // useJSON
+		false,          // useArrays
+		false,          // useFullText
+		false,          // emitJSONTags
+		false,          // emitPreparedQueries
+		false,          // emitInterface
+		true,           // emitEmptySlices
+		false,          // emitResultStructPointers
+		false,          // emitParamsStructPointers
+		false,          // emitEnumValidMethod
+		false,          // emitAllEnumValues
+		"camel",        // jsonTagsCaseStyle
+		false,          // strictFunctions
+		false,          // strictOrderBy
+		false,          // noSelectStar
+		false,          // requireWhere
+		false,          // noDropTable
+		false,          // noTruncate
+		false,          // requireLimit
+	)
 }
 
 // RequiredFeatures returns which features this template requires.
