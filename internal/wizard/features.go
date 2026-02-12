@@ -80,27 +80,48 @@ func buildFeatures(configs ...FeatureConfig) []FeatureConfig {
 	return configs
 }
 
+// configSpec defines a feature configuration specification.
+type configSpec struct {
+	title       string
+	description string
+	fieldPath   string // Dot-notation path to the field: "EmitOptions.EmitInterface", "SafetyRules.NoSelectStar"
+}
+
+// configFieldMapper maps a configSpec to a field assignment function.
+var configFieldMapper = map[string]fieldAssignment{
+	"EmitOptions.EmitInterface":       func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitInterface = val },
+	"EmitOptions.EmitPreparedQueries": func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitPreparedQueries = val },
+	"EmitOptions.EmitJSONTags":        func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitJSONTags = val },
+	"SafetyRules.NoSelectStar":        func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.NoSelectStar = val },
+	"SafetyRules.RequireWhere":        func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireWhere = val },
+	"SafetyRules.RequireLimit":        func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireLimit = val },
+}
+
+// buildConfigs creates FeatureConfig slice from config specifications.
+func buildConfigs(specs []configSpec) []FeatureConfig {
+	configs := make([]FeatureConfig, len(specs))
+	for i, spec := range specs {
+		assign := configFieldMapper[spec.fieldPath]
+		configs[i] = createFeatureConfig(spec.title, spec.description, assign)
+	}
+	return configs
+}
+
 // Pre-defined configuration sets
 
 // Code generation configs.
-var codeGenerationConfigs = buildFeatures(
-	createFeatureConfig("Generate Go interfaces?", "Create interfaces for query methods",
-		func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitInterface = val }),
-	createFeatureConfig("Generate prepared queries?", "Create prepared query methods for better performance",
-		func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitPreparedQueries = val }),
-	createFeatureConfig("Add JSON tags?", "Add JSON struct tags to generated models",
-		func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitJSONTags = val }),
-)
+var codeGenerationConfigs = buildConfigs([]configSpec{
+	{"Generate Go interfaces?", "Create interfaces for query methods", "EmitOptions.EmitInterface"},
+	{"Generate prepared queries?", "Create prepared query methods for better performance", "EmitOptions.EmitPreparedQueries"},
+	{"Add JSON tags?", "Add JSON struct tags to generated models", "EmitOptions.EmitJSONTags"},
+})
 
 // Safety rule configs.
-var safetyRuleConfigs = buildFeatures(
-	createFeatureConfig("Forbid SELECT *?", "Prevent SELECT * queries for better performance and explicitness",
-		func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.NoSelectStar = val }),
-	createFeatureConfig("Require WHERE clause?", "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification",
-		func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireWhere = val }),
-	createFeatureConfig("Require LIMIT on SELECT?", "Force LIMIT clauses on SELECT queries to prevent large result sets",
-		func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireLimit = val }),
-)
+var safetyRuleConfigs = buildConfigs([]configSpec{
+	{"Forbid SELECT *?", "Prevent SELECT * queries for better performance and explicitness", "SafetyRules.NoSelectStar"},
+	{"Require WHERE clause?", "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification", "SafetyRules.RequireWhere"},
+	{"Require LIMIT on SELECT?", "Force LIMIT clauses on SELECT queries to prevent large result sets", "SafetyRules.RequireLimit"},
+})
 
 // runFeatureConfigForm runs confirmation form for any feature configuration.
 func (s *FeaturesStep) runFeatureConfigForm(data *generated.TemplateData, configs []FeatureConfig, errorContext string) error {
