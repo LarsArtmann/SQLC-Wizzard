@@ -374,12 +374,14 @@ func TestLibraryTemplate_DefaultData(t *testing.T) {
 }
 
 func TestLibraryTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            templates.NewLibraryTemplate(),
-		ExpectedProjectType: generated.ProjectType("library"),
-		ExpectedProjectName: "library-module",
-		ExpectedEngine:      "postgresql",
-	})
+	internal_testing.AssertTemplateGenerateBasic(t,
+		internal_testing.NewTemplateTestHelper(
+			templates.NewLibraryTemplate(),
+			internal_testing.WithProjectType(generated.ProjectTypeLibrary),
+			internal_testing.WithProjectName("library-module"),
+			internal_testing.WithEngine("postgresql"),
+		),
+	)
 }
 
 // ZeroValueInitializationTests verify that templates work correctly when created
