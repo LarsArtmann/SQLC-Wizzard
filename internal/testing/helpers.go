@@ -179,3 +179,22 @@ func CreateTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *dom
 	}
 	return rules
 }
+
+// CreateRestrictiveTypeSafeSafetyRulesWithCustomRules creates a TypeSafeSafetyRules with
+// restrictive safety settings and accepts custom rules for testing custom rule preservation.
+// This helper eliminates duplicate fixture code for testing custom safety rules.
+func CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(customRules []generated.SafetyRule) *domain.TypeSafeSafetyRules {
+	return &domain.TypeSafeSafetyRules{
+		StyleRules: domain.QueryStyleRules{
+			SelectStarPolicy:   domain.SelectStarForbidden,
+			ColumnExplicitness: domain.ColumnExplicitnessDefault,
+		},
+		SafetyRules: domain.QuerySafetyRules{
+			WhereRequirement:    domain.WhereClauseAlways,
+			LimitRequirement:    domain.LimitClauseNever,
+			MaxRowsWithoutLimit: 1000,
+		},
+		DestructiveOps: domain.DestructiveForbidden,
+		CustomRules:    customRules,
+	}
+}

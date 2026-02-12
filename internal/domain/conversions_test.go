@@ -3,6 +3,7 @@ package domain_test
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -492,19 +493,7 @@ var _ = Describe("SafetyRules Conversions", func() {
 				},
 			}
 
-			typeSafe := domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarForbidden,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseAlways,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 1000,
-				},
-				DestructiveOps: domain.DestructiveForbidden,
-				CustomRules:    customRules,
-			}
+			typeSafe := testing.CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(customRules)
 
 			legacy := typeSafe.ToLegacy()
 
