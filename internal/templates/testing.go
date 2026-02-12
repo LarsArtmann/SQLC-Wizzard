@@ -88,12 +88,15 @@ func (t *TestingTemplate) DefaultData() TemplateData {
 		false, // emitInterface
 		false, // emitAllEnumValues
 		false, // emitPreparedQueries
+		true,  // emitEmptySlices
 		false, // emitResultPointers
 		false, // emitParamsPointers
 		false, // emitEnumValidMethod
 		"camel",
 		false, // noSelectStar
 		false, // requireWhere
+		true,  // noDropTable
+		true,  // noTruncate
 		false, // requireLimit
 	)
 }

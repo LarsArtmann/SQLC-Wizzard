@@ -88,12 +88,15 @@ func (t *AnalyticsTemplate) DefaultData() TemplateData {
 		true,  // emitInterface
 		true,  // emitAllEnumValues
 		false, // emitPreparedQueries
+		true,  // emitEmptySlices
 		false, // emitResultPointers
 		false, // emitParamsPointers
 		false, // emitEnumValidMethod
 		"camel",
 		false, // noSelectStar
 		false, // requireWhere
+		true,  // noDropTable
+		true,  // noTruncate
 		true,  // requireLimit
 	)
 }
