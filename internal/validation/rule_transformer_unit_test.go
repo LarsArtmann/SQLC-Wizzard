@@ -5,6 +5,7 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -19,45 +20,6 @@ func runRuleTransformationTest(transformer *validation.RuleTransformer, ruleName
 	Expect(configRules[0].Name).To(Equal(ruleName))
 	Expect(configRules[0].Rule).To(Equal(expectedRule))
 	Expect(configRules[0].Message).To(Equal(expectedMessage))
-}
-
-// createBaseTypeSafeSafetyRules creates a default TypeSafeSafetyRules structure for test reuse.
-func createBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
-	return &domain.TypeSafeSafetyRules{
-		StyleRules: domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarAllowed,
-			ColumnExplicitness: domain.ColumnExplicitnessDefault,
-		},
-		SafetyRules: domain.QuerySafetyRules{
-			WhereRequirement:    domain.WhereClauseNever,
-			LimitRequirement:    domain.LimitClauseNever,
-			MaxRowsWithoutLimit: 0,
-		},
-		DestructiveOps: domain.DestructiveAllowed,
-		CustomRules:    []generated.SafetyRule{},
-	}
-}
-
-// createTypeSafeSafetyRules creates a TypeSafeSafetyRules with the given configuration.
-// This reduces duplication when creating test fixtures with specific safety rule values.
-func createTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *domain.TypeSafeSafetyRules {
-	rules := &domain.TypeSafeSafetyRules{
-		StyleRules: domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarForbidden,
-			ColumnExplicitness: domain.ColumnExplicitnessDefault,
-		},
-		SafetyRules: domain.QuerySafetyRules{
-			WhereRequirement:    domain.WhereClauseOnDestructive,
-			LimitRequirement:    domain.LimitClauseOnSelect,
-			MaxRowsWithoutLimit: 100,
-		},
-		DestructiveOps: domain.DestructiveForbidden,
-		CustomRules:    []generated.SafetyRule{},
-	}
-	if configure != nil {
-		configure(rules)
-	}
-	return rules
 }
 
 // expectSingleRule verifies that a single rule with the expected name and rule expression is generated.
@@ -104,7 +66,7 @@ func runClauseRequirementParityTest(
 		transformer,
 		boolRules,
 		func() *domain.TypeSafeSafetyRules {
-			rules := createBaseTypeSafeSafetyRules()
+			rules := testing.CreateBaseTypeSafeSafetyRules()
 			setTypeSafeRequirement(rules)
 			return rules
 		},
