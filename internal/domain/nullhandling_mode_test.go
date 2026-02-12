@@ -80,12 +80,7 @@ var _ = Describe("NullHandlingMode", func() {
 
 	Context("String", func() {
 		It("should return correct string representation", func() {
-			testing.RunStringRepresentationTest([]testing.EnumTestCase{
-				{EnumValue: domain.NullHandlingPointers, ExpectedString: "pointers"},
-				{EnumValue: domain.NullHandlingEmptySlices, ExpectedString: "empty_slices"},
-				{EnumValue: domain.NullHandlingExplicitNull, ExpectedString: "explicit_null"},
-				{EnumValue: domain.NullHandlingMixed, ExpectedString: "mixed"},
-			})
+			testing.RunStringRepresentationTest(testing.GetNullHandlingModeTestCases())
 		})
 	})
 })

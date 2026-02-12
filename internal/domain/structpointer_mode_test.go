@@ -48,12 +48,7 @@ var _ = Describe("StructPointerMode", func() {
 
 	Context("String", func() {
 		It("should return correct string representation", func() {
-			testing.RunStringRepresentationTest([]testing.EnumTestCase{
-				{EnumValue: domain.StructPointerNever, ExpectedString: "never"},
-				{EnumValue: domain.StructPointerResults, ExpectedString: "results"},
-				{EnumValue: domain.StructPointerParams, ExpectedString: "params"},
-				{EnumValue: domain.StructPointerAlways, ExpectedString: "always"},
-			})
+			testing.RunStringRepresentationTest(testing.GetStructPointerModeTestCases())
 		})
 	})
 })
