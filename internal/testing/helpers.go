@@ -305,3 +305,13 @@ func GetJSONTagStyleTestCases() []EnumTestCase {
 		{EnumValue: domain.JSONTagStyleKebab, ExpectedString: "kebab"},
 	}
 }
+
+// TestStringRepresentationSuite runs generic tests for String() method of any enum type.
+// It encapsulates the common Context/It pattern for string representation tests.
+func TestStringRepresentationSuite(testCases func() []EnumTestCase) {
+	Context("String", func() {
+		It("should return correct string representation", func() {
+			RunStringRepresentationTest(testCases())
+		})
+	})
+}

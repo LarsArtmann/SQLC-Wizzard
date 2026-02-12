@@ -34,9 +34,5 @@ var _ = Describe("JSONTagStyle", func() {
 	// Use generic validation test suite
 	testing.TestValidationSuite(JSONTagStyleTestSuite{})
 
-	Context("String", func() {
-		It("should return correct string representation", func() {
-			testing.RunStringRepresentationTest(testing.GetJSONTagStyleTestCases())
-		})
-	})
+	testing.TestStringRepresentationSuite(testing.GetJSONTagStyleTestCases)
 })

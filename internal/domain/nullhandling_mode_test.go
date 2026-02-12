@@ -78,9 +78,5 @@ var _ = Describe("NullHandlingMode", func() {
 		)
 	})
 
-	Context("String", func() {
-		It("should return correct string representation", func() {
-			testing.RunStringRepresentationTest(testing.GetNullHandlingModeTestCases())
-		})
-	})
+	testing.TestStringRepresentationSuite(testing.GetNullHandlingModeTestCases)
 })
