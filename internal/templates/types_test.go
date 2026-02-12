@@ -113,18 +113,17 @@ func TestMicroserviceTemplate_DefaultData(t *testing.T) {
 }
 
 func TestMicroserviceTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.MicroserviceTemplate{},
-		ExpectedProjectType: generated.ProjectTypeMicroservice,
-		ExpectedProjectName: "test-service",
-		ExpectedEngine:      "postgresql",
-		ExpectUUID:          true,
-		ExpectJSON:          true,
-		ExpectArrays:        false,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
-		ExpectStrictChecks:  false,
-	})
+	helper := internal_testing.NewTemplateTestHelper(
+		&templates.MicroserviceTemplate{},
+		internal_testing.WithProjectType(generated.ProjectTypeMicroservice),
+		internal_testing.WithProjectName("test-service"),
+		internal_testing.WithEngine("postgresql"),
+		internal_testing.WithUUID(true),
+		internal_testing.WithJSON(true),
+		internal_testing.WithJSONTags(true),
+		internal_testing.WithInterface(true),
+	)
+	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 
 // HobbyTemplate Tests.
@@ -153,18 +152,15 @@ func TestHobbyTemplate_DefaultData(t *testing.T) {
 }
 
 func TestHobbyTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.HobbyTemplate{},
-		ExpectedProjectType: generated.ProjectTypeHobby,
-		ExpectedProjectName: "my-hobby-project",
-		ExpectedEngine:      "sqlite",
-		ExpectUUID:          false,
-		ExpectJSON:          false,
-		ExpectArrays:        false,
-		ExpectJSONTags:      false,
-		ExpectInterface:     false,
-		ExpectStrictChecks:  false,
-	})
+	helper := internal_testing.NewTemplateTestHelper(
+		&templates.HobbyTemplate{},
+		internal_testing.WithProjectType(generated.ProjectTypeHobby),
+		internal_testing.WithProjectName("my-hobby-project"),
+		internal_testing.WithEngine("sqlite"),
+	)
+	helper.ExpectedPackagePath = ""
+	helper.ExpectedDatabaseType = generated.DatabaseTypeSQLite
+	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 
 // EnterpriseTemplate Tests.
