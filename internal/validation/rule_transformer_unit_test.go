@@ -69,6 +69,27 @@ func runParityTest(
 	assertIdenticalRules(boolResult, typeSafeResult, expectedExpression)
 }
 
+// runClauseRequirementParityTest is a generic helper for clause requirement parity tests.
+// It reduces duplication for tests that verify boolean flags (RequireWhere, RequireLimit)
+// produce identical expressions to type-safe enum values (WhereClauseOnDestructive, LimitClauseOnSelect).
+func runClauseRequirementParityTest(
+	transformer *validation.RuleTransformer,
+	boolRules *generated.SafetyRules,
+	setTypeSafeRequirement func(*domain.TypeSafeSafetyRules),
+	expectedExpression string,
+) {
+	runParityTest(
+		transformer,
+		boolRules,
+		func() *domain.TypeSafeSafetyRules {
+			rules := createBaseTypeSafeSafetyRules()
+			setTypeSafeRequirement(rules)
+			return rules
+		},
+		expectedExpression,
+	)
+}
+
 func TestValidation(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Validation Unit Suite")
@@ -321,17 +342,15 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should produce identical expressions for RequireWhere vs RequiresOnDestructive", func() {
-			runParityTest(
+			runClauseRequirementParityTest(
 				transformer,
 				&generated.SafetyRules{
 					NoSelectStar: false,
 					RequireWhere: true,
 					RequireLimit: false,
 				},
-				func() *domain.TypeSafeSafetyRules {
-					rules := createBaseTypeSafeSafetyRules()
+				func(rules *domain.TypeSafeSafetyRules) {
 					rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
-					return rules
 				},
 				"query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
 			)
