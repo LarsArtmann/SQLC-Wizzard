@@ -316,48 +316,30 @@ var _ = Describe("CreateFeatureSteps", func() {
 		})
 	})
 
-	Context("with all features enabled", func() {
-		It("should create valid steps", func() {
-			data := &generated.TemplateData{
-				Database: generated.DatabaseConfig{
-					UseUUIDs:    true,
-					UseJSON:     true,
-					UseArrays:   true,
-					UseFullText: true,
-				},
-				Validation: generated.ValidationConfig{
-					StrictFunctions: true,
-					StrictOrderBy:   true,
-				},
-			}
+	Context("with all features", func() {
+		DescribeTable("should create valid steps regardless of feature state",
+			func(enabled bool) {
+				data := &generated.TemplateData{
+					Database: generated.DatabaseConfig{
+						UseUUIDs:    enabled,
+						UseJSON:     enabled,
+						UseArrays:   enabled,
+						UseFullText: enabled,
+					},
+					Validation: generated.ValidationConfig{
+						StrictFunctions: enabled,
+						StrictOrderBy:   enabled,
+					},
+				}
 
-			steps := CreateFeatureSteps(data)
+				steps := CreateFeatureSteps(data)
 
-			Expect(steps).ToNot(BeNil())
-			Expect(steps).To(HaveLen(6))
-		})
-	})
-
-	Context("with all features disabled", func() {
-		It("should create valid steps", func() {
-			data := &generated.TemplateData{
-				Database: generated.DatabaseConfig{
-					UseUUIDs:    false,
-					UseJSON:     false,
-					UseArrays:   false,
-					UseFullText: false,
-				},
-				Validation: generated.ValidationConfig{
-					StrictFunctions: false,
-					StrictOrderBy:   false,
-				},
-			}
-
-			steps := CreateFeatureSteps(data)
-
-			Expect(steps).ToNot(BeNil())
-			Expect(steps).To(HaveLen(6))
-		})
+				Expect(steps).ToNot(BeNil())
+				Expect(steps).To(HaveLen(6))
+			},
+			Entry("when enabled", true),
+			Entry("when disabled", false),
+		)
 	})
 
 	Context("with nil template data", func() {
