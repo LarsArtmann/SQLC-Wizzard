@@ -254,12 +254,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 				Rule:    "query.contains('DOMAIN_PATTERNS')",
 				Message: "Domain patterns not allowed",
 			}
-			rules := &domain.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				RequireLimit: false,
-				Rules:        []generated.SafetyRule{customRule},
-			}
+			rules := testingHelper.CreateGeneratedSafetyRulesAllowedWithCustomRules([]generated.SafetyRule{customRule})
 
 			configRules := transformer.TransformDomainSafetyRules(rules)
 

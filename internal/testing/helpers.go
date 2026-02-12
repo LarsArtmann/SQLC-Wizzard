@@ -265,3 +265,17 @@ func CreateGeneratedSafetyRulesAllowed() generated.SafetyRules {
 		Rules:        []generated.SafetyRule{},
 	}
 }
+
+// CreateGeneratedSafetyRulesAllowedWithCustomRules creates a SafetyRules with all forbidden flags
+// cleared and accepts custom rules for testing custom rule preservation.
+// This helper eliminates duplicate fixture code for testing custom safety rules.
+func CreateGeneratedSafetyRulesAllowedWithCustomRules(customRules []generated.SafetyRule) *domain.SafetyRules {
+	return &domain.SafetyRules{
+		NoSelectStar: false,
+		RequireWhere: false,
+		NoDropTable:  false,
+		NoTruncate:   false,
+		RequireLimit: false,
+		Rules:        customRules,
+	}
+}
