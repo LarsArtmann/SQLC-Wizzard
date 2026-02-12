@@ -38,6 +38,28 @@ func createBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 	}
 }
 
+// createTypeSafeSafetyRules creates a TypeSafeSafetyRules with the given configuration.
+// This reduces duplication when creating test fixtures with specific safety rule values.
+func createTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *domain.TypeSafeSafetyRules {
+	rules := &domain.TypeSafeSafetyRules{
+		StyleRules: domain.QueryStyleRules{
+			SelectStarPolicy:   domain.SelectStarForbidden,
+			ColumnExplicitness: domain.ColumnExplicitnessDefault,
+		},
+		SafetyRules: domain.QuerySafetyRules{
+			WhereRequirement:    domain.WhereClauseOnDestructive,
+			LimitRequirement:    domain.LimitClauseOnSelect,
+			MaxRowsWithoutLimit: 100,
+		},
+		DestructiveOps: domain.DestructiveForbidden,
+		CustomRules:    []generated.SafetyRule{},
+	}
+	if configure != nil {
+		configure(rules)
+	}
+	return rules
+}
+
 // expectSingleRule verifies that a single rule with the expected name and rule expression is generated.
 func expectSingleRule(transformer *validation.RuleTransformer, rules *domain.TypeSafeSafetyRules, expectedName, expectedRule string) {
 	configRules := transformer.TransformTypeSafeSafetyRules(rules)
@@ -384,20 +406,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			//
 			// This is consistent: the boolean flag + expression together mean "flag is true → violation condition"
 
-			typeSafeRules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarForbidden,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseOnDestructive,
-					LimitRequirement:    domain.LimitClauseOnSelect,
-					MaxRowsWithoutLimit: 100,
-				},
-				DestructiveOps: domain.DestructiveForbidden,
-				CustomRules:    []generated.SafetyRule{},
-			}
-			result := transformer.TransformTypeSafeSafetyRules(typeSafeRules)
+			result := transformer.TransformTypeSafeSafetyRules(createTypeSafeSafetyRules(nil))
 
 			// Should have 4 rules: no-select-star, require-where, require-limit, max-rows-without-limit, no-drop-table, no-truncate
 			Expect(result).To(HaveLen(6))
