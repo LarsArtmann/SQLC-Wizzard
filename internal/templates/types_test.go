@@ -379,13 +379,13 @@ func TestLibraryTemplate_Name(t *testing.T) {
 }
 
 func TestLibraryTemplate_Description(t *testing.T) {
-	template := &templates.LibraryTemplate{}
+	template := templates.NewLibraryTemplate()
 	assert.Contains(t, template.Description(), "Library")
 }
 
 func TestLibraryTemplate_DefaultData(t *testing.T) {
 	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.LibraryTemplate{},
+		Template:            templates.NewLibraryTemplate(),
 		ExpectedProjectType: generated.ProjectType("library"),
 		ExpectUUID:          false,
 		ExpectJSON:          false,
@@ -397,7 +397,7 @@ func TestLibraryTemplate_DefaultData(t *testing.T) {
 
 func TestLibraryTemplate_Generate_Basic(t *testing.T) {
 	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.LibraryTemplate{},
+		Template:            templates.NewLibraryTemplate(),
 		ExpectedProjectType: generated.ProjectType("library"),
 		ExpectedProjectName: "library-module",
 		ExpectedEngine:      "postgresql",

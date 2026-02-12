@@ -1,5 +1,10 @@
 package templates
 
+import (
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+)
+
 // LibraryTemplate generates sqlc config for reusable Go libraries.
 type LibraryTemplate struct {
 	ConfiguredTemplate
@@ -52,4 +57,19 @@ func NewLibraryTemplate() *LibraryTemplate {
 // RequiredFeatures returns which features this template requires.
 func (t *LibraryTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "json_tags", "enum_valid_method"}
+}
+
+// Name returns the template name.
+func (t *LibraryTemplate) Name() string {
+	return "library"
+}
+
+// Description returns a human-readable description.
+func (t *LibraryTemplate) Description() string {
+	return "Library package configuration for reusable Go library development"
+}
+
+// Generate creates a SqlcConfig from template data.
+func (t *LibraryTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
+	return t.ConfiguredTemplate.Generate(data)
 }

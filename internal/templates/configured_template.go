@@ -162,6 +162,9 @@ func (t *ConfiguredTemplate) Generate(data generated.TemplateData) (*config.Sqlc
 
 // DefaultData returns default TemplateData with the configured values.
 func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
+	// Check if template has been configured (has a name set)
+	isConfigured := t.TemplateName != ""
+
 	// Use configured values or defaults to support empty struct initialization
 	projectType := t.ProjectType
 	if projectType == "" {
@@ -181,20 +184,21 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 	}
 
 	// Use configured values or defaults for boolean fields
+	// Only apply defaults if template is NOT explicitly configured
 	useManaged := t.UseManaged
-	if !useManaged {
+	if !isConfigured && !useManaged {
 		useManaged = true // sensible default for most templates
 	}
 	useUUIDs := t.UseUUIDs
-	if !useUUIDs {
+	if !isConfigured && !useUUIDs {
 		useUUIDs = true // UUIDs are commonly needed
 	}
 	useJSON := t.UseJSON
-	if !useJSON {
+	if !isConfigured && !useJSON {
 		useJSON = true // JSON support is often useful
 	}
 	useArrays := t.UseArrays
-	if !useArrays {
+	if !isConfigured && !useArrays {
 		useArrays = true // Arrays are commonly used
 	}
 	useFullText := t.UseFullText
@@ -202,17 +206,17 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 
 	emitJSONTags := t.EmitJSONTags
 	emitPreparedQueries := t.EmitPreparedQueries
-	if !emitPreparedQueries {
+	if !isConfigured && !emitPreparedQueries {
 		emitPreparedQueries = true // sensible default
 	}
 	emitInterface := t.EmitInterface
 	emitEmptySlices := t.EmitEmptySlices
 	emitResultStructPointers := t.EmitResultStructPointers
-	if !emitResultStructPointers {
+	if !isConfigured && !emitResultStructPointers {
 		emitResultStructPointers = true // sensible default
 	}
 	emitParamsStructPointers := t.EmitParamsStructPointers
-	if !emitParamsStructPointers {
+	if !isConfigured && !emitParamsStructPointers {
 		emitParamsStructPointers = true // sensible default
 	}
 	emitEnumValidMethod := t.EmitEnumValidMethod
@@ -225,11 +229,11 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 	strictOrderBy := t.StrictOrderBy
 
 	noSelectStar := t.NoSelectStar
-	if !noSelectStar {
+	if !isConfigured && !noSelectStar {
 		noSelectStar = true // conservative default
 	}
 	requireWhere := t.RequireWhere
-	if !requireWhere {
+	if !isConfigured && !requireWhere {
 		requireWhere = true // conservative default
 	}
 	noDropTable := t.NoDropTable

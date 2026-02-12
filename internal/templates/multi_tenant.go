@@ -1,5 +1,10 @@
 package templates
 
+import (
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
+)
+
 // MultiTenantTemplate generates sqlc config for multi-tenant SaaS applications.
 type MultiTenantTemplate struct {
 	ConfiguredTemplate
@@ -59,4 +64,19 @@ func NewMultiTenantTemplate() *MultiTenantTemplate {
 // RequiredFeatures returns which features this template requires.
 func (t *MultiTenantTemplate) RequiredFeatures() []string {
 	return []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"}
+}
+
+// Name returns the template name.
+func (t *MultiTenantTemplate) Name() string {
+	return "multi-tenant"
+}
+
+// Description returns a human-readable description.
+func (t *MultiTenantTemplate) Description() string {
+	return "Optimized for SaaS multi-tenant architecture with tenant isolation and strict safety rules"
+}
+
+// Generate creates a SqlcConfig from template data.
+func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
+	return t.ConfiguredTemplate.Generate(data)
 }
