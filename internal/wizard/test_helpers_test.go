@@ -60,6 +60,17 @@ func createTemplateDataWithAllFeatures(enabled bool) generated.TemplateData {
 	return data
 }
 
+// Test output path constants for reuse across test cases
+const (
+	CustomBaseDir    = "./custom/db"
+	CustomQueriesDir = "./custom/queries"
+	CustomSchemaDir  = "./custom/schema"
+
+	AbsoluteBaseDir    = "/absolute/path/db"
+	RelativeQueriesDir = "./relative/queries"
+	RelativeSchemaDir  = "../schema"
+)
+
 // testOutputPathConfiguration tests output directory configuration with custom paths.
 func testOutputPathConfiguration(wiz *wizard.Wizard, baseDir, queriesDir, schemaDir string) {
 	result := wiz.GetResult()

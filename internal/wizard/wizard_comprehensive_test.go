@@ -281,11 +281,11 @@ var _ = Describe("Wizard Steps", func() {
 
 	Describe("Output Configuration", func() {
 		It("should handle custom output directories", func() {
-			testOutputPathConfiguration(wiz, "./custom/db", "./custom/queries", "./custom/schema")
+			testOutputPathConfiguration(wiz, CustomBaseDir, CustomQueriesDir, CustomSchemaDir)
 		})
 
 		It("should handle relative and absolute paths", func() {
-			testOutputPathConfiguration(wiz, "/absolute/path/db", "./relative/queries", "../schema")
+			testOutputPathConfiguration(wiz, AbsoluteBaseDir, RelativeQueriesDir, RelativeSchemaDir)
 		})
 	})
 
