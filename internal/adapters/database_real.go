@@ -17,6 +17,44 @@ func NewRealDatabaseAdapter() *RealDatabaseAdapter {
 	return &RealDatabaseAdapter{}
 }
 
+// OperationType represents the type of database operation for logging purposes.
+type OperationType string
+
+const (
+	OperationTestConnection  OperationType = "Testing database connection to:"
+	OperationCreateDatabase  OperationType = "Creating database with URI:"
+	OperationDropDatabase     OperationType = "Dropping database with URI:"
+	OperationGenerateMigrations OperationType = "Generating migrations for:"
+)
+
+// performDatabaseOperation performs common validation and logging for database operations.
+func (a *RealDatabaseAdapter) performDatabaseOperation(ctx context.Context, cfg *config.DatabaseConfig, operation OperationType) error {
+	if err := validateDatabaseConfig(cfg); err != nil {
+		return err
+	}
+
+	logDatabaseOperation(operation, cfg.URI)
+	return nil
+}
+
+// logDatabaseOperation logs database operations with consistent formatting.
+func logDatabaseOperation(operation OperationType, uri string) {
+	var emoji string
+	switch operation {
+	case OperationTestConnection:
+		emoji = "🔗"
+	case OperationCreateDatabase:
+		emoji = "🗄️"
+	case OperationDropDatabase:
+		emoji = "🗑️"
+	case OperationGenerateMigrations:
+		emoji = "📝"
+	default:
+		emoji = "🔧"
+	}
+	fmt.Printf("%s %s %s\n", emoji, operation, maskSensitiveInfo(uri))
+}
+
 // validateDatabaseConfig checks that the database configuration is valid.
 func validateDatabaseConfig(cfg *config.DatabaseConfig) error {
 	if cfg == nil {
@@ -30,32 +68,17 @@ func validateDatabaseConfig(cfg *config.DatabaseConfig) error {
 
 // TestConnection tests database connectivity.
 func (a *RealDatabaseAdapter) TestConnection(ctx context.Context, cfg *config.DatabaseConfig) error {
-	if err := validateDatabaseConfig(cfg); err != nil {
-		return err
-	}
-
-	fmt.Printf("🔗 Testing database connection to: %s\n", maskSensitiveInfo(cfg.URI))
-	return nil
+	return a.performDatabaseOperation(ctx, cfg, OperationTestConnection)
 }
 
 // CreateDatabase creates a new database.
 func (a *RealDatabaseAdapter) CreateDatabase(ctx context.Context, cfg *config.DatabaseConfig) error {
-	if err := validateDatabaseConfig(cfg); err != nil {
-		return err
-	}
-
-	fmt.Printf("🗄️  Creating database with URI: %s\n", maskSensitiveInfo(cfg.URI))
-	return nil
+	return a.performDatabaseOperation(ctx, cfg, OperationCreateDatabase)
 }
 
 // DropDatabase drops a database.
 func (a *RealDatabaseAdapter) DropDatabase(ctx context.Context, cfg *config.DatabaseConfig) error {
-	if err := validateDatabaseConfig(cfg); err != nil {
-		return err
-	}
-
-	fmt.Printf("🗑️  Dropping database with URI: %s\n", maskSensitiveInfo(cfg.URI))
-	return nil
+	return a.performDatabaseOperation(ctx, cfg, OperationDropDatabase)
 }
 
 // GetSchema returns database schema information.
@@ -81,7 +104,7 @@ func (a *RealDatabaseAdapter) GenerateMigrations(ctx context.Context, cfg *confi
 		return nil, err
 	}
 
-	fmt.Printf("📝 Generating migrations for: %s\n", maskSensitiveInfo(cfg.URI))
+	logDatabaseOperation(OperationGenerateMigrations, cfg.URI)
 	return []string{}, nil
 }
 
