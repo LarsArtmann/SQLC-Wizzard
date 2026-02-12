@@ -53,6 +53,56 @@ func newPermissiveTypeSafeSafetyRules() domain.TypeSafeSafetyRules {
 	}
 }
 
+// newTypeSafeSafetyRules creates a TypeSafeSafetyRules with configurable parameters.
+// Defaults to strict settings when nil values are provided.
+func newTypeSafeSafetyRules(opts ...func(*domain.TypeSafeSafetyRules)) domain.TypeSafeSafetyRules {
+	result := domain.TypeSafeSafetyRules{
+		StyleRules: domain.QueryStyleRules{
+			SelectStarPolicy:   domain.SelectStarForbidden,
+			ColumnExplicitness: domain.ColumnExplicitnessRequired,
+		},
+		SafetyRules: domain.QuerySafetyRules{
+			WhereRequirement:    domain.WhereClauseAlways,
+			LimitRequirement:    domain.LimitClauseAlways,
+			MaxRowsWithoutLimit: 100,
+		},
+		DestructiveOps: domain.DestructiveForbidden,
+		CustomRules:    []generated.SafetyRule{},
+	}
+	for _, opt := range opts {
+		opt(&result)
+	}
+	return result
+}
+
+// withColumnExplicitness sets the ColumnExplicitness style rule.
+func withColumnExplicitness(v domain.ColumnExplicitnessOption) func(*domain.TypeSafeSafetyRules) {
+	return func(ts *domain.TypeSafeSafetyRules) {
+		ts.StyleRules.ColumnExplicitness = v
+	}
+}
+
+// withLimitRequirement sets the LimitRequirement safety rule.
+func withLimitRequirement(v domain.LimitClauseOption) func(*domain.TypeSafeSafetyRules) {
+	return func(ts *domain.TypeSafeSafetyRules) {
+		ts.SafetyRules.LimitRequirement = v
+	}
+}
+
+// withMaxRowsWithoutLimit sets the MaxRowsWithoutLimit safety rule.
+func withMaxRowsWithoutLimit(v int) func(*domain.TypeSafeSafetyRules) {
+	return func(ts *domain.TypeSafeSafetyRules) {
+		ts.SafetyRules.MaxRowsWithoutLimit = v
+	}
+}
+
+// withCustomRules sets the CustomRules.
+func withCustomRules(rules []generated.SafetyRule) func(*domain.TypeSafeSafetyRules) {
+	return func(ts *domain.TypeSafeSafetyRules) {
+		ts.CustomRules = rules
+	}
+}
+
 // runEmitOptionsTest runs conversion test with given input and expected values.
 func runEmitOptionsTest(testCase emitOptionsTestCase) {
 	It("should convert "+testCase.description+" correctly", func() {
