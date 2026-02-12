@@ -28,10 +28,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		})
 
 		It("should initialize with valid project types", func() {
-			for _, projectType := range testing.ValidProjectTypes {
-				Expect(projectType.IsValid()).To(BeTrue(),
-					"Project type %s should be valid", projectType)
-			}
+			testing.ValidateAllProjectTypes()
 		})
 
 		It("should validate project type constants", func() {

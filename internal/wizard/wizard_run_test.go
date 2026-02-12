@@ -87,17 +87,11 @@ var _ = Describe("Wizard Run Method", func() {
 	})
 
 	It("should validate all project types", func() {
-		for _, projectType := range testing.ValidProjectTypes {
-			Expect(projectType.IsValid()).To(BeTrue(),
-				"Project type %s should be valid", projectType)
-		}
+		testing.ValidateAllProjectTypes()
 	})
 
 	It("should validate all database types", func() {
-		for _, dbType := range testing.ValidDatabaseTypes {
-			Expect(dbType.IsValid()).To(BeTrue(),
-				"Database type %s should be valid", dbType)
-		}
+		testing.ValidateAllDatabaseTypes()
 	})
 
 	It("should handle invalid project types", func() {
