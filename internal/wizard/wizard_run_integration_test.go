@@ -19,7 +19,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 			result := wiz.GetResult()
 
 			// Set up complete template data as Run() method would
-			result.TemplateData = createTemplateDataWithFeatures(
+			result.TemplateData = wizard.CreateTemplateDataWithFeatures(
 				"integration-test-project",
 				generated.ProjectTypeMicroservice,
 			)

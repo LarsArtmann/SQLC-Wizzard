@@ -4,8 +4,8 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 )
 
-// createTemplateData creates a basic template data structure for testing.
-func createTemplateData() generated.TemplateData {
+// CreateTemplateData creates a basic template data structure for testing.
+func CreateTemplateData() generated.TemplateData {
 	return generated.TemplateData{
 		Package: generated.PackageConfig{
 			Name: "db",
@@ -26,9 +26,9 @@ func createTemplateData() generated.TemplateData {
 	}
 }
 
-// createTemplateDataWithFeatures creates template data with feature flags enabled.
-func createTemplateDataWithFeatures(projectName string, projectType generated.ProjectType) generated.TemplateData {
-	data := createTemplateData()
+// CreateTemplateDataWithFeatures creates template data with feature flags enabled.
+func CreateTemplateDataWithFeatures(projectName string, projectType generated.ProjectType) generated.TemplateData {
+	data := CreateTemplateData()
 	data.ProjectName = projectName
 	data.ProjectType = projectType
 	data.Database.UseUUIDs = true
@@ -37,18 +37,18 @@ func createTemplateDataWithFeatures(projectName string, projectType generated.Pr
 	return data
 }
 
-// createTemplateDataWithCustomOutput creates template data with custom output directories.
-func createTemplateDataWithCustomOutput(baseDir, queriesDir, schemaDir string) generated.TemplateData {
-	data := createTemplateData()
+// CreateTemplateDataWithCustomOutput creates template data with custom output directories.
+func CreateTemplateDataWithCustomOutput(baseDir, queriesDir, schemaDir string) generated.TemplateData {
+	data := CreateTemplateData()
 	data.Output.BaseDir = baseDir
 	data.Output.QueriesDir = queriesDir
 	data.Output.SchemaDir = schemaDir
 	return data
 }
 
-// createTemplateDataWithAllFeatures creates template data with all features enabled or disabled.
-func createTemplateDataWithAllFeatures(enabled bool) *generated.TemplateData {
-	data := createTemplateData()
+// CreateTemplateDataWithAllFeatures creates template data with all features enabled or disabled.
+func CreateTemplateDataWithAllFeatures(enabled bool) *generated.TemplateData {
+	data := CreateTemplateData()
 	data.Database.UseUUIDs = enabled
 	data.Database.UseJSON = enabled
 	data.Database.UseArrays = enabled
@@ -56,4 +56,10 @@ func createTemplateDataWithAllFeatures(enabled bool) *generated.TemplateData {
 	data.Validation.StrictFunctions = enabled
 	data.Validation.StrictOrderBy = enabled
 	return &data
+}
+
+// createTemplateDataWithAllFeatures creates template data with all features enabled or disabled.
+// This is an unexported wrapper for use by internal test files.
+func createTemplateDataWithAllFeatures(enabled bool) *generated.TemplateData {
+	return CreateTemplateDataWithAllFeatures(enabled)
 }

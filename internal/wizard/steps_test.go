@@ -41,56 +41,77 @@ func generateStepTests(describeName string, stepFunc func(*generated.TemplateDat
 	})
 }
 
-// createProjectNameTestCases returns test cases for project name step tests.
-func createProjectNameTestCases() []stepTestCase {
+// createStepTestCases creates test cases for step creation with default values.
+func createStepTestCases() []stepTestCase {
 	return []stepTestCase{
 		{
-			data: &generated.TemplateData{
-				ProjectName: "myproject",
-			},
-			description: "project name field",
+			data:        &generated.TemplateData{},
+			description: "default template data",
 		},
 		{
-			data: &generated.TemplateData{
-				ProjectName: "testproject",
-			},
-			description: "project name field",
+			data:        &generated.TemplateData{},
+			description: "default template data",
 		},
 	}
+}
+
+// createFieldTestCases creates test cases with custom field configuration.
+// This eliminates duplication across similar test case helper functions.
+func createFieldTestCases(fieldDescription string, setupFields func(*generated.TemplateData)) []stepTestCase {
+	return []stepTestCase{
+		{
+			data: func() *generated.TemplateData {
+				data := &generated.TemplateData{}
+				setupFields(data)
+				return data
+			}(),
+			description: fieldDescription,
+		},
+		{
+			data: func() *generated.TemplateData {
+				data := &generated.TemplateData{}
+				setupFields(data)
+				return data
+			}(),
+			description: fieldDescription,
+		},
+	}
+}
+
+// createProjectNameTestCases returns test cases for project name step tests.
+func createProjectNameTestCases() []stepTestCase {
+	return createFieldTestCases("project name field", func(data *generated.TemplateData) {
+		data.ProjectName = "myproject"
+	})
 }
 
 // createPackageNameTestCases returns test cases for package name step tests.
 func createPackageNameTestCases() []stepTestCase {
-	return []stepTestCase{
-		{
-			data: &generated.TemplateData{
-				Package: generated.PackageConfig{Name: "db"},
-			},
-			description: "package name field",
-		},
-		{
-			data: &generated.TemplateData{
-				Package: generated.PackageConfig{Name: "mypackage"},
-			},
-			description: "package name field",
-		},
-	}
+	return createFieldTestCases("package name field", func(data *generated.TemplateData) {
+		data.Package.Name = "db"
+	})
 }
 
 // createPackagePathTestCases returns test cases for package path step tests.
 func createPackagePathTestCases() []stepTestCase {
-	return []stepTestCase{
-		{
-			data: &generated.TemplateData{
-				Package: generated.PackageConfig{Path: "github.com/myorg/myproject"},
-			},
-			description: "package path field",
+	return createFieldTestCases("package path field", func(data *generated.TemplateData) {
+		data.Package.Path = "github.com/myorg/myproject"
+	})
+}
+
+// createFeatureStepTestData creates template data for feature step testing.
+// This eliminates hardcoded TemplateData creation in tests.
+func createFeatureStepTestData(enableFeatures bool) *generated.TemplateData {
+	return &generated.TemplateData{
+		Database: generated.DatabaseConfig{
+			UseUUIDs:    enableFeatures,
+			UseJSON:     enableFeatures,
+			UseArrays:   !enableFeatures,
+			UseFullText: !enableFeatures,
 		},
-		{
-			data: &generated.TemplateData{
-				Package: generated.PackageConfig{Path: "github.com/example/project"},
-			},
-			description: "package path field",
+		Validation: generated.ValidationConfig{
+			StrictFunctions: enableFeatures,
+			StrictOrderBy:   !enableFeatures,
 		},
 	}
 }
@@ -137,47 +158,22 @@ var _ = Describe("CreateProjectTypeStep", func() {
 })
 
 var _ = Describe("CreateDatabaseStep", func() {
-	Context("with PostgreSQL database type", func() {
-		It("should create a valid step", func() {
+	DescribeTable("should create valid step for each database type",
+		func(engine generated.DatabaseType) {
 			data := &generated.TemplateData{
 				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypePostgreSQL,
+					Engine: engine,
 				},
 			}
 
 			step := CreateDatabaseStep(data)
 
 			Expect(step).ToNot(BeNil())
-		})
-	})
-
-	Context("with MySQL database type", func() {
-		It("should create a valid step", func() {
-			data := &generated.TemplateData{
-				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypeMySQL,
-				},
-			}
-
-			step := CreateDatabaseStep(data)
-
-			Expect(step).ToNot(BeNil())
-		})
-	})
-
-	Context("with SQLite database type", func() {
-		It("should create a valid step", func() {
-			data := &generated.TemplateData{
-				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypeSQLite,
-				},
-			}
-
-			step := CreateDatabaseStep(data)
-
-			Expect(step).ToNot(BeNil())
-		})
-	})
+		},
+		Entry("PostgreSQL", generated.DatabaseTypePostgreSQL),
+		Entry("MySQL", generated.DatabaseTypeMySQL),
+		Entry("SQLite", generated.DatabaseTypeSQLite),
+	)
 
 	Context("with nil template data", func() {
 		It("should not panic", func() {
@@ -237,50 +233,23 @@ var _ = Describe("CreateOutputDirStep", func() {
 })
 
 var _ = Describe("CreateDatabaseURLStep", func() {
-	Context("with PostgreSQL database", func() {
-		It("should create a valid step with PostgreSQL-specific placeholder", func() {
+	DescribeTable("should create valid step with database-specific placeholders",
+		func(engine generated.DatabaseType, url string) {
 			data := &generated.TemplateData{
 				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypePostgreSQL,
-					URL:    "postgresql://localhost:5432/mydb",
+					Engine: engine,
+					URL:    url,
 				},
 			}
 
 			step := CreateDatabaseURLStep(data)
 
 			Expect(step).ToNot(BeNil())
-		})
-	})
-
-	Context("with SQLite database", func() {
-		It("should create a valid step with SQLite-specific placeholder", func() {
-			data := &generated.TemplateData{
-				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypeSQLite,
-					URL:    "./data.db",
-				},
-			}
-
-			step := CreateDatabaseURLStep(data)
-
-			Expect(step).ToNot(BeNil())
-		})
-	})
-
-	Context("with MySQL database", func() {
-		It("should create a valid step with MySQL-specific placeholder", func() {
-			data := &generated.TemplateData{
-				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypeMySQL,
-					URL:    "mysql://localhost:3306/mydb",
-				},
-			}
-
-			step := CreateDatabaseURLStep(data)
-
-			Expect(step).ToNot(BeNil())
-		})
-	})
+		},
+		Entry("PostgreSQL", generated.DatabaseTypePostgreSQL, "postgresql://localhost:5432/mydb"),
+		Entry("SQLite", generated.DatabaseTypeSQLite, "./data.db"),
+		Entry("MySQL", generated.DatabaseTypeMySQL, "mysql://localhost:3306/mydb"),
+	)
 
 	Context("with nil template data", func() {
 		It("should not panic", func() {
@@ -291,20 +260,9 @@ var _ = Describe("CreateDatabaseURLStep", func() {
 })
 
 var _ = Describe("CreateFeatureSteps", func() {
-	Context("with default template data", func() {
+	Context("with partial feature configuration", func() {
 		It("should create all feature steps", func() {
-			data := &generated.TemplateData{
-				Database: generated.DatabaseConfig{
-					UseUUIDs:    true,
-					UseJSON:     true,
-					UseArrays:   false,
-					UseFullText: false,
-				},
-				Validation: generated.ValidationConfig{
-					StrictFunctions: true,
-					StrictOrderBy:   false,
-				},
-			}
+			data := createFeatureStepTestData(true)
 
 			steps := CreateFeatureSteps(data)
 
@@ -313,7 +271,7 @@ var _ = Describe("CreateFeatureSteps", func() {
 		})
 
 		It("should create exactly 6 feature steps", func() {
-			data := &generated.TemplateData{}
+			data := createFeatureStepTestData(true)
 
 			steps := CreateFeatureSteps(data)
 

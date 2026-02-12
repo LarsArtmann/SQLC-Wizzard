@@ -20,21 +20,6 @@ type emitOptionsTestCase struct {
 	expectedJSONStyle    domain.JSONTagStyle
 }
 
-// newStrictTypeSafeSafetyRules creates a TypeSafeSafetyRules with restrictive settings.
-func newStrictTypeSafeSafetyRules() domain.TypeSafeSafetyRules {
-	return *testing.CreateStrictTypeSafeSafetyRules()
-}
-
-// newTypeSafeSafetyRules creates a TypeSafeSafetyRules with configurable parameters.
-// Defaults to strict settings when nil values are provided.
-func newTypeSafeSafetyRules(opts ...func(*domain.TypeSafeSafetyRules)) domain.TypeSafeSafetyRules {
-	result := *testing.CreateStrictTypeSafeSafetyRules()
-	for _, opt := range opts {
-		opt(&result)
-	}
-	return result
-}
-
 // withColumnExplicitness sets the ColumnExplicitness style rule.
 func withColumnExplicitness(v domain.ColumnExplicitnessPolicy) func(*domain.TypeSafeSafetyRules) {
 	return func(ts *domain.TypeSafeSafetyRules) {
@@ -74,10 +59,9 @@ func runEmitOptionsTest(testCase emitOptionsTestCase) {
 	})
 }
 
-// emitOptionsWithOptions creates an EmitOptions with optional overrides.
-// All fields default to false, only specified fields are changed.
-func emitOptionsWithOptions(modify func(opts *generated.EmitOptions)) generated.EmitOptions {
-	opts := generated.EmitOptions{
+// baseEmitOptions creates base EmitOptions with minimal settings.
+func baseEmitOptions() generated.EmitOptions {
+	return generated.EmitOptions{
 		EmitJSONTags:             false,
 		EmitPreparedQueries:      false,
 		EmitInterface:            false,
@@ -88,54 +72,54 @@ func emitOptionsWithOptions(modify func(opts *generated.EmitOptions)) generated.
 		EmitAllEnumValues:        false,
 		JSONTagsCaseStyle:        "camel",
 	}
-	if modify != nil {
-		modify(&opts)
+}
+
+// commonEmitOptions creates EmitOptions with common features for complete enum mode.
+func commonEmitOptions() generated.EmitOptions {
+	return generated.EmitOptions{
+		EmitJSONTags:             true,
+		EmitPreparedQueries:      true,
+		EmitInterface:            true,
+		EmitEmptySlices:          false,
+		EmitResultStructPointers: false,
+		EmitParamsStructPointers: false,
+		EmitEnumValidMethod:      true,
+		EmitAllEnumValues:        true,
+		JSONTagsCaseStyle:        "camel",
 	}
-	return opts
 }
 
 // emitOptionsExplicitNull creates EmitOptions for explicit_null mode.
 func emitOptionsExplicitNull() generated.EmitOptions {
-	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
-		opts.EmitEnumValidMethod = true
-		opts.JSONTagsCaseStyle = "pascal"
-	})
+	opts := baseEmitOptions()
+	opts.EmitEnumValidMethod = true
+	opts.JSONTagsCaseStyle = "pascal"
+	return opts
 }
 
 // emitOptionsMixed creates EmitOptions for mixed mode.
 func emitOptionsMixed() generated.EmitOptions {
-	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
-		opts.EmitJSONTags = true
-		opts.EmitPreparedQueries = true
-		opts.EmitInterface = true
-		opts.EmitResultStructPointers = true
-		opts.EmitEnumValidMethod = true
-		opts.EmitAllEnumValues = true
-		opts.JSONTagsCaseStyle = "kebab"
-	})
+	opts := commonEmitOptions()
+	opts.EmitResultStructPointers = true
+	opts.JSONTagsCaseStyle = "kebab"
+	return opts
 }
 
 // emitOptionsEmptySlices creates EmitOptions for empty_slices mode.
 func emitOptionsEmptySlices() generated.EmitOptions {
-	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
-		opts.EmitJSONTags = true
-		opts.EmitPreparedQueries = true
-		opts.EmitInterface = true
-		opts.EmitEmptySlices = true
-		opts.EmitEnumValidMethod = true
-		opts.EmitAllEnumValues = true
-		opts.JSONTagsCaseStyle = "camel"
-	})
+	opts := commonEmitOptions()
+	opts.EmitEmptySlices = true
+	return opts
 }
 
 // emitOptionsPointers creates EmitOptions for pointers mode.
 func emitOptionsPointers() generated.EmitOptions {
-	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
-		opts.EmitJSONTags = true
-		opts.EmitResultStructPointers = true
-		opts.EmitParamsStructPointers = true
-		opts.JSONTagsCaseStyle = "snake"
-	})
+	opts := baseEmitOptions()
+	opts.EmitJSONTags = true
+	opts.EmitResultStructPointers = true
+	opts.EmitParamsStructPointers = true
+	opts.JSONTagsCaseStyle = "snake"
+	return opts
 }
 
 var _ = Describe("EmitOptions Conversions", func() {
@@ -409,7 +393,7 @@ var _ = Describe("SafetyRules Conversions", func() {
 
 	Context("TypeSafeSafetyRules.ToLegacy", func() {
 		It("should convert back to legacy format correctly", func() {
-			typeSafe := newStrictTypeSafeSafetyRules()
+			typeSafe := *testing.CreateStrictTypeSafeSafetyRules()
 
 			legacy := typeSafe.ToLegacy()
 

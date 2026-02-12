@@ -20,6 +20,31 @@ func TestCreators(t *testing.T) {
 	RunSpecs(t, "Creators Suite")
 }
 
+// Enum test constants - single source of truth for all enum tests
+var allProjectTypes = []generated.ProjectType{
+	generated.ProjectTypeMicroservice,
+	generated.ProjectTypeHobby,
+	generated.ProjectTypeEnterprise,
+}
+
+var allDatabaseTypes = []generated.DatabaseType{
+	generated.DatabaseTypePostgreSQL,
+	generated.DatabaseTypeMySQL,
+	generated.DatabaseTypeSQLite,
+}
+
+// testEnumField is a helper that generates Ginkgo test blocks for enum field assignment.
+// This eliminates duplicate test structure when testing multiple enum fields.
+func testEnumField[T any](fieldName string, values []T, setField func(*creators.CreateConfig, T), getField func(*creators.CreateConfig) T) {
+	It(fmt.Sprintf("should support all %s types", fieldName), func() {
+		for _, v := range values {
+			cfg := &creators.CreateConfig{}
+			setField(cfg, v)
+			Expect(getField(cfg)).To(Equal(v), "%s should be correctly assigned", fieldName)
+		}
+	})
+}
+
 // createBaseConfig generates a base project configuration with standard defaults.
 func createBaseConfig(projectName string) *creators.CreateConfig {
 	return &creators.CreateConfig{
@@ -316,35 +341,13 @@ var _ = Describe("ProjectCreator", func() {
 			Expect(cfg.Force).To(BeFalse())
 		})
 
-		It("should support all project types", func() {
-			projectTypes := []generated.ProjectType{
-				generated.ProjectTypeMicroservice,
-				generated.ProjectTypeHobby,
-				generated.ProjectTypeEnterprise,
-			}
+		testEnumField("ProjectType", allProjectTypes,
+			func(cfg *creators.CreateConfig, pt generated.ProjectType) { cfg.ProjectType = pt },
+			func(cfg *creators.CreateConfig) generated.ProjectType { return cfg.ProjectType })
 
-			for _, pt := range projectTypes {
-				cfg := &creators.CreateConfig{
-					ProjectType: pt,
-				}
-				Expect(cfg.ProjectType).To(Equal(pt))
-			}
-		})
-
-		It("should support all database types", func() {
-			databaseTypes := []generated.DatabaseType{
-				generated.DatabaseTypePostgreSQL,
-				generated.DatabaseTypeMySQL,
-				generated.DatabaseTypeSQLite,
-			}
-
-			for _, dt := range databaseTypes {
-				cfg := &creators.CreateConfig{
-					Database: dt,
-				}
-				Expect(cfg.Database).To(Equal(dt))
-			}
-		})
+		testEnumField("Database", allDatabaseTypes,
+			func(cfg *creators.CreateConfig, dt generated.DatabaseType) { cfg.Database = dt },
+			func(cfg *creators.CreateConfig) generated.DatabaseType { return cfg.Database })
 	})
 
 	Context("Integration", func() {

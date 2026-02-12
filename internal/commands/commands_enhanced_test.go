@@ -14,6 +14,29 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Helper function to create test SqlcConfig instances
+func createTestSqlcConfig(schema, out, pkg string, engine ...string) *config.SqlcConfig {
+	dbEngine := "postgresql"
+	if len(engine) > 0 {
+		dbEngine = engine[0]
+	}
+	return &config.SqlcConfig{
+		Version: "2",
+		SQL: []config.SQLConfig{
+			{
+				Engine: dbEngine,
+				Schema: config.NewPathOrPaths([]string{schema}),
+				Gen: config.GenConfig{
+					Go: &config.GoGenConfig{
+						Out:     out,
+						Package: pkg,
+					},
+				},
+			},
+		},
+	}
+}
+
 var _ = Describe("Validate Command Enhanced Testing", func() {
 	var (
 		tempDir string
@@ -175,21 +198,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 		It("should handle multiple configuration files", func() {
 			// Create first config
 			config1 := filepath.Join(tempDir, "config1.yaml")
-			cfg1 := &config.SqlcConfig{
-				Version: "2",
-				SQL: []config.SQLConfig{
-					{
-						Engine: "postgresql",
-						Schema: config.NewPathOrPaths([]string{"schema1.sql"}),
-						Gen: config.GenConfig{
-							Go: &config.GoGenConfig{
-								Out:     "db1",
-								Package: "db1",
-							},
-						},
-					},
-				},
-			}
+			cfg1 := createTestSqlcConfig("schema1.sql", "db1", "db1")
 
 			yamlData1, err := config.Marshal(cfg1)
 			Expect(err).NotTo(HaveOccurred())
@@ -198,21 +207,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 
 			// Create second config
 			config2 := filepath.Join(tempDir, "config2.yaml")
-			cfg2 := &config.SqlcConfig{
-				Version: "2",
-				SQL: []config.SQLConfig{
-					{
-						Engine: "mysql",
-						Schema: config.NewPathOrPaths([]string{"schema2.sql"}),
-						Gen: config.GenConfig{
-							Go: &config.GoGenConfig{
-								Out:     "db2",
-								Package: "db2",
-							},
-						},
-					},
-				},
-			}
+			cfg2 := createTestSqlcConfig("schema2.sql", "db2", "db2", "mysql")
 
 			yamlData2, err := config.Marshal(cfg2)
 			Expect(err).NotTo(HaveOccurred())
@@ -230,21 +225,7 @@ var _ = Describe("Validate Command Enhanced Testing", func() {
 		It("should handle mixed valid and invalid configuration files", func() {
 			// Create valid config
 			validConfig := filepath.Join(tempDir, "valid.yaml")
-			validCfg := &config.SqlcConfig{
-				Version: "2",
-				SQL: []config.SQLConfig{
-					{
-						Engine: "postgresql",
-						Schema: config.NewPathOrPaths([]string{"schema.sql"}),
-						Gen: config.GenConfig{
-							Go: &config.GoGenConfig{
-								Out:     "db",
-								Package: "db",
-							},
-						},
-					},
-				},
-			}
+			validCfg := createTestSqlcConfig("schema.sql", "db", "db")
 
 			yamlData, err := config.Marshal(validCfg)
 			Expect(err).NotTo(HaveOccurred())
@@ -422,21 +403,7 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 			configFiles := make([]string, 5)
 			for i := range 5 {
 				configFiles[i] = filepath.Join(tempDir, fmt.Sprintf("config%d.yaml", i))
-				cfg := &config.SqlcConfig{
-					Version: "2",
-					SQL: []config.SQLConfig{
-						{
-							Engine: "postgresql",
-							Schema: config.NewPathOrPaths([]string{"schema.sql"}),
-							Gen: config.GenConfig{
-								Go: &config.GoGenConfig{
-									Out:     fmt.Sprintf("db%d", i),
-									Package: fmt.Sprintf("db%d", i),
-								},
-							},
-						},
-					},
-				}
+				cfg := createTestSqlcConfig("schema.sql", fmt.Sprintf("db%d", i), fmt.Sprintf("db%d", i))
 
 				yamlData, err := config.Marshal(cfg)
 				Expect(err).NotTo(HaveOccurred())

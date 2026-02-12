@@ -35,7 +35,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 			Details:     mockSteps["details"],
 			Features:    mockSteps["features"],
 			Output:      mockSteps["output"],
-			TemplateFunc: func(projectType templates.ProjectType) (wizard.TemplateInterface, error) {
+			TemplateFunc: func(projectType templates.ProjectType) (templates.Template, error) {
 				return mockTemplate, nil
 			},
 		}
@@ -55,11 +55,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 			Expect(err).ToNot(HaveOccurred())
 
 			// Verify all steps were called
-			Expect(mockSteps["projectType"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["database"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["details"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["features"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["output"].ExecuteCalls).To(Equal(1))
+			verifyAllStepsCalled(mockSteps)
 
 			// Verify UI interactions
 			Expect(mockUI.WelcomeCalls).To(Equal(1))
@@ -78,33 +74,15 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 	Context("when steps fail", func() {
 		It("should handle database step failures", func() {
-			mockSteps["database"].ShouldFail = true
-			mockSteps["database"].FailError = NewTestError("Database step failed")
-
-			_, err := wiz.Run()
-
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Database step failed"))
+			testStepFailure(wiz, mockSteps, "database", "Database step failed")
 		})
 
 		It("should handle details step failures", func() {
-			mockSteps["details"].ShouldFail = true
-			mockSteps["details"].FailError = NewTestError("Details step failed")
-
-			_, err := wiz.Run()
-
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Details step failed"))
+			testStepFailure(wiz, mockSteps, "details", "Details step failed")
 		})
 
 		It("should handle output step failures", func() {
-			mockSteps["output"].ShouldFail = true
-			mockSteps["output"].FailError = NewTestError("Output step failed")
-
-			_, err := wiz.Run()
-
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("Output step failed"))
+			testStepFailure(wiz, mockSteps, "output", "Output step failed")
 		})
 	})
 
@@ -116,11 +94,7 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 			// Verify data flow through steps (wizard uses defaults)
 			// Steps should receive the same data instance
-			Expect(mockSteps["projectType"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["database"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["details"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["features"].ExecuteCalls).To(Equal(1))
-			Expect(mockSteps["output"].ExecuteCalls).To(Equal(1))
+			verifyAllStepsCalled(mockSteps)
 		})
 	})
 
@@ -129,6 +103,27 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 	// TODO: Add memory usage tests
 	// TODO: Add edge case tests
 })
+
+// verifyAllStepsCalled verifies that all wizard steps were called exactly once.
+// This helper eliminates duplicate ExecuteCalls assertions across test cases.
+func verifyAllStepsCalled(mockSteps map[string]*MockStep) {
+	Expect(mockSteps["projectType"].ExecuteCalls).To(Equal(1))
+	Expect(mockSteps["database"].ExecuteCalls).To(Equal(1))
+	Expect(mockSteps["details"].ExecuteCalls).To(Equal(1))
+	Expect(mockSteps["features"].ExecuteCalls).To(Equal(1))
+	Expect(mockSteps["output"].ExecuteCalls).To(Equal(1))
+}
+
+// testStepFailure is a helper function that tests step failure scenarios.
+func testStepFailure(wiz *wizard.Wizard, mockSteps map[string]*MockStep, stepName, errorMessage string) {
+	mockSteps[stepName].ShouldFail = true
+	mockSteps[stepName].FailError = NewTestError(errorMessage)
+
+	_, err := wiz.Run()
+
+	Expect(err).To(HaveOccurred())
+	Expect(err.Error()).To(ContainSubstring(errorMessage))
+}
 
 // NewTestError creates a test error for failure scenarios
 // TODO: Move to test utilities

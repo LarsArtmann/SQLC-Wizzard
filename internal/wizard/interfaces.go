@@ -3,7 +3,6 @@ package wizard
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
-	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
 // UIInterface defines the interface for UI operations
@@ -27,15 +26,6 @@ type ValidatableStepInterface interface {
 	ValidateConfiguration(data *generated.TemplateData) error
 }
 
-// TemplateInterface defines the interface for template operations.
-type TemplateInterface interface {
-	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-	DefaultData() generated.TemplateData
-	RequiredFeatures() []string
-	Name() string
-	Description() string
-}
-
 // WizardDependencies contains all wizard dependencies for dependency injection.
 type WizardDependencies struct {
 	UI           UIInterface
@@ -44,7 +34,7 @@ type WizardDependencies struct {
 	Details      StepInterface
 	Features     StepInterface
 	Output       StepInterface
-	TemplateFunc func(projectType templates.ProjectType) (TemplateInterface, error)
+	TemplateFunc func(projectType templates.ProjectType) (templates.Template, error)
 }
 
 // NewTestableWizard creates a wizard with injected dependencies for testing.

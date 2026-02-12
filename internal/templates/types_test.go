@@ -64,18 +64,29 @@ func TestMustNewDatabaseType_Invalid(t *testing.T) {
 	})
 }
 
+var (
+	validProjectTypes    = []string{"microservice", "hobby"}
+	invalidProjectTypes  = []string{"invalid", ""}
+	validDatabaseTypes   = []string{"postgresql", "mysql"}
+	invalidDatabaseTypes = []string{"invalid", ""}
+)
+
 func TestIsValidProjectType(t *testing.T) {
-	assert.True(t, templates.IsValidProjectType("microservice"))
-	assert.True(t, templates.IsValidProjectType("hobby"))
-	assert.False(t, templates.IsValidProjectType("invalid"))
-	assert.False(t, templates.IsValidProjectType(""))
+	for _, v := range validProjectTypes {
+		assert.True(t, templates.IsValidProjectType(v), "expected %q to be valid", v)
+	}
+	for _, v := range invalidProjectTypes {
+		assert.False(t, templates.IsValidProjectType(v), "expected %q to be invalid", v)
+	}
 }
 
 func TestIsValidDatabaseType(t *testing.T) {
-	assert.True(t, templates.IsValidDatabaseType("postgresql"))
-	assert.True(t, templates.IsValidDatabaseType("mysql"))
-	assert.False(t, templates.IsValidDatabaseType("invalid"))
-	assert.False(t, templates.IsValidDatabaseType(""))
+	for _, v := range validDatabaseTypes {
+		assert.True(t, templates.IsValidDatabaseType(v), "expected %q to be valid", v)
+	}
+	for _, v := range invalidDatabaseTypes {
+		assert.False(t, templates.IsValidDatabaseType(v), "expected %q to be invalid", v)
+	}
 }
 
 func TestProjectTypeConstants(t *testing.T) {

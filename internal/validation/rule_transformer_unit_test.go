@@ -40,6 +40,19 @@ func assertIdenticalRules(boolResult, typeSafeResult []generated.RuleConfig, exp
 	Expect(boolResult[0].Rule).To(Equal(expectedRule))
 }
 
+// toGeneratedSafetyRules converts domain.SafetyRules to generated.SafetyRules for testing.
+func toGeneratedSafetyRules(rules *domain.SafetyRules) *generated.SafetyRules {
+	if rules == nil {
+		return nil
+	}
+	return &generated.SafetyRules{
+		NoSelectStar:  rules.NoSelectStar,
+		RequireWhere: rules.RequireWhere,
+		RequireLimit: rules.RequireLimit,
+		Rules:        rules.Rules,
+	}
+}
+
 // runParityTest runs a parity test between boolean and type-safe safety rules.
 func runParityTest(
 	transformer *validation.RuleTransformer,
@@ -95,6 +108,23 @@ func runBooleanFlagParityTest(
 			expectedExpression,
 		)
 	})
+}
+
+// runMultiRuleTransformationTest is a parameterized helper for testing transformation of multiple
+// safety rules. It eliminates duplication for tests that verify boolean flags produce correct
+// rule sets with specific expected names in a defined order.
+func runMultiRuleTransformationTest(
+	transformer *validation.RuleTransformer,
+	setupRules func() *generated.SafetyRules,
+	transformFunc func(*validation.RuleTransformer, *generated.SafetyRules) []generated.RuleConfig,
+	expectedRuleNames []string,
+) {
+	configRules := transformFunc(transformer, setupRules())
+
+	Expect(configRules).To(HaveLen(len(expectedRuleNames)))
+	for i, expectedName := range expectedRuleNames {
+		Expect(configRules[i].Name).To(Equal(expectedName))
+	}
 }
 
 func TestValidation(t *testing.T) {
@@ -165,17 +195,20 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should transform multiple rules", func() {
-			rules := &generated.SafetyRules{
-				NoSelectStar: true,
-				RequireWhere: true,
-				RequireLimit: false,
-			}
-
-			configRules := transformer.TransformSafetyRules(rules)
-
-			Expect(configRules).To(HaveLen(2))
-			Expect(configRules[0].Name).To(Equal("no-select-star"))
-			Expect(configRules[1].Name).To(Equal("require-where"))
+			runMultiRuleTransformationTest(
+				transformer,
+				func() *generated.SafetyRules {
+					return &generated.SafetyRules{
+						NoSelectStar: true,
+						RequireWhere: true,
+						RequireLimit: false,
+					}
+				},
+				func(t *validation.RuleTransformer, r *generated.SafetyRules) []generated.RuleConfig {
+					return t.TransformSafetyRules(r)
+				},
+				[]string{"no-select-star", "require-where"},
+			)
 		})
 
 		It("should transform custom rules", func() {
@@ -191,49 +224,58 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 					Message: "temp table operations not allowed",
 				},
 			}
-			rules := &generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				RequireLimit: false,
-				Rules:        customRules,
-			}
-
-			configRules := transformer.TransformSafetyRules(rules)
-
-			Expect(configRules).To(HaveLen(2))
-			Expect(configRules[0].Name).To(Equal("custom-rule-1"))
-			Expect(configRules[1].Name).To(Equal("custom-rule-2"))
+			runMultiRuleTransformationTest(
+				transformer,
+				func() *generated.SafetyRules {
+					return &generated.SafetyRules{
+						NoSelectStar: false,
+						RequireWhere: false,
+						RequireLimit: false,
+						Rules:        customRules,
+					}
+				},
+				func(t *validation.RuleTransformer, r *generated.SafetyRules) []generated.RuleConfig {
+					return t.TransformSafetyRules(r)
+				},
+				[]string{"custom-rule-1", "custom-rule-2"},
+			)
 		})
 
 		It("should preserve rule order", func() {
-			rules := &generated.SafetyRules{
-				NoSelectStar: true,
-				RequireWhere: true,
-				RequireLimit: true,
-			}
-
-			configRules := transformer.TransformSafetyRules(rules)
-
-			Expect(configRules).To(HaveLen(3))
-			Expect(configRules[0].Name).To(Equal("no-select-star"))
-			Expect(configRules[1].Name).To(Equal("require-where"))
-			Expect(configRules[2].Name).To(Equal("require-limit"))
+			runMultiRuleTransformationTest(
+				transformer,
+				func() *generated.SafetyRules {
+					return &generated.SafetyRules{
+						NoSelectStar: true,
+						RequireWhere: true,
+						RequireLimit: true,
+					}
+				},
+				func(t *validation.RuleTransformer, r *generated.SafetyRules) []generated.RuleConfig {
+					return t.TransformSafetyRules(r)
+				},
+				[]string{"no-select-star", "require-where", "require-limit"},
+			)
 		})
 	})
 
 	Context("TransformDomainSafetyRules", func() {
 		It("should transform domain safety rules", func() {
-			rules := &domain.SafetyRules{
-				NoSelectStar: true,
-				RequireWhere: false,
-				RequireLimit: true,
-			}
-
-			configRules := transformer.TransformDomainSafetyRules(rules)
-
-			Expect(configRules).To(HaveLen(2))
-			Expect(configRules[0].Name).To(Equal("no-select-star"))
-			Expect(configRules[1].Name).To(Equal("require-limit"))
+			runMultiRuleTransformationTest(
+				transformer,
+				func() *generated.SafetyRules {
+					rules := &domain.SafetyRules{
+						NoSelectStar: true,
+						RequireWhere: false,
+						RequireLimit: true,
+					}
+					return toGeneratedSafetyRules(rules)
+				},
+				func(t *validation.RuleTransformer, r *generated.SafetyRules) []generated.RuleConfig {
+					return t.TransformDomainSafetyRules(r)
+				},
+				[]string{"no-select-star", "require-limit"},
+			)
 		})
 
 		It("should return empty rules for false flags", func() {

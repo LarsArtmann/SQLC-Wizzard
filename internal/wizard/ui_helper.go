@@ -26,13 +26,7 @@ func NewUIHelper() *UIHelper {
 
 // ShowStepHeader displays a step header.
 func (ui *UIHelper) ShowStepHeader(title string) {
-	titleStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("#7D56F4")).
-		Padding(1, 0).
-		MarginBottom(1)
-
-	fmt.Println(titleStyle.Render("📍 " + title))
+	ui.showTitledSection(title, 1, 0)
 }
 
 // ShowStepComplete displays a step completion message.
@@ -53,12 +47,21 @@ func (ui *UIHelper) ShowStepComplete(title, message string) {
 
 // ShowSection displays a section header.
 func (ui *UIHelper) ShowSection(title string) {
-	titleStyle := lipgloss.NewStyle().
+	ui.showTitledSection(title, 0, 1)
+}
+
+// createTitleStyle creates a consistent title style with configurable padding.
+func (ui *UIHelper) createTitleStyle(vertical, horizontal int) lipgloss.Style {
+	return lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("#7D56F4")).
-		Padding(0, 1).
+		Padding(vertical, horizontal).
 		MarginBottom(1)
+}
 
+// showTitledSection renders a titled section with consistent styling.
+func (ui *UIHelper) showTitledSection(title string, vertical, horizontal int) {
+	titleStyle := ui.createTitleStyle(vertical, horizontal)
 	fmt.Println(titleStyle.Render("📍 " + title))
 }
 

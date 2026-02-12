@@ -9,6 +9,14 @@ import (
 )
 
 var _ = Describe("PathOrPaths", func() {
+	testSinglePath := func(path string, expectEmpty bool) {
+		pop := config.NewSinglePath(path)
+
+		Expect(pop.Strings()).To(Equal([]string{path}))
+		Expect(pop.First()).To(Equal(path))
+		Expect(pop.IsEmpty()).To(Equal(expectEmpty))
+	}
+
 	Describe("NewPathOrPaths", func() {
 		It("should create from a slice of paths", func() {
 			paths := []string{"path1", "path2", "path3"}
@@ -35,19 +43,11 @@ var _ = Describe("PathOrPaths", func() {
 
 	Describe("NewSinglePath", func() {
 		It("should create from a single path", func() {
-			pop := config.NewSinglePath("path/to/queries")
-
-			Expect(pop.Strings()).To(Equal([]string{"path/to/queries"}))
-			Expect(pop.First()).To(Equal("path/to/queries"))
-			Expect(pop.IsEmpty()).To(BeFalse())
+			testSinglePath("path/to/queries", false)
 		})
 
 		It("should handle empty string", func() {
-			pop := config.NewSinglePath("")
-
-			Expect(pop.Strings()).To(Equal([]string{""}))
-			Expect(pop.First()).To(Equal(""))
-			Expect(pop.IsEmpty()).To(BeFalse())
+			testSinglePath("", false)
 		})
 	})
 

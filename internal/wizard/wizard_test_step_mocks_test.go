@@ -74,7 +74,7 @@ func (m *MockStep) ValidateConfiguration(data *generated.TemplateData) error {
 	return nil
 }
 
-// MockTemplate is a mock implementation of wizard.TemplateInterface for testing
+// MockTemplate is a mock implementation of templates.Template for testing
 // TODO: Extract to internal/testing/mocks directory
 // TODO: Add template feature validation
 // TODO: Add generation result verification.

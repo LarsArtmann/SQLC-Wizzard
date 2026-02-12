@@ -56,10 +56,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create not found error", func() {
 			err := NewNotFound("User", "12345")
 
-			Expect(err).To(HaveOccurred())
-			Expect(err.Code).To(Equal(ErrorCodeNotFound))
-			Expect(err.Message).To(ContainSubstring("User"))
-			Expect(err.Message).To(ContainSubstring("12345"))
+			expectError(err, ErrorCodeNotFound, []string{"User", "12345"})
 
 			// TODO: Add validation for empty ID handling
 			// TODO: Add validation for special characters in ID
@@ -68,10 +65,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create permission denied error", func() {
 			err := NewPermissionDenied("database", "write")
 
-			Expect(err).To(HaveOccurred())
-			Expect(err.Code).To(Equal(ErrorCodePermissionDenied))
-			Expect(err.Message).To(ContainSubstring("write"))
-			Expect(err.Message).To(ContainSubstring("database"))
+			expectError(err, ErrorCodePermissionDenied, []string{"database", "write"})
 
 			// TODO: Add validation for empty resource/operation
 			// TODO: Add tests for special characters
@@ -93,7 +87,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create file not found error", func() {
 			err := FileNotFoundError("/path/to/file.txt")
 
-			expectSimpleError(err, ErrorCodeFileNotFound, "/path/to/file.txt", "filesystem")
+			expectError(err, ErrorCodeFileNotFound, []string{"/path/to/file.txt"}, "filesystem")
 
 			// TODO: Add validation for empty path
 			// TODO: Add tests for relative vs absolute paths
@@ -103,7 +97,7 @@ var _ = Describe("Error Creation", func() {
 			cause := stderrors.New("permission denied")
 			err := FileReadError("/path/to/file.txt", cause)
 
-			expectAppError(err, ErrorCodeFileReadError, "/path/to/file.txt", "filesystem")
+			expectError(err, ErrorCodeFileReadError, []string{"/path/to/file.txt"}, "filesystem")
 
 			// TODO: Add validation for nil cause
 			// TODO: Add tests for different file error scenarios
@@ -113,7 +107,7 @@ var _ = Describe("Error Creation", func() {
 			cause := stderrors.New("invalid YAML")
 			err := ConfigParseError("/path/to/config.yaml", cause)
 
-			expectAppError(err, ErrorCodeConfigParseFailed, "/path/to/config.yaml", "config")
+			expectError(err, ErrorCodeConfigParseFailed, []string{"/path/to/config.yaml"}, "config")
 
 			// TODO: Add validation for different config formats
 			// TODO: Add tests for malformed paths
@@ -122,7 +116,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create template not found error", func() {
 			err := TemplateNotFoundError("missing-template")
 
-			expectSimpleError(err, ErrorCodeTemplateNotFound, "missing-template", "templates")
+			expectError(err, ErrorCodeTemplateNotFound, []string{"missing-template"}, "templates")
 
 			// TODO: Add validation for empty template names
 			// TODO: Add tests for template name patterns
@@ -148,18 +142,15 @@ var _ = Describe("Error Creation", func() {
 	// TODO: Add performance tests for error creation
 })
 
-// expectSimpleError is a helper function for testing single-parameter error constructors
-func expectSimpleError(err *Error, expectedCode ErrorCode, expectedMessageSubstring, expectedComponent string) {
+// expectError is a generic helper function for verifying common Error properties.
+// It optionally validates message substrings and component.
+func expectError(err *Error, expectedCode ErrorCode, expectedMessageSubstrings []string, expectedComponent ...string) {
 	Expect(err).To(HaveOccurred())
 	Expect(err.Code).To(Equal(expectedCode))
-	Expect(err.Message).To(ContainSubstring(expectedMessageSubstring))
-	Expect(err.Component).To(Equal(expectedComponent))
-}
-
-// expectAppError is a helper function to verify common AppError properties
-func expectAppError(err *Error, expectedCode ErrorCode, expectedPathSubstring, expectedComponent string) {
-	Expect(err).To(HaveOccurred())
-	Expect(err.Code).To(Equal(expectedCode))
-	Expect(err.Message).To(ContainSubstring(expectedPathSubstring))
-	Expect(err.Component).To(Equal(expectedComponent))
+	for _, substr := range expectedMessageSubstrings {
+		Expect(err.Message).To(ContainSubstring(substr))
+	}
+	if len(expectedComponent) > 0 {
+		Expect(err.Component).To(Equal(expectedComponent[0]))
+	}
 }

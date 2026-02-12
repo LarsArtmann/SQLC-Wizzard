@@ -199,19 +199,11 @@ func CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(customRules []generated
 // CreateStrictTypeSafeSafetyRules creates a strictly configured TypeSafeSafetyRules for testing.
 // All safety rules are set to their most restrictive values.
 func CreateStrictTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
-	return &domain.TypeSafeSafetyRules{
-		StyleRules: domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarForbidden,
-			ColumnExplicitness: domain.ColumnExplicitnessRequired,
-		},
-		SafetyRules: domain.QuerySafetyRules{
-			WhereRequirement:    domain.WhereClauseAlways,
-			LimitRequirement:    domain.LimitClauseAlways,
-			MaxRowsWithoutLimit: 100,
-		},
-		DestructiveOps: domain.DestructiveForbidden,
-		CustomRules:    []generated.SafetyRule{},
-	}
+	rules := newTypeSafeSafetyRules()
+	rules.StyleRules.ColumnExplicitness = domain.ColumnExplicitnessRequired
+	rules.SafetyRules.WhereRequirement = domain.WhereClauseAlways
+	rules.SafetyRules.LimitRequirement = domain.LimitClauseAlways
+	return rules
 }
 
 // CreateQueryStyleRulesForbiddenSelectStar creates QueryStyleRules that forbids SELECT *.

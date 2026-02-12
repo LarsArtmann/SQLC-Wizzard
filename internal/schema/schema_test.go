@@ -259,14 +259,28 @@ var _ = Describe("Schema", func() {
 	})
 
 	Context("Validate", func() {
+		var (
+			testTableName   = "users"
+			testColumnName  = "id"
+			createTestTable = func(tableName string, columnName string) schema.Table {
+				return schema.Table{
+					Name: tableName,
+					Columns: []schema.Column{
+						{Name: columnName, Type: schema.ColumnTypeInteger},
+					},
+				}
+			}
+			createSchemaWithTables = func(name string, tables []schema.Table) *schema.Schema {
+				return &schema.Schema{
+					Name:   name,
+					Tables: tables,
+				}
+			}
+		)
+
 		It("should validate valid schema", func() {
 			tables := []schema.Table{
-				{
-					Name: "users",
-					Columns: []schema.Column{
-						{Name: "id", Type: schema.ColumnTypeInteger},
-					},
-				},
+				createTestTable(testTableName, testColumnName),
 			}
 
 			s, err := schema.NewSchema("mydb", tables)
@@ -285,39 +299,30 @@ var _ = Describe("Schema", func() {
 		})
 
 		It("should reject schema with empty name", func() {
-			s := &schema.Schema{
-				Name: "",
-				Tables: []schema.Table{
-					{
-						Name: "users",
-						Columns: []schema.Column{
-							{Name: "id", Type: schema.ColumnTypeInteger},
-						},
-					},
-				},
+			tables := []schema.Table{
+				createTestTable(testTableName, testColumnName),
 			}
+			s := createSchemaWithTables("", tables)
 
 			err := s.Validate()
 			Expect(err).To(HaveOccurred())
 		})
 
 		It("should reject schema with no tables", func() {
-			s := &schema.Schema{
-				Name:   "mydb",
-				Tables: []schema.Table{},
-			}
+			s := createSchemaWithTables("mydb", []schema.Table{})
 
 			err := s.Validate()
 			Expect(err).To(HaveOccurred())
 		})
 
+		createSchemaWithInvalidTable := func(name string) *schema.Schema {
+			return createSchemaWithTables(name, []schema.Table{
+				{Name: "", Columns: []schema.Column{{Name: "id", Type: schema.ColumnTypeInteger}}},
+			})
+		}
+
 		It("should reject schema with invalid table", func() {
-			s := &schema.Schema{
-				Name: "mydb",
-				Tables: []schema.Table{
-					{Name: "", Columns: []schema.Column{{Name: "id", Type: schema.ColumnTypeInteger}}},
-				},
-			}
+			s := createSchemaWithInvalidTable("mydb")
 
 			err := s.Validate()
 			Expect(err).To(HaveOccurred())

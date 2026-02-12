@@ -44,7 +44,7 @@ func NewWizard() *Wizard {
 		Details:     NewProjectDetailsStep(theme, ui),
 		Features:    NewFeaturesStep(theme, ui),
 		Output:      NewOutputStep(theme, ui),
-		TemplateFunc: func(projectType templates.ProjectType) (TemplateInterface, error) {
+		TemplateFunc: func(projectType templates.ProjectType) (templates.Template, error) {
 			tmpl, err := templates.GetTemplate(projectType)
 			if err != nil {
 				return nil, err
@@ -192,7 +192,7 @@ func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 	}
 
 	// Get appropriate template
-	var tmpl TemplateInterface
+	var tmpl templates.Template
 	var err error
 
 	if w.deps != nil && w.deps.TemplateFunc != nil {

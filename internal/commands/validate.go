@@ -89,20 +89,12 @@ func displayValidationResults(result *config.ValidationResult, opts *ValidateOpt
 
 	// Show errors
 	if len(result.Errors) > 0 {
-		fmt.Println(errorStyle.Render(fmt.Sprintf("✗ Found %d error(s):", len(result.Errors))))
-		for _, err := range result.Errors {
-			fmt.Printf("  • %s: %s\n", err.Field, err.Message)
-		}
-		fmt.Println()
+		printValidationItems(result.Errors, errorStyle, "error", "✗")
 	}
 
 	// Show warnings
 	if len(result.Warnings) > 0 {
-		fmt.Println(warningStyle.Render(fmt.Sprintf("⚠ Found %d warning(s):", len(result.Warnings))))
-		for _, warn := range result.Warnings {
-			fmt.Printf("  • %s: %s\n", warn.Field, warn.Message)
-		}
-		fmt.Println()
+		printValidationItems(result.Warnings, warningStyle, "warning", "⚠")
 	}
 
 	// Show success if no errors
@@ -118,4 +110,12 @@ func displayValidationResults(result *config.ValidationResult, opts *ValidateOpt
 	if !result.IsValid() && opts.Fix {
 		fmt.Println("Note: Auto-fix is not yet implemented. Please fix errors manually.")
 	}
+}
+
+func printValidationItems(items []config.ValidationError, style lipgloss.Style, itemType, emoji string) {
+	fmt.Println(style.Render(fmt.Sprintf("%s Found %d %s(s):", emoji, len(items), itemType)))
+	for _, item := range items {
+		fmt.Printf("  • %s: %s\n", item.Field, item.Message)
+	}
+	fmt.Println()
 }

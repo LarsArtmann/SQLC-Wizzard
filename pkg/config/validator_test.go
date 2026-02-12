@@ -33,29 +33,45 @@ func createBasicSqlcConfig(engine string) *SqlcConfig {
 	}
 }
 
-// Helper function to add test entries (errors or warnings) and validate them.
-// This eliminates duplicate validation code patterns across tests.
-func validateTestEntries(result *ValidationResult, entryType, field1, message1, field2, message2 string, isValid bool) {
-	switch entryType {
-	case "error":
-		result.AddError(field1, message1)
-		result.AddError(field2, message2)
-		Expect(result.Errors).To(HaveLen(2))
-		Expect(result.Errors[0].Field).To(Equal(field1))
-		Expect(result.Errors[0].Message).To(Equal(message1))
-		Expect(result.Errors[1].Field).To(Equal(field2))
-		Expect(result.Errors[1].Message).To(Equal(message2))
-		Expect(result.IsValid()).To(Equal(isValid))
-	case "warning":
-		result.AddWarning(field1, message1)
-		result.AddWarning(field2, message2)
-		Expect(result.Warnings).To(HaveLen(2))
-		Expect(result.Warnings[0].Field).To(Equal(field1))
-		Expect(result.Warnings[0].Message).To(Equal(message1))
-		Expect(result.Warnings[1].Field).To(Equal(field2))
-		Expect(result.Warnings[1].Message).To(Equal(message2))
-		Expect(result.IsValid()).To(Equal(isValid))
-	}
+// EntryAdder interface for adding entries to validation result
+type EntryAdder interface {
+	AddEntry(field, message string)
+	GetEntries() []ValidationError
+}
+
+func addEntriesAndVerify(adder EntryAdder, field1, message1, field2, message2 string, expectValid bool) {
+	adder.AddEntry(field1, message1)
+	adder.AddEntry(field2, message2)
+	entries := adder.GetEntries()
+	Expect(entries).To(HaveLen(2))
+	Expect(entries[0].Field).To(Equal(field1))
+	Expect(entries[0].Message).To(Equal(message1))
+	Expect(entries[1].Field).To(Equal(field2))
+	Expect(entries[1].Message).To(Equal(message2))
+}
+
+type errorAdder struct {
+	result *ValidationResult
+}
+
+func (e *errorAdder) AddEntry(field, message string) {
+	e.result.AddError(field, message)
+}
+
+func (e *errorAdder) GetEntries() []ValidationError {
+	return e.result.Errors
+}
+
+type warningAdder struct {
+	result *ValidationResult
+}
+
+func (w *warningAdder) AddEntry(field, message string) {
+	w.result.AddWarning(field, message)
+}
+
+func (w *warningAdder) GetEntries() []ValidationError {
+	return w.result.Warnings
 }
 
 var _ = Describe("Validator", func() {
@@ -82,9 +98,13 @@ var _ = Describe("Validator", func() {
 					result := &ValidationResult{}
 
 					if strings.Contains(tc.name, "error") {
-						validateTestEntries(result, "error", tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, false)
+						errors := &errorAdder{result: result}
+						addEntriesAndVerify(errors, tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, false)
+						Expect(result.IsValid()).To(BeFalse())
 					} else {
-						validateTestEntries(result, "warning", tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, true)
+						warnings := &warningAdder{result: result}
+						addEntriesAndVerify(warnings, tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, true)
+						Expect(result.IsValid()).To(BeTrue())
 					}
 				},
 				Entry("should add errors correctly", testCase{

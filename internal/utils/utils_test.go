@@ -160,9 +160,27 @@ var _ = Describe("StringToKebabCase", func() {
 	runCaseConversionTests(utils.StringToKebabCase, "kebab-case", testCase)
 })
 
+// edgeCaseTestCases holds edge cases for Pluralize and Singularize functions.
+var edgeCaseTestCases = []stringTestCase{
+	{"", ""},
+	{"data", "data"},   // Already correct form
+	{"sheep", "sheep"}, // Irregular plural
+}
+
+// runPluralizeSingularizeEdgeCaseTests tests edge cases for both Pluralize and Singularize.
+func runPluralizeSingularizeEdgeCaseTests() {
+	It("should handle edge cases for pluralization", func() {
+		runStringTests(utils.Pluralize, edgeCaseTestCases)
+	})
+
+	It("should handle edge cases for singularization", func() {
+		runStringTests(utils.Singularize, edgeCaseTestCases)
+	})
+}
+
 var _ = Describe("Pluralize and Singularize", func() {
 	It("should pluralize and singularize common nouns correctly", func() {
-		pluralCases := []stringTestCase{
+		wordPairs := []stringTestCase{
 			{"user", "users"},
 			{"item", "items"},
 			{"order", "orders"},
@@ -176,35 +194,18 @@ var _ = Describe("Pluralize and Singularize", func() {
 			{"child", "children"},
 		}
 
-		singularCases := []stringTestCase{
-			{"users", "user"},
-			{"items", "item"},
-			{"orders", "order"},
-			{"queries", "query"},
-			{"schemas", "schema"},
-			{"indices", "index"},
-			{"statuses", "status"},
-			{"matches", "match"},
-			{"boxes", "box"},
-			{"people", "person"},
-			{"children", "child"},
+		pluralCases := make([]stringTestCase, len(wordPairs))
+		singularCases := make([]stringTestCase, len(wordPairs))
+		for i, pair := range wordPairs {
+			pluralCases[i] = stringTestCase{input: pair.input, expected: pair.expected}
+			singularCases[i] = stringTestCase{input: pair.expected, expected: pair.input}
 		}
 
 		runStringTests(utils.Pluralize, pluralCases)
 		runStringTests(utils.Singularize, singularCases)
 	})
 
-	It("should handle edge cases for pluralization", func() {
-		Expect(utils.Pluralize("")).To(Equal(""))
-		Expect(utils.Pluralize("data")).To(Equal("data"))   // Already plural
-		Expect(utils.Pluralize("sheep")).To(Equal("sheep")) // Irregular plural
-	})
-
-	It("should handle edge cases for singularization", func() {
-		Expect(utils.Singularize("")).To(Equal(""))
-		Expect(utils.Singularize("data")).To(Equal("data"))   // Already singular
-		Expect(utils.Singularize("sheep")).To(Equal("sheep")) // Irregular plural
-	})
+	runPluralizeSingularizeEdgeCaseTests()
 })
 
 var _ = Describe("IsValidIdentifier", func() {

@@ -8,6 +8,8 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
+	gomegatypes "github.com/onsi/gomega/types"
+	"github.com/spf13/cobra"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
@@ -65,23 +67,35 @@ var _ = Describe("NewGenerateCommand", func() {
 	})
 })
 
+func testCommandCreation(
+	getCommand func() *cobra.Command,
+	expectedUse string,
+	expectedShortSubstring string,
+) {
+	cmd := getCommand()
+
+	Expect(cmd.Use).To(Equal(expectedUse))
+	Expect(cmd.Short).To(ContainSubstring(expectedShortSubstring))
+	Expect(cmd.RunE).NotTo(BeNil())
+}
+
 var _ = Describe("NewValidateCommand", func() {
 	It("should create a valid validate command", func() {
-		cmd := commands.NewValidateCommand()
-
-		Expect(cmd.Use).To(Equal("validate [file]"))
-		Expect(cmd.Short).To(ContainSubstring("Validate"))
-		Expect(cmd.RunE).NotTo(BeNil())
+		testCommandCreation(
+			func() *cobra.Command { return commands.NewValidateCommand() },
+			"validate [file]",
+			"Validate",
+		)
 	})
 })
 
 var _ = Describe("NewInitCommand", func() {
 	It("should create a valid init command", func() {
-		cmd := commands.NewInitCommand()
-
-		Expect(cmd.Use).To(Equal("init"))
-		Expect(cmd.Short).To(ContainSubstring("Initialize"))
-		Expect(cmd.RunE).NotTo(BeNil())
+		testCommandCreation(
+			func() *cobra.Command { return commands.NewInitCommand() },
+			"init",
+			"Initialize",
+		)
 	})
 })
 
@@ -147,33 +161,19 @@ var _ = Describe("Doctor Command Checks", func() {
 	Context("checkGoVersion", func() {
 		It("should return PASS for compatible Go version", func() {
 			// This test assumes the current Go version is compatible
-			result := checkGoVersion(context.Background())
-
-			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
-			Expect(result.Message).To(ContainSubstring("compatible"))
-			Expect(result.Error).ToNot(HaveOccurred())
+			expectDoctorCheckPass(checkGoVersion, "compatible")
 		})
 	})
 
 	Context("checkFileSystemPermissions", func() {
 		It("should return PASS when filesystem is writable", func() {
-			result := checkFileSystemPermissions(context.Background())
-
-			Expect(result.Status).To(Equal(commands.DoctorStatusPass))
-			Expect(result.Message).To(ContainSubstring("OK"))
-			Expect(result.Error).ToNot(HaveOccurred())
+			expectDoctorCheckPass(checkFileSystemPermissions, "OK")
 		})
 	})
 
 	Context("checkMemoryAvailability", func() {
 		It("should return PASS or WARN based on available memory", func() {
-			result := checkMemoryAvailability(context.Background())
-
-			Expect(result.Status).To(Or(
-				Equal(commands.DoctorStatusPass),
-				Equal(commands.DoctorStatusWarn),
-			))
-			Expect(result.Error).ToNot(HaveOccurred())
+			expectDoctorCheck(checkMemoryAvailability, "Memory", commands.DoctorStatusPass, commands.DoctorStatusWarn)
 		})
 	})
 })
@@ -241,6 +241,32 @@ func checkMemoryAvailability(ctx context.Context) *commands.DoctorResult {
 		Status:  "PASS",
 		Message: "Memory is sufficient",
 	}
+}
+
+// expectDoctorCheck is a helper that consolidates common assertions
+// for doctor check functions. Accepts multiple expected statuses for flexible matching.
+func expectDoctorCheck(checkFunc func(ctx context.Context) *commands.DoctorResult, expectedMessageSubstring string, expectedStatuses ...commands.DoctorStatus) {
+	result := checkFunc(context.Background())
+
+	var expectedStatusMatcher gomegatypes.GomegaMatcher
+	if len(expectedStatuses) == 1 {
+		expectedStatusMatcher = Equal(expectedStatuses[0])
+	} else {
+		statusMatchers := make([]gomegatypes.GomegaMatcher, len(expectedStatuses))
+		for i, status := range expectedStatuses {
+			statusMatchers[i] = Equal(status)
+		}
+		expectedStatusMatcher = Or(statusMatchers...)
+	}
+
+	Expect(result.Status).To(expectedStatusMatcher)
+	Expect(result.Message).To(ContainSubstring(expectedMessageSubstring))
+	Expect(result.Error).ToNot(HaveOccurred())
+}
+
+// expectDoctorCheckPass is a convenience helper for checks expected to return PASS status.
+func expectDoctorCheckPass(checkFunc func(ctx context.Context) *commands.DoctorResult, expectedMessageSubstring string) {
+	expectDoctorCheck(checkFunc, expectedMessageSubstring, commands.DoctorStatusPass)
 }
 
 func generateExampleFiles(outputDir string, force bool) error {

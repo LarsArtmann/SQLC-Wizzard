@@ -43,25 +43,23 @@ func assertSafetyRules(rules any, expectations safetyRulesExpectations) {
 
 var _ = Describe("QueryStyleRules", func() {
 	It("should allow independent configuration of style rules", func() {
-		rules := domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarForbidden,
-			ColumnExplicitness: domain.ColumnExplicitnessDefault,
-		}
-
-		Expect(rules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
-		Expect(rules.ColumnExplicitness.RequiresExplicitColumns()).To(BeFalse())
+		testColumnExplicitness(domain.ColumnExplicitnessDefault, false)
 	})
 
 	It("should support both rules enabled", func() {
-		rules := domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarForbidden,
-			ColumnExplicitness: domain.ColumnExplicitnessRequired,
-		}
-
-		Expect(rules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
-		Expect(rules.ColumnExplicitness.RequiresExplicitColumns()).To(BeTrue())
+		testColumnExplicitness(domain.ColumnExplicitnessRequired, true)
 	})
 })
+
+func testColumnExplicitness(columnExplicitness domain.ColumnExplicitnessPolicy, expectsExplicitColumns bool) {
+	rules := domain.QueryStyleRules{
+		SelectStarPolicy:   domain.SelectStarForbidden,
+		ColumnExplicitness: columnExplicitness,
+	}
+
+	Expect(rules.SelectStarPolicy.ForbidsSelectStar()).To(BeTrue())
+	Expect(rules.ColumnExplicitness.RequiresExplicitColumns()).To(Equal(expectsExplicitColumns))
+}
 
 var _ = Describe("QuerySafetyRules", func() {
 	It("should allow independent configuration of safety rules", func() {
