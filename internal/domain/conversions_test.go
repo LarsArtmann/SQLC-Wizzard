@@ -77,21 +77,21 @@ func newTypeSafeSafetyRules(opts ...func(*domain.TypeSafeSafetyRules)) domain.Ty
 }
 
 // withColumnExplicitness sets the ColumnExplicitness style rule.
-func withColumnExplicitness(v domain.ColumnExplicitnessOption) func(*domain.TypeSafeSafetyRules) {
+func withColumnExplicitness(v domain.ColumnExplicitnessPolicy) func(*domain.TypeSafeSafetyRules) {
 	return func(ts *domain.TypeSafeSafetyRules) {
 		ts.StyleRules.ColumnExplicitness = v
 	}
 }
 
 // withLimitRequirement sets the LimitRequirement safety rule.
-func withLimitRequirement(v domain.LimitClauseOption) func(*domain.TypeSafeSafetyRules) {
+func withLimitRequirement(v domain.LimitClauseRequirement) func(*domain.TypeSafeSafetyRules) {
 	return func(ts *domain.TypeSafeSafetyRules) {
 		ts.SafetyRules.LimitRequirement = v
 	}
 }
 
 // withMaxRowsWithoutLimit sets the MaxRowsWithoutLimit safety rule.
-func withMaxRowsWithoutLimit(v int) func(*domain.TypeSafeSafetyRules) {
+func withMaxRowsWithoutLimit(v uint) func(*domain.TypeSafeSafetyRules) {
 	return func(ts *domain.TypeSafeSafetyRules) {
 		ts.SafetyRules.MaxRowsWithoutLimit = v
 	}
