@@ -41,6 +41,42 @@ func generateStepTests(describeName string, stepFunc func(*generated.TemplateDat
 	})
 }
 
+// createPackageNameTestCases returns test cases for package name step tests.
+func createPackageNameTestCases() []stepTestCase {
+	return []stepTestCase{
+		{
+			data: &generated.TemplateData{
+				Package: generated.PackageConfig{Name: "db"},
+			},
+			description: "package name field",
+		},
+		{
+			data: &generated.TemplateData{
+				Package: generated.PackageConfig{Name: "mypackage"},
+			},
+			description: "package name field",
+		},
+	}
+}
+
+// createPackagePathTestCases returns test cases for package path step tests.
+func createPackagePathTestCases() []stepTestCase {
+	return []stepTestCase{
+		{
+			data: &generated.TemplateData{
+				Package: generated.PackageConfig{Path: "github.com/myorg/myproject"},
+			},
+			description: "package path field",
+		},
+		{
+			data: &generated.TemplateData{
+				Package: generated.PackageConfig{Path: "github.com/example/project"},
+			},
+			description: "package path field",
+		},
+	}
+}
+
 var _ = Describe("CreateProjectTypeStep", func() {
 	Context("with default template data", func() {
 		It("should create a valid step with all project types", func() {
@@ -168,20 +204,7 @@ var _ = Describe("CreatePackageNameStep", func() {
 	generateStepTests(
 		"CreatePackageNameStep",
 		CreatePackageNameStep,
-		[]stepTestCase{
-			{
-				data: &generated.TemplateData{
-					Package: generated.PackageConfig{Name: "db"},
-				},
-				description: "package name field",
-			},
-			{
-				data: &generated.TemplateData{
-					Package: generated.PackageConfig{Name: "mypackage"},
-				},
-				description: "package name field",
-			},
-		},
+		createPackageNameTestCases(),
 	)
 })
 
@@ -189,20 +212,7 @@ var _ = Describe("CreatePackagePathStep", func() {
 	generateStepTests(
 		"CreatePackagePathStep",
 		CreatePackagePathStep,
-		[]stepTestCase{
-			{
-				data: &generated.TemplateData{
-					Package: generated.PackageConfig{Path: "github.com/myorg/myproject"},
-				},
-				description: "package path field",
-			},
-			{
-				data: &generated.TemplateData{
-					Package: generated.PackageConfig{Path: "github.com/example/project"},
-				},
-				description: "package path field",
-			},
-		},
+		createPackagePathTestCases(),
 	)
 })
 
