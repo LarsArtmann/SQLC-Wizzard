@@ -525,19 +525,7 @@ var _ = Describe("SafetyRules Conversions", func() {
 		})
 
 		It("should preserve core data through new→old→new conversion", func() {
-			original := domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarForbidden,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseAlways,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 1000,
-				},
-				DestructiveOps: domain.DestructiveForbidden,
-				CustomRules:    []generated.SafetyRule{},
-			}
+			original := *testing.CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(nil)
 
 			legacy := original.ToLegacy()
 			roundtrip := domain.SafetyRulesToTypeSafe(legacy)

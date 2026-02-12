@@ -198,3 +198,40 @@ func CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(customRules []generated
 		CustomRules:    customRules,
 	}
 }
+
+// CreateStrictTypeSafeSafetyRules creates a strictly configured TypeSafeSafetyRules for testing.
+// All safety rules are set to their most restrictive values.
+func CreateStrictTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
+	return &domain.TypeSafeSafetyRules{
+		StyleRules: domain.QueryStyleRules{
+			SelectStarPolicy:   domain.SelectStarForbidden,
+			ColumnExplicitness: domain.ColumnExplicitnessRequired,
+		},
+		SafetyRules: domain.QuerySafetyRules{
+			WhereRequirement:    domain.WhereClauseAlways,
+			LimitRequirement:    domain.LimitClauseAlways,
+			MaxRowsWithoutLimit: 100,
+		},
+		DestructiveOps: domain.DestructiveForbidden,
+		CustomRules:    []generated.SafetyRule{},
+	}
+}
+
+// CreateQueryStyleRulesForbiddenSelectStar creates QueryStyleRules that forbids SELECT *.
+// This helper eliminates duplicate fixture code for testing select star policies.
+func CreateQueryStyleRulesForbiddenSelectStar() domain.QueryStyleRules {
+	return domain.QueryStyleRules{
+		SelectStarPolicy:   domain.SelectStarForbidden,
+		ColumnExplicitness: domain.ColumnExplicitnessDefault,
+	}
+}
+
+// CreateQuerySafetyRulesStrict creates QuerySafetyRules with strict safety settings.
+// All safety rules are set to their most restrictive values.
+func CreateQuerySafetyRulesStrict() domain.QuerySafetyRules {
+	return domain.QuerySafetyRules{
+		WhereRequirement:    domain.WhereClauseAlways,
+		LimitRequirement:    domain.LimitClauseNever,
+		MaxRowsWithoutLimit: 1000,
+	}
+}
