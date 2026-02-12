@@ -17,15 +17,21 @@ func NewRealDatabaseAdapter() *RealDatabaseAdapter {
 	return &RealDatabaseAdapter{}
 }
 
-// TestConnection tests database connectivity.
-func (a *RealDatabaseAdapter) TestConnection(ctx context.Context, cfg *config.DatabaseConfig) error {
+// validateDatabaseConfig checks that the database configuration is valid.
+func validateDatabaseConfig(cfg *config.DatabaseConfig) error {
 	if cfg == nil {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database config is nil")
 	}
-
-	// For now, just validate configuration format
 	if cfg.URI == "" {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database URI is required")
+	}
+	return nil
+}
+
+// TestConnection tests database connectivity.
+func (a *RealDatabaseAdapter) TestConnection(ctx context.Context, cfg *config.DatabaseConfig) error {
+	if err := validateDatabaseConfig(cfg); err != nil {
+		return err
 	}
 
 	fmt.Printf("🔗 Testing database connection to: %s\n", maskSensitiveInfo(cfg.URI))
@@ -34,12 +40,8 @@ func (a *RealDatabaseAdapter) TestConnection(ctx context.Context, cfg *config.Da
 
 // CreateDatabase creates a new database.
 func (a *RealDatabaseAdapter) CreateDatabase(ctx context.Context, cfg *config.DatabaseConfig) error {
-	if cfg == nil {
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database config is nil")
-	}
-
-	if cfg.URI == "" {
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database URI is required")
+	if err := validateDatabaseConfig(cfg); err != nil {
+		return err
 	}
 
 	fmt.Printf("🗄️  Creating database with URI: %s\n", maskSensitiveInfo(cfg.URI))
@@ -48,12 +50,8 @@ func (a *RealDatabaseAdapter) CreateDatabase(ctx context.Context, cfg *config.Da
 
 // DropDatabase drops a database.
 func (a *RealDatabaseAdapter) DropDatabase(ctx context.Context, cfg *config.DatabaseConfig) error {
-	if cfg == nil {
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database config is nil")
-	}
-
-	if cfg.URI == "" {
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database URI is required")
+	if err := validateDatabaseConfig(cfg); err != nil {
+		return err
 	}
 
 	fmt.Printf("🗑️  Dropping database with URI: %s\n", maskSensitiveInfo(cfg.URI))
@@ -62,8 +60,8 @@ func (a *RealDatabaseAdapter) DropDatabase(ctx context.Context, cfg *config.Data
 
 // GetSchema returns database schema information.
 func (a *RealDatabaseAdapter) GetSchema(ctx context.Context, cfg *config.DatabaseConfig) (*schema.Schema, error) {
-	if cfg == nil {
-		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "database config is nil")
+	if err := validateDatabaseConfig(cfg); err != nil {
+		return nil, err
 	}
 
 	// For now, return a simple empty schema
@@ -79,8 +77,8 @@ func (a *RealDatabaseAdapter) GetSchema(ctx context.Context, cfg *config.Databas
 
 // GenerateMigrations generates database migrations.
 func (a *RealDatabaseAdapter) GenerateMigrations(ctx context.Context, cfg *config.DatabaseConfig) ([]string, error) {
-	if cfg == nil {
-		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "database config is nil")
+	if err := validateDatabaseConfig(cfg); err != nil {
+		return nil, err
 	}
 
 	fmt.Printf("📝 Generating migrations for: %s\n", maskSensitiveInfo(cfg.URI))
