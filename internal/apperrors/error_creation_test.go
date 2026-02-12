@@ -106,10 +106,7 @@ var _ = Describe("Error Creation", func() {
 			cause := stderrors.New("permission denied")
 			err := FileReadError("/path/to/file.txt", cause)
 
-			Expect(err).To(HaveOccurred())
-			Expect(err.Code).To(Equal(ErrorCodeFileReadError))
-			Expect(err.Message).To(ContainSubstring("/path/to/file.txt"))
-			Expect(err.Component).To(Equal("filesystem"))
+			expectAppError(err, ErrorCodeFileReadError, "/path/to/file.txt", "filesystem")
 
 			// TODO: Add validation for nil cause
 			// TODO: Add tests for different file error scenarios
@@ -119,10 +116,7 @@ var _ = Describe("Error Creation", func() {
 			cause := stderrors.New("invalid YAML")
 			err := ConfigParseError("/path/to/config.yaml", cause)
 
-			Expect(err).To(HaveOccurred())
-			Expect(err.Code).To(Equal(ErrorCodeConfigParseFailed))
-			Expect(err.Message).To(ContainSubstring("/path/to/config.yaml"))
-			Expect(err.Component).To(Equal("config"))
+			expectAppError(err, ErrorCodeConfigParseFailed, "/path/to/config.yaml", "config")
 
 			// TODO: Add validation for different config formats
 			// TODO: Add tests for malformed paths
@@ -159,3 +153,11 @@ var _ = Describe("Error Creation", func() {
 	// TODO: Add tests for error creation with unicode characters
 	// TODO: Add performance tests for error creation
 })
+
+// expectAppError is a helper function to verify common AppError properties
+func expectAppError(err *AppError, expectedCode ErrorCode, expectedPathSubstring, expectedComponent string) {
+	Expect(err).To(HaveOccurred())
+	Expect(err.Code).To(Equal(expectedCode))
+	Expect(err.Message).To(ContainSubstring(expectedPathSubstring))
+	Expect(err.Component).To(Equal(expectedComponent))
+}

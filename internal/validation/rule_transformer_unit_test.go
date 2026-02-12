@@ -5,7 +5,7 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
+	testingHelper "github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -267,7 +267,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should transform SelectStarPolicy.ForbidsSelectStar() correctly", func() {
-			rules := createBaseTypeSafeSafetyRules()
+			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 			rules.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
 
 			configRules := transformer.TransformTypeSafeSafetyRules(rules)
@@ -279,7 +279,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should transform WhereRequirement.RequiresOnDestructive() correctly", func() {
-			rules := createBaseTypeSafeSafetyRules()
+			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 			rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
 
 			configRules := transformer.TransformTypeSafeSafetyRules(rules)
@@ -290,14 +290,14 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
-			rules := createBaseTypeSafeSafetyRules()
+			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 			rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
 
 			expectSingleRule(transformer, rules, "require-limit", "query.type == 'SELECT' && !query.hasLimitClause()")
 		})
 
 		It("should transform MaxRowsWithoutLimit correctly", func() {
-			rules := createBaseTypeSafeSafetyRules()
+			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 			rules.SafetyRules.MaxRowsWithoutLimit = 100
 
 			expectSingleRule(transformer, rules, "max-rows-without-limit", "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)")
@@ -317,7 +317,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 					RequireLimit: false,
 				},
 				func() *domain.TypeSafeSafetyRules {
-					rules := createBaseTypeSafeSafetyRules()
+					rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 					rules.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
 					return rules
 				},
@@ -349,7 +349,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 					RequireLimit: true,
 				},
 				func() *domain.TypeSafeSafetyRules {
-					rules := createBaseTypeSafeSafetyRules()
+					rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 					rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
 					return rules
 				},

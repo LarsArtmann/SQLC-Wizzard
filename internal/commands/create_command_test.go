@@ -92,24 +92,20 @@ func TestCreateCommand_OutputDirectory(t *testing.T) {
 }
 
 func TestCreateCommand_NonInteractiveMode(t *testing.T) {
-	cmd := commands.NewCreateCommand()
-
-	// Test non-interactive flag
-	err := cmd.Flags().Set("non-interactive", "true")
-	assert.NoError(t, err)
-
-	flag := cmd.Flags().Lookup("non-interactive")
-	assert.True(t, flag.Changed)
+	testFlagChanged(t, "non-interactive")
 }
 
 func TestCreateCommand_ForceFlag(t *testing.T) {
+	testFlagChanged(t, "force")
+}
+
+func testFlagChanged(t *testing.T, flagName string) {
 	cmd := commands.NewCreateCommand()
 
-	// Test force flag
-	err := cmd.Flags().Set("force", "true")
+	err := cmd.Flags().Set(flagName, "true")
 	assert.NoError(t, err)
 
-	flag := cmd.Flags().Lookup("force")
+	flag := cmd.Flags().Lookup(flagName)
 	assert.True(t, flag.Changed)
 }
 
