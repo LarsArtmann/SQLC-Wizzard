@@ -33,12 +33,12 @@ var allDatabaseTypes = []generated.DatabaseType{
 	generated.DatabaseTypeSQLite,
 }
 
-// testEnumField is a helper that generates Ginkgo test blocks for enum field assignment.
-// This eliminates duplicate test structure when testing multiple enum fields.
-func testEnumField[T any](fieldName string, values []T, setField func(*creators.CreateConfig, T), getField func(*creators.CreateConfig) T) {
+// testEnumAssignment tests that an enum field can be correctly assigned and retrieved.
+// Eliminated duplicate test structure by centralizing the pattern.
+func testEnumAssignment[C any, E any](fieldName string, values []E, setField func(*C, E), getField func(*C) E) {
 	It(fmt.Sprintf("should support all %s types", fieldName), func() {
 		for _, v := range values {
-			cfg := &creators.CreateConfig{}
+			cfg := new(C)
 			setField(cfg, v)
 			Expect(getField(cfg)).To(Equal(v), "%s should be correctly assigned", fieldName)
 		}
@@ -341,11 +341,11 @@ var _ = Describe("ProjectCreator", func() {
 			Expect(cfg.Force).To(BeFalse())
 		})
 
-		testEnumField("ProjectType", allProjectTypes,
+		testEnumAssignment("ProjectType", allProjectTypes,
 			func(cfg *creators.CreateConfig, pt generated.ProjectType) { cfg.ProjectType = pt },
 			func(cfg *creators.CreateConfig) generated.ProjectType { return cfg.ProjectType })
 
-		testEnumField("Database", allDatabaseTypes,
+		testEnumAssignment("Database", allDatabaseTypes,
 			func(cfg *creators.CreateConfig, dt generated.DatabaseType) { cfg.Database = dt },
 			func(cfg *creators.CreateConfig) generated.DatabaseType { return cfg.Database })
 	})
