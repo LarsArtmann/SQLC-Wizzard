@@ -281,29 +281,11 @@ var _ = Describe("Wizard Steps", func() {
 
 	Describe("Output Configuration", func() {
 		It("should handle custom output directories", func() {
-			result := wiz.GetResult()
-			result.TemplateData.Output = createTemplateDataWithCustomOutput(
-				"./custom/db",
-				"./custom/queries",
-				"./custom/schema",
-			).Output
-
-			Expect(result.TemplateData.Output.BaseDir).To(Equal("./custom/db"))
-			Expect(result.TemplateData.Output.QueriesDir).To(Equal("./custom/queries"))
-			Expect(result.TemplateData.Output.SchemaDir).To(Equal("./custom/schema"))
+			testOutputPathConfiguration(wiz, "./custom/db", "./custom/queries", "./custom/schema")
 		})
 
 		It("should handle relative and absolute paths", func() {
-			result := wiz.GetResult()
-			result.TemplateData.Output = createTemplateDataWithCustomOutput(
-				"/absolute/path/db",
-				"./relative/queries",
-				"../schema",
-			).Output
-
-			Expect(result.TemplateData.Output.BaseDir).To(Equal("/absolute/path/db"))
-			Expect(result.TemplateData.Output.QueriesDir).To(Equal("./relative/queries"))
-			Expect(result.TemplateData.Output.SchemaDir).To(Equal("../schema"))
+			testOutputPathConfiguration(wiz, "/absolute/path/db", "./relative/queries", "../schema")
 		})
 	})
 

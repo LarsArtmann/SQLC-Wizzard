@@ -2,6 +2,8 @@ package wizard_test
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
+	. "github.com/onsi/gomega"
 )
 
 // createTemplateData creates a basic template data structure for testing.
@@ -56,4 +58,18 @@ func createTemplateDataWithAllFeatures(enabled bool) generated.TemplateData {
 	data.Validation.StrictFunctions = enabled
 	data.Validation.StrictOrderBy = enabled
 	return data
+}
+
+// testOutputPathConfiguration tests output directory configuration with custom paths.
+func testOutputPathConfiguration(wiz *wizard.Wizard, baseDir, queriesDir, schemaDir string) {
+	result := wiz.GetResult()
+	result.TemplateData.Output = createTemplateDataWithCustomOutput(
+		baseDir,
+		queriesDir,
+		schemaDir,
+	).Output
+
+	Expect(result.TemplateData.Output.BaseDir).To(Equal(baseDir))
+	Expect(result.TemplateData.Output.QueriesDir).To(Equal(queriesDir))
+	Expect(result.TemplateData.Output.SchemaDir).To(Equal(schemaDir))
 }
