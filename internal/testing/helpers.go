@@ -294,3 +294,14 @@ func GetStructPointerModeTestCases() []EnumTestCase {
 		{EnumValue: domain.StructPointerAlways, ExpectedString: "always"},
 	}
 }
+
+// GetJSONTagStyleTestCases returns test cases for JSONTagStyle string representation tests.
+// This helper eliminates duplicate test case definitions across test files.
+func GetJSONTagStyleTestCases() []EnumTestCase {
+	return []EnumTestCase{
+		{EnumValue: domain.JSONTagStyleCamel, ExpectedString: "camel"},
+		{EnumValue: domain.JSONTagStyleSnake, ExpectedString: "snake"},
+		{EnumValue: domain.JSONTagStylePascal, ExpectedString: "pascal"},
+		{EnumValue: domain.JSONTagStyleKebab, ExpectedString: "kebab"},
+	}
+}

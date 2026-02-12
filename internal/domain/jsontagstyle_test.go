@@ -36,12 +36,7 @@ var _ = Describe("JSONTagStyle", func() {
 
 	Context("String", func() {
 		It("should return correct string representation", func() {
-			testing.RunStringRepresentationTest([]testing.EnumTestCase{
-				{EnumValue: domain.JSONTagStyleCamel, ExpectedString: "camel"},
-				{EnumValue: domain.JSONTagStyleSnake, ExpectedString: "snake"},
-				{EnumValue: domain.JSONTagStylePascal, ExpectedString: "pascal"},
-				{EnumValue: domain.JSONTagStyleKebab, ExpectedString: "kebab"},
-			})
+			testing.RunStringRepresentationTest(testing.GetJSONTagStyleTestCases())
 		})
 	})
 })
