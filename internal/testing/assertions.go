@@ -106,3 +106,49 @@ func AssertTemplateGenerateBasic(t *testing.T, helper TemplateTestHelper) {
 		assert.False(t, *sqlConfig.StrictOrderBy)
 	}
 }
+
+// AssertTemplateGenerateBasicWithDefaults is a convenience function for testing templates
+// that share identical Generate() expectations (UUID, JSON, Arrays, JSONTags, Interface, StrictChecks).
+// This eliminates duplicate test code across templates with the same behavior profile.
+//
+// Parameters:
+//   - t: testing.TB
+//   - template: The template to test
+//   - expectedProjectType: The expected project type enum
+//   - expectedProjectName: The expected project name string
+//
+// Example usage:
+//
+//	func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
+//	    AssertTemplateGenerateBasicWithDefaults(t,
+//	        &templates.EnterpriseTemplate{},
+//	        generated.ProjectTypeEnterprise,
+//	        "enterprise-service",
+//	    )
+//	}
+func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
+	DefaultData() generated.TemplateData
+	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
+}, expectedProjectType generated.ProjectType, expectedProjectName string) {
+	t.Helper()
+
+	data := template.DefaultData()
+	data.ProjectName = expectedProjectName
+
+	result, err := template.Generate(data)
+
+	require.NoError(t, err, "Generate should not return an error for %s template", expectedProjectType)
+	require.NotNil(t, result, "Generate should return a non-nil config")
+
+	assert.Equal(t, "2", result.Version, "Version should be '2'")
+	assert.Len(t, result.SQL, 1, "Should have exactly one SQL configuration")
+
+	sqlConfig := result.SQL[0]
+	assert.Equal(t, expectedProjectName, sqlConfig.Name, "SQL config name should match project name")
+	assert.Equal(t, "postgresql", sqlConfig.Engine, "Engine should be postgresql")
+	assert.NotNil(t, sqlConfig.Database, "Database should be configured")
+
+	// Verify all default safety features are enabled
+	assert.True(t, *sqlConfig.StrictFunctionChecks, "StrictFunctionChecks should be enabled")
+	assert.True(t, *sqlConfig.StrictOrderBy, "StrictOrderBy should be enabled")
+}

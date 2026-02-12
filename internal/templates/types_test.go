@@ -193,18 +193,11 @@ func TestEnterpriseTemplate_DefaultData(t *testing.T) {
 }
 
 func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.EnterpriseTemplate{},
-		ExpectedProjectType: generated.ProjectType("enterprise"),
-		ExpectedProjectName: "enterprise-service",
-		ExpectedEngine:      "postgresql",
-		ExpectUUID:          true,
-		ExpectJSON:          true,
-		ExpectArrays:        true,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
-		ExpectStrictChecks:  true,
-	})
+	internal_testing.AssertTemplateGenerateBasicWithDefaults(t,
+		&templates.EnterpriseTemplate{},
+		generated.ProjectTypeEnterprise,
+		"enterprise-service",
+	)
 }
 
 // APIFirstTemplate Tests.
@@ -358,18 +351,11 @@ func TestMultiTenantTemplate_DefaultData(t *testing.T) {
 }
 
 func TestMultiTenantTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.MultiTenantTemplate{},
-		ExpectedProjectType: generated.ProjectType("multi-tenant"),
-		ExpectedProjectName: "multi-tenant-app",
-		ExpectedEngine:      "postgresql",
-		ExpectUUID:          true,
-		ExpectJSON:          true,
-		ExpectArrays:        true,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
-		ExpectStrictChecks:  true,
-	})
+	internal_testing.AssertTemplateGenerateBasicWithDefaults(t,
+		&templates.MultiTenantTemplate{},
+		generated.ProjectTypeMultiTenant,
+		"multi-tenant-app",
+	)
 }
 
 // LibraryTemplate Tests.
