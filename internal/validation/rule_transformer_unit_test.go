@@ -53,21 +53,20 @@ func runParityTest(
 	assertIdenticalRules(boolResult, typeSafeResult, expectedExpression)
 }
 
-// runClauseRequirementParityTest is a generic helper for clause requirement parity tests.
-// It reduces duplication for tests that verify boolean flags (RequireWhere, RequireLimit)
-// produce identical expressions to type-safe enum values (WhereClauseOnDestructive, LimitClauseOnSelect).
-func runClauseRequirementParityTest(
+// runFieldParityTest is a generic helper for testing parity between boolean flags and type-safe enums.
+// It reduces duplication for tests that verify boolean flags produce identical expressions to type-safe enum values.
+func runFieldParityTest(
 	transformer *validation.RuleTransformer,
 	boolRules *generated.SafetyRules,
-	setTypeSafeRequirement func(*domain.TypeSafeSafetyRules),
+	setTypeSafeField func(*domain.TypeSafeSafetyRules),
 	expectedExpression string,
 ) {
 	runParityTest(
 		transformer,
 		boolRules,
 		func() *domain.TypeSafeSafetyRules {
-			rules := testing.CreateBaseTypeSafeSafetyRules()
-			setTypeSafeRequirement(rules)
+			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
+			setTypeSafeField(rules)
 			return rules
 		},
 		expectedExpression,
@@ -309,24 +308,22 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		// following the "violation when true" convention consistently across both transformers
 
 		It("should produce identical expressions for NoSelectStar vs ForbidsSelectStar", func() {
-			runParityTest(
+			runFieldParityTest(
 				transformer,
 				&generated.SafetyRules{
 					NoSelectStar: true,
 					RequireWhere: false,
 					RequireLimit: false,
 				},
-				func() *domain.TypeSafeSafetyRules {
-					rules := testingHelper.CreateBaseTypeSafeSafetyRules()
+				func(rules *domain.TypeSafeSafetyRules) {
 					rules.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
-					return rules
 				},
 				"!query.contains('SELECT *')",
 			)
 		})
 
 		It("should produce identical expressions for RequireWhere vs RequiresOnDestructive", func() {
-			runClauseRequirementParityTest(
+			runFieldParityTest(
 				transformer,
 				&generated.SafetyRules{
 					NoSelectStar: false,
@@ -341,17 +338,15 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		})
 
 		It("should produce identical expressions for RequireLimit vs RequiresOnSelect", func() {
-			runParityTest(
+			runFieldParityTest(
 				transformer,
 				&generated.SafetyRules{
 					NoSelectStar: false,
 					RequireWhere: false,
 					RequireLimit: true,
 				},
-				func() *domain.TypeSafeSafetyRules {
-					rules := testingHelper.CreateBaseTypeSafeSafetyRules()
+				func(rules *domain.TypeSafeSafetyRules) {
 					rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
-					return rules
 				},
 				"query.type == 'SELECT' && !query.hasLimitClause()",
 			)
@@ -368,7 +363,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			//
 			// This is consistent: the boolean flag + expression together mean "flag is true → violation condition"
 
-			result := transformer.TransformTypeSafeSafetyRules(createTypeSafeSafetyRules(nil))
+			result := transformer.TransformTypeSafeSafetyRules(testingHelper.CreateTypeSafeSafetyRules(nil))
 
 			// Should have 4 rules: no-select-star, require-where, require-limit, max-rows-without-limit, no-drop-table, no-truncate
 			Expect(result).To(HaveLen(6))
