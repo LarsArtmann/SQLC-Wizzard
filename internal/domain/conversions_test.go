@@ -377,14 +377,7 @@ var _ = Describe("EmitOptions Conversions", func() {
 var _ = Describe("SafetyRules Conversions", func() {
 	Context("SafetyRulesToTypeSafe", func() {
 		It("should convert forbidden destructive ops correctly", func() {
-			old := generated.SafetyRules{
-				NoSelectStar: true,
-				RequireWhere: true,
-				NoDropTable:  true,
-				NoTruncate:   true,
-				RequireLimit: false,
-				Rules:        []generated.SafetyRule{},
-			}
+			old := testing.CreateGeneratedSafetyRulesForbidden()
 
 			typeSafe := domain.SafetyRulesToTypeSafe(old)
 
@@ -397,14 +390,7 @@ var _ = Describe("SafetyRules Conversions", func() {
 		})
 
 		It("should convert allowed destructive ops correctly", func() {
-			old := generated.SafetyRules{
-				NoSelectStar: false,
-				RequireWhere: false,
-				NoDropTable:  false,
-				NoTruncate:   false,
-				RequireLimit: true,
-				Rules:        []generated.SafetyRule{},
-			}
+			old := testing.CreateGeneratedSafetyRulesAllowed()
 
 			typeSafe := domain.SafetyRulesToTypeSafe(old)
 

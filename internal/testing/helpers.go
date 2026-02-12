@@ -105,16 +105,20 @@ var ValidDatabaseTypes = []generated.DatabaseType{
 // ProjectTypeTestSuite implements ValidationTestSuite for ProjectType validation tests.
 type ProjectTypeTestSuite struct{}
 
-func (s ProjectTypeTestSuite) GetValidValues() []generated.ProjectType   { return ValidProjectTypes }
-func (s ProjectTypeTestSuite) GetInvalidValues() []generated.ProjectType { return []generated.ProjectType{generated.ProjectType("invalid-type")} }
-func (s ProjectTypeTestSuite) GetTypeName() string                       { return "ProjectType" }
+func (s ProjectTypeTestSuite) GetValidValues() []generated.ProjectType { return ValidProjectTypes }
+func (s ProjectTypeTestSuite) GetInvalidValues() []generated.ProjectType {
+	return []generated.ProjectType{generated.ProjectType("invalid-type")}
+}
+func (s ProjectTypeTestSuite) GetTypeName() string { return "ProjectType" }
 
 // DatabaseTypeTestSuite implements ValidationTestSuite for DatabaseType validation tests.
 type DatabaseTypeTestSuite struct{}
 
-func (s DatabaseTypeTestSuite) GetValidValues() []generated.DatabaseType   { return ValidDatabaseTypes }
-func (s DatabaseTypeTestSuite) GetInvalidValues() []generated.DatabaseType { return []generated.DatabaseType{generated.DatabaseType("invalid-db")} }
-func (s DatabaseTypeTestSuite) GetTypeName() string                        { return "DatabaseType" }
+func (s DatabaseTypeTestSuite) GetValidValues() []generated.DatabaseType { return ValidDatabaseTypes }
+func (s DatabaseTypeTestSuite) GetInvalidValues() []generated.DatabaseType {
+	return []generated.DatabaseType{generated.DatabaseType("invalid-db")}
+}
+func (s DatabaseTypeTestSuite) GetTypeName() string { return "DatabaseType" }
 
 // ValidateAllProjectTypes tests that all project types in ValidProjectTypes are valid.
 // This helper eliminates duplicate validation code across test files.
@@ -233,5 +237,31 @@ func CreateQuerySafetyRulesStrict() domain.QuerySafetyRules {
 		WhereRequirement:    domain.WhereClauseAlways,
 		LimitRequirement:    domain.LimitClauseNever,
 		MaxRowsWithoutLimit: 1000,
+	}
+}
+
+// CreateGeneratedSafetyRulesForbidden creates a SafetyRules with all forbidden flags set.
+// This helper eliminates duplicate fixture code across test files.
+func CreateGeneratedSafetyRulesForbidden() generated.SafetyRules {
+	return generated.SafetyRules{
+		NoSelectStar: true,
+		RequireWhere: true,
+		NoDropTable:  true,
+		NoTruncate:   true,
+		RequireLimit: false,
+		Rules:        []generated.SafetyRule{},
+	}
+}
+
+// CreateGeneratedSafetyRulesAllowed creates a SafetyRules with all forbidden flags cleared.
+// This helper eliminates duplicate fixture code across test files.
+func CreateGeneratedSafetyRulesAllowed() generated.SafetyRules {
+	return generated.SafetyRules{
+		NoSelectStar: false,
+		RequireWhere: false,
+		NoDropTable:  false,
+		NoTruncate:   false,
+		RequireLimit: true,
+		Rules:        []generated.SafetyRule{},
 	}
 }
