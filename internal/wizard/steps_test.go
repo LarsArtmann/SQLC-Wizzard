@@ -319,18 +319,7 @@ var _ = Describe("CreateFeatureSteps", func() {
 	Context("with all features", func() {
 		DescribeTable("should create valid steps regardless of feature state",
 			func(enabled bool) {
-				data := &generated.TemplateData{
-					Database: generated.DatabaseConfig{
-						UseUUIDs:    enabled,
-						UseJSON:     enabled,
-						UseArrays:   enabled,
-						UseFullText: enabled,
-					},
-					Validation: generated.ValidationConfig{
-						StrictFunctions: enabled,
-						StrictOrderBy:   enabled,
-					},
-				}
+				data := createTemplateDataWithAllFeatures(enabled)
 
 				steps := CreateFeatureSteps(data)
 

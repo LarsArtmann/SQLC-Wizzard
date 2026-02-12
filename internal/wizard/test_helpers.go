@@ -1,4 +1,4 @@
-package wizard_test
+package wizard
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
@@ -47,7 +47,7 @@ func createTemplateDataWithCustomOutput(baseDir, queriesDir, schemaDir string) g
 }
 
 // createTemplateDataWithAllFeatures creates template data with all features enabled or disabled.
-func createTemplateDataWithAllFeatures(enabled bool) generated.TemplateData {
+func createTemplateDataWithAllFeatures(enabled bool) *generated.TemplateData {
 	data := createTemplateData()
 	data.Database.UseUUIDs = enabled
 	data.Database.UseJSON = enabled
@@ -55,5 +55,5 @@ func createTemplateDataWithAllFeatures(enabled bool) generated.TemplateData {
 	data.Database.UseFullText = enabled
 	data.Validation.StrictFunctions = enabled
 	data.Validation.StrictOrderBy = enabled
-	return data
+	return &data
 }
