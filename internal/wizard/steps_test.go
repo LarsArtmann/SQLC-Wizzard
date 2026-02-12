@@ -41,6 +41,24 @@ func generateStepTests(describeName string, stepFunc func(*generated.TemplateDat
 	})
 }
 
+// createProjectNameTestCases returns test cases for project name step tests.
+func createProjectNameTestCases() []stepTestCase {
+	return []stepTestCase{
+		{
+			data: &generated.TemplateData{
+				ProjectName: "myproject",
+			},
+			description: "project name field",
+		},
+		{
+			data: &generated.TemplateData{
+				ProjectName: "testproject",
+			},
+			description: "project name field",
+		},
+	}
+}
+
 // createPackageNameTestCases returns test cases for package name step tests.
 func createPackageNameTestCases() []stepTestCase {
 	return []stepTestCase{
@@ -170,34 +188,11 @@ var _ = Describe("CreateDatabaseStep", func() {
 })
 
 var _ = Describe("CreateProjectNameStep", func() {
-	Context("with default template data", func() {
-		It("should create a valid step", func() {
-			data := &generated.TemplateData{
-				ProjectName: "myproject",
-			}
-
-			step := CreateProjectNameStep(data)
-
-			Expect(step).ToNot(BeNil())
-		})
-
-		It("should bind to project name field", func() {
-			data := &generated.TemplateData{
-				ProjectName: "testproject",
-			}
-
-			step := CreateProjectNameStep(data)
-
-			Expect(step).ToNot(BeNil())
-		})
-	})
-
-	Context("with nil template data", func() {
-		It("should not panic", func() {
-			step := CreateProjectNameStep(nil)
-			Expect(step).ToNot(BeNil())
-		})
-	})
+	generateStepTests(
+		"CreateProjectNameStep",
+		CreateProjectNameStep,
+		createProjectNameTestCases(),
+	)
 })
 
 var _ = Describe("CreatePackageNameStep", func() {
