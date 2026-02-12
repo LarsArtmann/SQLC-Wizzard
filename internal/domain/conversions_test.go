@@ -71,20 +71,33 @@ func emitOptionsMixed() generated.EmitOptions {
 	})
 }
 
+// emitOptionsEmptySlices creates EmitOptions for empty_slices mode.
+func emitOptionsEmptySlices() generated.EmitOptions {
+	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
+		opts.EmitJSONTags = true
+		opts.EmitPreparedQueries = true
+		opts.EmitInterface = true
+		opts.EmitEmptySlices = true
+		opts.EmitEnumValidMethod = true
+		opts.EmitAllEnumValues = true
+		opts.JSONTagsCaseStyle = "camel"
+	})
+}
+
+// emitOptionsPointers creates EmitOptions for pointers mode.
+func emitOptionsPointers() generated.EmitOptions {
+	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
+		opts.EmitJSONTags = true
+		opts.EmitResultStructPointers = true
+		opts.EmitParamsStructPointers = true
+		opts.JSONTagsCaseStyle = "snake"
+	})
+}
+
 var _ = Describe("EmitOptions Conversions", func() {
 	Context("EmitOptionsToTypeSafe", func() {
 		It("should convert empty_slices mode correctly", func() {
-			old := generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      true,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "camel",
-			}
+			old := emitOptionsEmptySlices()
 
 			typeSafe := domain.EmitOptionsToTypeSafe(old)
 
@@ -98,17 +111,7 @@ var _ = Describe("EmitOptions Conversions", func() {
 		})
 
 		It("should convert pointers mode correctly", func() {
-			old := generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      false,
-				EmitInterface:            false,
-				EmitEmptySlices:          false,
-				EmitResultStructPointers: true,
-				EmitParamsStructPointers: true,
-				EmitEnumValidMethod:      false,
-				EmitAllEnumValues:        false,
-				JSONTagsCaseStyle:        "snake",
-			}
+			old := emitOptionsPointers()
 
 			typeSafe := domain.EmitOptionsToTypeSafe(old)
 
