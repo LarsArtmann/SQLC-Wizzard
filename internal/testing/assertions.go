@@ -153,6 +153,49 @@ func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
 	assert.True(t, *sqlConfig.StrictOrderBy, "StrictOrderBy should be enabled")
 }
 
+// AssertTemplateGenerateBasicWithConfigs is a convenience function for testing templates
+// with specific configuration patterns. This eliminates duplicate test code across
+// templates that require custom configuration loops.
+//
+// Parameters:
+//   - t: testing.TB
+//   - template: The template to test
+//   - expectedProjectType: The expected project type enum
+//   - expectedProjectName: The expected project name string
+//   - expectedEngine: The expected database engine string
+//   - commonConfigs: A slice of TemplateTestHelperOption to apply to the helper
+//
+// Example usage:
+//
+//	func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
+//	    AssertTemplateGenerateBasicWithConfigs(t,
+//	        &templates.AnalyticsTemplate{},
+//	        generated.ProjectType("analytics"),
+//	        "analytics-service",
+//	        "postgresql",
+//	        CommonTemplateConfigs.PostgreSQLAnalytics,
+//	    )
+//	}
+func AssertTemplateGenerateBasicWithConfigs(t *testing.T, template interface {
+	DefaultData() generated.TemplateData
+	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
+}, expectedProjectType generated.ProjectType, expectedProjectName string, expectedEngine string, commonConfigs []TemplateTestHelperOption) {
+	t.Helper()
+
+	helper := NewTemplateTestHelper(
+		template,
+		WithProjectType(expectedProjectType),
+		WithProjectName(expectedProjectName),
+		WithEngine(expectedEngine),
+	)
+
+	for _, opt := range commonConfigs {
+		opt(&helper)
+	}
+
+	AssertTemplateGenerateBasic(t, helper)
+}
+
 // TemplateTestHelperOption is a functional option for creating TemplateTestHelper
 type TemplateTestHelperOption func(*TemplateTestHelper)
 

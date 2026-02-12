@@ -265,16 +265,13 @@ func TestAnalyticsTemplate_DefaultData(t *testing.T) {
 }
 
 func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
-	helper := internal_testing.NewTemplateTestHelper(
+	internal_testing.AssertTemplateGenerateBasicWithConfigs(t,
 		&templates.AnalyticsTemplate{},
-		internal_testing.WithProjectType(generated.ProjectType("analytics")),
-		internal_testing.WithProjectName("analytics-service"),
-		internal_testing.WithEngine("postgresql"),
+		generated.ProjectType("analytics"),
+		"analytics-service",
+		"postgresql",
+		internal_testing.CommonTemplateConfigs.PostgreSQLAnalytics,
 	)
-	for _, opt := range internal_testing.CommonTemplateConfigs.PostgreSQLAnalytics {
-		opt(&helper)
-	}
-	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 
 // TestingTemplate Tests.
@@ -304,16 +301,13 @@ func TestTestingTemplate_DefaultData(t *testing.T) {
 }
 
 func TestTestingTemplate_Generate_Basic(t *testing.T) {
-	helper := internal_testing.NewTemplateTestHelper(
+	internal_testing.AssertTemplateGenerateBasicWithConfigs(t,
 		&templates.TestingTemplate{},
-		internal_testing.WithProjectType(generated.ProjectType("testing")),
-		internal_testing.WithProjectName("test-project"),
-		internal_testing.WithEngine("sqlite"),
+		generated.ProjectType("testing"),
+		"test-project",
+		"sqlite",
+		internal_testing.CommonTemplateConfigs.SQLiteMinimal,
 	)
-	for _, opt := range internal_testing.CommonTemplateConfigs.SQLiteMinimal {
-		opt(&helper)
-	}
-	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 
 // MultiTenantTemplate Tests.
