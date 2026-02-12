@@ -74,61 +74,33 @@ func createFeatureConfig(title, description string, assign fieldAssignment) Feat
 	}
 }
 
-// rawFeatureConfig holds the static data for building a FeatureConfig.
-type rawFeatureConfig struct {
-	title       string
-	description string
-	assign      fieldAssignment
-}
-
-// buildFeatureConfigs transforms raw configs into FeatureConfig slice.
-func buildFeatureConfigs(rawConfigs []rawFeatureConfig) []FeatureConfig {
-	configs := make([]FeatureConfig, len(rawConfigs))
-	for i, raw := range rawConfigs {
-		configs[i] = createFeatureConfig(raw.title, raw.description, raw.assign)
-	}
+// buildFeatures creates a FeatureConfig slice from variadic arguments, eliminating
+// the need for rawFeatureConfig structs and buildFeatureConfigs intermediate step.
+func buildFeatures(configs ...FeatureConfig) []FeatureConfig {
 	return configs
 }
 
 // Pre-defined configuration sets
 
 // Code generation configs.
-var codeGenerationConfigs = buildFeatureConfigs([]rawFeatureConfig{
-	{
-		title:       "Generate Go interfaces?",
-		description: "Create interfaces for query methods",
-		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitInterface = val },
-	},
-	{
-		title:       "Generate prepared queries?",
-		description: "Create prepared query methods for better performance",
-		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitPreparedQueries = val },
-	},
-	{
-		title:       "Add JSON tags?",
-		description: "Add JSON struct tags to generated models",
-		assign:      func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitJSONTags = val },
-	},
-})
+var codeGenerationConfigs = buildFeatures(
+	createFeatureConfig("Generate Go interfaces?", "Create interfaces for query methods",
+		func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitInterface = val }),
+	createFeatureConfig("Generate prepared queries?", "Create prepared query methods for better performance",
+		func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitPreparedQueries = val }),
+	createFeatureConfig("Add JSON tags?", "Add JSON struct tags to generated models",
+		func(data *generated.TemplateData, val bool) { data.Validation.EmitOptions.EmitJSONTags = val }),
+)
 
 // Safety rule configs.
-var safetyRuleConfigs = buildFeatureConfigs([]rawFeatureConfig{
-	{
-		title:       "Forbid SELECT *?",
-		description: "Prevent SELECT * queries for better performance and explicitness",
-		assign:      func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.NoSelectStar = val },
-	},
-	{
-		title:       "Require WHERE clause?",
-		description: "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification",
-		assign:      func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireWhere = val },
-	},
-	{
-		title:       "Require LIMIT on SELECT?",
-		description: "Force LIMIT clauses on SELECT queries to prevent large result sets",
-		assign:      func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireLimit = val },
-	},
-})
+var safetyRuleConfigs = buildFeatures(
+	createFeatureConfig("Forbid SELECT *?", "Prevent SELECT * queries for better performance and explicitness",
+		func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.NoSelectStar = val }),
+	createFeatureConfig("Require WHERE clause?", "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification",
+		func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireWhere = val }),
+	createFeatureConfig("Require LIMIT on SELECT?", "Force LIMIT clauses on SELECT queries to prevent large result sets",
+		func(data *generated.TemplateData, val bool) { data.Validation.SafetyRules.RequireLimit = val }),
+)
 
 // runFeatureConfigForm runs confirmation form for any feature configuration.
 func (s *FeaturesStep) runFeatureConfigForm(data *generated.TemplateData, configs []FeatureConfig, errorContext string) error {
