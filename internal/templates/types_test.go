@@ -223,18 +223,16 @@ func TestAPIFirstTemplate_DefaultData(t *testing.T) {
 }
 
 func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.APIFirstTemplate{},
-		ExpectedProjectType: generated.ProjectType("api-first"),
-		ExpectedProjectName: "api-service",
-		ExpectedEngine:      "postgresql",
-		ExpectUUID:          true,
-		ExpectJSON:          true,
-		ExpectArrays:        true,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
-		ExpectStrictChecks:  false,
-	})
+	helper := internal_testing.NewTemplateTestHelper(
+		&templates.APIFirstTemplate{},
+		internal_testing.WithProjectType(generated.ProjectTypeAPIFirst),
+		internal_testing.WithProjectName("api-service"),
+		internal_testing.WithEngine("postgresql"),
+	)
+	for _, opt := range internal_testing.CommonTemplateConfigs.PostgreSQLFullFeatures {
+		opt(&helper)
+	}
+	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 
 // AnalyticsTemplate Tests.
@@ -381,11 +379,6 @@ func TestLibraryTemplate_Generate_Basic(t *testing.T) {
 		ExpectedProjectType: generated.ProjectType("library"),
 		ExpectedProjectName: "library-module",
 		ExpectedEngine:      "postgresql",
-		ExpectUUID:          false,
-		ExpectJSON:          false,
-		ExpectArrays:        false,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
 	})
 }
 
