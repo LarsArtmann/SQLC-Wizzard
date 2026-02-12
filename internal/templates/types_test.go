@@ -237,6 +237,7 @@ func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
 		ExpectArrays:        true,
 		ExpectJSONTags:      true,
 		ExpectInterface:     true,
+		ExpectStrictChecks:  false,
 	})
 }
 

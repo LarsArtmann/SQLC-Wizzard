@@ -76,6 +76,38 @@ func (t *MultiTenantTemplate) Description() string {
 	return "Optimized for SaaS multi-tenant architecture with tenant isolation and strict safety rules"
 }
 
+// DefaultData returns default TemplateData for multi-tenant template.
+func (t *MultiTenantTemplate) DefaultData() generated.TemplateData {
+	return t.BuildDefaultData(
+		"multi-tenant",
+		"postgresql",
+		"${DATABASE_URL}",
+		"internal/db",
+		"internal/db",
+		true,  // useManaged
+		true,  // useUUIDs
+		true,  // useJSON
+		true,  // useArrays
+		false, // useFullText
+		true,  // emitJSONTags
+		true,  // emitPreparedQueries
+		true,  // emitInterface
+		false, // emitEmptySlices
+		true,  // emitResultStructPointers
+		true,  // emitParamsStructPointers
+		false, // emitEnumValidMethod
+		false, // emitAllEnumValues
+		"camel", // jsonTagsCaseStyle
+		true,  // strictFunctions
+		true,  // strictOrderBy
+		true,  // noSelectStar
+		true,  // requireWhere
+		true,  // noDropTable
+		false, // noTruncate
+		true,  // requireLimit
+	)
+}
+
 // Generate creates a SqlcConfig from template data.
 func (t *MultiTenantTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	return t.ConfiguredTemplate.Generate(data)
