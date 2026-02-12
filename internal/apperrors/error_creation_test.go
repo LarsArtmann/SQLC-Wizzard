@@ -93,10 +93,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create file not found error", func() {
 			err := FileNotFoundError("/path/to/file.txt")
 
-			Expect(err).To(HaveOccurred())
-			Expect(err.Code).To(Equal(ErrorCodeFileNotFound))
-			Expect(err.Message).To(ContainSubstring("/path/to/file.txt"))
-			Expect(err.Component).To(Equal("filesystem"))
+			expectSimpleError(err, ErrorCodeFileNotFound, "/path/to/file.txt", "filesystem")
 
 			// TODO: Add validation for empty path
 			// TODO: Add tests for relative vs absolute paths
@@ -125,10 +122,7 @@ var _ = Describe("Error Creation", func() {
 		It("should create template not found error", func() {
 			err := TemplateNotFoundError("missing-template")
 
-			Expect(err).To(HaveOccurred())
-			Expect(err.Code).To(Equal(ErrorCodeTemplateNotFound))
-			Expect(err.Message).To(ContainSubstring("missing-template"))
-			Expect(err.Component).To(Equal("templates"))
+			expectSimpleError(err, ErrorCodeTemplateNotFound, "missing-template", "templates")
 
 			// TODO: Add validation for empty template names
 			// TODO: Add tests for template name patterns
@@ -154,8 +148,16 @@ var _ = Describe("Error Creation", func() {
 	// TODO: Add performance tests for error creation
 })
 
+// expectSimpleError is a helper function for testing single-parameter error constructors
+func expectSimpleError(err *Error, expectedCode ErrorCode, expectedMessageSubstring, expectedComponent string) {
+	Expect(err).To(HaveOccurred())
+	Expect(err.Code).To(Equal(expectedCode))
+	Expect(err.Message).To(ContainSubstring(expectedMessageSubstring))
+	Expect(err.Component).To(Equal(expectedComponent))
+}
+
 // expectAppError is a helper function to verify common AppError properties
-func expectAppError(err *AppError, expectedCode ErrorCode, expectedPathSubstring, expectedComponent string) {
+func expectAppError(err *Error, expectedCode ErrorCode, expectedPathSubstring, expectedComponent string) {
 	Expect(err).To(HaveOccurred())
 	Expect(err.Code).To(Equal(expectedCode))
 	Expect(err.Message).To(ContainSubstring(expectedPathSubstring))
