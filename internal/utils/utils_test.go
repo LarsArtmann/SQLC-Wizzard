@@ -49,6 +49,22 @@ func runTruncateTests(testFunc func(string, int) string, testCases []truncateTes
 	}
 }
 
+// commonCaseConversionInputs holds input/output pairs for case conversion tests.
+// Each pair is tested against both snake_case and kebab-case formats.
+var commonCaseConversionInputs = []struct {
+	input       string
+	snakeCase   string
+	kebabCase   string
+}{
+	{"CamelCase", "camel_case", "camel-case"},
+	{"Simple", "simple", "simple"},
+	{"MultipleWordsHere", "multiple_words_here", "multiple-words-here"},
+	{"", "", ""},
+	{"Single", "single", "single"},
+	{"XMLHttpRequest", "xmlhttp_request", "xmlhttp-request"},
+	{"UserID", "user_id", "user-id"},
+}
+
 // caseConversionTestCase represents a test case for string case conversion functions.
 type caseConversionTestCase struct {
 	testCases    []stringTestCase
@@ -56,6 +72,39 @@ type caseConversionTestCase struct {
 	edgeExpected string
 	edgeLeading  string
 	edgeTrailing string
+}
+
+// newCaseConversionTestCase creates a test case for a specific conversion format.
+func newCaseConversionTestCase(separator string, inputs []struct {
+	input       string
+	snakeCase   string
+	kebabCase   string
+}) caseConversionTestCase {
+	testCases := make([]stringTestCase, len(inputs))
+	for i, in := range inputs {
+		expected := in.snakeCase
+		if separator == "-" {
+			expected = in.kebabCase
+		}
+		testCases[i] = stringTestCase{input: in.input, expected: expected}
+	}
+
+	edgeLeading := ""
+	edgeTrailing := ""
+	if separator == "_" {
+		edgeLeading = "-_leading"
+		edgeTrailing = "trailing_"
+	} else {
+		edgeLeading = "--leading"
+		edgeTrailing = "trailing-"
+	}
+
+	return caseConversionTestCase{
+		testCases:    testCases,
+		edgeExpected: "",
+		edgeLeading:  edgeLeading,
+		edgeTrailing: edgeTrailing,
+	}
 }
 
 // runCaseConversionTests runs comprehensive tests for case conversion functions.
@@ -100,43 +149,13 @@ var _ = Describe("StringToCamelCase", func() {
 })
 
 var _ = Describe("StringToSnakeCase", func() {
-	testCase := caseConversionTestCase{
-		testCases: []stringTestCase{
-			{"CamelCase", "camel_case"},
-			{"Simple", "simple"},
-			{"MultipleWordsHere", "multiple_words_here"},
-			{"already_snake_case", "already_snake_case"},
-			{"", ""},
-			{"Single", "single"},
-			{"XMLHttpRequest", "xmlhttp_request"},
-			{"UserID", "user_id"},
-		},
-		edgeCaseFunc: utils.StringToSnakeCase,
-		edgeExpected: "",
-		edgeLeading:  "-_leading",
-		edgeTrailing: "trailing_",
-	}
+	testCase := newCaseConversionTestCase("_", commonCaseConversionInputs)
 
 	runCaseConversionTests(utils.StringToSnakeCase, "snake_case", testCase)
 })
 
 var _ = Describe("StringToKebabCase", func() {
-	testCase := caseConversionTestCase{
-		testCases: []stringTestCase{
-			{"CamelCase", "camel-case"},
-			{"Simple", "simple"},
-			{"MultipleWordsHere", "multiple-words-here"},
-			{"already-kebab-case", "already-kebab-case"},
-			{"", ""},
-			{"Single", "single"},
-			{"XMLHttpRequest", "xmlhttp-request"},
-			{"UserID", "user-id"},
-		},
-		edgeCaseFunc: utils.StringToKebabCase,
-		edgeExpected: "",
-		edgeLeading:  "--leading",
-		edgeTrailing: "trailing-",
-	}
+	testCase := newCaseConversionTestCase("-", commonCaseConversionInputs)
 
 	runCaseConversionTests(utils.StringToKebabCase, "kebab-case", testCase)
 })

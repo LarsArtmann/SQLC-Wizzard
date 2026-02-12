@@ -1,6 +1,7 @@
 package testing
 
 import (
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -80,4 +81,23 @@ func AssertProductionSafetyRules(rules domain.TypeSafeSafetyRules, description s
 	By(description + " - verifying security policy rules")
 	Expect(rules.DestructiveOps).
 		To(Equal(domain.DestructiveForbidden), description+": should forbid destructive operations")
+}
+
+// ValidProjectTypes contains all valid project types for testing purposes.
+var ValidProjectTypes = []generated.ProjectType{
+	generated.ProjectTypeHobby,
+	generated.ProjectTypeMicroservice,
+	generated.ProjectTypeEnterprise,
+	generated.ProjectTypeAPIFirst,
+	generated.ProjectTypeAnalytics,
+	generated.ProjectTypeTesting,
+	generated.ProjectTypeMultiTenant,
+	generated.ProjectTypeLibrary,
+}
+
+// ValidDatabaseTypes contains all valid database types for testing purposes.
+var ValidDatabaseTypes = []generated.DatabaseType{
+	generated.DatabaseTypePostgreSQL,
+	generated.DatabaseTypeMySQL,
+	generated.DatabaseTypeSQLite,
 }

@@ -2,6 +2,7 @@ package wizard_test
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
 	"github.com/charmbracelet/huh"
 	. "github.com/onsi/ginkgo/v2"
@@ -27,19 +28,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		})
 
 		It("should initialize with valid project types", func() {
-			// Test that all project types are valid
-			validTypes := []generated.ProjectType{
-				generated.ProjectTypeHobby,
-				generated.ProjectTypeMicroservice,
-				generated.ProjectTypeEnterprise,
-				generated.ProjectTypeAPIFirst,
-				generated.ProjectTypeAnalytics,
-				generated.ProjectTypeTesting,
-				generated.ProjectTypeMultiTenant,
-				generated.ProjectTypeLibrary,
-			}
-
-			for _, projectType := range validTypes {
+			for _, projectType := range testing.ValidProjectTypes {
 				Expect(projectType.IsValid()).To(BeTrue(),
 					"Project type %s should be valid", projectType)
 			}
@@ -70,14 +59,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		})
 
 		It("should initialize with valid database types", func() {
-			// Test that all database types are valid
-			validTypes := []generated.DatabaseType{
-				generated.DatabaseTypePostgreSQL,
-				generated.DatabaseTypeMySQL,
-				generated.DatabaseTypeSQLite,
-			}
-
-			for _, dbType := range validTypes {
+			for _, dbType := range testing.ValidDatabaseTypes {
 				Expect(dbType.IsValid()).To(BeTrue(),
 					"Database type %s should be valid", dbType)
 			}
