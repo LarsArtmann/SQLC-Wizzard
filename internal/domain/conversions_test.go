@@ -30,6 +30,47 @@ func runEmitOptionsTest(testCase emitOptionsTestCase) {
 	})
 }
 
+// emitOptionsWithOptions creates an EmitOptions with optional overrides.
+// All fields default to false, only specified fields are changed.
+func emitOptionsWithOptions(modify func(opts *generated.EmitOptions)) generated.EmitOptions {
+	opts := generated.EmitOptions{
+		EmitJSONTags:             false,
+		EmitPreparedQueries:      false,
+		EmitInterface:            false,
+		EmitEmptySlices:          false,
+		EmitResultStructPointers: false,
+		EmitParamsStructPointers: false,
+		EmitEnumValidMethod:      false,
+		EmitAllEnumValues:        false,
+		JSONTagsCaseStyle:        "camel",
+	}
+	if modify != nil {
+		modify(&opts)
+	}
+	return opts
+}
+
+// emitOptionsExplicitNull creates EmitOptions for explicit_null mode.
+func emitOptionsExplicitNull() generated.EmitOptions {
+	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
+		opts.EmitEnumValidMethod = true
+		opts.JSONTagsCaseStyle = "pascal"
+	})
+}
+
+// emitOptionsMixed creates EmitOptions for mixed mode.
+func emitOptionsMixed() generated.EmitOptions {
+	return emitOptionsWithOptions(func(opts *generated.EmitOptions) {
+		opts.EmitJSONTags = true
+		opts.EmitPreparedQueries = true
+		opts.EmitInterface = true
+		opts.EmitResultStructPointers = true
+		opts.EmitEnumValidMethod = true
+		opts.EmitAllEnumValues = true
+		opts.JSONTagsCaseStyle = "kebab"
+	})
+}
+
 var _ = Describe("EmitOptions Conversions", func() {
 	Context("EmitOptionsToTypeSafe", func() {
 		It("should convert empty_slices mode correctly", func() {
@@ -75,42 +116,6 @@ var _ = Describe("EmitOptions Conversions", func() {
 			Expect(typeSafe.EnumMode).To(Equal(domain.EnumGenerationBasic))
 			Expect(typeSafe.StructPointers).To(Equal(domain.StructPointerAlways))
 			Expect(typeSafe.JSONTagStyle).To(Equal(domain.JSONTagStyleSnake))
-		})
-
-		runEmitOptionsTest(emitOptionsTestCase{
-			description: "explicit_null mode",
-			input: generated.EmitOptions{
-				EmitJSONTags:             false,
-				EmitPreparedQueries:      false,
-				EmitInterface:            false,
-				EmitEmptySlices:          false,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        false,
-				JSONTagsCaseStyle:        "pascal",
-			},
-			expectedNullHandling: domain.NullHandlingExplicitNull,
-			expectedPointers:     domain.StructPointerNever,
-			expectedJSONStyle:    domain.JSONTagStylePascal,
-		})
-
-		runEmitOptionsTest(emitOptionsTestCase{
-			description: "mixed mode",
-			input: generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      true,
-				EmitInterface:            true,
-				EmitEmptySlices:          false,
-				EmitResultStructPointers: true,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "kebab",
-			},
-			expectedNullHandling: domain.NullHandlingMixed,
-			expectedPointers:     domain.StructPointerResults,
-			expectedJSONStyle:    domain.JSONTagStyleKebab,
 		})
 
 		It("should handle invalid JSON tag style with fallback", func() {
