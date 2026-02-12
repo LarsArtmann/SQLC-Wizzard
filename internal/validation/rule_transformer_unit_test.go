@@ -73,6 +73,30 @@ func runFieldParityTest(
 	)
 }
 
+// runBooleanFlagParityTest is a parameterised helper for testing that boolean safety rule flags
+// produce identical expressions to their type-safe enum equivalents.
+// This eliminates repetitive test boilerplate for NoSelectStar, RequireWhere, and RequireLimit.
+func runBooleanFlagParityTest(
+	transformer *validation.RuleTransformer,
+	testName string,
+	isSelectStar, isWhere, isLimit bool,
+	typeSafeFieldSetter func(*domain.TypeSafeSafetyRules),
+	expectedExpression string,
+) {
+	It(testName, func() {
+		runFieldParityTest(
+			transformer,
+			&generated.SafetyRules{
+				NoSelectStar:  isSelectStar,
+				RequireWhere:  isWhere,
+				RequireLimit:  isLimit,
+			},
+			typeSafeFieldSetter,
+			expectedExpression,
+		)
+	})
+}
+
 func TestValidation(t *testing.T) {
 	RegisterFailHandler(Fail)
 	RunSpecs(t, "Validation Unit Suite")
@@ -307,50 +331,35 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 		// These tests verify that equivalent configurations produce identical expressions
 		// following the "violation when true" convention consistently across both transformers
 
-		It("should produce identical expressions for NoSelectStar vs ForbidsSelectStar", func() {
-			runFieldParityTest(
-				transformer,
-				&generated.SafetyRules{
-					NoSelectStar: true,
-					RequireWhere: false,
-					RequireLimit: false,
-				},
-				func(rules *domain.TypeSafeSafetyRules) {
-					rules.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
-				},
-				"!query.contains('SELECT *')",
-			)
-		})
+		runBooleanFlagParityTest(
+			transformer,
+			"should produce identical expressions for NoSelectStar vs ForbidsSelectStar",
+			true, false, false,
+			func(rules *domain.TypeSafeSafetyRules) {
+				rules.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
+			},
+			"!query.contains('SELECT *')",
+		)
 
-		It("should produce identical expressions for RequireWhere vs RequiresOnDestructive", func() {
-			runFieldParityTest(
-				transformer,
-				&generated.SafetyRules{
-					NoSelectStar: false,
-					RequireWhere: true,
-					RequireLimit: false,
-				},
-				func(rules *domain.TypeSafeSafetyRules) {
-					rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
-				},
-				"query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
-			)
-		})
+		runBooleanFlagParityTest(
+			transformer,
+			"should produce identical expressions for RequireWhere vs RequiresOnDestructive",
+			false, true, false,
+			func(rules *domain.TypeSafeSafetyRules) {
+				rules.SafetyRules.WhereRequirement = domain.WhereClauseOnDestructive
+			},
+			"query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
+		)
 
-		It("should produce identical expressions for RequireLimit vs RequiresOnSelect", func() {
-			runFieldParityTest(
-				transformer,
-				&generated.SafetyRules{
-					NoSelectStar: false,
-					RequireWhere: false,
-					RequireLimit: true,
-				},
-				func(rules *domain.TypeSafeSafetyRules) {
-					rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
-				},
-				"query.type == 'SELECT' && !query.hasLimitClause()",
-			)
-		})
+		runBooleanFlagParityTest(
+			transformer,
+			"should produce identical expressions for RequireLimit vs RequiresOnSelect",
+			false, false, true,
+			func(rules *domain.TypeSafeSafetyRules) {
+				rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
+			},
+			"query.type == 'SELECT' && !query.hasLimitClause()",
+		)
 
 		It("should follow consistent violation polarity convention", func() {
 			// Verify the convention: rules express "violation when true"
