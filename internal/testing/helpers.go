@@ -138,34 +138,10 @@ func ValidateAllDatabaseTypes() {
 	}
 }
 
-// CreateBaseTypeSafeSafetyRules creates a default TypeSafeSafetyRules structure for test reuse.
-// This helper eliminates duplicate fixture code across test files.
-func CreateBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
+// newTypeSafeSafetyRules creates a base TypeSafeSafetyRules structure.
+// This helper eliminates duplicate struct initialization code across helper functions.
+func newTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 	return &domain.TypeSafeSafetyRules{
-		StyleRules: domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarAllowed,
-			ColumnExplicitness: domain.ColumnExplicitnessDefault,
-		},
-		SafetyRules: domain.QuerySafetyRules{
-			WhereRequirement:    domain.WhereClauseNever,
-			LimitRequirement:    domain.LimitClauseNever,
-			MaxRowsWithoutLimit: 0,
-		},
-		DestructiveOps: domain.DestructiveAllowed,
-		CustomRules:    []generated.SafetyRule{},
-	}
-}
-
-// CreateTypeSafeSafetyRules creates a TypeSafeSafetyRules with a common test configuration.
-// This helper provides a default for most test scenarios and accepts an optional configuration callback.
-//
-// Example usage:
-//
-//	rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
-//	    r.SafetyRules.WhereRequirement = domain.WhereClauseAlways
-//	})
-func CreateTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *domain.TypeSafeSafetyRules {
-	rules := &domain.TypeSafeSafetyRules{
 		StyleRules: domain.QueryStyleRules{
 			SelectStarPolicy:   domain.SelectStarForbidden,
 			ColumnExplicitness: domain.ColumnExplicitnessDefault,
@@ -178,6 +154,30 @@ func CreateTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *dom
 		DestructiveOps: domain.DestructiveForbidden,
 		CustomRules:    []generated.SafetyRule{},
 	}
+}
+
+// CreateBaseTypeSafeSafetyRules creates a default TypeSafeSafetyRules structure for test reuse.
+// This helper eliminates duplicate fixture code across test files.
+func CreateBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
+	rules := newTypeSafeSafetyRules()
+	rules.StyleRules.SelectStarPolicy = domain.SelectStarAllowed
+	rules.SafetyRules.WhereRequirement = domain.WhereClauseNever
+	rules.SafetyRules.LimitRequirement = domain.LimitClauseNever
+	rules.SafetyRules.MaxRowsWithoutLimit = 0
+	rules.DestructiveOps = domain.DestructiveAllowed
+	return rules
+}
+
+// CreateTypeSafeSafetyRules creates a TypeSafeSafetyRules with a common test configuration.
+// This helper provides a default for most test scenarios and accepts an optional configuration callback.
+//
+// Example usage:
+//
+//	rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
+//	    r.SafetyRules.WhereRequirement = domain.WhereClauseAlways
+//	})
+func CreateTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *domain.TypeSafeSafetyRules {
+	rules := newTypeSafeSafetyRules()
 	if configure != nil {
 		configure(rules)
 	}
