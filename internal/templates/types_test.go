@@ -212,18 +212,18 @@ func TestAPIFirstTemplate_Description(t *testing.T) {
 }
 
 func TestAPIFirstTemplate_DefaultData(t *testing.T) {
-	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:              &templates.APIFirstTemplate{},
-		ExpectedProjectType:   generated.ProjectType("api-first"),
-		ExpectedProjectName:   "api-service",
-		ExpectedEngine:        "postgresql",
-		ExpectUUID:           true,
-		ExpectJSON:           true,
-		ExpectArrays:         true,
-		ExpectJSONTags:       true,
-		ExpectInterface:      true,
-		ExpectPreparedQueries: true,
-	})
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.NewTemplateTestHelper(
+		&templates.APIFirstTemplate{},
+		internal_testing.WithProjectType(generated.ProjectType("api-first")),
+		internal_testing.WithProjectName("api-service"),
+		internal_testing.WithEngine("postgresql"),
+		internal_testing.WithUUID(true),
+		internal_testing.WithJSON(true),
+		internal_testing.WithArrays(true),
+		internal_testing.WithJSONTags(true),
+		internal_testing.WithInterface(true),
+		internal_testing.WithPreparedQueries(true),
+	))
 }
 
 func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
@@ -338,17 +338,18 @@ func TestMultiTenantTemplate_Description(t *testing.T) {
 }
 
 func TestMultiTenantTemplate_DefaultData(t *testing.T) {
-	internal_testing.AssertTemplateDefaultData(t, internal_testing.TemplateTestHelper{
-		Template:              &templates.MultiTenantTemplate{},
-		ExpectedProjectType:   generated.ProjectType("multi-tenant"),
-		ExpectUUID:           true,
-		ExpectJSON:           true,
-		ExpectArrays:         true,
-		ExpectJSONTags:       true,
-		ExpectInterface:      true,
-		ExpectStrictChecks:   true,
-		ExpectPreparedQueries: true,
-	})
+	internal_testing.AssertTemplateDefaultData(t, internal_testing.NewTemplateTestHelper(
+		&templates.MultiTenantTemplate{},
+		internal_testing.WithProjectType(generated.ProjectType("multi-tenant")),
+		internal_testing.WithEngine("postgresql"),
+		internal_testing.WithUUID(true),
+		internal_testing.WithJSON(true),
+		internal_testing.WithArrays(true),
+		internal_testing.WithJSONTags(true),
+		internal_testing.WithInterface(true),
+		internal_testing.WithStrictChecks(true),
+		internal_testing.WithPreparedQueries(true),
+	))
 }
 
 func TestMultiTenantTemplate_Generate_Basic(t *testing.T) {
