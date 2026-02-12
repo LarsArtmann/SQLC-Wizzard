@@ -37,23 +37,6 @@ func newStrictTypeSafeSafetyRules() domain.TypeSafeSafetyRules {
 	}
 }
 
-// newPermissiveTypeSafeSafetyRules creates a TypeSafeSafetyRules with permissive settings.
-func newPermissiveTypeSafeSafetyRules() domain.TypeSafeSafetyRules {
-	return domain.TypeSafeSafetyRules{
-		StyleRules: domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarAllowed,
-			ColumnExplicitness: domain.ColumnExplicitnessDefault,
-		},
-		SafetyRules: domain.QuerySafetyRules{
-			WhereRequirement:    domain.WhereClauseNever,
-			LimitRequirement:    domain.LimitClauseNever,
-			MaxRowsWithoutLimit: 0,
-		},
-		DestructiveOps: domain.DestructiveAllowed,
-		CustomRules:    []generated.SafetyRule{},
-	}
-}
-
 // newTypeSafeSafetyRules creates a TypeSafeSafetyRules with configurable parameters.
 // Defaults to strict settings when nil values are provided.
 func newTypeSafeSafetyRules(opts ...func(*domain.TypeSafeSafetyRules)) domain.TypeSafeSafetyRules {
@@ -462,7 +445,7 @@ var _ = Describe("SafetyRules Conversions", func() {
 		})
 
 		It("should convert allowed destructive ops correctly", func() {
-			typeSafe := newPermissiveTypeSafeSafetyRules()
+			typeSafe := *testing.CreateBaseTypeSafeSafetyRules()
 
 			legacy := typeSafe.ToLegacy()
 
