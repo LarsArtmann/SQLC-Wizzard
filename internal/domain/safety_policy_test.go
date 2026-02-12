@@ -215,6 +215,30 @@ var _ = Describe("DestructiveOperationPolicy", func() {
 	})
 })
 
+// customRuleTestConfig configures a custom rule validation test.
+type customRuleTestConfig struct {
+	ruleName       string
+	ruleExpression string
+	expectedError  string
+}
+
+// testCustomRuleValidation tests custom rule validation with the given configuration.
+func testCustomRuleValidation(cfg customRuleTestConfig) {
+	rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
+		r.CustomRules = []generated.SafetyRule{
+			{
+				Name:    cfg.ruleName,
+				Rule:    cfg.ruleExpression,
+				Message: "Test rule",
+			},
+		}
+	})
+
+	err := rules.IsValid()
+	Expect(err).To(HaveOccurred())
+	Expect(err.Error()).To(ContainSubstring(cfg.expectedError))
+}
+
 var _ = Describe("TypeSafeSafetyRules", func() {
 	Context("IsValid", func() {
 		It("should validate rules with valid policy", func() {
@@ -238,35 +262,19 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		})
 
 		It("should reject custom rule with empty name", func() {
-			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
-				r.CustomRules = []generated.SafetyRule{
-					{
-						Name:    "",
-						Rule:    "query.type == 'SELECT'",
-						Message: "Test rule",
-					},
-				}
+			testCustomRuleValidation(customRuleTestConfig{
+				ruleName:       "",
+				ruleExpression: "query.type == 'SELECT'",
+				expectedError:  "empty name",
 			})
-
-			err := rules.IsValid()
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("empty name"))
 		})
 
 		It("should reject custom rule with empty rule expression", func() {
-			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
-				r.CustomRules = []generated.SafetyRule{
-					{
-						Name:    "test-rule",
-						Rule:    "",
-						Message: "Test rule",
-					},
-				}
+			testCustomRuleValidation(customRuleTestConfig{
+				ruleName:       "test-rule",
+				ruleExpression: "",
+				expectedError:  "empty rule expression",
 			})
-
-			err := rules.IsValid()
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("empty rule expression"))
 		})
 
 		It("should validate custom rules with all fields", func() {
