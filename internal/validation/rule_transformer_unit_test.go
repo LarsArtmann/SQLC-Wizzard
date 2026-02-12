@@ -270,19 +270,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 
 	Context("TransformTypeSafeSafetyRules", func() {
 		It("should produce empty rules when all type-safe policies are disabled", func() {
-			rules := &domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy:   domain.SelectStarAllowed,
-					ColumnExplicitness: domain.ColumnExplicitnessDefault,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement:    domain.WhereClauseNever,
-					LimitRequirement:    domain.LimitClauseNever,
-					MaxRowsWithoutLimit: 0,
-				},
-				DestructiveOps: domain.DestructiveAllowed,
-				CustomRules:    []generated.SafetyRule{},
-			}
+			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 
 			configRules := transformer.TransformTypeSafeSafetyRules(rules)
 
