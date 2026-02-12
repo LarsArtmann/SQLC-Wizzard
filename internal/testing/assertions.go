@@ -297,6 +297,8 @@ var CommonTemplateConfigs = struct {
 	PostgreSQLWithStrict []TemplateTestHelperOption
 	// PostgreSQLWithFullText is for templates with UUID, JSON, Arrays, FullText, JSONTags, Interface, PreparedQueries
 	PostgreSQLWithFullText []TemplateTestHelperOption
+	// PostgreSQLAnalytics is for templates with JSON, Arrays, JSONTags, Interface, StrictChecks (no UUID)
+	PostgreSQLAnalytics []TemplateTestHelperOption
 	// SQLiteMinimal is for templates with no UUID, no JSON, no Arrays, no Interface, no PreparedQueries
 	SQLiteMinimal []TemplateTestHelperOption
 }{
@@ -324,6 +326,14 @@ var CommonTemplateConfigs = struct {
 		WithJSONTags(true),
 		WithInterface(true),
 		WithPreparedQueries(true),
+	},
+	PostgreSQLAnalytics: []TemplateTestHelperOption{
+		WithUUID(false),
+		WithJSON(true),
+		WithArrays(true),
+		WithJSONTags(true),
+		WithInterface(true),
+		WithStrictChecks(true),
 	},
 	SQLiteMinimal: []TemplateTestHelperOption{
 		WithUUID(false),

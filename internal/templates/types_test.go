@@ -267,18 +267,16 @@ func TestAnalyticsTemplate_DefaultData(t *testing.T) {
 }
 
 func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.AnalyticsTemplate{},
-		ExpectedProjectType: generated.ProjectType("analytics"),
-		ExpectedProjectName: "analytics-service",
-		ExpectedEngine:      "postgresql",
-		ExpectUUID:          false,
-		ExpectJSON:          true,
-		ExpectArrays:        true,
-		ExpectJSONTags:      true,
-		ExpectInterface:     true,
-		ExpectStrictChecks:  true,
-	})
+	helper := internal_testing.NewTemplateTestHelper(
+		&templates.AnalyticsTemplate{},
+		internal_testing.WithProjectType(generated.ProjectType("analytics")),
+		internal_testing.WithProjectName("analytics-service"),
+		internal_testing.WithEngine("postgresql"),
+	)
+	for _, opt := range internal_testing.CommonTemplateConfigs.PostgreSQLAnalytics {
+		opt(&helper)
+	}
+	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 
 // TestingTemplate Tests.
@@ -308,18 +306,16 @@ func TestTestingTemplate_DefaultData(t *testing.T) {
 }
 
 func TestTestingTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t, internal_testing.TemplateTestHelper{
-		Template:            &templates.TestingTemplate{},
-		ExpectedProjectType: generated.ProjectType("testing"),
-		ExpectedProjectName: "test-project",
-		ExpectedEngine:      "sqlite",
-		ExpectUUID:          false,
-		ExpectJSON:          false,
-		ExpectArrays:        false,
-		ExpectJSONTags:      false,
-		ExpectInterface:     false,
-		ExpectStrictChecks:  false,
-	})
+	helper := internal_testing.NewTemplateTestHelper(
+		&templates.TestingTemplate{},
+		internal_testing.WithProjectType(generated.ProjectType("testing")),
+		internal_testing.WithProjectName("test-project"),
+		internal_testing.WithEngine("sqlite"),
+	)
+	for _, opt := range internal_testing.CommonTemplateConfigs.SQLiteMinimal {
+		opt(&helper)
+	}
+	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 
 // MultiTenantTemplate Tests.
