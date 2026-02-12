@@ -242,11 +242,9 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 			// OLD WAY: Could have NoDropTable=true but NoTruncate=false (inconsistent!)
 			// NEW WAY: Single policy applies to ALL destructive operations
 
-			rules := &domain.TypeSafeSafetyRules{
-				StyleRules:     domain.QueryStyleRules{},
-				SafetyRules:    domain.QuerySafetyRules{},
-				DestructiveOps: domain.DestructiveForbidden,
-			}
+			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
+				r.DestructiveOps = domain.DestructiveForbidden
+			})
 
 			configRules := transformer.TransformTypeSafeSafetyRules(rules)
 

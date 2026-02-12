@@ -22,37 +22,13 @@ type emitOptionsTestCase struct {
 
 // newStrictTypeSafeSafetyRules creates a TypeSafeSafetyRules with restrictive settings.
 func newStrictTypeSafeSafetyRules() domain.TypeSafeSafetyRules {
-	return domain.TypeSafeSafetyRules{
-		StyleRules: domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarForbidden,
-			ColumnExplicitness: domain.ColumnExplicitnessRequired,
-		},
-		SafetyRules: domain.QuerySafetyRules{
-			WhereRequirement:    domain.WhereClauseAlways,
-			LimitRequirement:    domain.LimitClauseAlways,
-			MaxRowsWithoutLimit: 100,
-		},
-		DestructiveOps: domain.DestructiveForbidden,
-		CustomRules:    []generated.SafetyRule{},
-	}
+	return *testing.CreateStrictTypeSafeSafetyRules()
 }
 
 // newTypeSafeSafetyRules creates a TypeSafeSafetyRules with configurable parameters.
 // Defaults to strict settings when nil values are provided.
 func newTypeSafeSafetyRules(opts ...func(*domain.TypeSafeSafetyRules)) domain.TypeSafeSafetyRules {
-	result := domain.TypeSafeSafetyRules{
-		StyleRules: domain.QueryStyleRules{
-			SelectStarPolicy:   domain.SelectStarForbidden,
-			ColumnExplicitness: domain.ColumnExplicitnessRequired,
-		},
-		SafetyRules: domain.QuerySafetyRules{
-			WhereRequirement:    domain.WhereClauseAlways,
-			LimitRequirement:    domain.LimitClauseAlways,
-			MaxRowsWithoutLimit: 100,
-		},
-		DestructiveOps: domain.DestructiveForbidden,
-		CustomRules:    []generated.SafetyRule{},
-	}
+	result := *testing.CreateStrictTypeSafeSafetyRules()
 	for _, opt := range opts {
 		opt(&result)
 	}

@@ -218,16 +218,10 @@ var _ = Describe("DestructiveOperationPolicy", func() {
 var _ = Describe("TypeSafeSafetyRules", func() {
 	Context("IsValid", func() {
 		It("should validate rules with valid policy", func() {
-			rules := domain.TypeSafeSafetyRules{
-				StyleRules: domain.QueryStyleRules{
-					SelectStarPolicy: domain.SelectStarForbidden,
-				},
-				SafetyRules: domain.QuerySafetyRules{
-					WhereRequirement: domain.WhereClauseAlways,
-				},
-				DestructiveOps: domain.DestructiveForbidden,
-				CustomRules:    []generated.SafetyRule{},
-			}
+			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
+				r.StyleRules.SelectStarPolicy = domain.SelectStarForbidden
+				r.SafetyRules.WhereRequirement = domain.WhereClauseAlways
+			})
 
 			err := rules.IsValid()
 			Expect(err).NotTo(HaveOccurred())
@@ -244,16 +238,15 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		})
 
 		It("should reject custom rule with empty name", func() {
-			rules := domain.TypeSafeSafetyRules{
-				DestructiveOps: domain.DestructiveForbidden,
-				CustomRules: []generated.SafetyRule{
+			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
+				r.CustomRules = []generated.SafetyRule{
 					{
 						Name:    "",
 						Rule:    "query.type == 'SELECT'",
 						Message: "Test rule",
 					},
-				},
-			}
+				}
+			})
 
 			err := rules.IsValid()
 			Expect(err).To(HaveOccurred())
@@ -261,16 +254,15 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		})
 
 		It("should reject custom rule with empty rule expression", func() {
-			rules := domain.TypeSafeSafetyRules{
-				DestructiveOps: domain.DestructiveForbidden,
-				CustomRules: []generated.SafetyRule{
+			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
+				r.CustomRules = []generated.SafetyRule{
 					{
 						Name:    "test-rule",
 						Rule:    "",
 						Message: "Test rule",
 					},
-				},
-			}
+				}
+			})
 
 			err := rules.IsValid()
 			Expect(err).To(HaveOccurred())
@@ -278,16 +270,15 @@ var _ = Describe("TypeSafeSafetyRules", func() {
 		})
 
 		It("should validate custom rules with all fields", func() {
-			rules := domain.TypeSafeSafetyRules{
-				DestructiveOps: domain.DestructiveForbidden,
-				CustomRules: []generated.SafetyRule{
+			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
+				r.CustomRules = []generated.SafetyRule{
 					{
 						Name:    "no-complex-joins",
 						Rule:    "query.joins().count() <= 3",
 						Message: "Maximum 3 joins allowed",
 					},
-				},
-			}
+				}
+			})
 
 			err := rules.IsValid()
 			Expect(err).NotTo(HaveOccurred())
