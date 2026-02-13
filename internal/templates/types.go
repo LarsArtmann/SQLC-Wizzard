@@ -6,30 +6,30 @@
 //
 // This package uses two patterns for implementing templates:
 //
-// 1. BaseTemplate Direct Embedding (simple, minimal overhead):
-//    Used by: MicroserviceTemplate, HobbyTemplate, LibraryTemplate, AnalyticsTemplate,
-//              TestingTemplate, MultiTenantTemplate
+//  1. BaseTemplate Direct Embedding (simple, minimal overhead):
+//     Used by: MicroserviceTemplate, HobbyTemplate, LibraryTemplate, AnalyticsTemplate,
+//     TestingTemplate, MultiTenantTemplate
 //
-//    Pros:
-//    - Direct method implementation, full control over Generate()
-//    - No inheritance overhead
-//    - Best for unique Generate() implementations
+//     Pros:
+//     - Direct method implementation, full control over Generate()
+//     - No inheritance overhead
+//     - Best for unique Generate() implementations
 //
-//    Cons:
-//    - Code duplication in Generate() and DefaultData()
-//    - Manual zero-value handling required
+//     Cons:
+//     - Code duplication in Generate() and DefaultData()
+//     - Manual zero-value handling required
 //
-// 2. ConfiguredTemplate Embedding (reusable, consistent defaults):
-//    Used by: EnterpriseTemplate, APIFirstTemplate
+//  2. ConfiguredTemplate Embedding (reusable, consistent defaults):
+//     Used by: EnterpriseTemplate, APIFirstTemplate
 //
-//    Pros:
-//    - Built-in zero-value handling (sensible defaults)
-//    - Consistent Generate() behavior via ConfiguredTemplate
-//    - Less boilerplate in template implementations
+//     Pros:
+//     - Built-in zero-value handling (sensible defaults)
+//     - Consistent Generate() behavior via ConfiguredTemplate
+//     - Less boilerplate in template implementations
 //
-//    Cons:
-//    - Inheritance from ConfiguredTemplate
-//    - May be overkill for simple templates
+//     Cons:
+//     - Inheritance from ConfiguredTemplate
+//     - May be overkill for simple templates
 //
 // When to Use Which Pattern
 // ==========================

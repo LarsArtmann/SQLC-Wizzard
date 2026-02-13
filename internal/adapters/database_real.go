@@ -21,9 +21,9 @@ func NewRealDatabaseAdapter() *RealDatabaseAdapter {
 type OperationType string
 
 const (
-	OperationTestConnection  OperationType = "Testing database connection to:"
-	OperationCreateDatabase  OperationType = "Creating database with URI:"
-	OperationDropDatabase     OperationType = "Dropping database with URI:"
+	OperationTestConnection     OperationType = "Testing database connection to:"
+	OperationCreateDatabase     OperationType = "Creating database with URI:"
+	OperationDropDatabase       OperationType = "Dropping database with URI:"
 	OperationGenerateMigrations OperationType = "Generating migrations for:"
 )
 

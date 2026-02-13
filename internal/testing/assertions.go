@@ -69,7 +69,7 @@ func AssertTemplateDefaultData(t *testing.T, helper TemplateTestHelper) {
 	if helper.ExpectInterface {
 		assert.True(t, data.Validation.EmitOptions.EmitInterface || data.Validation.EmitOptions.EmitPreparedQueries)
 	}
-	assert.Equal(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle)
+	assert.JSONEq(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle)
 
 	// Check prepared queries - defaults to true unless explicitly set
 	expectedPreparedQueries := helper.ExpectPreparedQueries
@@ -129,7 +129,8 @@ func AssertTemplateGenerateBasic(t *testing.T, helper TemplateTestHelper) {
 func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
 	DefaultData() generated.TemplateData
 	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-}, expectedProjectType generated.ProjectType, expectedProjectName string) {
+}, expectedProjectType generated.ProjectType, expectedProjectName string,
+) {
 	t.Helper()
 
 	data := template.DefaultData()
@@ -179,7 +180,8 @@ func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
 func AssertTemplateGenerateBasicWithConfigs(t *testing.T, template interface {
 	DefaultData() generated.TemplateData
 	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-}, expectedProjectType generated.ProjectType, expectedProjectName string, expectedEngine string, commonConfigs []TemplateTestHelperOption) {
+}, expectedProjectType generated.ProjectType, expectedProjectName, expectedEngine string, commonConfigs []TemplateTestHelperOption,
+) {
 	t.Helper()
 
 	helper := NewTemplateTestHelper(
@@ -196,101 +198,101 @@ func AssertTemplateGenerateBasicWithConfigs(t *testing.T, template interface {
 	AssertTemplateGenerateBasic(t, helper)
 }
 
-// TemplateTestHelperOption is a functional option for creating TemplateTestHelper
+// TemplateTestHelperOption is a functional option for creating TemplateTestHelper.
 type TemplateTestHelperOption func(*TemplateTestHelper)
 
-// WithProjectType sets the expected project type
+// WithProjectType sets the expected project type.
 func WithProjectType(pt generated.ProjectType) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectedProjectType = pt
 	}
 }
 
-// WithProjectName sets the expected project name
+// WithProjectName sets the expected project name.
 func WithProjectName(name string) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectedProjectName = name
 	}
 }
 
-// WithEngine sets the expected database engine
+// WithEngine sets the expected database engine.
 func WithEngine(engine string) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectedEngine = engine
 	}
 }
 
-// WithPackagePath sets the expected package path
+// WithPackagePath sets the expected package path.
 func WithPackagePath(path string) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectedPackagePath = path
 	}
 }
 
-// WithDatabaseType sets the expected database type
+// WithDatabaseType sets the expected database type.
 func WithDatabaseType(dt generated.DatabaseType) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectedDatabaseType = dt
 	}
 }
 
-// WithUUID configures UUID expectation
+// WithUUID configures UUID expectation.
 func WithUUID(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectUUID = enabled
 	}
 }
 
-// WithJSON configures JSON expectation
+// WithJSON configures JSON expectation.
 func WithJSON(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectJSON = enabled
 	}
 }
 
-// WithArrays configures arrays expectation
+// WithArrays configures arrays expectation.
 func WithArrays(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectArrays = enabled
 	}
 }
 
-// WithFullText configures full text expectation
+// WithFullText configures full text expectation.
 func WithFullText(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectFullText = enabled
 	}
 }
 
-// WithJSONTags configures JSON tags expectation
+// WithJSONTags configures JSON tags expectation.
 func WithJSONTags(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectJSONTags = enabled
 	}
 }
 
-// WithInterface configures interface expectation (maps to EmitInterface or EmitPreparedQueries)
+// WithInterface configures interface expectation (maps to EmitInterface or EmitPreparedQueries).
 func WithInterface(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectInterface = enabled
 	}
 }
 
-// WithStrictChecks configures strict checks expectation
+// WithStrictChecks configures strict checks expectation.
 func WithStrictChecks(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectStrictChecks = enabled
 	}
 }
 
-// WithPreparedQueries configures prepared queries expectation
+// WithPreparedQueries configures prepared queries expectation.
 func WithPreparedQueries(enabled bool) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectPreparedQueries = enabled
 	}
 }
 
-// WithJSONTagsCaseStyle configures JSON tags case style
+// WithJSONTagsCaseStyle configures JSON tags case style.
 func WithJSONTagsCaseStyle(style string) TemplateTestHelperOption {
 	return func(h *TemplateTestHelper) {
 		h.ExpectedJSONTagsCaseStyle = style
@@ -319,7 +321,8 @@ func WithJSONTagsCaseStyle(style string) TemplateTestHelperOption {
 func NewTemplateTestHelper(template interface {
 	DefaultData() generated.TemplateData
 	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-}, opts ...TemplateTestHelperOption) TemplateTestHelper {
+}, opts ...TemplateTestHelperOption,
+) TemplateTestHelper {
 	helper := TemplateTestHelper{
 		Template: template,
 	}

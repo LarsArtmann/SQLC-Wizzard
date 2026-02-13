@@ -18,14 +18,14 @@ This report documents the completion of a systematic migration of 5 SQLC-Wizard 
 
 ### Templates Migrated
 
-| Template | Previous Pattern | New Pattern | Custom Rules | Status |
-|----------|-----------------|-------------|--------------|--------|
-| HobbyTemplate | BaseTemplate | ConfiguredTemplate | No | ✅ Complete |
-| TestingTemplate | BaseTemplate | ConfiguredTemplate | No | ✅ Complete |
-| AnalyticsTemplate | BaseTemplate | ConfiguredTemplate | No | ✅ Complete |
-| LibraryTemplate | BaseTemplate | ConfiguredTemplate | Yes (3 rules) | ✅ Complete |
-| MultiTenantTemplate | BaseTemplate | ConfiguredTemplate | Yes (10 rules) | ✅ Complete |
-| MicroserviceTemplate | BaseTemplate | BaseTemplate | No | ⚠️ Intentional |
+| Template             | Previous Pattern | New Pattern        | Custom Rules   | Status         |
+| -------------------- | ---------------- | ------------------ | -------------- | -------------- |
+| HobbyTemplate        | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete    |
+| TestingTemplate      | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete    |
+| AnalyticsTemplate    | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete    |
+| LibraryTemplate      | BaseTemplate     | ConfiguredTemplate | Yes (3 rules)  | ✅ Complete    |
+| MultiTenantTemplate  | BaseTemplate     | ConfiguredTemplate | Yes (10 rules) | ✅ Complete    |
+| MicroserviceTemplate | BaseTemplate     | BaseTemplate       | No             | ⚠️ Intentional |
 
 ### Files Modified
 
@@ -70,6 +70,7 @@ func (t *ConfiguredTemplate) BuildGoConfigWithOverrides(data generated.TemplateD
 ### 2. LibraryTemplate Migration
 
 **Changes:**
+
 - Changed from `BaseTemplate` embedding to `ConfiguredTemplate` embedding
 - Added `NewLibraryTemplate()` constructor with library-specific defaults:
   - PostgreSQL engine
@@ -87,6 +88,7 @@ Library templates are designed for reusable Go libraries, requiring strict namin
 ### 3. MultiTenantTemplate Migration
 
 **Changes:**
+
 - Changed from `BaseTemplate` embedding to `ConfiguredTemplate` embedding
 - Added `NewMultiTenantTemplate()` constructor with multi-tenant SaaS defaults:
   - PostgreSQL engine
@@ -203,21 +205,25 @@ go build ./... → SUCCESS
 ## Benefits Achieved
 
 ### 1. Zero-Value Safety
+
 - Templates can be safely zero-value initialized without panic
 - Configuration fields have sensible defaults
 - Explicit constructors provide customization when needed
 
 ### 2. Code Reuse
+
 - Eliminated 100+ lines of duplicate initialization code
 - Centralized defaults in `ConfiguredTemplate`
 - ConfigBuilder pattern shared across templates
 
 ### 3. Consistency
+
 - All templates now follow ConfiguredTemplate pattern (5/6)
 - Uniform API for template configuration
 - Consistent zero-value behavior
 
 ### 4. Maintainability
+
 - Single location for defaults (ConfiguredTemplate)
 - Easier to add new templates
 - Clear migration path for remaining templates
@@ -295,12 +301,14 @@ go build ./... → SUCCESS
 ## Files Modified
 
 ### core/templates/configured_template.go
+
 - Added `CustomRenameRules` field
 - Added `GetRenameRules()` method
 - Added `BuildGoConfigWithOverrides()` method
 - Line count: +24 lines
 
 ### internal/templates/library.go
+
 - Changed from `BaseTemplate` to `ConfiguredTemplate` embedding
 - Added `NewLibraryTemplate()` constructor
 - Added `Name()` and `Description()` methods
@@ -308,6 +316,7 @@ go build ./... → SUCCESS
 - Lines: ~64 changes
 
 ### internal/templates/multi_tenant.go
+
 - Changed from `BaseTemplate` to `ConfiguredTemplate` embedding
 - Added `NewMultiTenantTemplate()` constructor
 - Added `Name()` and `Description()` methods
@@ -333,6 +342,7 @@ c59ed7b docs(templates): document template architecture and inheritance patterns
 The template migration initiative is 83% complete (5/6 templates). All tests pass, build succeeds, and zero-value safety is enforced. The remaining work is lower priority and can be scheduled for future sprints.
 
 **Next Actions:**
+
 1. Stage and commit current changes
 2. Push to origin/master
 3. Schedule remaining zero-value tests

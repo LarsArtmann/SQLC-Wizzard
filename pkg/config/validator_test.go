@@ -33,7 +33,7 @@ func createBasicSqlcConfig(engine string) *SqlcConfig {
 	}
 }
 
-// EntryAdder interface for adding entries to validation result
+// EntryAdder interface for adding entries to validation result.
 type EntryAdder interface {
 	AddEntry(field, message string)
 	GetEntries() []ValidationError

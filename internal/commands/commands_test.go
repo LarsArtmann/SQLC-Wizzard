@@ -8,10 +8,10 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
-	gomegatypes "github.com/onsi/gomega/types"
-	"github.com/spf13/cobra"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
+	gomegatypes "github.com/onsi/gomega/types"
+	"github.com/spf13/cobra"
 )
 
 func TestCommands(t *testing.T) {

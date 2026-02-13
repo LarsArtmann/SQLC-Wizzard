@@ -51,27 +51,27 @@ func (t *EnterpriseTemplate) DefaultData() generated.TemplateData {
 		"${DATABASE_URL}",
 		"internal/db",
 		"internal/db",
-		true,  // useManaged
-		true,  // useUUIDs
-		true,  // useJSON
-		true,  // useArrays
-		true,  // useFullText
-		true,  // emitJSONTags
-		true,  // emitPreparedQueries
-		true,  // emitInterface
-		false, // emitEmptySlices
-		true,  // emitResultStructPointers
-		true,  // emitParamsStructPointers
-		false, // emitEnumValidMethod
-		false, // emitAllEnumValues
+		true,    // useManaged
+		true,    // useUUIDs
+		true,    // useJSON
+		true,    // useArrays
+		true,    // useFullText
+		true,    // emitJSONTags
+		true,    // emitPreparedQueries
+		true,    // emitInterface
+		false,   // emitEmptySlices
+		true,    // emitResultStructPointers
+		true,    // emitParamsStructPointers
+		false,   // emitEnumValidMethod
+		false,   // emitAllEnumValues
 		"camel", // jsonTagsCaseStyle
-		true,  // strictFunctions
-		true,  // strictOrderBy
-		true,  // noSelectStar
-		true,  // requireWhere
-		false, // noDropTable
-		false, // noTruncate
-		true,  // requireLimit
+		true,    // strictFunctions
+		true,    // strictOrderBy
+		true,    // noSelectStar
+		true,    // requireWhere
+		false,   // noDropTable
+		false,   // noTruncate
+		true,    // requireLimit
 	)
 }
 

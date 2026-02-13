@@ -20,7 +20,7 @@ func TestCreators(t *testing.T) {
 	RunSpecs(t, "Creators Suite")
 }
 
-// Enum test constants - single source of truth for all enum tests
+// Enum test constants - single source of truth for all enum tests.
 var allProjectTypes = []generated.ProjectType{
 	generated.ProjectTypeMicroservice,
 	generated.ProjectTypeHobby,
@@ -35,7 +35,7 @@ var allDatabaseTypes = []generated.DatabaseType{
 
 // testEnumAssignment tests that an enum field can be correctly assigned and retrieved.
 // Eliminated duplicate test structure by centralizing the pattern.
-func testEnumAssignment[C any, E any](fieldName string, values []E, setField func(*C, E), getField func(*C) E) {
+func testEnumAssignment[C, E any](fieldName string, values []E, setField func(*C, E), getField func(*C) E) {
 	It(fmt.Sprintf("should support all %s types", fieldName), func() {
 		for _, v := range values {
 			cfg := new(C)

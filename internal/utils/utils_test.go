@@ -52,9 +52,9 @@ func runTruncateTests(testFunc func(string, int) string, testCases []truncateTes
 // commonCaseConversionInputs holds input/output pairs for case conversion tests.
 // Each pair is tested against both snake_case and kebab-case formats.
 var commonCaseConversionInputs = []struct {
-	input       string
-	snakeCase   string
-	kebabCase   string
+	input     string
+	snakeCase string
+	kebabCase string
 }{
 	{"CamelCase", "camel_case", "camel-case"},
 	{"Simple", "simple", "simple"},
@@ -76,10 +76,11 @@ type caseConversionTestCase struct {
 
 // newCaseConversionTestCase creates a test case for a specific conversion format.
 func newCaseConversionTestCase(separator string, inputs []struct {
-	input       string
-	snakeCase   string
-	kebabCase   string
-}) caseConversionTestCase {
+	input     string
+	snakeCase string
+	kebabCase string
+},
+) caseConversionTestCase {
 	testCases := make([]stringTestCase, len(inputs))
 	for i, in := range inputs {
 		expected := in.snakeCase

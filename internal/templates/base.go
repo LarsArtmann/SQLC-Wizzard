@@ -84,39 +84,39 @@ type ConfigBuilder struct {
 // making it easier to extend and maintain.
 type BuildOptions struct {
 	// Required fields
-	ProjectType string
-	DbEngine string
-	DatabaseURL string
-	PackagePath string
+	ProjectType   string
+	DbEngine      string
+	DatabaseURL   string
+	PackagePath   string
 	BaseOutputDir string
 
 	// Database features - all default to true
-	UseManaged bool
-	UseUUIDs bool
-	UseJSON bool
-	UseArrays bool
+	UseManaged  bool
+	UseUUIDs    bool
+	UseJSON     bool
+	UseArrays   bool
 	UseFullText bool
 
 	// Emit options
-	EmitJSONTags bool
-	EmitPreparedQueries bool
-	EmitInterface bool
-	EmitEmptySlices bool
+	EmitJSONTags             bool
+	EmitPreparedQueries      bool
+	EmitInterface            bool
+	EmitEmptySlices          bool
 	EmitResultStructPointers bool
 	EmitParamsStructPointers bool
-	EmitEnumValidMethod bool
-	EmitAllEnumValues bool
-	JSONTagsCaseStyle string
+	EmitEnumValidMethod      bool
+	EmitAllEnumValues        bool
+	JSONTagsCaseStyle        string
 
 	// Emit options - extended
 	StrictFunctions bool
-	StrictOrderBy bool
+	StrictOrderBy   bool
 
 	// Safety rules
 	NoSelectStar bool
 	RequireWhere bool
-	NoDropTable bool
-	NoTruncate bool
+	NoDropTable  bool
+	NoTruncate   bool
 	RequireLimit bool
 }
 
@@ -125,10 +125,10 @@ type BuildOptions struct {
 func NewBuildOptions(projectType, dbEngine string) BuildOptions {
 	return BuildOptions{
 		// Required fields - caller must override
-		ProjectType: projectType,
-		DbEngine:    dbEngine,
-		DatabaseURL: "${DATABASE_URL}",
-		PackagePath: "internal/db",
+		ProjectType:   projectType,
+		DbEngine:      dbEngine,
+		DatabaseURL:   "${DATABASE_URL}",
+		PackagePath:   "internal/db",
 		BaseOutputDir: "internal/db",
 
 		// Database features - default to true
@@ -143,11 +143,11 @@ func NewBuildOptions(projectType, dbEngine string) BuildOptions {
 		EmitResultStructPointers: true,
 		EmitParamsStructPointers: true,
 		EmitJSONTags:             false,
-		EmitInterface:           false,
-		EmitEmptySlices:         false,
-		EmitEnumValidMethod:     false,
-		EmitAllEnumValues:       false,
-		JSONTagsCaseStyle:       "snake",
+		EmitInterface:            false,
+		EmitEmptySlices:          false,
+		EmitEnumValidMethod:      false,
+		EmitAllEnumValues:        false,
+		JSONTagsCaseStyle:        "snake",
 
 		// Emit options - extended
 		StrictFunctions: false,

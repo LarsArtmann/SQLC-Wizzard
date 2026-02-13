@@ -14,37 +14,37 @@ type MultiTenantTemplate struct {
 func NewMultiTenantTemplate() *MultiTenantTemplate {
 	t := &MultiTenantTemplate{}
 	t.ConfiguredTemplate = ConfiguredTemplate{
-		TemplateName:        "multi-tenant",
-		TemplateDescription: "Optimized for SaaS multi-tenant architecture with tenant isolation and strict safety rules",
-		DefaultPackageName:  "multi-tenant",
-		DefaultProjectName:  "multi-tenant-app",
-		StrictMode:          true,
-		ProjectType:         "multi-tenant",
-		DbEngine:            "postgresql",
-		PackagePath:         "internal/db",
-		BaseOutput:          "internal/db",
-		UseManaged:          true,
-		UseUUIDs:            true,
-		UseJSON:             true,
-		UseArrays:           true,
-		UseFullText:         false,
-		EmitJSONTags:        true,
-		EmitPreparedQueries: true,
-		EmitInterface:       true,
-		EmitEmptySlices:     false,
+		TemplateName:             "multi-tenant",
+		TemplateDescription:      "Optimized for SaaS multi-tenant architecture with tenant isolation and strict safety rules",
+		DefaultPackageName:       "multi-tenant",
+		DefaultProjectName:       "multi-tenant-app",
+		StrictMode:               true,
+		ProjectType:              "multi-tenant",
+		DbEngine:                 "postgresql",
+		PackagePath:              "internal/db",
+		BaseOutput:               "internal/db",
+		UseManaged:               true,
+		UseUUIDs:                 true,
+		UseJSON:                  true,
+		UseArrays:                true,
+		UseFullText:              false,
+		EmitJSONTags:             true,
+		EmitPreparedQueries:      true,
+		EmitInterface:            true,
+		EmitEmptySlices:          false,
 		EmitResultStructPointers: true,
 		EmitParamsStructPointers: true,
 		EmitEnumValidMethod:      false,
 		EmitAllEnumValues:        false,
 		JSONTagsCaseStyle:        "camel",
-		StrictFunctions:         true,
-		StrictOrderBy:           true,
+		StrictFunctions:          true,
+		StrictOrderBy:            true,
 		NoSelectStar:             true,
 		RequireWhere:             true,
-		NoDropTable:             true,
-		NoTruncate:              false,
-		RequireLimit:            true,
-		Features:                []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"},
+		NoDropTable:              true,
+		NoTruncate:               false,
+		RequireLimit:             true,
+		Features:                 []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"},
 		CustomRenameRules: map[string]string{
 			"id":     "ID",
 			"uuid":   "UUID",
@@ -84,27 +84,27 @@ func (t *MultiTenantTemplate) DefaultData() generated.TemplateData {
 		"${DATABASE_URL}",
 		"internal/db",
 		"internal/db",
-		true,  // useManaged
-		true,  // useUUIDs
-		true,  // useJSON
-		true,  // useArrays
-		false, // useFullText
-		true,  // emitJSONTags
-		true,  // emitPreparedQueries
-		true,  // emitInterface
-		false, // emitEmptySlices
-		true,  // emitResultStructPointers
-		true,  // emitParamsStructPointers
-		false, // emitEnumValidMethod
-		false, // emitAllEnumValues
+		true,    // useManaged
+		true,    // useUUIDs
+		true,    // useJSON
+		true,    // useArrays
+		false,   // useFullText
+		true,    // emitJSONTags
+		true,    // emitPreparedQueries
+		true,    // emitInterface
+		false,   // emitEmptySlices
+		true,    // emitResultStructPointers
+		true,    // emitParamsStructPointers
+		false,   // emitEnumValidMethod
+		false,   // emitAllEnumValues
 		"camel", // jsonTagsCaseStyle
-		true,  // strictFunctions
-		true,  // strictOrderBy
-		true,  // noSelectStar
-		true,  // requireWhere
-		true,  // noDropTable
-		false, // noTruncate
-		true,  // requireLimit
+		true,    // strictFunctions
+		true,    // strictOrderBy
+		true,    // noSelectStar
+		true,    // requireWhere
+		true,    // noDropTable
+		false,   // noTruncate
+		true,    // requireLimit
 	)
 }
 

@@ -145,12 +145,12 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 				JSONTagsCaseStyle:        "camel",
 			},
 			SafetyRules: generated.SafetyRules{
-				NoSelectStar:  false,
-				RequireWhere:   false,
-				NoDropTable:    false,
-				NoTruncate:     false,
-				RequireLimit:   false,
-				Rules:          []generated.SafetyRule{},
+				NoSelectStar: false,
+				RequireWhere: false,
+				NoDropTable:  false,
+				NoTruncate:   false,
+				RequireLimit: false,
+				Rules:        []generated.SafetyRule{},
 			},
 		},
 	}

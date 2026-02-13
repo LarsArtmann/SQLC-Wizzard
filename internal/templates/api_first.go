@@ -49,27 +49,27 @@ func (t *APIFirstTemplate) DefaultData() generated.TemplateData {
 		"${DATABASE_URL}",
 		"internal/db",
 		"internal/db",
-		true,  // useManaged
-		true,  // useUUIDs
-		true,  // useJSON
-		true,  // useArrays
-		false, // useFullText
-		true,  // emitJSONTags
-		true,  // emitPreparedQueries
-		true,  // emitInterface
-		false, // emitEmptySlices
-		true,  // emitResultStructPointers
-		true,  // emitParamsStructPointers
-		false, // emitEnumValidMethod
-		false, // emitAllEnumValues
+		true,    // useManaged
+		true,    // useUUIDs
+		true,    // useJSON
+		true,    // useArrays
+		false,   // useFullText
+		true,    // emitJSONTags
+		true,    // emitPreparedQueries
+		true,    // emitInterface
+		false,   // emitEmptySlices
+		true,    // emitResultStructPointers
+		true,    // emitParamsStructPointers
+		false,   // emitEnumValidMethod
+		false,   // emitAllEnumValues
 		"camel", // jsonTagsCaseStyle
-		false, // strictFunctions
-		false, // strictOrderBy
-		true,  // noSelectStar
-		true,  // requireWhere
-		false, // noDropTable
-		false, // noTruncate
-		false, // requireLimit
+		false,   // strictFunctions
+		false,   // strictOrderBy
+		true,    // noSelectStar
+		true,    // requireWhere
+		false,   // noDropTable
+		false,   // noTruncate
+		false,   // requireLimit
 	)
 }
 

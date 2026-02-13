@@ -262,7 +262,7 @@ var _ = Describe("Schema", func() {
 		var (
 			testTableName   = "users"
 			testColumnName  = "id"
-			createTestTable = func(tableName string, columnName string) schema.Table {
+			createTestTable = func(tableName, columnName string) schema.Table {
 				return schema.Table{
 					Name: tableName,
 					Columns: []schema.Column{

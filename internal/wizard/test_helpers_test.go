@@ -5,7 +5,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-// Test output path constants for reuse across test cases
+// Test output path constants for reuse across test cases.
 const (
 	CustomBaseDir    = "./custom/db"
 	CustomQueriesDir = "./custom/queries"

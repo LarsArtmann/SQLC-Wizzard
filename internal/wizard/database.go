@@ -85,6 +85,6 @@ func (s *DatabaseStep) applyDatabaseConfig(
 	data.Database.UseFullText = useFullText
 	data.Database.UseArrays = useArrays
 
-	s.ui.ShowStepComplete(fmt.Sprintf("%s Config", engineName), completionMessage)
+	s.ui.ShowStepComplete(engineName+" Config", completionMessage)
 	return nil
 }

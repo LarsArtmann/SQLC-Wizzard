@@ -14,7 +14,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-// Helper function to create test SqlcConfig instances
+// Helper function to create test SqlcConfig instances.
 func createTestSqlcConfig(schema, out, pkg string, engine ...string) *config.SqlcConfig {
 	dbEngine := "postgresql"
 	if len(engine) > 0 {

@@ -193,7 +193,7 @@ func TestEnterpriseTemplate_DefaultData(t *testing.T) {
 		ExpectJSON:            true,
 		ExpectArrays:          true,
 		ExpectFullText:        true,
-		ExpectJSONTags:       true,
+		ExpectJSONTags:        true,
 		ExpectInterface:       true,
 		ExpectPreparedQueries: true,
 	})
@@ -263,15 +263,15 @@ func TestAnalyticsTemplate_DefaultData(t *testing.T) {
 		ExpectedProjectType:       generated.ProjectType("analytics"),
 		ExpectedPackageName:       "analytics",
 		ExpectedPackagePath:       "internal/analytics",
-		ExpectUUID:               false,
-		ExpectJSON:               true,
-		ExpectArrays:             true,
-		ExpectFullText:           true,
-		ExpectJSONTags:           true,
-		ExpectInterface:          true,
-		ExpectStrictChecks:       true,
+		ExpectUUID:                false,
+		ExpectJSON:                true,
+		ExpectArrays:              true,
+		ExpectFullText:            true,
+		ExpectJSONTags:            true,
+		ExpectInterface:           true,
+		ExpectStrictChecks:        true,
 		ExpectedJSONTagsCaseStyle: "camel",
-		ExpectPreparedQueries:    false,
+		ExpectPreparedQueries:     false,
 	})
 }
 
@@ -393,7 +393,7 @@ func TestLibraryTemplate_Generate_Basic(t *testing.T) {
 // as zero-valued structs (empty struct literal). This is important because:
 // - Users may create templates via reflection or deserialization
 // - Tests use empty struct literals (&templates.EnterpriseTemplate{})
-// - Ensures DefaultData() provides sensible defaults for all fields
+// - Ensures DefaultData() provides sensible defaults for all fields.
 func TestConfiguredTemplate_ZeroValueInitialization(t *testing.T) {
 	// Test EnterpriseTemplate with zero values
 	t.Run("EnterpriseTemplate zero initialization", func(t *testing.T) {

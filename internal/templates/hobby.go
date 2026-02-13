@@ -55,32 +55,32 @@ func (t *HobbyTemplate) Description() string {
 // Uses explicit BuildDefaultData for "file:dev.db" SQLite URL.
 func (t *HobbyTemplate) DefaultData() generated.TemplateData {
 	return t.BuildDefaultData(
-		"hobby",        // projectType
-		"sqlite",       // dbEngine
-		"file:dev.db",  // databaseURL
-		"db",           // packagePath
-		"db",           // baseOutputDir
-		false,          // useManaged
-		false,          // useUUIDs
-		false,          // useJSON
-		false,          // useArrays
-		false,          // useFullText
-		false,          // emitJSONTags
-		false,          // emitPreparedQueries
-		false,          // emitInterface
-		true,           // emitEmptySlices
-		false,          // emitResultStructPointers
-		false,          // emitParamsStructPointers
-		false,          // emitEnumValidMethod
-		false,          // emitAllEnumValues
-		"camel",        // jsonTagsCaseStyle
-		false,          // strictFunctions
-		false,          // strictOrderBy
-		false,          // noSelectStar
-		false,          // requireWhere
-		false,          // noDropTable
-		false,          // noTruncate
-		false,          // requireLimit
+		"hobby",       // projectType
+		"sqlite",      // dbEngine
+		"file:dev.db", // databaseURL
+		"db",          // packagePath
+		"db",          // baseOutputDir
+		false,         // useManaged
+		false,         // useUUIDs
+		false,         // useJSON
+		false,         // useArrays
+		false,         // useFullText
+		false,         // emitJSONTags
+		false,         // emitPreparedQueries
+		false,         // emitInterface
+		true,          // emitEmptySlices
+		false,         // emitResultStructPointers
+		false,         // emitParamsStructPointers
+		false,         // emitEnumValidMethod
+		false,         // emitAllEnumValues
+		"camel",       // jsonTagsCaseStyle
+		false,         // strictFunctions
+		false,         // strictOrderBy
+		false,         // noSelectStar
+		false,         // requireWhere
+		false,         // noDropTable
+		false,         // noTruncate
+		false,         // requireLimit
 	)
 }
 

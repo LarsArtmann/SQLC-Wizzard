@@ -46,7 +46,7 @@ func toGeneratedSafetyRules(rules *domain.SafetyRules) *generated.SafetyRules {
 		return nil
 	}
 	return &generated.SafetyRules{
-		NoSelectStar:  rules.NoSelectStar,
+		NoSelectStar: rules.NoSelectStar,
 		RequireWhere: rules.RequireWhere,
 		RequireLimit: rules.RequireLimit,
 		Rules:        rules.Rules,
@@ -100,9 +100,9 @@ func runBooleanFlagParityTest(
 		runFieldParityTest(
 			transformer,
 			&generated.SafetyRules{
-				NoSelectStar:  isSelectStar,
-				RequireWhere:  isWhere,
-				RequireLimit:  isLimit,
+				NoSelectStar: isSelectStar,
+				RequireWhere: isWhere,
+				RequireLimit: isLimit,
 			},
 			typeSafeFieldSetter,
 			expectedExpression,

@@ -57,14 +57,14 @@ func (t *TestingTemplate) Description() string {
 func (t *TestingTemplate) Generate(data generated.TemplateData) (*config.SqlcConfig, error) {
 	return t.GenerateWithDefaults(
 		data,
-		"testdata",        // packageName
-		"testdata/db",     // packagePath
-		"testdata/db",     // baseDir
-		"testdata/queries", // queriesDir
-		"testdata/schema", // schemaDir
+		"testdata",              // packageName
+		"testdata/db",           // packagePath
+		"testdata/db",           // baseDir
+		"testdata/queries",      // queriesDir
+		"testdata/schema",       // schemaDir
 		"file:testdata/test.db", // databaseURL
-		"test",            // projectName
-		false,             // strict
+		"test",                  // projectName
+		false,                   // strict
 	)
 }
 

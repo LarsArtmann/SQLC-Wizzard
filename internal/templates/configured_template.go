@@ -86,12 +86,12 @@ func NewConfiguredTemplate(
 		EmitPreparedQueries:      true,
 		EmitResultStructPointers: true,
 		EmitParamsStructPointers: true,
-		EmitJSONTags:            false,
-		EmitInterface:           false,
+		EmitJSONTags:             false,
+		EmitInterface:            false,
 		EmitEmptySlices:          false,
-		EmitEnumValidMethod:     false,
-		EmitAllEnumValues:       false,
-		JSONTagsCaseStyle:       "snake",
+		EmitEnumValidMethod:      false,
+		EmitAllEnumValues:        false,
+		JSONTagsCaseStyle:        "snake",
 
 		// Emit options - extended
 		StrictFunctions: false,
