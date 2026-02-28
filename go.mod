@@ -1,6 +1,6 @@
 module github.com/LarsArtmann/SQLC-Wizzard
 
-go 1.25.6
+go 1.26.0
 
 require (
 	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20251120080741-04d40f664f78
