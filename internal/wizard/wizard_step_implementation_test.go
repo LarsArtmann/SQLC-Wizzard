@@ -316,26 +316,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 					QueriesDir: "./sql/queries",
 					SchemaDir:  "./sql/schema",
 				},
-				Validation: generated.ValidationConfig{
-					StrictFunctions: true,
-					StrictOrderBy:   true,
-					EmitOptions: generated.EmitOptions{
-						EmitJSONTags:             true,
-						EmitPreparedQueries:      true,
-						EmitInterface:            true,
-						EmitEmptySlices:          true,
-						EmitResultStructPointers: false,
-						EmitParamsStructPointers: false,
-						EmitEnumValidMethod:      true,
-						EmitAllEnumValues:        false,
-					},
-					SafetyRules: generated.SafetyRules{
-						NoSelectStar: true,
-						RequireWhere: true,
-						RequireLimit: false,
-						NoDropTable:  true,
-					},
-				},
+				Validation: testing.CreateDefaultValidationConfig(),
 			}
 
 			// Verify all fields are properly set

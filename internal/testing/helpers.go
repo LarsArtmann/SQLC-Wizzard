@@ -298,6 +298,31 @@ func GetJSONTagStyleTestCases() []EnumTestCase {
 	}
 }
 
+// CreateDefaultValidationConfig creates a ValidationConfig with production-ready defaults.
+// This helper eliminates duplicate fixture code across test files.
+func CreateDefaultValidationConfig() generated.ValidationConfig {
+	return generated.ValidationConfig{
+		StrictFunctions: true,
+		StrictOrderBy:   true,
+		EmitOptions: generated.EmitOptions{
+			EmitJSONTags:             true,
+			EmitPreparedQueries:      true,
+			EmitInterface:            true,
+			EmitEmptySlices:          true,
+			EmitResultStructPointers: false,
+			EmitParamsStructPointers: false,
+			EmitEnumValidMethod:      true,
+			EmitAllEnumValues:        false,
+		},
+		SafetyRules: generated.SafetyRules{
+			NoSelectStar: true,
+			RequireWhere: true,
+			RequireLimit: false,
+			NoDropTable:  true,
+		},
+	}
+}
+
 // TestStringRepresentationSuite runs generic tests for String() method of any enum type.
 // It encapsulates the common Context/It pattern for string representation tests.
 func TestStringRepresentationSuite(testCases func() []EnumTestCase) {

@@ -2,6 +2,7 @@ package wizard_test
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -39,26 +40,7 @@ var _ = Describe("Wizard Steps", func() {
 					QueriesDir: "./internal/db/queries",
 					SchemaDir:  "./internal/db/schema",
 				},
-				Validation: generated.ValidationConfig{
-					StrictFunctions: true,
-					StrictOrderBy:   true,
-					EmitOptions: generated.EmitOptions{
-						EmitJSONTags:             true,
-						EmitPreparedQueries:      true,
-						EmitInterface:            true,
-						EmitEmptySlices:          true,
-						EmitResultStructPointers: false,
-						EmitParamsStructPointers: false,
-						EmitEnumValidMethod:      true,
-						EmitAllEnumValues:        false,
-					},
-					SafetyRules: generated.SafetyRules{
-						NoSelectStar: true,
-						RequireWhere: true,
-						RequireLimit: false,
-						NoDropTable:  true,
-					},
-				},
+				Validation: testing.CreateDefaultValidationConfig(),
 			}
 
 			// Verify enterprise configuration
