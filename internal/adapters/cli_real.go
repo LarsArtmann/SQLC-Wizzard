@@ -21,6 +21,7 @@ func (a *RealCLIAdapter) RunCommand(
 	args ...string,
 ) (string, error) {
 	command := exec.CommandContext(ctx, cmd, args...)
+
 	output, err := command.CombinedOutput()
 	if err != nil {
 		return "", err
@@ -32,6 +33,7 @@ func (a *RealCLIAdapter) RunCommand(
 // CheckCommand checks if a command is available.
 func (a *RealCLIAdapter) CheckCommand(ctx context.Context, cmd string) error {
 	_, err := exec.LookPath(cmd)
+
 	return err
 }
 
@@ -58,5 +60,6 @@ func (a *RealCLIAdapter) Install(ctx context.Context, cmd string) error {
 // Println prints a message to output.
 func (a *RealCLIAdapter) Println(ctx context.Context, message string) error {
 	fmt.Println(message)
+
 	return nil
 }

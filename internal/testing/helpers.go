@@ -174,6 +174,7 @@ func CreateBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 	rules.SafetyRules.LimitRequirement = domain.LimitClauseNever
 	rules.SafetyRules.MaxRowsWithoutLimit = 0
 	rules.DestructiveOps = domain.DestructiveAllowed
+
 	return rules
 }
 
@@ -192,6 +193,7 @@ func CreateTypeSafeSafetyRules(
 	if configure != nil {
 		configure(rules)
 	}
+
 	return rules
 }
 
@@ -216,6 +218,7 @@ func CreateStrictTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 	rules.StyleRules.ColumnExplicitness = domain.ColumnExplicitnessRequired
 	rules.SafetyRules.WhereRequirement = domain.WhereClauseAlways
 	rules.SafetyRules.LimitRequirement = domain.LimitClauseAlways
+
 	return rules
 }
 

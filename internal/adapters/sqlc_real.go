@@ -35,6 +35,7 @@ func (a *RealSQLCAdapter) Validate(ctx context.Context, cfg *config.SqlcConfig) 
 // Version returns sqlc version.
 func (a *RealSQLCAdapter) Version(ctx context.Context) (string, error) {
 	cmd := exec.CommandContext(ctx, "sqlc", "version")
+
 	output, err := cmd.Output()
 	if err != nil {
 		return "", err
@@ -46,5 +47,6 @@ func (a *RealSQLCAdapter) Version(ctx context.Context) (string, error) {
 // CheckInstallation checks if sqlc is installed.
 func (a *RealSQLCAdapter) CheckInstallation(ctx context.Context) error {
 	cmd := exec.CommandContext(ctx, "sqlc", "--help")
+
 	return cmd.Run()
 }

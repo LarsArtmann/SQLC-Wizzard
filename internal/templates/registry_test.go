@@ -114,6 +114,7 @@ func TestRegistry_List(t *testing.T) {
 
 	// Check for unique templates
 	templateNames := make(map[string]bool)
+
 	for _, tmpl := range templates {
 		name := tmpl.Name()
 		assert.False(t, templateNames[name], "Template should be unique: %s", name)

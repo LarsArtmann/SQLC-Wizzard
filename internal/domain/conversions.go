@@ -129,6 +129,7 @@ func convertNoSelectStarPolicy(noSelectStar bool) SelectStarPolicy {
 	if noSelectStar {
 		return SelectStarForbidden
 	}
+
 	return SelectStarAllowed
 }
 
@@ -137,6 +138,7 @@ func convertWhereRequirement(requireWhere bool) WhereClauseRequirement {
 	if requireWhere {
 		return WhereClauseOnDestructive
 	}
+
 	return WhereClauseNever
 }
 
@@ -145,6 +147,7 @@ func convertLimitRequirement(requireLimit bool) LimitClauseRequirement {
 	if requireLimit {
 		return LimitClauseOnSelect
 	}
+
 	return LimitClauseNever
 }
 

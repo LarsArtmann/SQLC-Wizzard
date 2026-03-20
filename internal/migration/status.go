@@ -92,11 +92,13 @@ func (ms *MigrationStatus) GetMigrationCount() uint {
 // Returns uint because migration counts cannot be negative.
 func (ms *MigrationStatus) GetAppliedMigrations() uint {
 	var count uint
+
 	for _, mig := range ms.Migrations {
 		if mig.Applied {
 			count++
 		}
 	}
+
 	return count
 }
 

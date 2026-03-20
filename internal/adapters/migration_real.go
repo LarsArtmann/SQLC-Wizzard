@@ -34,8 +34,10 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 	m, err := migrate.New(source, databaseURL)
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
+
 		return fmt.Errorf("failed to create migration instance: %w", err)
 	}
+
 	defer func() {
 		_, closeErr := m.Close()
 		if closeErr != nil {
@@ -46,16 +48,19 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 	version, dirty, err := m.Version()
 	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		log.Error("Failed to get migration version", "error", err)
+
 		return fmt.Errorf("failed to get migration version: %w", err)
 	}
 
 	if dirty {
 		log.Warn("Database is in dirty state", "version", version)
+
 		return fmt.Errorf("database is dirty at version %d", version)
 	}
 
 	if err := m.Up(); err != nil && !errors.Is(err, migrate.ErrNoChange) {
 		log.Error("Migration failed", "error", err)
+
 		return fmt.Errorf("migration failed: %w", err)
 	}
 
@@ -87,8 +92,10 @@ func (r *RealMigrationAdapter) Rollback(
 	m, err := migrate.New(source, databaseURL)
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
+
 		return fmt.Errorf("failed to create migration instance: %w", err)
 	}
+
 	defer func() {
 		_, closeErr := m.Close()
 		if closeErr != nil {
@@ -97,8 +104,10 @@ func (r *RealMigrationAdapter) Rollback(
 	}()
 
 	for i := range steps {
-		if err := m.Steps(-1); err != nil && !errors.Is(err, migrate.ErrNoChange) {
+		err := m.Steps(-1)
+		if err != nil && !errors.Is(err, migrate.ErrNoChange) {
 			log.Error("Rollback step failed", "step", i+1, "error", err)
+
 			return fmt.Errorf("rollback step %d failed: %w", i+1, err)
 		}
 	}
@@ -111,6 +120,7 @@ func (r *RealMigrationAdapter) Rollback(
 		log.Info("Rollback completed", "current_version", version)
 	default:
 		log.Error("Failed to get version after rollback", "error", err)
+
 		return fmt.Errorf("failed to get version after rollback: %w", err)
 	}
 
@@ -127,8 +137,10 @@ func (r *RealMigrationAdapter) Status(
 	m, err := migrate.New(source, databaseURL)
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
+
 		return nil, fmt.Errorf("failed to create migration instance: %w", err)
 	}
+
 	defer func() {
 		_, closeErr := m.Close()
 		if closeErr != nil {
@@ -139,6 +151,7 @@ func (r *RealMigrationAdapter) Status(
 	version, dirty, err := m.Version()
 	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		log.Error("Failed to get migration version", "error", err)
+
 		return nil, fmt.Errorf("failed to get migration version: %w", err)
 	}
 
@@ -163,6 +176,7 @@ func (r *RealMigrationAdapter) Status(
 		"dirty",
 		status.IsDirty(),
 	)
+
 	return status, nil
 }
 
@@ -173,8 +187,10 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 	m, err := migrate.New(source, "file://tmp")
 	if err != nil {
 		log.Error("Failed to create migration instance for validation", "error", err)
+
 		return fmt.Errorf("failed to create migration instance for validation: %w", err)
 	}
+
 	defer func() {
 		_, closeErr := m.Close()
 		if closeErr != nil {
@@ -185,10 +201,12 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 	version, _, err := m.Version()
 	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		log.Error("Migration validation failed", "error", err)
+
 		return fmt.Errorf("migration validation failed: %w", err)
 	}
 
 	log.Info("Migration files validated", "latest_version", version)
+
 	return nil
 }
 
@@ -199,8 +217,10 @@ func (r *RealMigrationAdapter) CreateMigration(
 ) (string, error) {
 	log.Info("Creating migration", "name", name, "directory", directory)
 
-	if err := os.MkdirAll(directory, 0o755); err != nil {
+	err := os.MkdirAll(directory, 0o755)
+	if err != nil {
 		log.Error("Failed to create migrations directory", "directory", directory, "error", err)
+
 		return "", fmt.Errorf("failed to create migrations directory: %w", err)
 	}
 
@@ -217,8 +237,10 @@ func (r *RealMigrationAdapter) CreateMigration(
 
 `, name, timestamp)
 
-	if err := os.WriteFile(upFile, []byte(upContent), 0o644); err != nil {
+	err := os.WriteFile(upFile, []byte(upContent), 0o644)
+	if err != nil {
 		log.Error("Failed to create up migration file", "file", upFile, "error", err)
+
 		return "", fmt.Errorf("failed to create up migration file: %w", err)
 	}
 
@@ -230,12 +252,15 @@ func (r *RealMigrationAdapter) CreateMigration(
 
 `, name, timestamp)
 
-	if err := os.WriteFile(downFile, []byte(downContent), 0o644); err != nil {
+	err := os.WriteFile(downFile, []byte(downContent), 0o644)
+	if err != nil {
 		log.Error("Failed to create down migration file", "file", downFile, "error", err)
+
 		return "", fmt.Errorf("failed to create down migration file: %w", err)
 	}
 
 	log.Info("Migration files created successfully", "up", upFile, "down", downFile)
+
 	return upFile, nil
 }
 
@@ -268,15 +293,18 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(
 		for i := range newConfig.SQL {
 			newConfig.SQL[i].Engine = string(targetDatabase)
 		}
+
 		log.Info("Updated database engine", "to", targetDatabase)
 	}
 
 	// Update database configuration based on target database type
-	if err := r.updateDatabaseConfig(&newConfig, targetDatabase); err != nil {
+	err := r.updateDatabaseConfig(&newConfig, targetDatabase)
+	if err != nil {
 		return nil, fmt.Errorf("failed to update database config: %w", err)
 	}
 
 	log.Info("SQLC configuration migration completed")
+
 	return &newConfig, nil
 }
 

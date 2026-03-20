@@ -40,7 +40,8 @@ func (s *DatabaseStep) Execute(data *generated.TemplateData) error {
 		),
 	).WithTheme(s.theme)
 
-	if err := form.Run(); err != nil {
+	err := form.Run()
+	if err != nil {
 		return fmt.Errorf("database selection failed: %w", err)
 	}
 
@@ -110,5 +111,6 @@ func (s *DatabaseStep) applyDatabaseConfig(
 	data.Database.UseArrays = useArrays
 
 	s.ui.ShowStepComplete(engineName+" Config", completionMessage)
+
 	return nil
 }

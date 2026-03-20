@@ -75,6 +75,7 @@ func TestIsValidProjectType(t *testing.T) {
 	for _, v := range validProjectTypes {
 		assert.True(t, templates.IsValidProjectType(v), "expected %q to be valid", v)
 	}
+
 	for _, v := range invalidProjectTypes {
 		assert.False(t, templates.IsValidProjectType(v), "expected %q to be invalid", v)
 	}
@@ -84,6 +85,7 @@ func TestIsValidDatabaseType(t *testing.T) {
 	for _, v := range validDatabaseTypes {
 		assert.True(t, templates.IsValidDatabaseType(v), "expected %q to be valid", v)
 	}
+
 	for _, v := range invalidDatabaseTypes {
 		assert.False(t, templates.IsValidDatabaseType(v), "expected %q to be invalid", v)
 	}
@@ -243,6 +245,7 @@ func TestAPIFirstTemplate_Generate_Basic(t *testing.T) {
 	for _, opt := range internal_testing.CommonTemplateConfigs.PostgreSQLFullFeatures {
 		opt(&helper)
 	}
+
 	internal_testing.AssertTemplateGenerateBasic(t, helper)
 }
 

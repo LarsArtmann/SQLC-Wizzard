@@ -19,6 +19,7 @@ func createValidatedInput(
 	if value != nil {
 		localValue = *value
 	}
+
 	return huh.NewInput().
 		Title(title).
 		Description(description).
@@ -31,6 +32,7 @@ func createValidatedInput(
 					fieldName+" cannot be empty",
 				)
 			}
+
 			return nil
 		})
 }
@@ -41,6 +43,7 @@ func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 	if data != nil {
 		projectType = data.ProjectType
 	}
+
 	projectTypePtr := new(string)
 	*projectTypePtr = string(projectType)
 
@@ -62,6 +65,7 @@ func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 			if !templates.IsValidProjectType(projectType) {
 				return fmt.Errorf("invalid project type: %s", projectType)
 			}
+
 			return nil
 		})
 }
@@ -72,6 +76,7 @@ func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 	if data != nil {
 		engine = data.Database.Engine
 	}
+
 	databasePtr := new(string)
 	*databasePtr = string(engine)
 
@@ -88,6 +93,7 @@ func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 			if !templates.IsValidDatabaseType(database) {
 				return fmt.Errorf("invalid database type: %s", database)
 			}
+
 			return nil
 		})
 }
@@ -98,6 +104,7 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 	if data != nil {
 		projectName = data.ProjectName
 	}
+
 	return huh.NewInput().
 		Title("Project Name").
 		Description("Enter the name for your project").
@@ -109,18 +116,21 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 					"project name cannot be empty",
 				)
 			}
+
 			if len(name) < 2 {
 				return apperrors.NewError(
 					apperrors.ErrorCodeValidationError,
 					"project name must be at least 2 characters",
 				)
 			}
+
 			if len(name) > 50 {
 				return apperrors.NewError(
 					apperrors.ErrorCodeValidationError,
 					"project name must be less than 50 characters",
 				)
 			}
+
 			return nil
 		})
 }
@@ -131,6 +141,7 @@ func CreatePackageNameStep(data *generated.TemplateData) *huh.Input {
 	if data != nil {
 		packageName = data.Package.Name
 	}
+
 	return createValidatedInput(
 		"Package Name",
 		"Enter the Go package name for generated code",
@@ -146,6 +157,7 @@ func CreatePackagePathStep(data *generated.TemplateData) *huh.Input {
 	if data != nil {
 		packagePath = data.Package.Path
 	}
+
 	return createValidatedInput(
 		"Package Path",
 		"Enter the Go module path for your project",
@@ -161,6 +173,7 @@ func CreateOutputDirStep(data *generated.TemplateData) *huh.Input {
 	if data != nil {
 		outputDir = data.Output.BaseDir
 	}
+
 	return createValidatedInput(
 		"Output Directory",
 		"Enter the directory where generated files will be placed",
@@ -176,6 +189,7 @@ func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 	if data != nil {
 		engine = data.Database.Engine
 	}
+
 	placeholder := "postgresql://localhost:5432/dbname"
 	description := "Enter the database connection URL (use environment variables in production)"
 
@@ -195,6 +209,7 @@ func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 	if data != nil {
 		databaseURL = data.Database.URL
 	}
+
 	return huh.NewInput().
 		Title("Database URL").
 		Description(description).
@@ -207,6 +222,7 @@ func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 					"database URL cannot be empty",
 				)
 			}
+
 			return nil
 		})
 }

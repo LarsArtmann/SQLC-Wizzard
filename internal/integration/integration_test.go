@@ -13,25 +13,31 @@ import (
 // executeCommand executes a command with given args and returns error.
 func executeCommand(cmd *cobra.Command, args []string) error {
 	cmd.SetArgs(args)
+
 	return cmd.Execute()
 }
 
 // executeCommandWithOutput executes a command and returns both output and error.
 func executeCommandWithOutput(cmd *cobra.Command, args []string) (string, error) {
 	var output bytes.Buffer
+
 	cmd.SetArgs(args)
 	cmd.SetOut(&output)
 	cmd.SetErr(&output)
 	err := cmd.Execute()
+
 	return output.String(), err
 }
 
 // executeCommandWithHelp executes a command with --help flag.
 func executeCommandWithHelp(cmd *cobra.Command) error {
 	args := []string{"--help"}
+
 	var output bytes.Buffer
+
 	cmd.SetArgs(args)
 	cmd.SetOut(&output)
+
 	return cmd.Execute()
 }
 

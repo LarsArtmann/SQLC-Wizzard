@@ -134,27 +134,35 @@ func ApplyEmitOptions(opts *generated.EmitOptions, cfg *GoGenConfig) {
 	if opts.EmitJSONTags {
 		cfg.EmitJSONTags = opts.EmitJSONTags
 	}
+
 	if opts.EmitPreparedQueries {
 		cfg.EmitPreparedQueries = opts.EmitPreparedQueries
 	}
+
 	if opts.EmitInterface {
 		cfg.EmitInterface = opts.EmitInterface
 	}
+
 	if opts.EmitEmptySlices {
 		cfg.EmitEmptySlices = opts.EmitEmptySlices
 	}
+
 	if opts.EmitResultStructPointers {
 		cfg.EmitResultStructPointers = opts.EmitResultStructPointers
 	}
+
 	if opts.EmitParamsStructPointers {
 		cfg.EmitParamsStructPointers = opts.EmitParamsStructPointers
 	}
+
 	if opts.EmitEnumValidMethod {
 		cfg.EmitEnumValidMethod = opts.EmitEnumValidMethod
 	}
+
 	if opts.EmitAllEnumValues {
 		cfg.EmitAllEnumValues = opts.EmitAllEnumValues
 	}
+
 	if opts.JSONTagsCaseStyle != "" {
 		cfg.JSONTagsCaseStyle = opts.JSONTagsCaseStyle
 	}

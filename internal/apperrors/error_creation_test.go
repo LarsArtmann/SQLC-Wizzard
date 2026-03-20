@@ -152,9 +152,11 @@ func expectError(
 ) {
 	Expect(err).To(HaveOccurred())
 	Expect(err.Code).To(Equal(expectedCode))
+
 	for _, substr := range expectedMessageSubstrings {
 		Expect(err.Message).To(ContainSubstring(substr))
 	}
+
 	if len(expectedComponent) > 0 {
 		Expect(err.Component).To(Equal(expectedComponent[0]))
 	}

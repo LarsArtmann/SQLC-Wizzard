@@ -69,6 +69,7 @@ var _ = Describe("PathOrPaths", func() {
 		Context("with a single string", func() {
 			It("should unmarshal to a single-element slice", func() {
 				yamlData := `path: "internal/db/queries"`
+
 				var result struct {
 					Path config.PathOrPaths `yaml:"path"`
 				}
@@ -88,6 +89,7 @@ path:
   - "internal/db/queries"
   - "internal/db/migrations"
   - "pkg/queries"`
+
 				var result struct {
 					Path config.PathOrPaths `yaml:"path"`
 				}
@@ -108,6 +110,7 @@ path:
 				yamlData := `
 path:
   foo: bar`
+
 				var result struct {
 					Path config.PathOrPaths `yaml:"path"`
 				}
@@ -181,6 +184,7 @@ path:
 			var result struct {
 				Path config.PathOrPaths `yaml:"path"`
 			}
+
 			err = yaml.Unmarshal(yamlBytes, &result)
 			Expect(err).ToNot(HaveOccurred())
 
@@ -200,6 +204,7 @@ path:
 			var result struct {
 				Path config.PathOrPaths `yaml:"path"`
 			}
+
 			err = yaml.Unmarshal(yamlBytes, &result)
 			Expect(err).ToNot(HaveOccurred())
 

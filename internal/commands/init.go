@@ -72,8 +72,10 @@ func runInit(opts *InitOptions) error {
 		)
 	}
 
-	var result *wizard.WizardResult
-	var err error
+	var (
+		result *wizard.WizardResult
+		err    error
+	)
 
 	if opts.NonInteractive {
 		// Non-interactive mode: use flags
@@ -113,12 +115,14 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 			"--project-type is required in non-interactive mode",
 		)
 	}
+
 	if opts.Database == "" {
 		return nil, apperrors.NewError(
 			apperrors.ErrorCodeInternalServer,
 			"--database is required in non-interactive mode",
 		)
 	}
+
 	if opts.PackagePath == "" {
 		return nil, apperrors.NewError(
 			apperrors.ErrorCodeInternalServer,

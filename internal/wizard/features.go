@@ -26,17 +26,20 @@ func (s *FeaturesStep) Execute(data *generated.TemplateData) error {
 	s.ui.ShowStepHeader("Features & Validation")
 
 	// Code generation options
-	if err := s.configureCodeGeneration(data); err != nil {
+	err := s.configureCodeGeneration(data)
+	if err != nil {
 		return err
 	}
 
 	// Safety rules
-	if err := s.configureSafetyRules(data); err != nil {
+	err := s.configureSafetyRules(data)
+	if err != nil {
 		return err
 	}
 
 	// Database features
-	if err := s.configureDatabaseFeatures(data); err != nil {
+	err := s.configureDatabaseFeatures(data)
+	if err != nil {
 		return err
 	}
 
@@ -44,6 +47,7 @@ func (s *FeaturesStep) Execute(data *generated.TemplateData) error {
 		"Features",
 		"Code generation, safety rules, and database features configured",
 	)
+
 	return nil
 }
 
@@ -107,6 +111,7 @@ func buildConfigs(specs []configSpec) []FeatureConfig {
 		assign := configFieldMapper[spec.fieldPath]
 		configs[i] = createFeatureConfig(spec.title, spec.description, assign)
 	}
+
 	return configs
 }
 
@@ -150,6 +155,7 @@ func (s *FeaturesStep) runFeatureConfigForm(
 ) error {
 	// Create boolean values for each field
 	values := make([]bool, len(configs))
+
 	valuePtrs := make([]*bool, len(configs))
 	for i := range values {
 		valuePtrs[i] = &values[i]
@@ -170,7 +176,8 @@ func (s *FeaturesStep) runFeatureConfigForm(
 		huh.NewGroup(formFields...),
 	).WithTheme(s.theme)
 
-	if err := form.Run(); err != nil {
+	err := form.Run()
+	if err != nil {
 		return fmt.Errorf("%s configuration failed: %w", errorContext, err)
 	}
 
@@ -217,7 +224,8 @@ func (s *FeaturesStep) configureDatabaseFeatures(data *generated.TemplateData) e
 		),
 	).WithTheme(s.theme)
 
-	if err := form.Run(); err != nil {
+	err := form.Run()
+	if err != nil {
 		return fmt.Errorf("database features configuration failed: %w", err)
 	}
 

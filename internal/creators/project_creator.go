@@ -41,17 +41,20 @@ func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfi
 	_ = pc.cli.Println(ctx, "🏗️  Creating project structure...")
 
 	// Create directory structure
-	if err := pc.createDirectoryStructure(ctx, config); err != nil {
+	err := pc.createDirectoryStructure(ctx, config)
+	if err != nil {
 		return fmt.Errorf("failed to create directory structure: %w", err)
 	}
 
 	// Generate sqlc.yaml
-	if err := pc.generateSQLCConfig(ctx, config); err != nil {
+	err := pc.generateSQLCConfig(ctx, config)
+	if err != nil {
 		return fmt.Errorf("failed to generate sqlc.yaml: %w", err)
 	}
 
 	// Generate database schema
-	if err := pc.generateDatabaseSchema(ctx, config); err != nil {
+	err := pc.generateDatabaseSchema(ctx, config)
+	if err != nil {
 		return fmt.Errorf("failed to generate database schema: %w", err)
 	}
 
@@ -119,7 +122,8 @@ func (pc *ProjectCreator) createDirectoryStructure(
 	}
 
 	for _, dir := range dirs {
-		if err := pc.fs.MkdirAll(ctx, dir, 0o755); err != nil {
+		err := pc.fs.MkdirAll(ctx, dir, 0o755)
+		if err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", dir, err)
 		}
 	}
@@ -168,7 +172,8 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 	_ = pc.cli.Println(ctx, "🔍 Generating SQL query files...")
 
 	// Create queries directory
-	if err := pc.fs.MkdirAll(ctx, "queries", 0o755); err != nil {
+	err := pc.fs.MkdirAll(ctx, "queries", 0o755)
+	if err != nil {
 		return fmt.Errorf("failed to create queries directory: %w", err)
 	}
 
@@ -180,7 +185,8 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 
 	// Generate basic queries based on database schema
 	usersQueries := pc.buildUsersQueries(templateData)
-	if err := pc.fs.WriteFile(ctx, "queries/users.sql", []byte(usersQueries), 0o644); err != nil {
+	err := pc.fs.WriteFile(ctx, "queries/users.sql", []byte(usersQueries), 0o644)
+	if err != nil {
 		return fmt.Errorf("failed to write users queries: %w", err)
 	}
 
@@ -188,59 +194,65 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 	switch templateData.ProjectType {
 	case generated.ProjectTypeMicroservice:
 		microserviceQueries := pc.buildMicroserviceQueries(templateData)
-		if err := pc.fs.WriteFile(
+		err := pc.fs.WriteFile(
 			ctx,
 			"queries/microservice.sql",
 			[]byte(microserviceQueries),
 			0o644,
-		); err != nil {
+		)
+		if err != nil {
 			return fmt.Errorf("failed to write microservice queries: %w", err)
 		}
 	case generated.ProjectTypeEnterprise:
 		enterpriseQueries := pc.buildEnterpriseQueries(templateData)
-		if err := pc.fs.WriteFile(
+		err := pc.fs.WriteFile(
 			ctx,
 			"queries/enterprise.sql",
 			[]byte(enterpriseQueries),
 			0o644,
-		); err != nil {
+		)
+		if err != nil {
 			return fmt.Errorf("failed to write enterprise queries: %w", err)
 		}
 	case generated.ProjectTypeAPIFirst:
 		apiQueries := pc.buildAPIQueries(templateData)
-		if err := pc.fs.WriteFile(ctx, "queries/api.sql", []byte(apiQueries), 0o644); err != nil {
+		err := pc.fs.WriteFile(ctx, "queries/api.sql", []byte(apiQueries), 0o644)
+		if err != nil {
 			return fmt.Errorf("failed to write api queries: %w", err)
 		}
 	case generated.ProjectTypeHobby:
 		// Use basic users queries for hobby projects
 	case generated.ProjectTypeAnalytics:
 		analyticsQueries := pc.buildAnalyticsQueries(templateData)
-		if err := pc.fs.WriteFile(
+		err := pc.fs.WriteFile(
 			ctx,
 			"queries/analytics.sql",
 			[]byte(analyticsQueries),
 			0o644,
-		); err != nil {
+		)
+		if err != nil {
 			return fmt.Errorf("failed to write analytics queries: %w", err)
 		}
 	case generated.ProjectTypeTesting:
 		testingQueries := pc.buildTestingQueries(templateData)
-		if err := pc.fs.WriteFile(
+		err := pc.fs.WriteFile(
 			ctx,
 			"queries/testing.sql",
 			[]byte(testingQueries),
 			0o644,
-		); err != nil {
+		)
+		if err != nil {
 			return fmt.Errorf("failed to write testing queries: %w", err)
 		}
 	case generated.ProjectTypeMultiTenant:
 		tenantQueries := pc.buildMultiTenantQueries(templateData)
-		if err := pc.fs.WriteFile(
+		err := pc.fs.WriteFile(
 			ctx,
 			"queries/tenant.sql",
 			[]byte(tenantQueries),
 			0o644,
-		); err != nil {
+		)
+		if err != nil {
 			return fmt.Errorf("failed to write tenant queries: %w", err)
 		}
 	case generated.ProjectTypeLibrary:
@@ -258,7 +270,8 @@ func (pc *ProjectCreator) generateGoModuleStructure(ctx context.Context, cfg *Cr
 
 	// Create go.mod
 	goModContent := pc.buildGoMod(cfg.TemplateData)
-	if err := pc.fs.WriteFile(ctx, "go.mod", []byte(goModContent), 0o644); err != nil {
+	err := pc.fs.WriteFile(ctx, "go.mod", []byte(goModContent), 0o644)
+	if err != nil {
 		return fmt.Errorf("failed to write go.mod: %w", err)
 	}
 
@@ -266,19 +279,22 @@ func (pc *ProjectCreator) generateGoModuleStructure(ctx context.Context, cfg *Cr
 	if cfg.TemplateData.ProjectType == generated.ProjectTypeAPIFirst ||
 		cfg.TemplateData.ProjectType == generated.ProjectTypeMicroservice {
 		mainGoContent := pc.buildMainGo(cfg.TemplateData)
-		if err := pc.fs.WriteFile(ctx, "main.go", []byte(mainGoContent), 0o644); err != nil {
+		err := pc.fs.WriteFile(ctx, "main.go", []byte(mainGoContent), 0o644)
+		if err != nil {
 			return fmt.Errorf("failed to write main.go: %w", err)
 		}
 	}
 
 	// Create basic package structure
-	if err := pc.fs.MkdirAll(ctx, "internal/db", 0o755); err != nil {
+	err := pc.fs.MkdirAll(ctx, "internal/db", 0o755)
+	if err != nil {
 		return fmt.Errorf("failed to create db package directory: %w", err)
 	}
 
 	// Create db package file
 	dbGoContent := pc.buildDBPackage(cfg.TemplateData)
-	if err := pc.fs.WriteFile(ctx, "internal/db/db.go", []byte(dbGoContent), 0o644); err != nil {
+	err := pc.fs.WriteFile(ctx, "internal/db/db.go", []byte(dbGoContent), 0o644)
+	if err != nil {
 		return fmt.Errorf("failed to write db package: %w", err)
 	}
 

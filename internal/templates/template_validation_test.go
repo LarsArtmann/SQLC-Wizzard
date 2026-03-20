@@ -298,12 +298,14 @@ func TestTemplates_ValidationConfigurations(t *testing.T) {
 		hasStrictChecks := false
 		if slices.Contains(features, "strict_checks") {
 			hasStrictChecks = true
+
 			assert.NotNil(
 				t,
 				sqlConfig.StrictFunctionChecks,
 				"Template %s with strict_checks feature should have StrictFunctionChecks set",
 				tmpl.Name(),
 			)
+
 			if sqlConfig.StrictFunctionChecks != nil {
 				assert.True(
 					t,

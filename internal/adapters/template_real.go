@@ -66,6 +66,7 @@ func (a *RealTemplateAdapter) GenerateFiles(
 	// For now, return empty slice as GenerateFiles is not implemented
 	_ = data
 	_ = outputDir
+
 	return []string{}, nil
 }
 

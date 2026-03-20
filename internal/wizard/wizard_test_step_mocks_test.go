@@ -71,6 +71,7 @@ func (m *MockStep) ValidateConfiguration(data *generated.TemplateData) error {
 	if m.ShouldValidateFail {
 		return m.ValidateError
 	}
+
 	return nil
 }
 

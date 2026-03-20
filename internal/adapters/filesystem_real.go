@@ -22,6 +22,7 @@ func (a *RealFileSystemAdapter) ReadFile(ctx context.Context, path string) ([]by
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file %s: %w", path, err)
 	}
+
 	return data, nil
 }
 
@@ -42,6 +43,7 @@ func (a *RealFileSystemAdapter) WriteFile(
 	if err != nil {
 		return fmt.Errorf("failed to write file %s: %w", path, err)
 	}
+
 	return nil
 }
 
@@ -61,6 +63,7 @@ func (a *RealFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm 
 	if err != nil {
 		return fmt.Errorf("failed to create directory %s: %w", path, err)
 	}
+
 	return nil
 }
 
@@ -70,9 +73,11 @@ func (a *RealFileSystemAdapter) Exists(ctx context.Context, path string) (bool, 
 	if err == nil {
 		return true, nil
 	}
+
 	if os.IsNotExist(err) {
 		return false, nil
 	}
+
 	return false, err
 }
 
@@ -84,11 +89,13 @@ func (a *RealFileSystemAdapter) ListFiles(ctx context.Context, dir string) ([]st
 	}
 
 	var files []string
+
 	for _, entry := range entries {
 		if !entry.IsDir() {
 			files = append(files, filepath.Join(dir, entry.Name()))
 		}
 	}
+
 	return files, nil
 }
 
@@ -98,6 +105,7 @@ func (a *RealFileSystemAdapter) Remove(ctx context.Context, path string) error {
 	if err != nil {
 		return fmt.Errorf("failed to remove %s: %w", path, err)
 	}
+
 	return nil
 }
 
@@ -111,6 +119,7 @@ func (a *RealFileSystemAdapter) Copy(ctx context.Context, src, dst string) error
 	if info.IsDir() {
 		return a.copyDir(ctx, src, dst, info)
 	}
+
 	return a.copyFile(ctx, src, dst, info)
 }
 
@@ -120,6 +129,7 @@ func (a *RealFileSystemAdapter) TempDir(ctx context.Context, prefix string) (str
 	if err != nil {
 		return "", fmt.Errorf("failed to create temp dir: %w", err)
 	}
+
 	return dir, nil
 }
 
@@ -133,6 +143,7 @@ func (a *RealFileSystemAdapter) copyFile(
 	if err != nil {
 		return err
 	}
+
 	return a.WriteFile(ctx, dst, data, info.Mode())
 }
 
@@ -155,9 +166,11 @@ func (a *RealFileSystemAdapter) copyDir(
 		srcPath := filepath.Join(src, entry.Name())
 		dstPath := filepath.Join(dst, entry.Name())
 
-		if err := a.Copy(ctx, srcPath, dstPath); err != nil {
+		err := a.Copy(ctx, srcPath, dstPath)
+		if err != nil {
 			return err
 		}
 	}
+
 	return nil
 }

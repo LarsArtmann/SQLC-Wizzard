@@ -178,8 +178,8 @@ func (cb *ConfigBuilder) Build() (*config.SqlcConfig, error) {
 				Engine:               string(cb.Data.Database.Engine),
 				Queries:              config.NewPathOrPaths([]string{cb.Data.Output.QueriesDir}),
 				Schema:               config.NewPathOrPaths([]string{cb.Data.Output.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(cb.Strict),
-				StrictOrderBy:        lo.ToPtr(cb.Strict),
+				StrictFunctionChecks: new(cb.Strict),
+				StrictOrderBy:        new(cb.Strict),
 				Database: &config.DatabaseConfig{
 					URI: lo.Ternary(
 						cb.Data.Database.URL != "",
@@ -262,6 +262,7 @@ func (t *BaseTemplate) GetTypeOverrides(data generated.TemplateData) []config.Ov
 				GoImportPath: "github.com/google/uuid",
 			})
 		}
+
 		if data.Database.UseJSON {
 			overrides = append(overrides, config.Override{
 				DBType:       "json",
@@ -303,6 +304,7 @@ func (t *BaseTemplate) GetRenameRules() map[string]string {
 // Template implementations can override this to provide custom rename rules.
 func (t *BaseTemplate) BuildGoConfigWithOverrides(data generated.TemplateData) *config.GoGenConfig {
 	sqlPackage := t.GetSQLPackage(data.Database.Engine)
+
 	return t.BuildGoGenConfig(data, sqlPackage)
 }
 
@@ -312,18 +314,23 @@ func (t *BaseTemplate) ApplyDefaultValues(data *generated.TemplateData) {
 	if data.Package.Name == "" {
 		data.Package.Name = "db"
 	}
+
 	if data.Package.Path == "" {
 		data.Package.Path = "internal/db"
 	}
+
 	if data.Output.BaseDir == "" {
 		data.Output.BaseDir = "internal/db"
 	}
+
 	if data.Output.QueriesDir == "" {
 		data.Output.QueriesDir = "internal/db/queries"
 	}
+
 	if data.Output.SchemaDir == "" {
 		data.Output.SchemaDir = "internal/db/schema"
 	}
+
 	if data.Database.URL == "" {
 		data.Database.URL = "${DATABASE_URL}"
 	}
@@ -539,18 +546,23 @@ func (t *BaseTemplate) GenerateWithDefaults(
 	if data.Package.Name == "" {
 		data.Package.Name = packageName
 	}
+
 	if data.Package.Path == "" {
 		data.Package.Path = packagePath
 	}
+
 	if data.Output.BaseDir == "" {
 		data.Output.BaseDir = baseDir
 	}
+
 	if data.Output.QueriesDir == "" {
 		data.Output.QueriesDir = queriesDir
 	}
+
 	if data.Output.SchemaDir == "" {
 		data.Output.SchemaDir = schemaDir
 	}
+
 	if data.Database.URL == "" {
 		data.Database.URL = databaseURL
 	}
@@ -562,6 +574,7 @@ func (t *BaseTemplate) GenerateWithDefaults(
 		DefaultDatabaseURL: databaseURL,
 		Strict:             strict,
 	}
+
 	cfg, err := builder.Build()
 	if err != nil {
 		return nil, err

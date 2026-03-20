@@ -45,7 +45,8 @@ func (s *ProjectTypeStep) Execute(data *generated.TemplateData) error {
 		),
 	).WithTheme(s.theme)
 
-	if err := form.Run(); err != nil {
+	err := form.Run()
+	if err != nil {
 		return fmt.Errorf("project type selection failed: %w", err)
 	}
 

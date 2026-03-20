@@ -94,11 +94,13 @@ func generateExampleFiles(outputDir string, force bool) error {
 	}
 
 	// Generate example files
-	if err := generator.GenerateExampleSchema(templateData); err != nil {
+	err := generator.GenerateExampleSchema(templateData)
+	if err != nil {
 		return fmt.Errorf("failed to generate schema: %w", err)
 	}
 
-	if err := generator.GenerateExampleQueries(templateData); err != nil {
+	err := generator.GenerateExampleQueries(templateData)
+	if err != nil {
 		return fmt.Errorf("failed to generate queries: %w", err)
 	}
 

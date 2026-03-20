@@ -19,6 +19,7 @@ func (e *Error) WithDetails(field string, value, expected, actual any) *Error {
 		Actual:    actual,
 		Component: e.Component,
 	}
+
 	return e
 }
 
@@ -31,7 +32,9 @@ func (e *Error) WithMessage(message string) *Error {
 	if e.Details == nil {
 		e.Details = &ErrorDetails{}
 	}
+
 	e.Details.Message = message
+
 	return e
 }
 
@@ -45,6 +48,7 @@ func (e *Error) WithComponent(component string) *Error {
 	if e.Details != nil {
 		e.Details.Component = component
 	}
+
 	return e
 }
 
@@ -54,6 +58,7 @@ func (e *Error) WithComponent(component string) *Error {
 func (e *Error) WithRequestID(requestID string) *Error {
 	// TODO: Add request ID validation
 	e.RequestID = requestID
+
 	return e
 }
 
@@ -63,6 +68,7 @@ func (e *Error) WithRequestID(requestID string) *Error {
 func (e *Error) WithUserID(userID string) *Error {
 	// TODO: Add user ID validation
 	e.UserID = userID
+
 	return e
 }
 
@@ -71,6 +77,7 @@ func (e *Error) WithUserID(userID string) *Error {
 // TODO: Add automatic retryable determination based on error code.
 func (e *Error) WithRetryable(retryable bool) *Error {
 	e.Retryable = retryable
+
 	return e
 }
 
@@ -80,6 +87,7 @@ func (e *Error) WithRetryable(retryable bool) *Error {
 func (e *Error) WithSeverity(severity ErrorSeverity) *Error {
 	// TODO: Validate severity is valid
 	e.Severity = severity
+
 	return e
 }
 
@@ -90,6 +98,7 @@ func (e *Error) WithSeverity(severity ErrorSeverity) *Error {
 func (e *Error) WithDescription(description string) *Error {
 	// TODO: Add description validation
 	e.Description = description
+
 	return e
 }
 
@@ -101,6 +110,7 @@ func (e *Error) WithCause(cause error) *Error {
 	// TODO: Add nil check
 	// TODO: Add circular reference check
 	e.cause = cause
+
 	return e
 }
 
@@ -119,6 +129,7 @@ func (e *Error) Error() string {
 	if e.Description != "" {
 		return fmt.Sprintf("[%s] %s: %s", string(e.Code), e.Message, e.Description)
 	}
+
 	return fmt.Sprintf("[%s] %s", string(e.Code), e.Message)
 }
 
@@ -147,6 +158,7 @@ func (e *Error) ToJSON() (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal error to JSON: %w", err)
 	}
+
 	return string(data), nil
 }
 

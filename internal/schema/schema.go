@@ -202,6 +202,7 @@ func (s *Schema) GetTable(name string) (*Table, bool) {
 			return &table, true
 		}
 	}
+
 	return nil, false
 }
 
@@ -217,6 +218,7 @@ func (s *Schema) GetColumn(tableName, columnName string) (*Column, bool) {
 			return &column, true
 		}
 	}
+
 	return nil, false
 }
 
@@ -262,7 +264,8 @@ func (s *Schema) Validate() error {
 
 	// Validate each table
 	for i, table := range s.Tables {
-		if err := table.Validate(); err != nil {
+		err := table.Validate()
+		if err != nil {
 			return &SchemaError{
 				Code:    fmt.Sprintf("TABLE_VALIDATION_%d_%s", i, table.Name),
 				Message: fmt.Sprintf("Table %s validation failed: %s", table.Name, err.Error()),
@@ -291,7 +294,8 @@ func (t *Table) Validate() error {
 
 	// Validate each column
 	for i, column := range t.Columns {
-		if err := column.Validate(); err != nil {
+		err := column.Validate()
+		if err != nil {
 			return &SchemaError{
 				Code:    fmt.Sprintf("COLUMN_VALIDATION_%d_%s", i, column.Name),
 				Message: fmt.Sprintf("Column %s validation failed: %s", column.Name, err.Error()),

@@ -17,13 +17,15 @@ var _ = Describe("Parser", func() {
 
 	BeforeEach(func() {
 		var err error
+
 		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).ToNot(HaveOccurred())
 	})
 
 	AfterEach(func() {
 		if tempDir != "" {
-			if err := os.RemoveAll(tempDir); err != nil {
+			err := os.RemoveAll(tempDir)
+			if err != nil {
 				// Log the cleanup error but don't fail the test
 				fmt.Printf("warning: failed to cleanup temp dir %s: %v\n", tempDir, err)
 			}

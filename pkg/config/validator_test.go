@@ -233,12 +233,15 @@ var _ = Describe("Validator", func() {
 
 			// Find version error
 			var versionError *ValidationError
+
 			for _, err := range result.Errors {
 				if err.Field == "version" {
 					versionError = &err
+
 					break
 				}
 			}
+
 			Expect(versionError).To(HaveOccurred())
 			Expect(versionError.Message).To(ContainSubstring("required"))
 		})

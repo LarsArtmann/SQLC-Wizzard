@@ -64,6 +64,7 @@ func NewMultiTenantTemplate() *MultiTenantTemplate {
 			"sql":    "SQL",
 		},
 	}
+
 	return t
 }
 

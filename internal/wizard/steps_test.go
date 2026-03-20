@@ -70,6 +70,7 @@ func createFieldTestCases(
 			data: func() *generated.TemplateData {
 				data := &generated.TemplateData{}
 				setupFields(data)
+
 				return data
 			}(),
 			description: fieldDescription,
@@ -78,6 +79,7 @@ func createFieldTestCases(
 			data: func() *generated.TemplateData {
 				data := &generated.TemplateData{}
 				setupFields(data)
+
 				return data
 			}(),
 			description: fieldDescription,

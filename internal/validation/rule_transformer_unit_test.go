@@ -53,6 +53,7 @@ func toGeneratedSafetyRules(rules *domain.SafetyRules) *generated.SafetyRules {
 	if rules == nil {
 		return nil
 	}
+
 	return &generated.SafetyRules{
 		NoSelectStar: rules.NoSelectStar,
 		RequireWhere: rules.RequireWhere,
@@ -88,6 +89,7 @@ func runFieldParityTest(
 		func() *domain.TypeSafeSafetyRules {
 			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 			setTypeSafeField(rules)
+
 			return rules
 		},
 		expectedExpression,
@@ -130,6 +132,7 @@ func runMultiRuleTransformationTest(
 	configRules := transformFunc(transformer, setupRules())
 
 	Expect(configRules).To(HaveLen(len(expectedRuleNames)))
+
 	for i, expectedName := range expectedRuleNames {
 		Expect(configRules[i].Name).To(Equal(expectedName))
 	}
@@ -232,6 +235,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 					Message: "temp table operations not allowed",
 				},
 			}
+
 			runMultiRuleTransformationTest(
 				transformer,
 				func() *generated.SafetyRules {
@@ -277,6 +281,7 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 						RequireWhere: false,
 						RequireLimit: true,
 					}
+
 					return toGeneratedSafetyRules(rules)
 				},
 				func(t *validation.RuleTransformer, r *generated.SafetyRules) []generated.RuleConfig {
@@ -377,7 +382,6 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 	Context("Transformer Parity Tests", func() {
 		// These tests verify that equivalent configurations produce identical expressions
 		// following the "violation when true" convention consistently across both transformers
-
 		runBooleanFlagParityTest(
 			transformer,
 			"should produce identical expressions for NoSelectStar vs ForbidsSelectStar",
@@ -418,7 +422,6 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			//   Rule uses "violation when pattern is missing" → !query.hasClause()
 			//
 			// This is consistent: the boolean flag + expression together mean "flag is true → violation condition"
-
 			result := transformer.TransformTypeSafeSafetyRules(
 				testingHelper.CreateTypeSafeSafetyRules(nil),
 			)

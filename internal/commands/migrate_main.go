@@ -33,8 +33,10 @@ existing SQLC projects to latest version.`,
 				DryRun:      dryRun,
 			}
 
-			if err := runMigration(migrationConfig); err != nil {
+			err := runMigration(migrationConfig)
+			if err != nil {
 				fmt.Printf("❌ Migration failed: %v\n", err)
+
 				return
 			}
 		},
@@ -111,15 +113,18 @@ func runMigration(config *MigrationConfig) error {
 	if config.DryRun {
 		fmt.Println("✅ Migration would succeed (dry run)")
 		fmt.Printf("New configuration would be written to: %s\n", config.Destination)
+
 		return nil
 	}
 
 	// Basic migration simulation for demo
 	fmt.Println("✅ Migration completed successfully!")
 	fmt.Printf("Source: %s -> Destination: %s\n", config.Source, config.Destination)
+
 	if config.Database != "" {
 		fmt.Printf("Database migration: -> %s\n", config.Database)
 	}
+
 	if config.SQLCVersion != "" {
 		fmt.Printf("SQLC Version upgrade: -> %s\n", config.SQLCVersion)
 	}

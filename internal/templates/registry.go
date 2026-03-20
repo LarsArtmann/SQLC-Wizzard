@@ -39,6 +39,7 @@ func (r *Registry) Get(projectType ProjectType) (Template, error) {
 	if !ok {
 		return nil, apperrors.TemplateNotFoundError(string(projectType))
 	}
+
 	return tmpl, nil
 }
 
@@ -48,12 +49,14 @@ func (r *Registry) List() []Template {
 	for _, tmpl := range r.templates {
 		templates = append(templates, tmpl)
 	}
+
 	return templates
 }
 
 // HasTemplate checks if a template exists.
 func (r *Registry) HasTemplate(projectType ProjectType) bool {
 	_, ok := r.templates[projectType]
+
 	return ok
 }
 

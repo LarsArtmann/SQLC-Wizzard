@@ -22,8 +22,10 @@ func newMigrateDBCreateCommand() *cobra.Command {
 				MigrationsPath: cmd.Flag("path").Value.String(),
 			}
 
-			if err := runMigrationCreate(migrationConfig); err != nil {
+			err := runMigrationCreate(migrationConfig)
+			if err != nil {
 				fmt.Printf("❌ Migration creation failed: %v\n", err)
+
 				return
 			}
 		},
@@ -31,6 +33,7 @@ func newMigrateDBCreateCommand() *cobra.Command {
 
 	cmd.Flags().StringVarP(&name, "name", "n", "", "Migration name")
 	cmd.Flags().String("path", ".", "Migrations directory path")
+
 	return cmd
 }
 
@@ -66,5 +69,6 @@ func runMigrationCreate(config *CreateConfig) error {
 	}
 
 	fmt.Printf("✅ Migration created: %s\n", filename)
+
 	return nil
 }

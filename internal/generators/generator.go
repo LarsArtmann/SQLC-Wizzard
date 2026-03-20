@@ -28,20 +28,23 @@ func (g *Generator) GenerateAll(
 	includeQueries, includeSchema bool,
 ) error {
 	// Generate sqlc.yaml
-	if err := g.GenerateSqlcConfig(cfg); err != nil {
+	err := g.GenerateSqlcConfig(cfg)
+	if err != nil {
 		return fmt.Errorf("failed to generate sqlc.yaml: %w", err)
 	}
 
 	// Generate example queries if requested
 	if includeQueries {
-		if err := g.GenerateExampleQueries(data); err != nil {
+		err := g.GenerateExampleQueries(data)
+		if err != nil {
 			return fmt.Errorf("failed to generate queries: %w", err)
 		}
 	}
 
 	// Generate example schema if requested
 	if includeSchema {
-		if err := g.GenerateExampleSchema(data); err != nil {
+		err := g.GenerateExampleSchema(data)
+		if err != nil {
 			return fmt.Errorf("failed to generate schema: %w", err)
 		}
 	}
@@ -54,12 +57,14 @@ func (g *Generator) GenerateSqlcConfig(cfg *config.SqlcConfig) error {
 	path := filepath.Join(g.outputDir, "sqlc.yaml")
 
 	// Ensure directory exists
-	if err := os.MkdirAll(g.outputDir, 0o755); err != nil {
+	err := os.MkdirAll(g.outputDir, 0o755)
+	if err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
 	// Write config file
-	if err := config.WriteFileFormatted(cfg, path); err != nil {
+	err := config.WriteFileFormatted(cfg, path)
+	if err != nil {
 		return fmt.Errorf("failed to write config: %w", err)
 	}
 
@@ -72,8 +77,10 @@ func (g *Generator) generateFileWithTemplate(
 	dirKey, defaultDir, templateType, filename string,
 ) error {
 	// Determine directory
-	var dir string
-	var templateContent func(templates.DatabaseType) string
+	var (
+		dir             string
+		templateContent func(templates.DatabaseType) string
+	)
 
 	switch templateType {
 	case "queries":
@@ -81,12 +88,14 @@ func (g *Generator) generateFileWithTemplate(
 		if dir == "" {
 			dir = defaultDir
 		}
+
 		templateContent = getQueryTemplate
 	case "schema":
 		dir = data.Output.SchemaDir
 		if dir == "" {
 			dir = defaultDir
 		}
+
 		templateContent = getSchemaTemplate
 	default:
 		return fmt.Errorf("unsupported template type: %s", templateType)
@@ -98,7 +107,8 @@ func (g *Generator) generateFileWithTemplate(
 	}
 
 	// Ensure directory exists
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	err := os.MkdirAll(dir, 0o755)
+	if err != nil {
 		return fmt.Errorf("failed to create %s directory: %w", templateType, err)
 	}
 
@@ -110,7 +120,8 @@ func (g *Generator) generateFileWithTemplate(
 
 	// Write to output
 	outputPath := filepath.Join(dir, filename)
-	if err := os.WriteFile(outputPath, []byte(content), 0o644); err != nil {
+	err := os.WriteFile(outputPath, []byte(content), 0o644)
+	if err != nil {
 		return fmt.Errorf("failed to write %s file: %w", templateType, err)
 	}
 

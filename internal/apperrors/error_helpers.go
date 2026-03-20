@@ -16,6 +16,7 @@ func Wrap(original error, code ErrorCode, component string) *Error {
 
 	// TODO: Add validation for component
 	err := NewError(code, original.Error())
+
 	return err.WithCause(original).
 		WithComponent(component).
 		WithDescription(fmt.Sprintf("Wrapped error: %v", original))
@@ -26,6 +27,7 @@ func Wrap(original error, code ErrorCode, component string) *Error {
 // TODO: Add automatic request ID extraction from context.
 func WrapWithRequestID(original error, code ErrorCode, requestID, component string) *Error {
 	err := Wrap(original, code, component)
+
 	return err.WithRequestID(requestID)
 }
 
@@ -34,6 +36,7 @@ func WrapWithRequestID(original error, code ErrorCode, requestID, component stri
 // TODO: Add automatic user ID extraction from context.
 func WrapWithUserID(original error, code ErrorCode, userID, component string) *Error {
 	err := Wrap(original, code, component)
+
 	return err.WithUserID(userID)
 }
 
@@ -46,6 +49,7 @@ func Combine(errors ...*Error) *ErrorList {
 		// TODO: Add error validation
 		errorList.Add(err)
 	}
+
 	return errorList
 }
 
@@ -54,10 +58,12 @@ func Combine(errors ...*Error) *ErrorList {
 // TODO: Add error type detection and categorization.
 func CombineErrors(errs ...error) *ErrorList {
 	errorList := NewErrorList()
+
 	for _, err := range errs {
 		if err == nil {
 			continue // Skip nil errors
 		}
+
 		appErr := &Error{}
 		if errors.As(err, &appErr) {
 			errorList.Add(appErr)
@@ -67,6 +73,7 @@ func CombineErrors(errs ...error) *ErrorList {
 			errorList.Add(wrapped)
 		}
 	}
+
 	return errorList
 }
 
@@ -80,10 +87,12 @@ func CombineErrors(errs ...error) *ErrorList {
 // TODO: Add operation validation.
 func NewInternal(component, operation string, cause error) *Error {
 	message := fmt.Sprintf("Internal error in %s during %s", component, operation)
+
 	err := NewError(ErrorCodeInternalServer, message)
 	if cause != nil {
 		err = err.WithDescription(cause.Error())
 	}
+
 	return err.WithComponent(component)
 }
 
@@ -93,6 +102,7 @@ func NewInternal(component, operation string, cause error) *Error {
 func NewNotFound(resource, id string) *Error {
 	// TODO: Add validation for resource and ID
 	message := fmt.Sprintf("%s with ID '%s' not found", resource, id)
+
 	return NewError(ErrorCodeNotFound, message)
 }
 
@@ -102,6 +112,7 @@ func NewNotFound(resource, id string) *Error {
 func NewPermissionDenied(resource, operation string) *Error {
 	// TODO: Add validation for inputs
 	message := fmt.Sprintf("Permission denied for %s on resource: %s", operation, resource)
+
 	return NewError(ErrorCodePermissionDenied, message)
 }
 
@@ -111,6 +122,7 @@ func NewPermissionDenied(resource, operation string) *Error {
 func NewTimeout(operation string, timeoutMs int64) *Error {
 	// TODO: Add validation for timeout value
 	message := fmt.Sprintf("Operation '%s' timed out after %dms", operation, timeoutMs)
+
 	return NewError(ErrorCodeTimeout, message).WithRetryable(false)
 }
 
@@ -120,6 +132,7 @@ func NewTimeout(operation string, timeoutMs int64) *Error {
 func FileNotFoundError(path string) *Error {
 	// TODO: Add path validation
 	message := "File not found: " + path
+
 	return NewError(ErrorCodeFileNotFound, message).WithComponent("filesystem")
 }
 
@@ -129,10 +142,12 @@ func FileNotFoundError(path string) *Error {
 func FileReadError(path string, err error) *Error {
 	// TODO: Add path validation
 	message := "Failed to read file: " + path
+
 	appErr := NewError(ErrorCodeFileReadError, message).WithComponent("filesystem")
 	if err != nil {
 		appErr = appErr.WithCause(err)
 	}
+
 	return appErr
 }
 
@@ -142,10 +157,12 @@ func FileReadError(path string, err error) *Error {
 func ConfigParseError(path string, err error) *Error {
 	// TODO: Add path validation
 	message := "Failed to parse config file: " + path
+
 	appErr := NewError(ErrorCodeConfigParseFailed, message).WithComponent("config")
 	if err != nil {
 		appErr = appErr.WithDescription(err.Error())
 	}
+
 	return appErr
 }
 
@@ -155,6 +172,7 @@ func ConfigParseError(path string, err error) *Error {
 func TemplateNotFoundError(template string) *Error {
 	// TODO: Add template name validation
 	message := "Template not found: " + template
+
 	return NewError(ErrorCodeTemplateNotFound, message).WithComponent("templates")
 }
 
@@ -164,6 +182,7 @@ func TemplateNotFoundError(template string) *Error {
 func ValidationError(field, message string) *Error {
 	// TODO: Add field validation
 	errMsg := fmt.Sprintf("Validation failed for field '%s': %s", field, message)
+
 	return NewError(ErrorCodeValidationError, errMsg).WithComponent("validation")
 }
 

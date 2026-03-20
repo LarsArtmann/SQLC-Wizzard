@@ -292,6 +292,7 @@ var _ = Describe("Schema", func() {
 
 		It("should reject nil schema", func() {
 			var s *schema.Schema
+
 			err := s.Validate()
 
 			Expect(err).To(HaveOccurred())
@@ -349,6 +350,7 @@ var _ = Describe("Schema", func() {
 			}
 
 			var err error
+
 			s, err = schema.NewSchema("mydb", tables)
 			Expect(err).NotTo(HaveOccurred())
 		})
@@ -385,6 +387,7 @@ var _ = Describe("Schema", func() {
 			}
 
 			var err error
+
 			s, err = schema.NewSchema("mydb", tables)
 			Expect(err).NotTo(HaveOccurred())
 		})

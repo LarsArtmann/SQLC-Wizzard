@@ -20,7 +20,8 @@ func writeMigrationResult(cfg *config.SqlcConfig, destination string, force bool
 	}
 
 	// Create destination directory if needed
-	if err := os.MkdirAll(filepath.Dir(destination), 0o755); err != nil {
+	err := os.MkdirAll(filepath.Dir(destination), 0o755)
+	if err != nil {
 		return &MigrationError{
 			Code:    "DIRECTORY_CREATION_FAILED",
 			Message: fmt.Sprintf("Failed to create destination directory: %v", err),
@@ -28,7 +29,8 @@ func writeMigrationResult(cfg *config.SqlcConfig, destination string, force bool
 	}
 
 	// Write configuration
-	if err := config.WriteFileFormatted(cfg, destination); err != nil {
+	err := config.WriteFileFormatted(cfg, destination)
+	if err != nil {
 		return &MigrationError{
 			Code:    "WRITE_FAILED",
 			Message: fmt.Sprintf("Failed to write configuration: %v", err),
@@ -36,5 +38,6 @@ func writeMigrationResult(cfg *config.SqlcConfig, destination string, force bool
 	}
 
 	log.Info("Migration configuration written", "destination", destination)
+
 	return nil
 }

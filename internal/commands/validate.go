@@ -118,8 +118,10 @@ func printValidationItems(
 	itemType, emoji string,
 ) {
 	fmt.Println(style.Render(fmt.Sprintf("%s Found %d %s(s):", emoji, len(items), itemType)))
+
 	for _, item := range items {
 		fmt.Printf("  • %s: %s\n", item.Field, item.Message)
 	}
+
 	fmt.Println()
 }

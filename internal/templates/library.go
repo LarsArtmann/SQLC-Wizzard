@@ -51,6 +51,7 @@ func NewLibraryTemplate() *LibraryTemplate {
 			"api":  "API",
 		},
 	}
+
 	return t
 }
 

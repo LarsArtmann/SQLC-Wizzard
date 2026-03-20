@@ -97,10 +97,12 @@ type WriteFileCall struct {
 
 func (m *MockFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm fs.FileMode) error {
 	m.mkdirAllCalls = append(m.mkdirAllCalls, MkdirAllCall{Path: path, Perm: perm})
+
 	m.callLog = append(m.callLog, "mkdir:"+path)
 	if m.shouldFailMkdir {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "mkdir failed")
 	}
+
 	return nil
 }
 
@@ -114,10 +116,12 @@ func (m *MockFileSystemAdapter) WriteFile(
 		m.writeFileCalls,
 		WriteFileCall{Path: path, Content: content, Perm: perm},
 	)
+
 	m.callLog = append(m.callLog, "write:"+path)
 	if m.shouldFailWrite {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "write failed")
 	}
+
 	return nil
 }
 
@@ -159,6 +163,7 @@ type MockCLIAdapter struct {
 
 func (m *MockCLIAdapter) Println(ctx context.Context, msg string) error {
 	m.printedLines = append(m.printedLines, msg)
+
 	return nil
 }
 
@@ -411,6 +416,7 @@ var _ = Describe("ProjectCreator", func() {
 			// Ensure we have both mkdir and write operations
 			hasMkdir := false
 			hasWrite := false
+
 			for _, entry := range mockFS.callLog {
 				if strings.HasPrefix(entry, "mkdir:") {
 					hasMkdir = true
@@ -418,6 +424,7 @@ var _ = Describe("ProjectCreator", func() {
 					hasWrite = true
 				}
 			}
+
 			Expect(hasMkdir).To(BeTrue(), "Expected at least one mkdir operation")
 			Expect(hasWrite).To(BeTrue(), "Expected at least one write operation")
 		})

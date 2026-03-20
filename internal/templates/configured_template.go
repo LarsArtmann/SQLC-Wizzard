@@ -126,6 +126,7 @@ func (t *ConfiguredTemplate) Generate(data generated.TemplateData) (*config.Sqlc
 	if defaultPackageName == "" {
 		defaultPackageName = "db"
 	}
+
 	defaultProjectName := t.DefaultProjectName
 	if defaultProjectName == "" {
 		defaultProjectName = "project"
@@ -142,6 +143,7 @@ func (t *ConfiguredTemplate) Generate(data generated.TemplateData) (*config.Sqlc
 	if packagePath == "" {
 		packagePath = "internal/db"
 	}
+
 	baseOutput := t.BaseOutput
 	if baseOutput == "" {
 		baseOutput = "internal/db"
@@ -170,14 +172,17 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 	if projectType == "" {
 		projectType = "microservice" // sensible default
 	}
+
 	dbEngine := t.DbEngine
 	if dbEngine == "" {
 		dbEngine = "postgresql" // sensible default
 	}
+
 	packagePath := t.PackagePath
 	if packagePath == "" {
 		packagePath = "internal/db"
 	}
+
 	baseOutput := t.BaseOutput
 	if baseOutput == "" {
 		baseOutput = "internal/db"
@@ -189,42 +194,53 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 	if !isConfigured && !useManaged {
 		useManaged = true // sensible default for most templates
 	}
+
 	useUUIDs := t.UseUUIDs
 	if !isConfigured && !useUUIDs {
 		useUUIDs = true // UUIDs are commonly needed
 	}
+
 	useJSON := t.UseJSON
 	if !isConfigured && !useJSON {
 		useJSON = true // JSON support is often useful
 	}
+
 	useArrays := t.UseArrays
 	if !isConfigured && !useArrays {
 		useArrays = true // Arrays are commonly used
 	}
+
 	useFullText := t.UseFullText
 	// No default - false by default
 
 	emitJSONTags := t.EmitJSONTags
+
 	emitPreparedQueries := t.EmitPreparedQueries
 	if !isConfigured && !emitPreparedQueries {
 		emitPreparedQueries = true // sensible default
 	}
+
 	emitInterface := t.EmitInterface
 	emitEmptySlices := t.EmitEmptySlices
+
 	emitResultStructPointers := t.EmitResultStructPointers
 	if !isConfigured && !emitResultStructPointers {
 		emitResultStructPointers = true // sensible default
 	}
+
 	emitParamsStructPointers := t.EmitParamsStructPointers
 	if !isConfigured && !emitParamsStructPointers {
 		emitParamsStructPointers = true // sensible default
 	}
+
 	emitEnumValidMethod := t.EmitEnumValidMethod
 	emitAllEnumValues := t.EmitAllEnumValues
+
 	jsonTagsCaseStyle := t.JSONTagsCaseStyle
 	if jsonTagsCaseStyle == "" {
 		jsonTagsCaseStyle = "snake" // default case style
 	}
+
 	strictFunctions := t.StrictFunctions
 	strictOrderBy := t.StrictOrderBy
 
@@ -232,10 +248,12 @@ func (t *ConfiguredTemplate) DefaultData() generated.TemplateData {
 	if !isConfigured && !noSelectStar {
 		noSelectStar = true // conservative default
 	}
+
 	requireWhere := t.RequireWhere
 	if !isConfigured && !requireWhere {
 		requireWhere = true // conservative default
 	}
+
 	noDropTable := t.NoDropTable
 	noTruncate := t.NoTruncate
 	requireLimit := t.RequireLimit
@@ -280,6 +298,7 @@ func (t *ConfiguredTemplate) GetRenameRules() map[string]string {
 	if t.CustomRenameRules != nil {
 		return t.CustomRenameRules
 	}
+
 	return t.BaseTemplate.GetRenameRules()
 }
 

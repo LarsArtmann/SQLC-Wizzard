@@ -72,11 +72,13 @@ func (el *ErrorList) Error() string {
 // TODO: Implement filtering by code, severity, component.
 func (el *ErrorList) Filter(predicate func(*Error) bool) *ErrorList {
 	filtered := NewErrorList()
+
 	for _, err := range el.Errors {
 		if predicate(err) {
 			filtered.Add(err)
 		}
 	}
+
 	return filtered
 }
 
@@ -87,6 +89,7 @@ func (el *ErrorList) GroupByCode() map[ErrorCode][]*Error {
 	for _, err := range el.Errors {
 		groups[err.Code] = append(groups[err.Code], err)
 	}
+
 	return groups
 }
 
@@ -128,5 +131,6 @@ func (el *ErrorList) Clone() *ErrorList {
 	for _, err := range el.Errors {
 		clone.Add(err.Clone())
 	}
+
 	return clone
 }

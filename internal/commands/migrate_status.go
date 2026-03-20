@@ -25,8 +25,10 @@ func newMigrateStatusCommand() *cobra.Command {
 				Database: database,
 			}
 
-			if err := runStatusCheck(migrationConfig); err != nil {
+			err := runStatusCheck(migrationConfig)
+			if err != nil {
 				fmt.Printf("❌ Status check failed: %v\n", err)
+
 				return
 			}
 		},
@@ -34,6 +36,7 @@ func newMigrateStatusCommand() *cobra.Command {
 
 	cmd.Flags().StringVarP(&source, "source", "s", "", "Migration source path")
 	cmd.Flags().StringVarP(&database, "database", "d", "", "Database connection URL")
+
 	return cmd
 }
 

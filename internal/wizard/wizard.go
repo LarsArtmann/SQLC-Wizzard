@@ -49,6 +49,7 @@ func NewWizard() *Wizard {
 			if err != nil {
 				return nil, err
 			}
+
 			return tmpl, nil
 		},
 	}
@@ -99,7 +100,8 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	for _, step := range steps {
 		w.showStepHeader(step.name)
 
-		if err := step.execute(&data); err != nil {
+		err := step.execute(&data)
+		if err != nil {
 			return nil, fmt.Errorf("step '%s' failed: %w", step.name, err)
 		}
 
@@ -107,7 +109,8 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	}
 
 	// Generate config from template
-	if err := w.generateConfig(&data); err != nil {
+	err := w.generateConfig(&data)
+	if err != nil {
 		return nil, fmt.Errorf("config generation failed: %w", err)
 	}
 
@@ -122,6 +125,7 @@ func (w *Wizard) getProjectTypeStep() StepInterface {
 	if w.deps != nil && w.deps.ProjectType != nil {
 		return w.deps.ProjectType
 	}
+
 	return w.projectTypeStep
 }
 
@@ -129,6 +133,7 @@ func (w *Wizard) getDatabaseStep() StepInterface {
 	if w.deps != nil && w.deps.Database != nil {
 		return w.deps.Database
 	}
+
 	return w.databaseStep
 }
 
@@ -136,6 +141,7 @@ func (w *Wizard) getProjectDetailsStep() StepInterface {
 	if w.deps != nil && w.deps.Details != nil {
 		return w.deps.Details
 	}
+
 	return w.projectDetails
 }
 
@@ -143,6 +149,7 @@ func (w *Wizard) getFeaturesStep() StepInterface {
 	if w.deps != nil && w.deps.Features != nil {
 		return w.deps.Features
 	}
+
 	return w.featuresStep
 }
 
@@ -150,6 +157,7 @@ func (w *Wizard) getOutputStep() StepInterface {
 	if w.deps != nil && w.deps.Output != nil {
 		return w.deps.Output
 	}
+
 	return w.outputStep
 }
 
@@ -157,24 +165,30 @@ func (w *Wizard) getOutputStep() StepInterface {
 func (w *Wizard) showWelcome() {
 	if w.deps != nil && w.deps.UI != nil {
 		w.deps.UI.ShowWelcome()
+
 		return
 	}
+
 	w.ui.ShowWelcome()
 }
 
 func (w *Wizard) showStepHeader(title string) {
 	if w.deps != nil && w.deps.UI != nil {
 		w.deps.UI.ShowStepHeader(title)
+
 		return
 	}
+
 	w.ui.ShowStepHeader(title)
 }
 
 func (w *Wizard) showStepComplete(title, message string) {
 	if w.deps != nil && w.deps.UI != nil {
 		w.deps.UI.ShowStepComplete(title, message)
+
 		return
 	}
+
 	w.ui.ShowStepComplete(title, message)
 }
 
@@ -185,15 +199,18 @@ func (w *Wizard) generateConfig(data *generated.TemplateData) error {
 		if validatableStep, ok := outputStep.(interface {
 			ValidateConfiguration(*generated.TemplateData) error
 		}); ok {
-			if err := validatableStep.ValidateConfiguration(data); err != nil {
+			err := validatableStep.ValidateConfiguration(data)
+			if err != nil {
 				return fmt.Errorf("invalid output configuration: %w", err)
 			}
 		}
 	}
 
 	// Get appropriate template
-	var tmpl templates.Template
-	var err error
+	var (
+		tmpl templates.Template
+		err  error
+	)
 
 	if w.deps != nil && w.deps.TemplateFunc != nil {
 		tmpl, err = w.deps.TemplateFunc(data.ProjectType)

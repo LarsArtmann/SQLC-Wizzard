@@ -33,17 +33,20 @@ func (a *RealDatabaseAdapter) performDatabaseOperation(
 	cfg *config.DatabaseConfig,
 	operation OperationType,
 ) error {
-	if err := validateDatabaseConfig(cfg); err != nil {
+	err := validateDatabaseConfig(cfg)
+	if err != nil {
 		return err
 	}
 
 	logDatabaseOperation(operation, cfg.URI)
+
 	return nil
 }
 
 // logDatabaseOperation logs database operations with consistent formatting.
 func logDatabaseOperation(operation OperationType, uri string) {
 	var emoji string
+
 	switch operation {
 	case OperationTestConnection:
 		emoji = "🔗"
@@ -56,6 +59,7 @@ func logDatabaseOperation(operation OperationType, uri string) {
 	default:
 		emoji = "🔧"
 	}
+
 	fmt.Printf("%s %s %s\n", emoji, operation, maskSensitiveInfo(uri))
 }
 
@@ -64,9 +68,11 @@ func validateDatabaseConfig(cfg *config.DatabaseConfig) error {
 	if cfg == nil {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database config is nil")
 	}
+
 	if cfg.URI == "" {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "database URI is required")
 	}
+
 	return nil
 }
 
@@ -96,7 +102,8 @@ func (a *RealDatabaseAdapter) GetSchema(
 	ctx context.Context,
 	cfg *config.DatabaseConfig,
 ) (*schema.Schema, error) {
-	if err := validateDatabaseConfig(cfg); err != nil {
+	err := validateDatabaseConfig(cfg)
+	if err != nil {
 		return nil, err
 	}
 
@@ -116,11 +123,13 @@ func (a *RealDatabaseAdapter) GenerateMigrations(
 	ctx context.Context,
 	cfg *config.DatabaseConfig,
 ) ([]string, error) {
-	if err := validateDatabaseConfig(cfg); err != nil {
+	err := validateDatabaseConfig(cfg)
+	if err != nil {
 		return nil, err
 	}
 
 	logDatabaseOperation(OperationGenerateMigrations, cfg.URI)
+
 	return []string{}, nil
 }
 
@@ -129,5 +138,6 @@ func maskSensitiveInfo(uri string) string {
 	if len(uri) <= 10 {
 		return uri
 	}
+
 	return uri[:8] + "***" + uri[len(uri)-2:]
 }

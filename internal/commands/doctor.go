@@ -125,15 +125,19 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 			fmt.Printf("   ✅ %s\n", result.Message)
 		case DoctorStatusWarn:
 			fmt.Printf("   ⚠️  %s\n", result.Message)
+
 			if result.Solution != "" {
 				fmt.Printf("   💡 Solution: %s\n", result.Solution)
 			}
+
 			warned++
 		case DoctorStatusFail:
 			fmt.Printf("   ❌ %s\n", result.Message)
+
 			if result.Solution != "" {
 				fmt.Printf("   💡 Solution: %s\n", result.Solution)
 			}
+
 			failed++
 		}
 
@@ -149,12 +153,14 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 	switch {
 	case failed == 0 && warned == 0:
 		fmt.Println("🎉 All checks passed! Your environment is ready for SQLC-Wizard.")
+
 		return nil
 	case failed == 0 && warned > 0:
 		fmt.Printf(
 			"⚠️  %d warning(s) found. Consider addressing them for optimal experience.\n",
 			warned,
 		)
+
 		return nil
 	default:
 		fmt.Printf(
@@ -162,6 +168,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 			failed,
 			warned,
 		)
+
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "health_check_failed").
 			WithDescription("environment issues detected")
 	}
@@ -190,6 +197,7 @@ func checkGoVersion(ctx context.Context) *DoctorResult {
 // checkSQLCInstallation checks sqlc installation.
 func checkSQLCInstallation(ctx context.Context) *DoctorResult {
 	sqlcAdapter := adapters.NewRealSQLCAdapter()
+
 	err := sqlcAdapter.CheckInstallation(ctx)
 	if err != nil {
 		return &DoctorResult{

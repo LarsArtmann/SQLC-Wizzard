@@ -38,8 +38,10 @@ func WriteFileFormatted(cfg *SqlcConfig, path string) error {
 	if err != nil {
 		return fmt.Errorf("failed to create file: %w", err)
 	}
+
 	defer func() {
-		if err := file.Close(); err != nil {
+		err := file.Close()
+		if err != nil {
 			// Log the close error, but don't override the primary error
 			fmt.Printf("warning: failed to close file %s: %v\n", path, err)
 		}

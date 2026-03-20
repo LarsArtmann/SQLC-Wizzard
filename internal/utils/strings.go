@@ -16,6 +16,7 @@ func StringToCamelCase(s string) string {
 		if word == "" {
 			continue
 		}
+
 		if len(word) > 0 {
 			words[i] = strings.ToUpper(word[:1]) + strings.ToLower(word[1:])
 		}
@@ -31,10 +32,12 @@ func stringToCase(s string, separator rune) string {
 	}
 
 	var result []rune
+
 	for i, r := range s {
 		if unicode.IsUpper(r) && i > 0 && !unicode.IsUpper(rune(s[i-1])) {
 			result = append(result, separator)
 		}
+
 		result = append(result, unicode.ToLower(r))
 	}
 
@@ -209,5 +212,6 @@ func PadString(s string, length int, char string) string {
 	}
 
 	padding := strings.Repeat(char, length-len(s))
+
 	return s + padding
 }

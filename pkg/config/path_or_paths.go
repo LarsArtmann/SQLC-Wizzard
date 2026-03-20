@@ -20,6 +20,7 @@ func NewPathOrPaths(paths []string) PathOrPaths {
 	if paths == nil {
 		paths = []string{}
 	}
+
 	return PathOrPaths{paths: paths}
 }
 
@@ -34,6 +35,7 @@ func (p PathOrPaths) Strings() []string {
 	if p.paths == nil {
 		return []string{}
 	}
+
 	return p.paths
 }
 
@@ -50,15 +52,19 @@ func (p PathOrPaths) Strings() []string {
 func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 	// Try to unmarshal as a slice of strings first
 	var paths []string
-	if err := value.Decode(&paths); err == nil {
+	err := value.Decode(&paths)
+	if err == nil {
 		p.paths = paths
+
 		return nil
 	}
 
 	// If that fails, try as a single string
 	var singlePath string
-	if err := value.Decode(&singlePath); err == nil {
+	err := value.Decode(&singlePath)
+	if err == nil {
 		p.paths = []string{singlePath}
+
 		return nil
 	}
 
@@ -85,5 +91,6 @@ func (p PathOrPaths) First() string {
 	if len(p.paths) == 0 {
 		return ""
 	}
+
 	return p.paths[0]
 }

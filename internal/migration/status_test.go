@@ -40,11 +40,13 @@ func TestNewMigrationStatus(t *testing.T) {
 				if err == nil {
 					t.Error("Expected error but got none")
 				}
+
 				return
 			}
 
 			if err != nil {
 				t.Errorf("Unexpected error: %v", err)
+
 				return
 			}
 
@@ -190,6 +192,7 @@ func TestMigrationStatus_IsDirty_SplitBrainPrevention(t *testing.T) {
 
 	// Test 1: Database-level dirty flag is true
 	status.WithDirty(true)
+
 	if !status.IsDirty() {
 		t.Error("IsDirty should return true when database-level dirty flag is true")
 	}

@@ -115,5 +115,6 @@ func isDirectory(path string) bool {
 	if err != nil {
 		return false
 	}
+
 	return info.IsDir()
 }

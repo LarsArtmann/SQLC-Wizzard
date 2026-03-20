@@ -41,6 +41,7 @@ func setupGenerator(tempDir string) (*generators.Generator, func()) {
 	cleanup := func() {
 		_ = os.RemoveAll(tempDir)
 	}
+
 	return gen, cleanup
 }
 
@@ -81,6 +82,7 @@ var _ = Describe("NewGenerator", func() {
 	It("should create a generator with valid output directory", func() {
 		tempDir, err := os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
+
 		defer func() {
 			_ = os.RemoveAll(tempDir)
 		}()
@@ -107,6 +109,7 @@ var _ = Describe("Generator Schema Generation", func() {
 	BeforeEach(func() {
 		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
+
 		gen, cleanup = setupGenerator(tempDir)
 	})
 
@@ -130,6 +133,7 @@ var _ = Describe("Generator Schema Generation", func() {
 			// Check content
 			content, err := os.ReadFile(schemaFile)
 			Expect(err).NotTo(HaveOccurred())
+
 			contentStr := string(content)
 
 			verifySchemaContent(contentStr, expectedEngine)
@@ -151,6 +155,7 @@ var _ = Describe("Generator Query Generation", func() {
 	BeforeEach(func() {
 		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
+
 		gen, cleanup = setupGenerator(tempDir)
 	})
 
@@ -174,6 +179,7 @@ var _ = Describe("Generator Query Generation", func() {
 			// Check content
 			content, err := os.ReadFile(queryFile)
 			Expect(err).NotTo(HaveOccurred())
+
 			contentStr := string(content)
 
 			verifyQueryContent(contentStr)
@@ -195,6 +201,7 @@ var _ = Describe("Error Handling", func() {
 	BeforeEach(func() {
 		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
+
 		gen, cleanup = setupGenerator(tempDir)
 	})
 
@@ -226,8 +233,10 @@ var _ = Describe("Error Handling", func() {
 		// Make directory read-only
 		err := os.Chmod(tempDir, 0o444)
 		Expect(err).NotTo(HaveOccurred())
+
 		defer func() {
-			if err := os.Chmod(tempDir, 0o755); err != nil {
+			err := os.Chmod(tempDir, 0o755)
+			if err != nil {
 				// Log error but don't fail test
 				fmt.Printf("Warning: failed to restore permissions: %v\n", err)
 			}
@@ -244,6 +253,7 @@ var _ = Describe("Template Data Integration", func() {
 	It("should use template data correctly", func() {
 		tempDir, err := os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
+
 		defer func() {
 			_ = os.RemoveAll(tempDir)
 		}()
@@ -281,6 +291,7 @@ var _ = Describe("File Structure", func() {
 	BeforeEach(func() {
 		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
 		Expect(err).NotTo(HaveOccurred())
+
 		gen, cleanup = setupGenerator(tempDir)
 	})
 

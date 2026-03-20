@@ -11,5 +11,6 @@ func Is(err, target error) bool {
 			return appErr.Code == targetErr.Code
 		}
 	}
+
 	return false
 }

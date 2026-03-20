@@ -50,6 +50,7 @@ var _ = Describe("Error Wrapping and Combining", func() {
 				} else {
 					Expect(wrapped.UserID).To(Equal(tc.id))
 				}
+
 				Expect(wrapped.Component).To(Equal(tc.component))
 			},
 			Entry("WrapWithRequestID", wrappingTestCase{

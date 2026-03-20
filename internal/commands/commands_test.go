@@ -265,6 +265,7 @@ func expectDoctorCheck(
 		for i, status := range expectedStatuses {
 			statusMatchers[i] = Equal(status)
 		}
+
 		expectedStatusMatcher = Or(statusMatchers...)
 	}
 
@@ -297,11 +298,13 @@ func generateExampleFiles(outputDir string, force bool) error {
 	schemaDir := filepath.Join(outputDir, "schema")
 	queriesDir := filepath.Join(outputDir, "queries")
 
-	if err := os.MkdirAll(schemaDir, 0o755); err != nil {
+	err := os.MkdirAll(schemaDir, 0o755)
+	if err != nil {
 		return err
 	}
 
-	if err := os.MkdirAll(queriesDir, 0o755); err != nil {
+	err := os.MkdirAll(queriesDir, 0o755)
+	if err != nil {
 		return err
 	}
 
@@ -309,7 +312,8 @@ func generateExampleFiles(outputDir string, force bool) error {
 	schemaFile := filepath.Join(schemaDir, "001_users_table.sql")
 	queriesFile := filepath.Join(queriesDir, "users.sql")
 
-	if err := os.WriteFile(schemaFile, []byte("-- Schema file"), 0o644); err != nil {
+	err := os.WriteFile(schemaFile, []byte("-- Schema file"), 0o644)
+	if err != nil {
 		return err
 	}
 

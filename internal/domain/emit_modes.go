@@ -269,12 +269,15 @@ func (e *TypeSafeEmitOptions) ApplyDefaults() {
 	if e.NullHandling == "" {
 		e.NullHandling = NullHandlingPointers
 	}
+
 	if e.EnumMode == "" {
 		e.EnumMode = EnumGenerationBasic
 	}
+
 	if e.StructPointers == "" {
 		e.StructPointers = StructPointerNever
 	}
+
 	if e.JSONTagStyle == "" {
 		e.JSONTagStyle = JSONTagStyleCamel
 	}

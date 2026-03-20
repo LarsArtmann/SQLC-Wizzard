@@ -48,7 +48,8 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 		),
 	).WithTheme(s.theme)
 
-	if err := form.Run(); err != nil {
+	err := form.Run()
+	if err != nil {
 		return fmt.Errorf("output configuration failed: %w", err)
 	}
 
@@ -56,9 +57,11 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 	if baseDir == "" {
 		baseDir = "./internal/db"
 	}
+
 	if queriesDir == "" {
 		queriesDir = "./sql/queries"
 	}
+
 	if schemaDir == "" {
 		schemaDir = "./sql/schema"
 	}

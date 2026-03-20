@@ -282,6 +282,7 @@ func (t *TypeSafeSafetyRules) IsValid() error {
 				Message: "Custom rule at index " + strconv.Itoa(i) + " has empty name",
 			}
 		}
+
 		if rule.Rule == "" {
 			return &DomainValidationError{
 				Field:   "CustomRules",

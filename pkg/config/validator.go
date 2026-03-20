@@ -44,6 +44,7 @@ func Validate(cfg *SqlcConfig) *ValidationResult {
 	// Handle nil configuration
 	if cfg == nil {
 		result.AddError("config", "configuration cannot be nil")
+
 		return result
 	}
 
@@ -60,6 +61,7 @@ func Validate(cfg *SqlcConfig) *ValidationResult {
 	// Validate SQL configurations
 	if len(cfg.SQL) == 0 {
 		result.AddError("sql", "at least one SQL configuration is required")
+
 		return result // Early return if no SQL configs
 	}
 

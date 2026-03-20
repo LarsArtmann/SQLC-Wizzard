@@ -37,6 +37,7 @@ func CreateTemplateDataWithFeatures(
 	data.Database.UseUUIDs = true
 	data.Database.UseJSON = true
 	data.Database.UseArrays = true
+
 	return data
 }
 
@@ -48,6 +49,7 @@ func CreateTemplateDataWithCustomOutput(
 	data.Output.BaseDir = baseDir
 	data.Output.QueriesDir = queriesDir
 	data.Output.SchemaDir = schemaDir
+
 	return data
 }
 
@@ -60,6 +62,7 @@ func CreateTemplateDataWithAllFeatures(enabled bool) *generated.TemplateData {
 	data.Database.UseFullText = enabled
 	data.Validation.StrictFunctions = enabled
 	data.Validation.StrictOrderBy = enabled
+
 	return &data
 }
 

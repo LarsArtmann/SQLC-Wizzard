@@ -44,14 +44,17 @@ func AssertTemplateDefaultData(t *testing.T, helper TemplateTestHelper) {
 	if expectedPackageName == "" {
 		expectedPackageName = "db"
 	}
+
 	expectedPackagePath := helper.ExpectedPackagePath
 	if expectedPackagePath == "" {
 		expectedPackagePath = "internal/db"
 	}
+
 	expectedDatabaseType := helper.ExpectedDatabaseType
 	if expectedDatabaseType == "" {
 		expectedDatabaseType = generated.DatabaseTypePostgreSQL
 	}
+
 	expectedJSONTagsCaseStyle := helper.ExpectedJSONTagsCaseStyle
 	if expectedJSONTagsCaseStyle == "" {
 		expectedJSONTagsCaseStyle = "camel"
@@ -66,6 +69,7 @@ func AssertTemplateDefaultData(t *testing.T, helper TemplateTestHelper) {
 	assert.Equal(t, helper.ExpectArrays, data.Database.UseArrays)
 	assert.Equal(t, helper.ExpectFullText, data.Database.UseFullText)
 	assert.Equal(t, helper.ExpectJSONTags, data.Validation.EmitOptions.EmitJSONTags)
+
 	if helper.ExpectInterface {
 		assert.True(
 			t,
@@ -73,6 +77,7 @@ func AssertTemplateDefaultData(t *testing.T, helper TemplateTestHelper) {
 				data.Validation.EmitOptions.EmitPreparedQueries,
 		)
 	}
+
 	assert.JSONEq(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle)
 
 	// Check prepared queries - defaults to true unless explicitly set
@@ -102,6 +107,7 @@ func AssertTemplateGenerateBasic(t *testing.T, helper TemplateTestHelper) {
 	assert.Equal(t, helper.ExpectedProjectName, sqlConfig.Name)
 	assert.Equal(t, helper.ExpectedEngine, sqlConfig.Engine)
 	assert.NotNil(t, sqlConfig.Database)
+
 	if helper.ExpectStrictChecks {
 		assert.True(t, *sqlConfig.StrictFunctionChecks)
 		assert.True(t, *sqlConfig.StrictOrderBy)

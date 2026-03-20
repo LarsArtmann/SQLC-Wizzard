@@ -97,9 +97,11 @@ func runCreate(projectName string, opts *CreateOptions) error {
 
 	// Change to project directory for relative paths
 	originalDir, _ := os.Getwd()
+
 	if err := os.Chdir(outputPath); err != nil {
 		return fmt.Errorf("failed to change to project directory: %w", err)
 	}
+
 	defer func() {
 		_ = os.Chdir(originalDir)
 	}()

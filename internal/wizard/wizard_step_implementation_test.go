@@ -266,9 +266,11 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 				if config.BaseDir == "" {
 					Expect(config.BaseDir).To(BeEmpty())
 				}
+
 				if config.QueriesDir == "" {
 					Expect(config.QueriesDir).To(BeEmpty())
 				}
+
 				if config.SchemaDir == "" {
 					Expect(config.SchemaDir).To(BeEmpty())
 				}

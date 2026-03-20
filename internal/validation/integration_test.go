@@ -32,35 +32,44 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 
 			// Verify style rules
 			var noSelectStarFound bool
+
 			for _, rule := range configRules {
 				if rule.Name == "no-select-star" {
 					noSelectStarFound = true
+
 					Expect(rule.Rule).To(ContainSubstring("SELECT *"))
 					Expect(rule.Message).To(ContainSubstring("explicit column names"))
 				}
 			}
+
 			Expect(noSelectStarFound).To(BeTrue(), "no-select-star rule should be present")
 
 			// Verify safety rules
 			var requireWhereFound bool
+
 			for _, rule := range configRules {
 				if rule.Name == "require-where" {
 					requireWhereFound = true
+
 					Expect(rule.Rule).To(ContainSubstring("hasWhereClause"))
 				}
 			}
+
 			Expect(requireWhereFound).To(BeTrue(), "require-where rule should be present")
 
 			// Verify destructive policy
 			var noDropTableFound, noTruncateFound bool
+
 			for _, rule := range configRules {
 				if rule.Name == "no-drop-table" {
 					noDropTableFound = true
 				}
+
 				if rule.Name == "no-truncate" {
 					noTruncateFound = true
 				}
 			}
+
 			Expect(noDropTableFound).To(BeTrue(), "no-drop-table rule should be present")
 			Expect(noTruncateFound).To(BeTrue(), "no-truncate rule should be present")
 		})
@@ -194,14 +203,18 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 
 			// Step 4: Verify custom rules are preserved
 			customRulesFound := 0
+
 			for _, rule := range configRules {
 				if rule.Name == "no-cross-db-joins" {
 					customRulesFound++
+
 					Expect(rule.Rule).To(Equal("query.databases().count() <= 1"))
 					Expect(rule.Message).To(Equal("Cross-database joins not allowed"))
 				}
+
 				if rule.Name == "max-subqueries" {
 					customRulesFound++
+
 					Expect(rule.Rule).To(Equal("query.subqueries().count() <= 2"))
 					Expect(rule.Message).To(Equal("Maximum 2 subqueries allowed"))
 				}
@@ -226,9 +239,11 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 
 			// Verify the rule was created with positive limit
 			var maxRowsRule *generated.RuleConfig
+
 			for i := range configRules {
 				if configRules[i].Name == "max-rows-without-limit" {
 					maxRowsRule = &configRules[i]
+
 					break
 				}
 			}
@@ -243,7 +258,6 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 		It("should enforce consistent destructive operation policy", func() {
 			// OLD WAY: Could have NoDropTable=true but NoTruncate=false (inconsistent!)
 			// NEW WAY: Single policy applies to ALL destructive operations
-
 			rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
 				r.DestructiveOps = domain.DestructiveForbidden
 			})

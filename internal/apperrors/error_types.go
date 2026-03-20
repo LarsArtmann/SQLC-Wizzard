@@ -146,6 +146,7 @@ func NewError(code ErrorCode, message string) *Error {
 	if code == "" {
 		code = ErrorCodeInternalServer
 	}
+
 	if message == "" {
 		message = "An unexpected error occurred"
 	}
@@ -190,6 +191,7 @@ func Newf(code ErrorCode, format string, args ...any) *Error {
 	}
 
 	message := fmt.Sprintf(format, args...)
+
 	return NewError(code, message)
 }
 

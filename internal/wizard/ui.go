@@ -35,6 +35,7 @@ func ShowError(err error) {
 	schemaErr := &schema.SchemaError{}
 	if errors.As(err, &schemaErr) {
 		ui.showErrorWithSchemaDetails(schemaErr)
+
 		return
 	}
 
@@ -42,6 +43,7 @@ func ShowError(err error) {
 	appErr := &apperrors.Error{}
 	if errors.As(err, &appErr) {
 		ui.showErrorWithTypedDetails(appErr)
+
 		return
 	}
 
@@ -65,7 +67,8 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 	}
 
 	// Validate schema using typed validation
-	if err := cfg.Validate(); err != nil {
+	err := cfg.Validate()
+	if err != nil {
 		return err
 	}
 

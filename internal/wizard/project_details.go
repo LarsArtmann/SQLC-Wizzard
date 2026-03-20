@@ -29,6 +29,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 
 	// Project name
 	var projectName string
+
 	nameForm := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
@@ -42,18 +43,21 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 							"project name must be at least 2 characters",
 						)
 					}
+
 					if len(str) > 50 {
 						return apperrors.NewError(
 							apperrors.ErrorCodeValidationError,
 							"project name must be less than 50 characters",
 						)
 					}
+
 					return nil
 				}),
 		),
 	).WithTheme(s.theme)
 
-	if err := nameForm.Run(); err != nil {
+	err := nameForm.Run()
+	if err != nil {
 		return fmt.Errorf("project name input failed: %w", err)
 	}
 
@@ -61,6 +65,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 
 	// Package name (auto-generated from project name)
 	var packageName string
+
 	packageForm := huh.NewForm(
 		huh.NewGroup(
 			huh.NewInput().
@@ -74,12 +79,14 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 							"package name must be at least 2 characters",
 						)
 					}
+
 					return nil
 				}),
 		),
 	).WithTheme(s.theme)
 
-	if err := packageForm.Run(); err != nil {
+	err := packageForm.Run()
+	if err != nil {
 		return fmt.Errorf("package name input failed: %w", err)
 	}
 
@@ -94,6 +101,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 		"Project Details",
 		fmt.Sprintf("Name: %s, Package: %s", data.ProjectName, data.Package.Name),
 	)
+
 	return nil
 }
 
@@ -115,6 +123,7 @@ func (s *ProjectDetailsStep) generatePackageName(projectName string) string {
 // replaceInvalidChars replaces characters invalid in Go package names.
 func (s *ProjectDetailsStep) replaceInvalidChars(input string) string {
 	var result strings.Builder
+
 	for _, char := range input {
 		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_' ||
 			(char >= '0' && char <= '9') {
@@ -123,6 +132,7 @@ func (s *ProjectDetailsStep) replaceInvalidChars(input string) string {
 			result.WriteString("_")
 		}
 	}
+
 	return result.String()
 }
 
@@ -131,9 +141,11 @@ func (s *ProjectDetailsStep) lowerCaseFirst(input string) string {
 	if len(input) == 0 {
 		return input
 	}
+
 	if input[0] >= 'A' && input[0] <= 'Z' {
 		return string(input[0]+32) + input[1:]
 	}
+
 	return input
 }
 
@@ -146,5 +158,6 @@ func (s *ProjectDetailsStep) isGoKeyword(keyword string) bool {
 		"interface": true, "map": true, "package": true, "range": true, "return": true,
 		"select": true, "struct": true, "switch": true, "type": true, "var": true,
 	}
+
 	return keywords[keyword]
 }

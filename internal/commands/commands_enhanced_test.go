@@ -20,6 +20,7 @@ func createTestSqlcConfig(schema, out, pkg string, engine ...string) *config.Sql
 	if len(engine) > 0 {
 		dbEngine = engine[0]
 	}
+
 	return &config.SqlcConfig{
 		Version: "2",
 		SQL: []config.SQLConfig{

@@ -87,11 +87,13 @@ func newCaseConversionTestCase(separator string, inputs []struct {
 		if separator == "-" {
 			expected = in.kebabCase
 		}
+
 		testCases[i] = stringTestCase{input: in.input, expected: expected}
 	}
 
 	edgeLeading := ""
 	edgeTrailing := ""
+
 	if separator == "_" {
 		edgeLeading = "-_leading"
 		edgeTrailing = "trailing_"
@@ -124,6 +126,7 @@ func runCaseConversionTests(
 		if testCase.edgeLeading != "" {
 			Expect(testFunc("-Leading")).To(Equal(testCase.edgeLeading))
 		}
+
 		if testCase.edgeTrailing != "" {
 			Expect(
 				testFunc("Trailing" + testCase.edgeTrailing[8:]),
@@ -204,6 +207,7 @@ var _ = Describe("Pluralize and Singularize", func() {
 		}
 
 		pluralCases := make([]stringTestCase, len(wordPairs))
+
 		singularCases := make([]stringTestCase, len(wordPairs))
 		for i, pair := range wordPairs {
 			pluralCases[i] = stringTestCase{input: pair.input, expected: pair.expected}

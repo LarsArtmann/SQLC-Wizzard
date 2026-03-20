@@ -94,6 +94,7 @@ func emitOptionsExplicitNull() generated.EmitOptions {
 	opts := baseEmitOptions()
 	opts.EmitEnumValidMethod = true
 	opts.JSONTagsCaseStyle = "pascal"
+
 	return opts
 }
 
@@ -102,6 +103,7 @@ func emitOptionsMixed() generated.EmitOptions {
 	opts := commonEmitOptions()
 	opts.EmitResultStructPointers = true
 	opts.JSONTagsCaseStyle = "kebab"
+
 	return opts
 }
 
@@ -109,6 +111,7 @@ func emitOptionsMixed() generated.EmitOptions {
 func emitOptionsEmptySlices() generated.EmitOptions {
 	opts := commonEmitOptions()
 	opts.EmitEmptySlices = true
+
 	return opts
 }
 
@@ -119,6 +122,7 @@ func emitOptionsPointers() generated.EmitOptions {
 	opts.EmitResultStructPointers = true
 	opts.EmitParamsStructPointers = true
 	opts.JSONTagsCaseStyle = "snake"
+
 	return opts
 }
 

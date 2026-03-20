@@ -98,6 +98,7 @@ func NewProjectType(projectType string) (ProjectType, error) {
 	if !pt.IsValid() {
 		return "", apperrors.ValidationError("project_type", projectType)
 	}
+
 	return pt, nil
 }
 
@@ -106,6 +107,7 @@ func NewDatabaseType(database string) (DatabaseType, error) {
 	if !dt.IsValid() {
 		return "", apperrors.ValidationError("database", database)
 	}
+
 	return dt, nil
 }
 
@@ -115,6 +117,7 @@ func MustNewProjectType(projectType string) ProjectType {
 	if err != nil {
 		panic(err) // This is programmer error, not runtime error
 	}
+
 	return pt
 }
 
@@ -123,6 +126,7 @@ func MustNewDatabaseType(database string) DatabaseType {
 	if err != nil {
 		panic(err) // This is programmer error, not runtime error
 	}
+
 	return dt
 }
 

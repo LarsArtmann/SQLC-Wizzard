@@ -35,6 +35,7 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 		packageConfig.Name = "db"
 		data.Package = packageConfig
 	}
+
 	if packageConfig.Path == "" {
 		packageConfig.Path = "db"
 		data.Package = packageConfig
@@ -45,10 +46,12 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 		outputConfig.BaseDir = "internal/db"
 		data.Output = outputConfig
 	}
+
 	if outputConfig.QueriesDir == "" {
 		outputConfig.QueriesDir = "internal/db/queries"
 		data.Output = outputConfig
 	}
+
 	if outputConfig.SchemaDir == "" {
 		outputConfig.SchemaDir = "internal/db/schema"
 		data.Output = outputConfig
@@ -75,8 +78,8 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 				Engine:               string(databaseConfig.Engine),
 				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
 				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),
-				StrictFunctionChecks: lo.ToPtr(data.Validation.StrictFunctions),
-				StrictOrderBy:        lo.ToPtr(data.Validation.StrictOrderBy),
+				StrictFunctionChecks: new(data.Validation.StrictFunctions),
+				StrictOrderBy:        new(data.Validation.StrictOrderBy),
 				Database: &config.DatabaseConfig{
 					URI:     databaseConfig.URL,
 					Managed: databaseConfig.UseManaged,
