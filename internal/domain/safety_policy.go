@@ -176,7 +176,8 @@ func (l LimitClauseRequirement) String() string {
 
 // RequiresOnSelect returns true if this policy requires LIMIT on SELECT queries.
 func (l LimitClauseRequirement) RequiresOnSelect() bool {
-	return l == LimitClauseOnSelect || l == LimitClauseOnSelectWithoutWhere || l == LimitClauseAlways
+	return l == LimitClauseOnSelect || l == LimitClauseOnSelectWithoutWhere ||
+		l == LimitClauseAlways
 }
 
 // RequiresWithoutWhere returns true if this policy requires LIMIT only without WHERE.

@@ -22,7 +22,9 @@ var _ = Describe("Domain Services", func() {
 		It("should generate UUIDs in correct format", func() {
 			uuid := domain.GenerateUUID()
 			// UUID v4 format: xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx
-			Expect(uuid).To(MatchRegexp(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`))
+			Expect(
+				uuid,
+			).To(MatchRegexp(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`))
 		})
 	})
 })

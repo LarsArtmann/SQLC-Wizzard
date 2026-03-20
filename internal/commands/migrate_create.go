@@ -53,7 +53,11 @@ func runMigrationCreate(config *CreateConfig) error {
 
 	migrationAdapter := adapters.NewRealMigrationAdapter()
 
-	filename, err := migrationAdapter.CreateMigration(context.Background(), config.Name, config.MigrationsPath)
+	filename, err := migrationAdapter.CreateMigration(
+		context.Background(),
+		config.Name,
+		config.MigrationsPath,
+	)
 	if err != nil {
 		return &MigrationError{
 			Code:    "CREATION_FAILED",

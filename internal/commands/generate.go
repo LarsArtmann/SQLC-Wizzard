@@ -33,8 +33,10 @@ Use this to quickly scaffold a working sqlc setup.`,
 		},
 	}
 
-	cmd.Flags().StringVarP(&opts.configPath, "config", "c", "", "Path to sqlc.yaml configuration file")
-	cmd.Flags().StringVarP(&opts.outputDir, "output", "o", ".", "Output directory for generated files")
+	cmd.Flags().
+		StringVarP(&opts.configPath, "config", "c", "", "Path to sqlc.yaml configuration file")
+	cmd.Flags().
+		StringVarP(&opts.outputDir, "output", "o", ".", "Output directory for generated files")
 	cmd.Flags().BoolVarP(&opts.force, "force", "f", false, "Overwrite existing files")
 
 	return cmd
@@ -83,7 +85,10 @@ func generateExampleFiles(outputDir string, force bool) error {
 		if _, err := os.Stat(outputDir); err == nil {
 			files, err := os.ReadDir(outputDir)
 			if err == nil && len(files) > 0 {
-				return fmt.Errorf("output directory %s is not empty. Use --force to overwrite", outputDir)
+				return fmt.Errorf(
+					"output directory %s is not empty. Use --force to overwrite",
+					outputDir,
+				)
 			}
 		}
 	}

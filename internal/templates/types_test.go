@@ -405,12 +405,33 @@ func TestConfiguredTemplate_ZeroValueInitialization(t *testing.T) {
 		assert.True(t, data.Database.UseUUIDs, "UseUUIDs should default to true")
 		assert.True(t, data.Database.UseJSON, "UseJSON should default to true")
 		assert.True(t, data.Database.UseArrays, "UseArrays should default to true")
-		assert.True(t, data.Database.UseFullText, "UseFullText should default to true for enterprise")
-		assert.True(t, data.Validation.EmitOptions.EmitJSONTags, "EmitJSONTags should be true for enterprise")
-		assert.True(t, data.Validation.EmitOptions.EmitInterface, "EmitInterface should be true for enterprise")
-		assert.True(t, data.Validation.StrictFunctions, "StrictFunctions should be true for enterprise")
+		assert.True(
+			t,
+			data.Database.UseFullText,
+			"UseFullText should default to true for enterprise",
+		)
+		assert.True(
+			t,
+			data.Validation.EmitOptions.EmitJSONTags,
+			"EmitJSONTags should be true for enterprise",
+		)
+		assert.True(
+			t,
+			data.Validation.EmitOptions.EmitInterface,
+			"EmitInterface should be true for enterprise",
+		)
+		assert.True(
+			t,
+			data.Validation.StrictFunctions,
+			"StrictFunctions should be true for enterprise",
+		)
 		assert.True(t, data.Validation.StrictOrderBy, "StrictOrderBy should be true for enterprise")
-		assert.Equal(t, "camel", data.Validation.EmitOptions.JSONTagsCaseStyle, "JSONTagsCaseStyle should be camel for enterprise")
+		assert.Equal(
+			t,
+			"camel",
+			data.Validation.EmitOptions.JSONTagsCaseStyle,
+			"JSONTagsCaseStyle should be camel for enterprise",
+		)
 	})
 
 	t.Run("APIFirstTemplate zero initialization", func(t *testing.T) {
@@ -437,7 +458,11 @@ func TestConfiguredTemplate_ZeroValueInitialization(t *testing.T) {
 		require.NoError(t, err)
 		require.NotNil(t, result)
 
-		assert.True(t, *result.SQL[0].StrictFunctionChecks, "StrictFunctionChecks should come from DefaultData")
+		assert.True(
+			t,
+			*result.SQL[0].StrictFunctionChecks,
+			"StrictFunctionChecks should come from DefaultData",
+		)
 		assert.True(t, *result.SQL[0].StrictOrderBy, "StrictOrderBy should come from DefaultData")
 	})
 }

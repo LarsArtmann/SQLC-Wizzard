@@ -112,7 +112,11 @@ func displayValidationResults(result *config.ValidationResult, opts *ValidateOpt
 	}
 }
 
-func printValidationItems(items []config.ValidationError, style lipgloss.Style, itemType, emoji string) {
+func printValidationItems(
+	items []config.ValidationError,
+	style lipgloss.Style,
+	itemType, emoji string,
+) {
 	fmt.Println(style.Render(fmt.Sprintf("%s Found %d %s(s):", emoji, len(items), itemType)))
 	for _, item := range items {
 		fmt.Printf("  • %s: %s\n", item.Field, item.Message)

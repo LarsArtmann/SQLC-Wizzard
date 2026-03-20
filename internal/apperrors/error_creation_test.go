@@ -144,7 +144,12 @@ var _ = Describe("Error Creation", func() {
 
 // expectError is a generic helper function for verifying common Error properties.
 // It optionally validates message substrings and component.
-func expectError(err *Error, expectedCode ErrorCode, expectedMessageSubstrings []string, expectedComponent ...string) {
+func expectError(
+	err *Error,
+	expectedCode ErrorCode,
+	expectedMessageSubstrings []string,
+	expectedComponent ...string,
+) {
 	Expect(err).To(HaveOccurred())
 	Expect(err.Code).To(Equal(expectedCode))
 	for _, substr := range expectedMessageSubstrings {

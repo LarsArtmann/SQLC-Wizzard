@@ -148,14 +148,20 @@ func (ui *UIHelper) GetConfirmation() (bool, error) {
 	}
 
 	if !confirmed {
-		return false, apperrors.NewError(apperrors.ErrorCodeValidationError, "configuration cancelled by user")
+		return false, apperrors.NewError(
+			apperrors.ErrorCodeValidationError,
+			"configuration cancelled by user",
+		)
 	}
 
 	return true, nil
 }
 
 // formatConfigurationSummary formats configuration for display.
-func (ui *UIHelper) formatConfigurationSummary(cfg *schema.Schema, data generated.TemplateData) string {
+func (ui *UIHelper) formatConfigurationSummary(
+	cfg *schema.Schema,
+	data generated.TemplateData,
+) string {
 	summaryStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#FF7E67")).
 		Padding(0, 1)
@@ -170,7 +176,10 @@ func (ui *UIHelper) formatConfigurationSummary(cfg *schema.Schema, data generate
 }
 
 // formatCompletionDetails formats completion details for display.
-func (ui *UIHelper) formatCompletionDetails(cfg *schema.Schema, data generated.TemplateData) string {
+func (ui *UIHelper) formatCompletionDetails(
+	cfg *schema.Schema,
+	data generated.TemplateData,
+) string {
 	detailStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#99")).
 		PaddingLeft(2)

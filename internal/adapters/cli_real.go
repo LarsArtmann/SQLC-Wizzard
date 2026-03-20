@@ -15,7 +15,11 @@ func NewRealCLIAdapter() *RealCLIAdapter {
 }
 
 // RunCommand executes a CLI command.
-func (a *RealCLIAdapter) RunCommand(ctx context.Context, cmd string, args ...string) (string, error) {
+func (a *RealCLIAdapter) RunCommand(
+	ctx context.Context,
+	cmd string,
+	args ...string,
+) (string, error) {
 	command := exec.CommandContext(ctx, cmd, args...)
 	output, err := command.CombinedOutput()
 	if err != nil {

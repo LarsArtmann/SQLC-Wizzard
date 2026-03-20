@@ -27,7 +27,10 @@ func CreateTemplateData() generated.TemplateData {
 }
 
 // CreateTemplateDataWithFeatures creates template data with feature flags enabled.
-func CreateTemplateDataWithFeatures(projectName string, projectType generated.ProjectType) generated.TemplateData {
+func CreateTemplateDataWithFeatures(
+	projectName string,
+	projectType generated.ProjectType,
+) generated.TemplateData {
 	data := CreateTemplateData()
 	data.ProjectName = projectName
 	data.ProjectType = projectType
@@ -38,7 +41,9 @@ func CreateTemplateDataWithFeatures(projectName string, projectType generated.Pr
 }
 
 // CreateTemplateDataWithCustomOutput creates template data with custom output directories.
-func CreateTemplateDataWithCustomOutput(baseDir, queriesDir, schemaDir string) generated.TemplateData {
+func CreateTemplateDataWithCustomOutput(
+	baseDir, queriesDir, schemaDir string,
+) generated.TemplateData {
 	data := CreateTemplateData()
 	data.Output.BaseDir = baseDir
 	data.Output.QueriesDir = queriesDir

@@ -44,7 +44,13 @@ func NewMultiTenantTemplate() *MultiTenantTemplate {
 		NoDropTable:              true,
 		NoTruncate:               false,
 		RequireLimit:             true,
-		Features:                 []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"},
+		Features: []string{
+			"emit_interface",
+			"prepared_queries",
+			"json_tags",
+			"tenant_isolation",
+			"strict_checks",
+		},
 		CustomRenameRules: map[string]string{
 			"id":     "ID",
 			"uuid":   "UUID",
@@ -63,7 +69,13 @@ func NewMultiTenantTemplate() *MultiTenantTemplate {
 
 // RequiredFeatures returns which features this template requires.
 func (t *MultiTenantTemplate) RequiredFeatures() []string {
-	return []string{"emit_interface", "prepared_queries", "json_tags", "tenant_isolation", "strict_checks"}
+	return []string{
+		"emit_interface",
+		"prepared_queries",
+		"json_tags",
+		"tenant_isolation",
+		"strict_checks",
+	}
 }
 
 // Name returns the template name.

@@ -299,7 +299,11 @@ var _ = Describe("Migrate Command Enhanced Testing", func() {
 
 		It("should handle migration file creation", func() {
 			migrationFile := filepath.Join(tempDir, "001_initial.sql")
-			err := os.WriteFile(migrationFile, []byte("-- Initial migration\nCREATE TABLE test (id INTEGER);"), 0o644)
+			err := os.WriteFile(
+				migrationFile,
+				[]byte("-- Initial migration\nCREATE TABLE test (id INTEGER);"),
+				0o644,
+			)
 			Expect(err).NotTo(HaveOccurred())
 
 			Expect(migrationFile).To(BeARegularFile())
@@ -403,7 +407,11 @@ var _ = Describe("Command Integration and Error Recovery", func() {
 			configFiles := make([]string, 5)
 			for i := range 5 {
 				configFiles[i] = filepath.Join(tempDir, fmt.Sprintf("config%d.yaml", i))
-				cfg := createTestSqlcConfig("schema.sql", fmt.Sprintf("db%d", i), fmt.Sprintf("db%d", i))
+				cfg := createTestSqlcConfig(
+					"schema.sql",
+					fmt.Sprintf("db%d", i),
+					fmt.Sprintf("db%d", i),
+				)
 
 				yamlData, err := config.Marshal(cfg)
 				Expect(err).NotTo(HaveOccurred())

@@ -284,7 +284,9 @@ func (t *ConfiguredTemplate) GetRenameRules() map[string]string {
 }
 
 // BuildGoConfigWithOverrides builds GoGenConfig with custom rename rules support.
-func (t *ConfiguredTemplate) BuildGoConfigWithOverrides(data generated.TemplateData) *config.GoGenConfig {
+func (t *ConfiguredTemplate) BuildGoConfigWithOverrides(
+	data generated.TemplateData,
+) *config.GoGenConfig {
 	sqlPackage := t.GetSQLPackage(data.Database.Engine)
 	cfg := t.BuildGoGenConfig(data, sqlPackage)
 

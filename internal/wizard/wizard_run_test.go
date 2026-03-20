@@ -25,7 +25,10 @@ var _ = Describe("Wizard Run Method", func() {
 
 	It("should handle valid template data generation", func() {
 		result := wiz.GetResult()
-		result.TemplateData = wizard.CreateTemplateDataWithFeatures("test-project", generated.ProjectTypeMicroservice)
+		result.TemplateData = wizard.CreateTemplateDataWithFeatures(
+			"test-project",
+			generated.ProjectTypeMicroservice,
+		)
 		result.TemplateData.Package.Path = "github.com/example/testdb"
 
 		Expect(result.TemplateData.ProjectName).To(Equal("test-project"))

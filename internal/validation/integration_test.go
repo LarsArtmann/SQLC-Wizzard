@@ -159,7 +159,9 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 
 			// All legacy rules should be in type-safe result
 			for name := range legacyRuleNames {
-				Expect(typeSafeRuleNames[name]).To(BeTrue(), "Rule %s should be present in type-safe result", name)
+				Expect(
+					typeSafeRuleNames[name],
+				).To(BeTrue(), "Rule %s should be present in type-safe result", name)
 			}
 		})
 	})

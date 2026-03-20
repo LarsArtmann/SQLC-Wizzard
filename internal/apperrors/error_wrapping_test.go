@@ -36,7 +36,8 @@ var _ = Describe("Error Wrapping and Combining", func() {
 			expectError string
 		}
 
-		DescribeTable("should wrap error with context",
+		DescribeTable(
+			"should wrap error with context",
 			func(tc wrappingTestCase, wrapFunc func(error, apperrors.ErrorCode, string, string) *apperrors.Error) {
 				original := stderrors.New(tc.errorMsg)
 				wrapped := wrapFunc(original, tc.code, tc.id, tc.component)
@@ -60,7 +61,6 @@ var _ = Describe("Error Wrapping and Combining", func() {
 				expectID:    "requestID",
 				expectError: "operation failed",
 			}, apperrors.WrapWithRequestID),
-
 			Entry("WrapWithUserID", wrappingTestCase{
 				name:        "wrap with user ID",
 				errorMsg:    "permission denied",

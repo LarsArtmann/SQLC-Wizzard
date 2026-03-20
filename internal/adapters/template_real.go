@@ -19,7 +19,9 @@ func NewRealTemplateAdapter() *RealTemplateAdapter {
 }
 
 // GetTemplate retrieves a template by type.
-func (a *RealTemplateAdapter) GetTemplate(projectType generated.ProjectType) (templates.Template, error) {
+func (a *RealTemplateAdapter) GetTemplate(
+	projectType generated.ProjectType,
+) (templates.Template, error) {
 	switch projectType {
 	case generated.ProjectTypeMicroservice:
 		return templates.NewMicroserviceTemplate(), nil
@@ -43,7 +45,10 @@ func (a *RealTemplateAdapter) GetTemplate(projectType generated.ProjectType) (te
 }
 
 // GenerateConfig generates configuration from template data.
-func (a *RealTemplateAdapter) GenerateConfig(ctx context.Context, data generated.TemplateData) (*config.SqlcConfig, error) {
+func (a *RealTemplateAdapter) GenerateConfig(
+	ctx context.Context,
+	data generated.TemplateData,
+) (*config.SqlcConfig, error) {
 	template, err := a.GetTemplate(data.ProjectType)
 	if err != nil {
 		return nil, err
@@ -53,7 +58,11 @@ func (a *RealTemplateAdapter) GenerateConfig(ctx context.Context, data generated
 }
 
 // GenerateFiles generates files from template.
-func (a *RealTemplateAdapter) GenerateFiles(ctx context.Context, data generated.TemplateData, outputDir string) ([]string, error) {
+func (a *RealTemplateAdapter) GenerateFiles(
+	ctx context.Context,
+	data generated.TemplateData,
+	outputDir string,
+) ([]string, error) {
 	// For now, return empty slice as GenerateFiles is not implemented
 	_ = data
 	_ = outputDir
@@ -61,7 +70,10 @@ func (a *RealTemplateAdapter) GenerateFiles(ctx context.Context, data generated.
 }
 
 // ValidateTemplateData validates template data.
-func (a *RealTemplateAdapter) ValidateTemplateData(ctx context.Context, data generated.TemplateData) error {
+func (a *RealTemplateAdapter) ValidateTemplateData(
+	ctx context.Context,
+	data generated.TemplateData,
+) error {
 	// Basic validation
 	if data.ProjectType == "" {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "Project type is required")

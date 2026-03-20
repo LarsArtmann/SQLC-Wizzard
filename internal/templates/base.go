@@ -170,14 +170,22 @@ func (cb *ConfigBuilder) Build() (*config.SqlcConfig, error) {
 		Version: "2",
 		SQL: []config.SQLConfig{
 			{
-				Name:                 lo.Ternary(cb.Data.ProjectName != "", cb.Data.ProjectName, cb.DefaultName),
+				Name: lo.Ternary(
+					cb.Data.ProjectName != "",
+					cb.Data.ProjectName,
+					cb.DefaultName,
+				),
 				Engine:               string(cb.Data.Database.Engine),
 				Queries:              config.NewPathOrPaths([]string{cb.Data.Output.QueriesDir}),
 				Schema:               config.NewPathOrPaths([]string{cb.Data.Output.SchemaDir}),
 				StrictFunctionChecks: lo.ToPtr(cb.Strict),
 				StrictOrderBy:        lo.ToPtr(cb.Strict),
 				Database: &config.DatabaseConfig{
-					URI:     lo.Ternary(cb.Data.Database.URL != "", cb.Data.Database.URL, cb.DefaultDatabaseURL),
+					URI: lo.Ternary(
+						cb.Data.Database.URL != "",
+						cb.Data.Database.URL,
+						cb.DefaultDatabaseURL,
+					),
 					Managed: cb.Data.Database.UseManaged,
 				},
 				Gen: config.GenConfig{
@@ -197,7 +205,10 @@ type BaseTemplate struct{}
 
 // BuildGoGenConfig builds the base GoGenConfig from template data.
 // This is the foundation method that templates can override or extend.
-func (t *BaseTemplate) BuildGoGenConfig(data generated.TemplateData, sqlPackage string) *config.GoGenConfig {
+func (t *BaseTemplate) BuildGoGenConfig(
+	data generated.TemplateData,
+	sqlPackage string,
+) *config.GoGenConfig {
 	return &config.GoGenConfig{
 		Package:    data.Package.Name,
 		Out:        data.Output.BaseDir,
@@ -320,7 +331,10 @@ func (t *BaseTemplate) ApplyDefaultValues(data *generated.TemplateData) {
 
 // ApplyValidationRules applies emit options and safety rules to a config.
 // This eliminates the duplicated validation code across all templates.
-func (t *BaseTemplate) ApplyValidationRules(cfg *config.SqlcConfig, data generated.TemplateData) (*config.SqlcConfig, error) {
+func (t *BaseTemplate) ApplyValidationRules(
+	cfg *config.SqlcConfig,
+	data generated.TemplateData,
+) (*config.SqlcConfig, error) {
 	// Apply emit options using type-safe helper function
 	if len(cfg.SQL) > 0 {
 		config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)

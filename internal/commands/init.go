@@ -48,12 +48,17 @@ Example:
 	}
 
 	// Add flags
-	cmd.Flags().StringVar(&opts.ProjectType, "project-type", "", "Project type (hobby, microservice, enterprise, api-first, library)")
-	cmd.Flags().StringVar(&opts.Database, "database", "", "Database engine (postgresql, mysql, sqlite)")
-	cmd.Flags().StringVar(&opts.PackagePath, "package", "", "Go package path (e.g., github.com/user/project)")
+	cmd.Flags().
+		StringVar(&opts.ProjectType, "project-type", "", "Project type (hobby, microservice, enterprise, api-first, library)")
+	cmd.Flags().
+		StringVar(&opts.Database, "database", "", "Database engine (postgresql, mysql, sqlite)")
+	cmd.Flags().
+		StringVar(&opts.PackagePath, "package", "", "Go package path (e.g., github.com/user/project)")
 	cmd.Flags().StringVar(&opts.PackageName, "package-name", "", "Go package name (e.g., db)")
-	cmd.Flags().StringVarP(&opts.OutputDir, "output-dir", "o", ".", "Output directory for generated files")
-	cmd.Flags().BoolVar(&opts.NonInteractive, "non-interactive", false, "Run in non-interactive mode using flags")
+	cmd.Flags().
+		StringVarP(&opts.OutputDir, "output-dir", "o", ".", "Output directory for generated files")
+	cmd.Flags().
+		BoolVar(&opts.NonInteractive, "non-interactive", false, "Run in non-interactive mode using flags")
 
 	return cmd
 }
@@ -61,7 +66,10 @@ Example:
 func runInit(opts *InitOptions) error {
 	// Check if sqlc.yaml already exists
 	if _, err := os.Stat("sqlc.yaml"); err == nil {
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "sqlc.yaml already exists in current directory. Remove it first or run in a different directory")
+		return apperrors.NewError(
+			apperrors.ErrorCodeInternalServer,
+			"sqlc.yaml already exists in current directory. Remove it first or run in a different directory",
+		)
 	}
 
 	var result *wizard.WizardResult
@@ -82,7 +90,12 @@ func runInit(opts *InitOptions) error {
 
 	// Generate files
 	gen := generators.NewGenerator(opts.OutputDir)
-	if err := gen.GenerateAll(result.Config, result.TemplateData, result.GenerateQueries, result.GenerateSchema); err != nil {
+	if err := gen.GenerateAll(
+		result.Config,
+		result.TemplateData,
+		result.GenerateQueries,
+		result.GenerateSchema,
+	); err != nil {
 		return fmt.Errorf("generation failed: %w", err)
 	}
 
@@ -95,13 +108,22 @@ func runInit(opts *InitOptions) error {
 func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 	// Validate required flags
 	if opts.ProjectType == "" {
-		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "--project-type is required in non-interactive mode")
+		return nil, apperrors.NewError(
+			apperrors.ErrorCodeInternalServer,
+			"--project-type is required in non-interactive mode",
+		)
 	}
 	if opts.Database == "" {
-		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "--database is required in non-interactive mode")
+		return nil, apperrors.NewError(
+			apperrors.ErrorCodeInternalServer,
+			"--database is required in non-interactive mode",
+		)
 	}
 	if opts.PackagePath == "" {
-		return nil, apperrors.NewError(apperrors.ErrorCodeInternalServer, "--package is required in non-interactive mode")
+		return nil, apperrors.NewError(
+			apperrors.ErrorCodeInternalServer,
+			"--package is required in non-interactive mode",
+		)
 	}
 
 	// Create template data from flags
@@ -157,5 +179,9 @@ func showSuccess(gen *generators.Generator, result *wizard.WizardResult) {
 		Padding(0, 0, 1, 0)
 
 	fmt.Println(successStyle.Render("✓ Successfully generated sqlc configuration!"))
-	fmt.Println(summaryStyle.Render(gen.GenerateSummary(result.Config, result.GenerateQueries, result.GenerateSchema)))
+	fmt.Println(
+		summaryStyle.Render(
+			gen.GenerateSummary(result.Config, result.GenerateQueries, result.GenerateSchema),
+		),
+	)
 }

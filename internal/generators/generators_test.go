@@ -21,8 +21,9 @@ func TestGenerators(t *testing.T) {
 func createTemplateData(engine generated.DatabaseType, outputDir string) generated.TemplateData {
 	return generated.TemplateData{
 		Database: generated.DatabaseConfig{
-			Engine:    engine,
-			UseUUIDs:  engine == generated.DatabaseTypePostgreSQL || engine == generated.DatabaseTypeMySQL,
+			Engine: engine,
+			UseUUIDs: engine == generated.DatabaseTypePostgreSQL ||
+				engine == generated.DatabaseTypeMySQL,
 			UseJSON:   true,
 			UseArrays: engine == generated.DatabaseTypePostgreSQL,
 		},

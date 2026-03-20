@@ -37,10 +37,16 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Value(&projectName).
 				Validate(func(str string) error {
 					if len(str) < 2 {
-						return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be at least 2 characters")
+						return apperrors.NewError(
+							apperrors.ErrorCodeValidationError,
+							"project name must be at least 2 characters",
+						)
 					}
 					if len(str) > 50 {
-						return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be less than 50 characters")
+						return apperrors.NewError(
+							apperrors.ErrorCodeValidationError,
+							"project name must be less than 50 characters",
+						)
 					}
 					return nil
 				}),
@@ -63,7 +69,10 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Value(&packageName).
 				Validate(func(str string) error {
 					if len(str) < 2 {
-						return apperrors.NewError(apperrors.ErrorCodeValidationError, "package name must be at least 2 characters")
+						return apperrors.NewError(
+							apperrors.ErrorCodeValidationError,
+							"package name must be at least 2 characters",
+						)
 					}
 					return nil
 				}),
@@ -81,7 +90,10 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 	data.Package.Name = packageName
 	data.Package.Path = "github.com/yourorg/" + packageName
 
-	s.ui.ShowStepComplete("Project Details", fmt.Sprintf("Name: %s, Package: %s", data.ProjectName, data.Package.Name))
+	s.ui.ShowStepComplete(
+		"Project Details",
+		fmt.Sprintf("Name: %s, Package: %s", data.ProjectName, data.Package.Name),
+	)
 	return nil
 }
 
@@ -104,7 +116,8 @@ func (s *ProjectDetailsStep) generatePackageName(projectName string) string {
 func (s *ProjectDetailsStep) replaceInvalidChars(input string) string {
 	var result strings.Builder
 	for _, char := range input {
-		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_' || (char >= '0' && char <= '9') {
+		if (char >= 'a' && char <= 'z') || (char >= 'A' && char <= 'Z') || char == '_' ||
+			(char >= '0' && char <= '9') {
 			result.WriteRune(char)
 		} else {
 			result.WriteString("_")

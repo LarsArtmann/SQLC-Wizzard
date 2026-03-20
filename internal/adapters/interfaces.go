@@ -75,7 +75,11 @@ type TemplateAdapter interface {
 	GenerateConfig(ctx context.Context, data generated.TemplateData) (*config.SqlcConfig, error)
 
 	// GenerateFiles generates files from template
-	GenerateFiles(ctx context.Context, data generated.TemplateData, outputDir string) ([]string, error)
+	GenerateFiles(
+		ctx context.Context,
+		data generated.TemplateData,
+		outputDir string,
+	) ([]string, error)
 
 	// ValidateTemplateData validates template data
 	ValidateTemplateData(ctx context.Context, data generated.TemplateData) error

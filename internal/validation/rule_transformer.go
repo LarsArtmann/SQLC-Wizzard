@@ -19,7 +19,9 @@ func NewRuleTransformer() *RuleTransformer {
 
 // TransformSafetyRules converts safety rules to configuration format
 // This is the single source of truth for rule transformation logic.
-func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []generated.RuleConfig {
+func (rt *RuleTransformer) TransformSafetyRules(
+	rules *generated.SafetyRules,
+) []generated.RuleConfig {
 	if rules == nil {
 		return []generated.RuleConfig{}
 	}
@@ -67,7 +69,9 @@ func (rt *RuleTransformer) TransformSafetyRules(rules *generated.SafetyRules) []
 //
 // DEPRECATED: Use TransformTypeSafeSafetyRules for new code. This method is kept
 // for backward compatibility with the old boolean-heavy SafetyRules structure.
-func (rt *RuleTransformer) TransformDomainSafetyRules(rules *domain.SafetyRules) []generated.RuleConfig {
+func (rt *RuleTransformer) TransformDomainSafetyRules(
+	rules *domain.SafetyRules,
+) []generated.RuleConfig {
 	// Since domain.SafetyRules is an alias for generated.SafetyRules,
 	// we can directly use the consolidated transformation logic
 	return rt.TransformSafetyRules(rules)
@@ -75,7 +79,9 @@ func (rt *RuleTransformer) TransformDomainSafetyRules(rules *domain.SafetyRules)
 
 // TransformTypeSafeSafetyRules converts NEW type-safe safety rules to configuration format
 // This is the preferred method for new code as it leverages semantic groupings and enums.
-func (rt *RuleTransformer) TransformTypeSafeSafetyRules(rules *domain.TypeSafeSafetyRules) []generated.RuleConfig {
+func (rt *RuleTransformer) TransformTypeSafeSafetyRules(
+	rules *domain.TypeSafeSafetyRules,
+) []generated.RuleConfig {
 	var configRules []generated.RuleConfig
 
 	// ========== STYLE RULES (Code Quality) ==========

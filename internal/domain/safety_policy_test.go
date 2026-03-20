@@ -26,12 +26,24 @@ type safetyRulesExpectations struct {
 func assertSafetyRules(rules any, expectations safetyRulesExpectations) {
 	switch r := rules.(type) {
 	case domain.TypeSafeSafetyRules:
-		Expect(r.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(Equal(expectations.noSelectStar), expectations.description+": SelectStarPolicy")
-		Expect(r.StyleRules.ColumnExplicitness.RequiresExplicitColumns()).To(Equal(expectations.requireExplicitColumns), expectations.description+": ColumnExplicitness")
-		Expect(r.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(Equal(expectations.requireWhere), expectations.description+": WhereRequirement")
-		Expect(r.SafetyRules.LimitRequirement.RequiresOnSelect()).To(Equal(expectations.requireLimit), expectations.description+": LimitRequirement")
-		Expect(r.SafetyRules.MaxRowsWithoutLimit).To(Equal(expectations.maxRowsWithoutLimit), expectations.description+": MaxRowsWithoutLimit")
-		Expect(r.DestructiveOps).To(Equal(expectations.destructiveOps), expectations.description+": DestructiveOps")
+		Expect(
+			r.StyleRules.SelectStarPolicy.ForbidsSelectStar(),
+		).To(Equal(expectations.noSelectStar), expectations.description+": SelectStarPolicy")
+		Expect(
+			r.StyleRules.ColumnExplicitness.RequiresExplicitColumns(),
+		).To(Equal(expectations.requireExplicitColumns), expectations.description+": ColumnExplicitness")
+		Expect(
+			r.SafetyRules.WhereRequirement.RequiresOnDestructive(),
+		).To(Equal(expectations.requireWhere), expectations.description+": WhereRequirement")
+		Expect(
+			r.SafetyRules.LimitRequirement.RequiresOnSelect(),
+		).To(Equal(expectations.requireLimit), expectations.description+": LimitRequirement")
+		Expect(
+			r.SafetyRules.MaxRowsWithoutLimit,
+		).To(Equal(expectations.maxRowsWithoutLimit), expectations.description+": MaxRowsWithoutLimit")
+		Expect(
+			r.DestructiveOps,
+		).To(Equal(expectations.destructiveOps), expectations.description+": DestructiveOps")
 
 		err := r.IsValid()
 		Expect(err).NotTo(HaveOccurred(), expectations.description+": Should be valid")
@@ -51,7 +63,10 @@ var _ = Describe("QueryStyleRules", func() {
 	})
 })
 
-func testColumnExplicitness(columnExplicitness domain.ColumnExplicitnessPolicy, expectsExplicitColumns bool) {
+func testColumnExplicitness(
+	columnExplicitness domain.ColumnExplicitnessPolicy,
+	expectsExplicitColumns bool,
+) {
 	rules := domain.QueryStyleRules{
 		SelectStarPolicy:   domain.SelectStarForbidden,
 		ColumnExplicitness: columnExplicitness,
@@ -148,18 +163,26 @@ func WithAllowedPolicy(policy domain.DestructiveOperationPolicy) DestructivePoli
 }
 
 // WithForbiddenPolicies sets the policies that should be forbidden.
-func WithForbiddenPolicies(policies ...domain.DestructiveOperationPolicy) DestructivePolicyTestCaseOption {
+func WithForbiddenPolicies(
+	policies ...domain.DestructiveOperationPolicy,
+) DestructivePolicyTestCaseOption {
 	return func(tc *destructivePolicyTestCase) {
 		tc.forbiddenPolicies = policies
 	}
 }
 
 // newDestructivePolicyTestCase creates a test case for DestructiveOperationPolicy behavior.
-func newDestructivePolicyTestCase(methodName string, opts ...DestructivePolicyTestCaseOption) destructivePolicyTestCase {
+func newDestructivePolicyTestCase(
+	methodName string,
+	opts ...DestructivePolicyTestCaseOption,
+) destructivePolicyTestCase {
 	tc := destructivePolicyTestCase{
-		description:       "should return true for method: " + methodName,
-		allowedPolicy:     domain.DestructiveAllowed,
-		forbiddenPolicies: []domain.DestructiveOperationPolicy{domain.DestructiveWithConfirmation, domain.DestructiveForbidden},
+		description:   "should return true for method: " + methodName,
+		allowedPolicy: domain.DestructiveAllowed,
+		forbiddenPolicies: []domain.DestructiveOperationPolicy{
+			domain.DestructiveWithConfirmation,
+			domain.DestructiveForbidden,
+		},
 	}
 
 	switch methodName {

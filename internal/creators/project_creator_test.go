@@ -35,7 +35,12 @@ var allDatabaseTypes = []generated.DatabaseType{
 
 // testEnumAssignment tests that an enum field can be correctly assigned and retrieved.
 // Eliminated duplicate test structure by centralizing the pattern.
-func testEnumAssignment[C, E any](fieldName string, values []E, setField func(*C, E), getField func(*C) E) {
+func testEnumAssignment[C, E any](
+	fieldName string,
+	values []E,
+	setField func(*C, E),
+	getField func(*C) E,
+) {
 	It(fmt.Sprintf("should support all %s types", fieldName), func() {
 		for _, v := range values {
 			cfg := new(C)
@@ -99,8 +104,16 @@ func (m *MockFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm 
 	return nil
 }
 
-func (m *MockFileSystemAdapter) WriteFile(ctx context.Context, path string, content []byte, perm fs.FileMode) error {
-	m.writeFileCalls = append(m.writeFileCalls, WriteFileCall{Path: path, Content: content, Perm: perm})
+func (m *MockFileSystemAdapter) WriteFile(
+	ctx context.Context,
+	path string,
+	content []byte,
+	perm fs.FileMode,
+) error {
+	m.writeFileCalls = append(
+		m.writeFileCalls,
+		WriteFileCall{Path: path, Content: content, Perm: perm},
+	)
 	m.callLog = append(m.callLog, "write:"+path)
 	if m.shouldFailWrite {
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "write failed")
@@ -128,7 +141,11 @@ func (m *MockFileSystemAdapter) Copy(ctx context.Context, src, dst string) error
 	return apperrors.NewError(apperrors.ErrorCodeInternalServer, "not implemented")
 }
 
-func (m *MockFileSystemAdapter) CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error {
+func (m *MockFileSystemAdapter) CreateDirectory(
+	ctx context.Context,
+	path string,
+	perm fs.FileMode,
+) error {
 	return m.MkdirAll(ctx, path, perm)
 }
 
@@ -153,7 +170,11 @@ func (m *MockCLIAdapter) CheckCommand(ctx context.Context, name string) error {
 	return nil
 }
 
-func (m *MockCLIAdapter) RunCommand(ctx context.Context, name string, args ...string) (string, error) {
+func (m *MockCLIAdapter) RunCommand(
+	ctx context.Context,
+	name string,
+	args ...string,
+) (string, error) {
 	return "", nil
 }
 
@@ -208,7 +229,9 @@ var _ = Describe("ProjectCreator", func() {
 
 			// Verify CLI output
 			Expect(mockCLI.printedLines).NotTo(BeEmpty())
-			Expect(mockCLI.printedLines).To(ContainElement(ContainSubstring("Creating project structure")))
+			Expect(
+				mockCLI.printedLines,
+			).To(ContainElement(ContainSubstring("Creating project structure")))
 		})
 
 		It("should create microservice-specific directories", func() {
@@ -316,9 +339,15 @@ var _ = Describe("ProjectCreator", func() {
 			Expect(err).NotTo(HaveOccurred())
 
 			// Verify CLI printed progress messages
-			Expect(mockCLI.printedLines).To(ContainElement(ContainSubstring("Creating project structure")))
-			Expect(mockCLI.printedLines).To(ContainElement(ContainSubstring("Creating directory structure")))
-			Expect(mockCLI.printedLines).To(ContainElement(ContainSubstring("Generating sqlc.yaml")))
+			Expect(
+				mockCLI.printedLines,
+			).To(ContainElement(ContainSubstring("Creating project structure")))
+			Expect(
+				mockCLI.printedLines,
+			).To(ContainElement(ContainSubstring("Creating directory structure")))
+			Expect(
+				mockCLI.printedLines,
+			).To(ContainElement(ContainSubstring("Generating sqlc.yaml")))
 		})
 	})
 
@@ -370,7 +399,12 @@ var _ = Describe("ProjectCreator", func() {
 					foundWrite = true
 				} else if strings.HasPrefix(entry, "mkdir:") && foundWrite {
 					// Found a mkdir after a write - wrong order!
-					Fail(fmt.Sprintf("mkdir call %s appears after write call, violates order requirement", entry))
+					Fail(
+						fmt.Sprintf(
+							"mkdir call %s appears after write call, violates order requirement",
+							entry,
+						),
+					)
 				}
 			}
 

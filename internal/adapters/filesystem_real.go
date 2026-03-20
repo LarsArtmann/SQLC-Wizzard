@@ -26,7 +26,12 @@ func (a *RealFileSystemAdapter) ReadFile(ctx context.Context, path string) ([]by
 }
 
 // WriteFile writes a file.
-func (a *RealFileSystemAdapter) WriteFile(ctx context.Context, path string, data []byte, perm fs.FileMode) error {
+func (a *RealFileSystemAdapter) WriteFile(
+	ctx context.Context,
+	path string,
+	data []byte,
+	perm fs.FileMode,
+) error {
 	// Create directory if needed
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
@@ -42,7 +47,11 @@ func (a *RealFileSystemAdapter) WriteFile(ctx context.Context, path string, data
 
 // CreateDirectory creates a directory.
 // Deprecated: Use MkdirAll instead. This method will be removed in a future breaking change.
-func (a *RealFileSystemAdapter) CreateDirectory(ctx context.Context, path string, perm fs.FileMode) error {
+func (a *RealFileSystemAdapter) CreateDirectory(
+	ctx context.Context,
+	path string,
+	perm fs.FileMode,
+) error {
 	return a.MkdirAll(ctx, path, perm)
 }
 
@@ -115,7 +124,11 @@ func (a *RealFileSystemAdapter) TempDir(ctx context.Context, prefix string) (str
 }
 
 // copyFile copies a single file.
-func (a *RealFileSystemAdapter) copyFile(ctx context.Context, src, dst string, info fs.FileInfo) error {
+func (a *RealFileSystemAdapter) copyFile(
+	ctx context.Context,
+	src, dst string,
+	info fs.FileInfo,
+) error {
 	data, err := os.ReadFile(src)
 	if err != nil {
 		return err
@@ -124,7 +137,11 @@ func (a *RealFileSystemAdapter) copyFile(ctx context.Context, src, dst string, i
 }
 
 // copyDir copies a directory recursively.
-func (a *RealFileSystemAdapter) copyDir(ctx context.Context, src, dst string, info fs.FileInfo) error {
+func (a *RealFileSystemAdapter) copyDir(
+	ctx context.Context,
+	src, dst string,
+	info fs.FileInfo,
+) error {
 	if err := os.MkdirAll(dst, info.Mode()); err != nil {
 		return err
 	}

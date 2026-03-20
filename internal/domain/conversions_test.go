@@ -267,9 +267,15 @@ var _ = Describe("EmitOptions Conversions", func() {
 			Expect(roundtrip.StructPointers).To(Equal(original.StructPointers))
 			Expect(roundtrip.JSONTagStyle).To(Equal(original.JSONTagStyle))
 			// Note: UseExactTableNames is not preserved (doesn't exist in legacy)
-			Expect(roundtrip.Features.GenerateJSONTags).To(Equal(original.Features.GenerateJSONTags))
-			Expect(roundtrip.Features.GeneratePreparedQueries).To(Equal(original.Features.GeneratePreparedQueries))
-			Expect(roundtrip.Features.GenerateInterface).To(Equal(original.Features.GenerateInterface))
+			Expect(
+				roundtrip.Features.GenerateJSONTags,
+			).To(Equal(original.Features.GenerateJSONTags))
+			Expect(
+				roundtrip.Features.GeneratePreparedQueries,
+			).To(Equal(original.Features.GeneratePreparedQueries))
+			Expect(
+				roundtrip.Features.GenerateInterface,
+			).To(Equal(original.Features.GenerateInterface))
 		})
 
 		It("should document lossy conversion for NullHandlingPointers vs ExplicitNull", func() {
@@ -459,9 +465,15 @@ var _ = Describe("SafetyRules Conversions", func() {
 			legacy := original.ToLegacy()
 			roundtrip := domain.SafetyRulesToTypeSafe(legacy)
 
-			Expect(roundtrip.StyleRules.SelectStarPolicy.ForbidsSelectStar()).To(Equal(original.StyleRules.SelectStarPolicy.ForbidsSelectStar()))
-			Expect(roundtrip.SafetyRules.WhereRequirement.RequiresOnDestructive()).To(Equal(original.SafetyRules.WhereRequirement.RequiresOnDestructive()))
-			Expect(roundtrip.SafetyRules.LimitRequirement.RequiresOnSelect()).To(Equal(original.SafetyRules.LimitRequirement.RequiresOnSelect()))
+			Expect(
+				roundtrip.StyleRules.SelectStarPolicy.ForbidsSelectStar(),
+			).To(Equal(original.StyleRules.SelectStarPolicy.ForbidsSelectStar()))
+			Expect(
+				roundtrip.SafetyRules.WhereRequirement.RequiresOnDestructive(),
+			).To(Equal(original.SafetyRules.WhereRequirement.RequiresOnDestructive()))
+			Expect(
+				roundtrip.SafetyRules.LimitRequirement.RequiresOnSelect(),
+			).To(Equal(original.SafetyRules.LimitRequirement.RequiresOnSelect()))
 			Expect(roundtrip.DestructiveOps).To(Equal(original.DestructiveOps))
 
 			// Note: RequireExplicitColumns and MaxRowsWithoutLimit are not preserved

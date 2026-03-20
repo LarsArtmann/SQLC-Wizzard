@@ -40,7 +40,10 @@ func (s *FeaturesStep) Execute(data *generated.TemplateData) error {
 		return err
 	}
 
-	s.ui.ShowStepComplete("Features", "Code generation, safety rules, and database features configured")
+	s.ui.ShowStepComplete(
+		"Features",
+		"Code generation, safety rules, and database features configured",
+	)
 	return nil
 }
 
@@ -112,19 +115,39 @@ func buildConfigs(specs []configSpec) []FeatureConfig {
 // Code generation configs.
 var codeGenerationConfigs = buildConfigs([]configSpec{
 	{"Generate Go interfaces?", "Create interfaces for query methods", "EmitOptions.EmitInterface"},
-	{"Generate prepared queries?", "Create prepared query methods for better performance", "EmitOptions.EmitPreparedQueries"},
+	{
+		"Generate prepared queries?",
+		"Create prepared query methods for better performance",
+		"EmitOptions.EmitPreparedQueries",
+	},
 	{"Add JSON tags?", "Add JSON struct tags to generated models", "EmitOptions.EmitJSONTags"},
 })
 
 // Safety rule configs.
 var safetyRuleConfigs = buildConfigs([]configSpec{
-	{"Forbid SELECT *?", "Prevent SELECT * queries for better performance and explicitness", "SafetyRules.NoSelectStar"},
-	{"Require WHERE clause?", "Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification", "SafetyRules.RequireWhere"},
-	{"Require LIMIT on SELECT?", "Force LIMIT clauses on SELECT queries to prevent large result sets", "SafetyRules.RequireLimit"},
+	{
+		"Forbid SELECT *?",
+		"Prevent SELECT * queries for better performance and explicitness",
+		"SafetyRules.NoSelectStar",
+	},
+	{
+		"Require WHERE clause?",
+		"Force WHERE clauses in UPDATE/DELETE queries to prevent accidental data modification",
+		"SafetyRules.RequireWhere",
+	},
+	{
+		"Require LIMIT on SELECT?",
+		"Force LIMIT clauses on SELECT queries to prevent large result sets",
+		"SafetyRules.RequireLimit",
+	},
 })
 
 // runFeatureConfigForm runs confirmation form for any feature configuration.
-func (s *FeaturesStep) runFeatureConfigForm(data *generated.TemplateData, configs []FeatureConfig, errorContext string) error {
+func (s *FeaturesStep) runFeatureConfigForm(
+	data *generated.TemplateData,
+	configs []FeatureConfig,
+	errorContext string,
+) error {
 	// Create boolean values for each field
 	values := make([]bool, len(configs))
 	valuePtrs := make([]*bool, len(configs))

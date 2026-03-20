@@ -61,11 +61,35 @@ func (s *DatabaseStep) Execute(data *generated.TemplateData) error {
 func (s *DatabaseStep) configureDatabaseOptions(data *generated.TemplateData) error {
 	switch data.Database.Engine {
 	case generated.DatabaseTypePostgreSQL:
-		return s.applyDatabaseConfig(data, "PostgreSQL", true, true, true, true, "UUIDs, JSON, Full-text, Arrays enabled")
+		return s.applyDatabaseConfig(
+			data,
+			"PostgreSQL",
+			true,
+			true,
+			true,
+			true,
+			"UUIDs, JSON, Full-text, Arrays enabled",
+		)
 	case generated.DatabaseTypeSQLite:
-		return s.applyDatabaseConfig(data, "SQLite", false, false, false, false, "Lightweight configuration applied")
+		return s.applyDatabaseConfig(
+			data,
+			"SQLite",
+			false,
+			false,
+			false,
+			false,
+			"Lightweight configuration applied",
+		)
 	case generated.DatabaseTypeMySQL:
-		return s.applyDatabaseConfig(data, "MySQL", true, true, true, false, "UUIDs, JSON, Full-text enabled")
+		return s.applyDatabaseConfig(
+			data,
+			"MySQL",
+			true,
+			true,
+			true,
+			false,
+			"UUIDs, JSON, Full-text enabled",
+		)
 	default:
 		return fmt.Errorf("unsupported database engine: %s", data.Database.Engine)
 	}

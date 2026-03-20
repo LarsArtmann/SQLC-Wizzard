@@ -67,7 +67,11 @@ func (t *MicroserviceTemplate) Generate(data generated.TemplateData) (*config.Sq
 		Version: "2",
 		SQL: []config.SQLConfig{
 			{
-				Name:                 lo.Ternary(data.ProjectName != "", data.ProjectName, "service"),
+				Name: lo.Ternary(
+					data.ProjectName != "",
+					data.ProjectName,
+					"service",
+				),
 				Engine:               string(databaseConfig.Engine),
 				Queries:              config.NewPathOrPaths([]string{outputConfig.QueriesDir}),
 				Schema:               config.NewPathOrPaths([]string{outputConfig.SchemaDir}),

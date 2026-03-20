@@ -77,7 +77,10 @@ func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfi
 }
 
 // createDirectoryStructure creates the basic directory structure.
-func (pc *ProjectCreator) createDirectoryStructure(ctx context.Context, config *CreateConfig) error {
+func (pc *ProjectCreator) createDirectoryStructure(
+	ctx context.Context,
+	config *CreateConfig,
+) error {
 	_ = pc.cli.Println(ctx, "📁 Creating directory structure...")
 
 	dirs := []string{
@@ -130,7 +133,10 @@ func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateCon
 
 	// Defensive check: ensure config is not nil before marshalling
 	if cfg.Config == nil {
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "sqlc config is nil: cannot marshal empty configuration to yaml")
+		return apperrors.NewError(
+			apperrors.ErrorCodeInternalServer,
+			"sqlc config is nil: cannot marshal empty configuration to yaml",
+		)
 	}
 
 	// Convert config to YAML using the marshaller
@@ -182,12 +188,22 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 	switch templateData.ProjectType {
 	case generated.ProjectTypeMicroservice:
 		microserviceQueries := pc.buildMicroserviceQueries(templateData)
-		if err := pc.fs.WriteFile(ctx, "queries/microservice.sql", []byte(microserviceQueries), 0o644); err != nil {
+		if err := pc.fs.WriteFile(
+			ctx,
+			"queries/microservice.sql",
+			[]byte(microserviceQueries),
+			0o644,
+		); err != nil {
 			return fmt.Errorf("failed to write microservice queries: %w", err)
 		}
 	case generated.ProjectTypeEnterprise:
 		enterpriseQueries := pc.buildEnterpriseQueries(templateData)
-		if err := pc.fs.WriteFile(ctx, "queries/enterprise.sql", []byte(enterpriseQueries), 0o644); err != nil {
+		if err := pc.fs.WriteFile(
+			ctx,
+			"queries/enterprise.sql",
+			[]byte(enterpriseQueries),
+			0o644,
+		); err != nil {
 			return fmt.Errorf("failed to write enterprise queries: %w", err)
 		}
 	case generated.ProjectTypeAPIFirst:
@@ -199,17 +215,32 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 		// Use basic users queries for hobby projects
 	case generated.ProjectTypeAnalytics:
 		analyticsQueries := pc.buildAnalyticsQueries(templateData)
-		if err := pc.fs.WriteFile(ctx, "queries/analytics.sql", []byte(analyticsQueries), 0o644); err != nil {
+		if err := pc.fs.WriteFile(
+			ctx,
+			"queries/analytics.sql",
+			[]byte(analyticsQueries),
+			0o644,
+		); err != nil {
 			return fmt.Errorf("failed to write analytics queries: %w", err)
 		}
 	case generated.ProjectTypeTesting:
 		testingQueries := pc.buildTestingQueries(templateData)
-		if err := pc.fs.WriteFile(ctx, "queries/testing.sql", []byte(testingQueries), 0o644); err != nil {
+		if err := pc.fs.WriteFile(
+			ctx,
+			"queries/testing.sql",
+			[]byte(testingQueries),
+			0o644,
+		); err != nil {
 			return fmt.Errorf("failed to write testing queries: %w", err)
 		}
 	case generated.ProjectTypeMultiTenant:
 		tenantQueries := pc.buildMultiTenantQueries(templateData)
-		if err := pc.fs.WriteFile(ctx, "queries/tenant.sql", []byte(tenantQueries), 0o644); err != nil {
+		if err := pc.fs.WriteFile(
+			ctx,
+			"queries/tenant.sql",
+			[]byte(tenantQueries),
+			0o644,
+		); err != nil {
 			return fmt.Errorf("failed to write tenant queries: %w", err)
 		}
 	case generated.ProjectTypeLibrary:

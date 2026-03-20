@@ -43,7 +43,8 @@ existing SQLC projects to latest version.`,
 	// Add flags
 	cmd.Flags().StringVarP(&source, "source", "s", "", "Source configuration file")
 	cmd.Flags().StringVarP(&destination, "destination", "d", "", "Destination configuration file")
-	cmd.Flags().StringVarP(&database, "database", "b", "", "Target database type (mysql, postgresql, sqlite)")
+	cmd.Flags().
+		StringVarP(&database, "database", "b", "", "Target database type (mysql, postgresql, sqlite)")
 	cmd.Flags().StringVarP(&sqlcVersion, "version", "v", "", "Target SQLC version")
 	cmd.Flags().BoolVarP(&force, "force", "f", false, "Force overwrite existing files")
 	cmd.Flags().BoolVar(&dryRun, "dry-run", false, "Show what would be done without making changes")

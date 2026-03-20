@@ -166,7 +166,9 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 				}
 
 				Expect(data.Validation.EmitOptions.EmitInterface).To(Equal(opts.EmitInterface))
-				Expect(data.Validation.EmitOptions.EmitPreparedQueries).To(Equal(opts.EmitPreparedQueries))
+				Expect(
+					data.Validation.EmitOptions.EmitPreparedQueries,
+				).To(Equal(opts.EmitPreparedQueries))
 				Expect(data.Validation.EmitOptions.EmitJSONTags).To(Equal(opts.EmitJSONTags))
 			}
 		})

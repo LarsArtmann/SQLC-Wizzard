@@ -67,12 +67,17 @@ Examples:
 	}
 
 	// Add flags
-	cmd.Flags().StringVar(&opts.ProjectType, "type", "microservice", "Project type (microservice, library, fullstack, api)")
-	cmd.Flags().StringVar(&opts.Database, "database", "postgresql", "Database engine (postgresql, mysql, sqlite)")
-	cmd.Flags().StringVarP(&opts.OutputDir, "output-dir", "o", ".", "Output directory for the project")
+	cmd.Flags().
+		StringVar(&opts.ProjectType, "type", "microservice", "Project type (microservice, library, fullstack, api)")
+	cmd.Flags().
+		StringVar(&opts.Database, "database", "postgresql", "Database engine (postgresql, mysql, sqlite)")
+	cmd.Flags().
+		StringVarP(&opts.OutputDir, "output-dir", "o", ".", "Output directory for the project")
 	cmd.Flags().BoolVar(&opts.IncludeAuth, "include-auth", false, "Include authentication setup")
-	cmd.Flags().BoolVar(&opts.IncludeFrontend, "include-frontend", false, "Include frontend setup (for fullstack)")
-	cmd.Flags().BoolVar(&opts.NonInteractive, "non-interactive", false, "Run with smart defaults, no prompts")
+	cmd.Flags().
+		BoolVar(&opts.IncludeFrontend, "include-frontend", false, "Include frontend setup (for fullstack)")
+	cmd.Flags().
+		BoolVar(&opts.NonInteractive, "non-interactive", false, "Run with smart defaults, no prompts")
 	cmd.Flags().BoolVarP(&opts.Force, "force", "f", false, "Overwrite existing files")
 
 	return cmd
@@ -102,7 +107,10 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	// Check if directory is empty (unless force is used)
 	if !opts.Force {
 		if entries, err := os.ReadDir("."); err == nil && len(entries) > 0 {
-			return apperrors.NewError(apperrors.ErrorCodeInternalServer, "directory is not empty. Use --force to overwrite")
+			return apperrors.NewError(
+				apperrors.ErrorCodeInternalServer,
+				"directory is not empty. Use --force to overwrite",
+			)
 		}
 	}
 
@@ -159,7 +167,12 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	return nil
 }
 
-func createTemplateData(projectName string, projectType generated.ProjectType, databaseType generated.DatabaseType, opts *CreateOptions) generated.TemplateData {
+func createTemplateData(
+	projectName string,
+	projectType generated.ProjectType,
+	databaseType generated.DatabaseType,
+	opts *CreateOptions,
+) generated.TemplateData {
 	return generated.TemplateData{
 		ProjectName: projectName,
 		ProjectType: projectType,
@@ -194,7 +207,12 @@ func createTemplateData(projectName string, projectType generated.ProjectType, d
 	}
 }
 
-func showCreateSuccess(projectName string, projectType generated.ProjectType, databaseType generated.DatabaseType, outputPath string) {
+func showCreateSuccess(
+	projectName string,
+	projectType generated.ProjectType,
+	databaseType generated.DatabaseType,
+	outputPath string,
+) {
 	successStyle := lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("10")).

@@ -210,7 +210,9 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 			// Verify complex multi-tenant configuration
 			Expect(result.TemplateData.ProjectType).To(Equal(generated.ProjectTypeMultiTenant))
-			Expect(result.TemplateData.Package.BuildTags).To(Equal("postgres,pgx,multitenant,tenant"))
+			Expect(
+				result.TemplateData.Package.BuildTags,
+			).To(Equal("postgres,pgx,multitenant,tenant"))
 			Expect(result.TemplateData.Database.UseManaged).To(BeTrue())
 			Expect(result.TemplateData.Validation.SafetyRules.RequireLimit).To(BeTrue())
 		})
@@ -334,7 +336,9 @@ var _ = Describe("Wizard Run Method Integration", func() {
 
 			// Even with empty project name, other data should be accessible
 			Expect(result.TemplateData.ProjectName).To(Equal(""))
-			Expect(result.TemplateData.ProjectType).To(BeAssignableToTypeOf(generated.ProjectTypeHobby))
+			Expect(
+				result.TemplateData.ProjectType,
+			).To(BeAssignableToTypeOf(generated.ProjectTypeHobby))
 		})
 
 		It("should handle invalid project types in template data", func() {
@@ -343,7 +347,9 @@ var _ = Describe("Wizard Run Method Integration", func() {
 			// Even with potentially invalid data, structure should work
 			result.TemplateData.ProjectType = generated.ProjectType("")
 
-			Expect(result.TemplateData.ProjectType).To(BeAssignableToTypeOf(generated.ProjectTypeHobby))
+			Expect(
+				result.TemplateData.ProjectType,
+			).To(BeAssignableToTypeOf(generated.ProjectTypeHobby))
 		})
 
 		It("should handle missing optional configuration fields", func() {

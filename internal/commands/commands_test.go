@@ -173,7 +173,12 @@ var _ = Describe("Doctor Command Checks", func() {
 
 	Context("checkMemoryAvailability", func() {
 		It("should return PASS or WARN based on available memory", func() {
-			expectDoctorCheck(checkMemoryAvailability, "Memory", commands.DoctorStatusPass, commands.DoctorStatusWarn)
+			expectDoctorCheck(
+				checkMemoryAvailability,
+				"Memory",
+				commands.DoctorStatusPass,
+				commands.DoctorStatusWarn,
+			)
 		})
 	})
 })
@@ -245,7 +250,11 @@ func checkMemoryAvailability(ctx context.Context) *commands.DoctorResult {
 
 // expectDoctorCheck is a helper that consolidates common assertions
 // for doctor check functions. Accepts multiple expected statuses for flexible matching.
-func expectDoctorCheck(checkFunc func(ctx context.Context) *commands.DoctorResult, expectedMessageSubstring string, expectedStatuses ...commands.DoctorStatus) {
+func expectDoctorCheck(
+	checkFunc func(ctx context.Context) *commands.DoctorResult,
+	expectedMessageSubstring string,
+	expectedStatuses ...commands.DoctorStatus,
+) {
 	result := checkFunc(context.Background())
 
 	var expectedStatusMatcher gomegatypes.GomegaMatcher
@@ -265,7 +274,10 @@ func expectDoctorCheck(checkFunc func(ctx context.Context) *commands.DoctorResul
 }
 
 // expectDoctorCheckPass is a convenience helper for checks expected to return PASS status.
-func expectDoctorCheckPass(checkFunc func(ctx context.Context) *commands.DoctorResult, expectedMessageSubstring string) {
+func expectDoctorCheckPass(
+	checkFunc func(ctx context.Context) *commands.DoctorResult,
+	expectedMessageSubstring string,
+) {
 	expectDoctorCheck(checkFunc, expectedMessageSubstring, commands.DoctorStatusPass)
 }
 
@@ -275,7 +287,8 @@ func generateExampleFiles(outputDir string, force bool) error {
 		if _, err := os.Stat(outputDir); err == nil {
 			files, err := os.ReadDir(outputDir)
 			if err == nil && len(files) > 0 {
-				return apperrors.NewError(apperrors.ErrorCodeInternalServer, "directory_not_empty").WithDescription("output directory is not empty")
+				return apperrors.NewError(apperrors.ErrorCodeInternalServer, "directory_not_empty").
+					WithDescription("output directory is not empty")
 			}
 		}
 	}

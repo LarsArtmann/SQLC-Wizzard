@@ -28,7 +28,11 @@ const (
 )
 
 // performDatabaseOperation performs common validation and logging for database operations.
-func (a *RealDatabaseAdapter) performDatabaseOperation(ctx context.Context, cfg *config.DatabaseConfig, operation OperationType) error {
+func (a *RealDatabaseAdapter) performDatabaseOperation(
+	ctx context.Context,
+	cfg *config.DatabaseConfig,
+	operation OperationType,
+) error {
 	if err := validateDatabaseConfig(cfg); err != nil {
 		return err
 	}
@@ -67,12 +71,18 @@ func validateDatabaseConfig(cfg *config.DatabaseConfig) error {
 }
 
 // TestConnection tests database connectivity.
-func (a *RealDatabaseAdapter) TestConnection(ctx context.Context, cfg *config.DatabaseConfig) error {
+func (a *RealDatabaseAdapter) TestConnection(
+	ctx context.Context,
+	cfg *config.DatabaseConfig,
+) error {
 	return a.performDatabaseOperation(ctx, cfg, OperationTestConnection)
 }
 
 // CreateDatabase creates a new database.
-func (a *RealDatabaseAdapter) CreateDatabase(ctx context.Context, cfg *config.DatabaseConfig) error {
+func (a *RealDatabaseAdapter) CreateDatabase(
+	ctx context.Context,
+	cfg *config.DatabaseConfig,
+) error {
 	return a.performDatabaseOperation(ctx, cfg, OperationCreateDatabase)
 }
 
@@ -82,7 +92,10 @@ func (a *RealDatabaseAdapter) DropDatabase(ctx context.Context, cfg *config.Data
 }
 
 // GetSchema returns database schema information.
-func (a *RealDatabaseAdapter) GetSchema(ctx context.Context, cfg *config.DatabaseConfig) (*schema.Schema, error) {
+func (a *RealDatabaseAdapter) GetSchema(
+	ctx context.Context,
+	cfg *config.DatabaseConfig,
+) (*schema.Schema, error) {
 	if err := validateDatabaseConfig(cfg); err != nil {
 		return nil, err
 	}
@@ -99,7 +112,10 @@ func (a *RealDatabaseAdapter) GetSchema(ctx context.Context, cfg *config.Databas
 }
 
 // GenerateMigrations generates database migrations.
-func (a *RealDatabaseAdapter) GenerateMigrations(ctx context.Context, cfg *config.DatabaseConfig) ([]string, error) {
+func (a *RealDatabaseAdapter) GenerateMigrations(
+	ctx context.Context,
+	cfg *config.DatabaseConfig,
+) ([]string, error) {
 	if err := validateDatabaseConfig(cfg); err != nil {
 		return nil, err
 	}

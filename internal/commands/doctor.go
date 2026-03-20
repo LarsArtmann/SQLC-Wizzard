@@ -151,11 +151,19 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		fmt.Println("🎉 All checks passed! Your environment is ready for SQLC-Wizard.")
 		return nil
 	case failed == 0 && warned > 0:
-		fmt.Printf("⚠️  %d warning(s) found. Consider addressing them for optimal experience.\n", warned)
+		fmt.Printf(
+			"⚠️  %d warning(s) found. Consider addressing them for optimal experience.\n",
+			warned,
+		)
 		return nil
 	default:
-		fmt.Printf("❌ %d error(s) and %d warning(s) found. Please fix errors before continuing.\n", failed, warned)
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "health_check_failed").WithDescription("environment issues detected")
+		fmt.Printf(
+			"❌ %d error(s) and %d warning(s) found. Please fix errors before continuing.\n",
+			failed,
+			warned,
+		)
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "health_check_failed").
+			WithDescription("environment issues detected")
 	}
 }
 

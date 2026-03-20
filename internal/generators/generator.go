@@ -22,7 +22,11 @@ func NewGenerator(outputDir string) *Generator {
 }
 
 // GenerateAll generates all files (config, queries, schema).
-func (g *Generator) GenerateAll(cfg *config.SqlcConfig, data templates.TemplateData, includeQueries, includeSchema bool) error {
+func (g *Generator) GenerateAll(
+	cfg *config.SqlcConfig,
+	data templates.TemplateData,
+	includeQueries, includeSchema bool,
+) error {
 	// Generate sqlc.yaml
 	if err := g.GenerateSqlcConfig(cfg); err != nil {
 		return fmt.Errorf("failed to generate sqlc.yaml: %w", err)
@@ -63,7 +67,10 @@ func (g *Generator) GenerateSqlcConfig(cfg *config.SqlcConfig) error {
 }
 
 // generateFileWithTemplate is a helper to generate files with templates.
-func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey, defaultDir, templateType, filename string) error {
+func (g *Generator) generateFileWithTemplate(
+	data templates.TemplateData,
+	dirKey, defaultDir, templateType, filename string,
+) error {
 	// Determine directory
 	var dir string
 	var templateContent func(templates.DatabaseType) string
@@ -112,16 +119,31 @@ func (g *Generator) generateFileWithTemplate(data templates.TemplateData, dirKey
 
 // GenerateExampleQueries copies example query files.
 func (g *Generator) GenerateExampleQueries(data templates.TemplateData) error {
-	return g.generateFileWithTemplate(data, "queries", "internal/db/queries", "queries", "users.sql")
+	return g.generateFileWithTemplate(
+		data,
+		"queries",
+		"internal/db/queries",
+		"queries",
+		"users.sql",
+	)
 }
 
 // GenerateExampleSchema copies example schema files.
 func (g *Generator) GenerateExampleSchema(data templates.TemplateData) error {
-	return g.generateFileWithTemplate(data, "schema", "internal/db/schema", "schema", "001_users_table.sql")
+	return g.generateFileWithTemplate(
+		data,
+		"schema",
+		"internal/db/schema",
+		"schema",
+		"001_users_table.sql",
+	)
 }
 
 // GenerateSummary creates a summary of what was generated.
-func (g *Generator) GenerateSummary(cfg *config.SqlcConfig, includeQueries, includeSchema bool) string {
+func (g *Generator) GenerateSummary(
+	cfg *config.SqlcConfig,
+	includeQueries, includeSchema bool,
+) string {
 	summary := "✓ Generated files:\n"
 	summary += fmt.Sprintf("  • sqlc.yaml (%d SQL configuration(s))\n", len(cfg.SQL))
 

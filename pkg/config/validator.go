@@ -51,7 +51,10 @@ func Validate(cfg *SqlcConfig) *ValidationResult {
 	if cfg.Version == "" {
 		result.AddError("version", "version is required")
 	} else if cfg.Version != "1" && cfg.Version != "2" {
-		result.AddError("version", fmt.Sprintf("unsupported version: %s (expected 1 or 2)", cfg.Version))
+		result.AddError(
+			"version",
+			fmt.Sprintf("unsupported version: %s (expected 1 or 2)", cfg.Version),
+		)
 	}
 
 	// Validate SQL configurations
@@ -75,7 +78,14 @@ func validateSQLConfig(cfg *SQLConfig, index int, result *ValidationResult) {
 	if cfg.Engine == "" {
 		result.AddError(prefix+".engine", "engine is required")
 	} else if !slices.Contains(validEngines, cfg.Engine) {
-		result.AddError(prefix+".engine", fmt.Sprintf("invalid engine: %s (must be one of: %s)", cfg.Engine, strings.Join(validEngines, ", ")))
+		result.AddError(
+			prefix+".engine",
+			fmt.Sprintf(
+				"invalid engine: %s (must be one of: %s)",
+				cfg.Engine,
+				strings.Join(validEngines, ", "),
+			),
+		)
 	}
 
 	// Validate queries path
@@ -89,7 +99,8 @@ func validateSQLConfig(cfg *SQLConfig, index int, result *ValidationResult) {
 	}
 
 	// Validate gen configuration
-	if cfg.Gen.Go == nil && cfg.Gen.Kotlin == nil && cfg.Gen.Python == nil && cfg.Gen.TypeScript == nil {
+	if cfg.Gen.Go == nil && cfg.Gen.Kotlin == nil && cfg.Gen.Python == nil &&
+		cfg.Gen.TypeScript == nil {
 		result.AddError(prefix+".gen", "at least one language generation config is required")
 	}
 
@@ -113,20 +124,36 @@ func validateGoGenConfig(cfg *GoGenConfig, prefix string, result *ValidationResu
 	if cfg.JSONTagsCaseStyle != "" {
 		validStyles := []string{"camel", "pascal", "snake"}
 		if !slices.Contains(validStyles, cfg.JSONTagsCaseStyle) {
-			result.AddError(prefix+".json_tags_case_style", fmt.Sprintf("invalid case style: %s (must be one of: %s)", cfg.JSONTagsCaseStyle, strings.Join(validStyles, ", ")))
+			result.AddError(
+				prefix+".json_tags_case_style",
+				fmt.Sprintf(
+					"invalid case style: %s (must be one of: %s)",
+					cfg.JSONTagsCaseStyle,
+					strings.Join(validStyles, ", "),
+				),
+			)
 		}
 	}
 
 	// Add warnings for best practices
 	if !cfg.EmitInterface {
-		result.AddWarning(prefix+".emit_interface", "consider enabling emit_interface for better testability")
+		result.AddWarning(
+			prefix+".emit_interface",
+			"consider enabling emit_interface for better testability",
+		)
 	}
 
 	if !cfg.EmitPreparedQueries {
-		result.AddWarning(prefix+".emit_prepared_queries", "consider enabling emit_prepared_queries for better performance")
+		result.AddWarning(
+			prefix+".emit_prepared_queries",
+			"consider enabling emit_prepared_queries for better performance",
+		)
 	}
 
 	if !cfg.EmitJSONTags {
-		result.AddWarning(prefix+".emit_json_tags", "consider enabling emit_json_tags for JSON serialization support")
+		result.AddWarning(
+			prefix+".emit_json_tags",
+			"consider enabling emit_json_tags for JSON serialization support",
+		)
 	}
 }

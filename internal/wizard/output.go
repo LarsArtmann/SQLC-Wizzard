@@ -79,28 +79,46 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 func (s *OutputStep) ValidateConfiguration(data *generated.TemplateData) error {
 	// Check for path conflicts
 	if data.Output.BaseDir == data.Output.QueriesDir {
-		return apperrors.NewError(apperrors.ErrorCodeValidationError, "base output directory cannot be the same as queries directory")
+		return apperrors.NewError(
+			apperrors.ErrorCodeValidationError,
+			"base output directory cannot be the same as queries directory",
+		)
 	}
 
 	if data.Output.BaseDir == data.Output.SchemaDir {
-		return apperrors.NewError(apperrors.ErrorCodeValidationError, "base output directory cannot be the same as schema directory")
+		return apperrors.NewError(
+			apperrors.ErrorCodeValidationError,
+			"base output directory cannot be the same as schema directory",
+		)
 	}
 
 	if data.Output.QueriesDir == data.Output.SchemaDir {
-		return apperrors.NewError(apperrors.ErrorCodeValidationError, "queries directory cannot be the same as schema directory")
+		return apperrors.NewError(
+			apperrors.ErrorCodeValidationError,
+			"queries directory cannot be the same as schema directory",
+		)
 	}
 
 	// Check for reasonable directory structure
 	if data.Output.BaseDir == "" {
-		return apperrors.NewError(apperrors.ErrorCodeValidationError, "base output directory is required")
+		return apperrors.NewError(
+			apperrors.ErrorCodeValidationError,
+			"base output directory is required",
+		)
 	}
 
 	if data.Output.QueriesDir == "" {
-		return apperrors.NewError(apperrors.ErrorCodeValidationError, "queries directory is required")
+		return apperrors.NewError(
+			apperrors.ErrorCodeValidationError,
+			"queries directory is required",
+		)
 	}
 
 	if data.Output.SchemaDir == "" {
-		return apperrors.NewError(apperrors.ErrorCodeValidationError, "schema directory is required")
+		return apperrors.NewError(
+			apperrors.ErrorCodeValidationError,
+			"schema directory is required",
+		)
 	}
 
 	return nil

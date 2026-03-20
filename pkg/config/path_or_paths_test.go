@@ -115,7 +115,9 @@ path:
 				err := yaml.Unmarshal([]byte(yamlData), &result)
 
 				Expect(err).To(HaveOccurred())
-				Expect(err.Error()).To(ContainSubstring("path_or_paths must be either a string or array of strings"))
+				Expect(
+					err.Error(),
+				).To(ContainSubstring("path_or_paths must be either a string or array of strings"))
 			})
 		})
 	})

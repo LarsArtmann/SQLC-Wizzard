@@ -14,7 +14,11 @@ type stepTestCase struct {
 }
 
 // generateStepTests generates common step creation tests for the given step function.
-func generateStepTests(describeName string, stepFunc func(*generated.TemplateData) *huh.Input, testCases []stepTestCase) {
+func generateStepTests(
+	describeName string,
+	stepFunc func(*generated.TemplateData) *huh.Input,
+	testCases []stepTestCase,
+) {
 	Describe(describeName, func() {
 		Context("with default template data", func() {
 			It("should create a valid step", func() {
@@ -57,7 +61,10 @@ func createStepTestCases() []stepTestCase {
 
 // createFieldTestCases creates test cases with custom field configuration.
 // This eliminates duplication across similar test case helper functions.
-func createFieldTestCases(fieldDescription string, setupFields func(*generated.TemplateData)) []stepTestCase {
+func createFieldTestCases(
+	fieldDescription string,
+	setupFields func(*generated.TemplateData),
+) []stepTestCase {
 	return []stepTestCase{
 		{
 			data: func() *generated.TemplateData {

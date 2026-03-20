@@ -109,7 +109,11 @@ func newCaseConversionTestCase(separator string, inputs []struct {
 }
 
 // runCaseConversionTests runs comprehensive tests for case conversion functions.
-func runCaseConversionTests(testFunc func(string) string, description string, testCase caseConversionTestCase) {
+func runCaseConversionTests(
+	testFunc func(string) string,
+	description string,
+	testCase caseConversionTestCase,
+) {
 	It("should convert CamelCase to "+description, func() {
 		runStringTests(testFunc, testCase.testCases)
 	})
@@ -121,7 +125,9 @@ func runCaseConversionTests(testFunc func(string) string, description string, te
 			Expect(testFunc("-Leading")).To(Equal(testCase.edgeLeading))
 		}
 		if testCase.edgeTrailing != "" {
-			Expect(testFunc("Trailing" + testCase.edgeTrailing[8:])).To(Equal(testCase.edgeTrailing))
+			Expect(
+				testFunc("Trailing" + testCase.edgeTrailing[8:]),
+			).To(Equal(testCase.edgeTrailing))
 		}
 	})
 }
@@ -145,7 +151,9 @@ var _ = Describe("StringToCamelCase", func() {
 
 		Expect(utils.StringToCamelCase("_leading_underscore")).To(Equal("LeadingUnderscore"))
 		Expect(utils.StringToCamelCase("trailing_underscore_")).To(Equal("TrailingUnderscore"))
-		Expect(utils.StringToCamelCase("__multiple___underscores__")).To(Equal("MultipleUnderscores"))
+		Expect(
+			utils.StringToCamelCase("__multiple___underscores__"),
+		).To(Equal("MultipleUnderscores"))
 	})
 })
 
@@ -211,7 +219,15 @@ var _ = Describe("Pluralize and Singularize", func() {
 
 var _ = Describe("IsValidIdentifier", func() {
 	It("should validate Go identifiers correctly", func() {
-		validCases := []string{"validIdentifier", "ValidIdentifier", "valid_identifier", "valid123", "_private", "a", "_123"}
+		validCases := []string{
+			"validIdentifier",
+			"ValidIdentifier",
+			"valid_identifier",
+			"valid123",
+			"_private",
+			"a",
+			"_123",
+		}
 		invalidCases := []string{"123invalid", "invalid-char", "invalid.char", "", "invalid space"}
 
 		for _, valid := range validCases {

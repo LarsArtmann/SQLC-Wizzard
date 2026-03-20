@@ -198,7 +198,12 @@ func TestMigrationStatus_IsDirty_SplitBrainPrevention(t *testing.T) {
 	status.WithDirty(false)
 	status.WithMigrations([]Migration{
 		{Version: 1, Applied: true, Dirty: false, Name: "clean_migration"},
-		{Version: 2, Applied: false, Dirty: true, Name: "dirty_migration"}, // This migration is dirty!
+		{
+			Version: 2,
+			Applied: false,
+			Dirty:   true,
+			Name:    "dirty_migration",
+		}, // This migration is dirty!
 	})
 
 	// IsDirty() should detect the dirty migration even though database-level flag is false

@@ -26,21 +26,30 @@ func TestValidationSuite[T interface {
 		It("should validate all defined "+suite.GetTypeName(), func() {
 			validValues := suite.GetValidValues()
 			for _, value := range validValues {
-				Expect(value.IsValid()).To(BeTrue(), "%s %s should be valid", suite.GetTypeName(), value)
+				Expect(
+					value.IsValid(),
+				).To(BeTrue(), "%s %s should be valid", suite.GetTypeName(), value)
 			}
 		})
 
 		It("should reject invalid "+suite.GetTypeName(), func() {
 			invalidValues := suite.GetInvalidValues()
 			for _, value := range invalidValues {
-				Expect(value.IsValid()).To(BeFalse(), "%s %s should be invalid", suite.GetTypeName(), value)
+				Expect(
+					value.IsValid(),
+				).To(BeFalse(), "%s %s should be invalid", suite.GetTypeName(), value)
 			}
 		})
 	})
 }
 
 // RunBooleanMethodTest runs generic tests for boolean methods.
-func RunBooleanMethodTest(context string, trueModes, falseModes []string, method func(string) bool, methodDisplay string) {
+func RunBooleanMethodTest(
+	context string,
+	trueModes, falseModes []string,
+	method func(string) bool,
+	methodDisplay string,
+) {
 	It("should return true for "+context, func() {
 		for _, mode := range trueModes {
 			Expect(method(mode)).To(BeTrue(), "Mode %s should return true for "+context, mode)
@@ -176,7 +185,9 @@ func CreateBaseTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 //	rules := testing.CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
 //	    r.SafetyRules.WhereRequirement = domain.WhereClauseAlways
 //	})
-func CreateTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *domain.TypeSafeSafetyRules {
+func CreateTypeSafeSafetyRules(
+	configure func(*domain.TypeSafeSafetyRules),
+) *domain.TypeSafeSafetyRules {
 	rules := newTypeSafeSafetyRules()
 	if configure != nil {
 		configure(rules)
@@ -187,7 +198,9 @@ func CreateTypeSafeSafetyRules(configure func(*domain.TypeSafeSafetyRules)) *dom
 // CreateRestrictiveTypeSafeSafetyRulesWithCustomRules creates a TypeSafeSafetyRules with
 // restrictive safety settings and accepts custom rules for testing custom rule preservation.
 // This helper eliminates duplicate fixture code for testing custom safety rules.
-func CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(customRules []generated.SafetyRule) *domain.TypeSafeSafetyRules {
+func CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(
+	customRules []generated.SafetyRule,
+) *domain.TypeSafeSafetyRules {
 	return CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
 		r.SafetyRules.WhereRequirement = domain.WhereClauseAlways
 		r.SafetyRules.LimitRequirement = domain.LimitClauseNever
@@ -254,7 +267,9 @@ func CreateGeneratedSafetyRulesAllowed() generated.SafetyRules {
 // CreateGeneratedSafetyRulesAllowedWithCustomRules creates a SafetyRules with all forbidden flags
 // cleared and accepts custom rules for testing custom rule preservation.
 // This helper eliminates duplicate fixture code for testing custom safety rules.
-func CreateGeneratedSafetyRulesAllowedWithCustomRules(customRules []generated.SafetyRule) *domain.SafetyRules {
+func CreateGeneratedSafetyRulesAllowedWithCustomRules(
+	customRules []generated.SafetyRule,
+) *domain.SafetyRules {
 	return &domain.SafetyRules{
 		NoSelectStar: false,
 		RequireWhere: false,

@@ -67,7 +67,11 @@ func AssertTemplateDefaultData(t *testing.T, helper TemplateTestHelper) {
 	assert.Equal(t, helper.ExpectFullText, data.Database.UseFullText)
 	assert.Equal(t, helper.ExpectJSONTags, data.Validation.EmitOptions.EmitJSONTags)
 	if helper.ExpectInterface {
-		assert.True(t, data.Validation.EmitOptions.EmitInterface || data.Validation.EmitOptions.EmitPreparedQueries)
+		assert.True(
+			t,
+			data.Validation.EmitOptions.EmitInterface ||
+				data.Validation.EmitOptions.EmitPreparedQueries,
+		)
 	}
 	assert.JSONEq(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle)
 
@@ -138,14 +142,24 @@ func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
 
 	result, err := template.Generate(data)
 
-	require.NoError(t, err, "Generate should not return an error for %s template", expectedProjectType)
+	require.NoError(
+		t,
+		err,
+		"Generate should not return an error for %s template",
+		expectedProjectType,
+	)
 	require.NotNil(t, result, "Generate should return a non-nil config")
 
 	assert.Equal(t, "2", result.Version, "Version should be '2'")
 	assert.Len(t, result.SQL, 1, "Should have exactly one SQL configuration")
 
 	sqlConfig := result.SQL[0]
-	assert.Equal(t, expectedProjectName, sqlConfig.Name, "SQL config name should match project name")
+	assert.Equal(
+		t,
+		expectedProjectName,
+		sqlConfig.Name,
+		"SQL config name should match project name",
+	)
 	assert.Equal(t, "postgresql", sqlConfig.Engine, "Engine should be postgresql")
 	assert.NotNil(t, sqlConfig.Database, "Database should be configured")
 
@@ -177,10 +191,15 @@ func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
 //	        CommonTemplateConfigs.PostgreSQLAnalytics,
 //	    )
 //	}
-func AssertTemplateGenerateBasicWithConfigs(t *testing.T, template interface {
-	DefaultData() generated.TemplateData
-	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-}, expectedProjectType generated.ProjectType, expectedProjectName, expectedEngine string, commonConfigs []TemplateTestHelperOption,
+func AssertTemplateGenerateBasicWithConfigs(
+	t *testing.T,
+	template interface {
+		DefaultData() generated.TemplateData
+		Generate(data generated.TemplateData) (*config.SqlcConfig, error)
+	},
+	expectedProjectType generated.ProjectType,
+	expectedProjectName, expectedEngine string,
+	commonConfigs []TemplateTestHelperOption,
 ) {
 	t.Helper()
 

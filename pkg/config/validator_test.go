@@ -39,7 +39,11 @@ type EntryAdder interface {
 	GetEntries() []ValidationError
 }
 
-func addEntriesAndVerify(adder EntryAdder, field1, message1, field2, message2 string, expectValid bool) {
+func addEntriesAndVerify(
+	adder EntryAdder,
+	field1, message1, field2, message2 string,
+	expectValid bool,
+) {
 	adder.AddEntry(field1, message1)
 	adder.AddEntry(field2, message2)
 	entries := adder.GetEntries()
@@ -99,11 +103,25 @@ var _ = Describe("Validator", func() {
 
 					if strings.Contains(tc.name, "error") {
 						errors := &errorAdder{result: result}
-						addEntriesAndVerify(errors, tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, false)
+						addEntriesAndVerify(
+							errors,
+							tc.addField1,
+							tc.addMessage1,
+							tc.addField2,
+							tc.addMessage2,
+							false,
+						)
 						Expect(result.IsValid()).To(BeFalse())
 					} else {
 						warnings := &warningAdder{result: result}
-						addEntriesAndVerify(warnings, tc.addField1, tc.addMessage1, tc.addField2, tc.addMessage2, true)
+						addEntriesAndVerify(
+							warnings,
+							tc.addField1,
+							tc.addMessage1,
+							tc.addField2,
+							tc.addMessage2,
+							true,
+						)
 						Expect(result.IsValid()).To(BeTrue())
 					}
 				},

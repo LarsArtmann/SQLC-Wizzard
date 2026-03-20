@@ -69,8 +69,20 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 }
 
 // Rollback rolls back database migrations.
-func (r *RealMigrationAdapter) Rollback(ctx context.Context, source, databaseURL string, steps int) error {
-	log.Info("Rolling back database migrations", "source", source, "database", databaseURL, "steps", steps)
+func (r *RealMigrationAdapter) Rollback(
+	ctx context.Context,
+	source, databaseURL string,
+	steps int,
+) error {
+	log.Info(
+		"Rolling back database migrations",
+		"source",
+		source,
+		"database",
+		databaseURL,
+		"steps",
+		steps,
+	)
 
 	m, err := migrate.New(source, databaseURL)
 	if err != nil {
@@ -106,7 +118,10 @@ func (r *RealMigrationAdapter) Rollback(ctx context.Context, source, databaseURL
 }
 
 // Status checks migration status.
-func (r *RealMigrationAdapter) Status(ctx context.Context, source, databaseURL string) (*migration.MigrationStatus, error) {
+func (r *RealMigrationAdapter) Status(
+	ctx context.Context,
+	source, databaseURL string,
+) (*migration.MigrationStatus, error) {
 	log.Info("Checking migration status", "source", source, "database", databaseURL)
 
 	m, err := migrate.New(source, databaseURL)
@@ -141,7 +156,13 @@ func (r *RealMigrationAdapter) Status(ctx context.Context, source, databaseURL s
 		status.WithDirty(dirty)
 	}
 
-	log.Info("Migration status retrieved", "version", status.GetCurrentVersion(), "dirty", status.IsDirty())
+	log.Info(
+		"Migration status retrieved",
+		"version",
+		status.GetCurrentVersion(),
+		"dirty",
+		status.IsDirty(),
+	)
 	return status, nil
 }
 
@@ -172,7 +193,10 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 }
 
 // CreateMigration creates a new migration file.
-func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name, directory string) (string, error) {
+func (r *RealMigrationAdapter) CreateMigration(
+	ctx context.Context,
+	name, directory string,
+) (string, error) {
 	log.Info("Creating migration", "name", name, "directory", directory)
 
 	if err := os.MkdirAll(directory, 0o755); err != nil {
@@ -216,8 +240,19 @@ func (r *RealMigrationAdapter) CreateMigration(ctx context.Context, name, direct
 }
 
 // MigrateSQLCConfig migrates SQLC configuration from one version/database to another.
-func (r *RealMigrationAdapter) MigrateSQLCConfig(ctx context.Context, sourceConfig *config.SqlcConfig, targetDatabase generated.DatabaseType, targetVersion string) (*config.SqlcConfig, error) {
-	log.Info("Migrating SQLC configuration", "target_database", targetDatabase, "target_version", targetVersion)
+func (r *RealMigrationAdapter) MigrateSQLCConfig(
+	ctx context.Context,
+	sourceConfig *config.SqlcConfig,
+	targetDatabase generated.DatabaseType,
+	targetVersion string,
+) (*config.SqlcConfig, error) {
+	log.Info(
+		"Migrating SQLC configuration",
+		"target_database",
+		targetDatabase,
+		"target_version",
+		targetVersion,
+	)
 
 	// Create a copy of the source config
 	newConfig := *sourceConfig
@@ -246,7 +281,10 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(ctx context.Context, sourceConf
 }
 
 // updateDatabaseConfig updates database-specific configuration.
-func (r *RealMigrationAdapter) updateDatabaseConfig(config *config.SqlcConfig, targetDatabase generated.DatabaseType) error {
+func (r *RealMigrationAdapter) updateDatabaseConfig(
+	config *config.SqlcConfig,
+	targetDatabase generated.DatabaseType,
+) error {
 	for i := range config.SQL {
 		sqlConfig := &config.SQL[i]
 

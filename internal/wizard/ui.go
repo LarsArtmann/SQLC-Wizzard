@@ -71,7 +71,10 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 
 	// Additional business logic validation
 	if len(cfg.Tables) > 100 {
-		return apperrors.NewError(apperrors.ErrorCodeSchemaValidation, "Schema exceeds maximum allowed tables")
+		return apperrors.NewError(
+			apperrors.ErrorCodeSchemaValidation,
+			"Schema exceeds maximum allowed tables",
+		)
 	}
 
 	return nil

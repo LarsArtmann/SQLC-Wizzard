@@ -40,11 +40,26 @@ func TestAllTemplates_GenerateValidConfig(t *testing.T) {
 
 			// Verify Gen.Go structure
 			assert.NotNil(t, sqlConfig.Gen.Go, "Template %s should have Go config", tmpl.Name())
-			assert.NotEmpty(t, sqlConfig.Gen.Go.Package, "Template %s should have package name", tmpl.Name())
-			assert.NotEmpty(t, sqlConfig.Gen.Go.Out, "Template %s should have output path", tmpl.Name())
+			assert.NotEmpty(
+				t,
+				sqlConfig.Gen.Go.Package,
+				"Template %s should have package name",
+				tmpl.Name(),
+			)
+			assert.NotEmpty(
+				t,
+				sqlConfig.Gen.Go.Out,
+				"Template %s should have output path",
+				tmpl.Name(),
+			)
 
 			// Verify Database if present
-			assert.NotNil(t, sqlConfig.Database, "Template %s should have database config", tmpl.Name())
+			assert.NotNil(
+				t,
+				sqlConfig.Database,
+				"Template %s should have database config",
+				tmpl.Name(),
+			)
 
 			// Verify Query/Schema paths
 			assert.NotNil(t, sqlConfig.Queries, "Template %s should have queries path", tmpl.Name())
@@ -87,13 +102,30 @@ func TestAllTemplates_GenerateWithCustomData(t *testing.T) {
 		config, err := tmpl.Generate(data)
 
 		// Should not error
-		require.NoError(t, err, "Template %s with custom data should generate valid config", tc.templateName)
+		require.NoError(
+			t,
+			err,
+			"Template %s with custom data should generate valid config",
+			tc.templateName,
+		)
 		require.NotNil(t, config)
 
 		// Verify custom values are applied
 		sqlConfig := config.SQL[0]
-		assert.Equal(t, tc.projectName, sqlConfig.Name, "Template %s should use custom project name", tc.templateName)
-		assert.Equal(t, tc.projectName+"-db", sqlConfig.Gen.Go.Package, "Template %s should use custom package name", tc.templateName)
+		assert.Equal(
+			t,
+			tc.projectName,
+			sqlConfig.Name,
+			"Template %s should use custom project name",
+			tc.templateName,
+		)
+		assert.Equal(
+			t,
+			tc.projectName+"-db",
+			sqlConfig.Gen.Go.Package,
+			"Template %s should use custom package name",
+			tc.templateName,
+		)
 	}
 }
 
@@ -111,12 +143,27 @@ func TestTemplates_ProduceConsistentNaming(t *testing.T) {
 		goConfig := sqlConfig.Gen.Go
 
 		// Verify common fields follow Go conventions
-		assert.NotEmpty(t, goConfig.Package, "Template %s should have valid package name", tmpl.Name())
+		assert.NotEmpty(
+			t,
+			goConfig.Package,
+			"Template %s should have valid package name",
+			tmpl.Name(),
+		)
 		assert.NotEmpty(t, goConfig.Out, "Template %s should have valid output path", tmpl.Name())
 
 		// Verify no empty names
-		assert.NotEmpty(t, goConfig.Package, "Template %s should have non-empty package name", tmpl.Name())
-		assert.NotEmpty(t, goConfig.Out, "Template %s should have non-empty output path", tmpl.Name())
+		assert.NotEmpty(
+			t,
+			goConfig.Package,
+			"Template %s should have non-empty package name",
+			tmpl.Name(),
+		)
+		assert.NotEmpty(
+			t,
+			goConfig.Out,
+			"Template %s should have non-empty output path",
+			tmpl.Name(),
+		)
 	}
 }
 
@@ -140,10 +187,22 @@ func TestTemplates_SupportAllDatabaseTypes(t *testing.T) {
 			config, err := tmpl.Generate(data)
 
 			// Should not error
-			assert.NoError(t, err, "Template %s should support database type %s", tmpl.Name(), dbType)
+			assert.NoError(
+				t,
+				err,
+				"Template %s should support database type %s",
+				tmpl.Name(),
+				dbType,
+			)
 
 			sqlConfig := config.SQL[0]
-			assert.Equal(t, string(dbType), sqlConfig.Engine, "Template %s should use correct engine", tmpl.Name())
+			assert.Equal(
+				t,
+				string(dbType),
+				sqlConfig.Engine,
+				"Template %s should use correct engine",
+				tmpl.Name(),
+			)
 		}
 	}
 }
@@ -207,7 +266,13 @@ func TestTemplates_DatabaseURLsAreCorrect(t *testing.T) {
 		data := tmpl.DefaultData()
 		sqlConfig := data.Database.URL
 
-		assert.Equal(t, tc.expectedURL, sqlConfig, "Template %s should have correct default URL", tc.templateName)
+		assert.Equal(
+			t,
+			tc.expectedURL,
+			sqlConfig,
+			"Template %s should have correct default URL",
+			tc.templateName,
+		)
 	}
 }
 
@@ -233,16 +298,31 @@ func TestTemplates_ValidationConfigurations(t *testing.T) {
 		hasStrictChecks := false
 		if slices.Contains(features, "strict_checks") {
 			hasStrictChecks = true
-			assert.NotNil(t, sqlConfig.StrictFunctionChecks, "Template %s with strict_checks feature should have StrictFunctionChecks set", tmpl.Name())
+			assert.NotNil(
+				t,
+				sqlConfig.StrictFunctionChecks,
+				"Template %s with strict_checks feature should have StrictFunctionChecks set",
+				tmpl.Name(),
+			)
 			if sqlConfig.StrictFunctionChecks != nil {
-				assert.True(t, *sqlConfig.StrictFunctionChecks, "Template %s with strict_checks should have StrictFunctionChecks = true", tmpl.Name())
+				assert.True(
+					t,
+					*sqlConfig.StrictFunctionChecks,
+					"Template %s with strict_checks should have StrictFunctionChecks = true",
+					tmpl.Name(),
+				)
 			}
 		}
 
 		if !hasStrictChecks {
 			// Templates without strict_checks should have false or nil
 			if sqlConfig.StrictFunctionChecks != nil {
-				assert.False(t, *sqlConfig.StrictFunctionChecks, "Template %s without strict_checks should have StrictFunctionChecks = false", tmpl.Name())
+				assert.False(
+					t,
+					*sqlConfig.StrictFunctionChecks,
+					"Template %s without strict_checks should have StrictFunctionChecks = false",
+					tmpl.Name(),
+				)
 			}
 		}
 
@@ -280,7 +360,13 @@ func TestTemplates_OutputPaths(t *testing.T) {
 
 		expectedPath, ok := expectedPaths[tmpl.Name()]
 		if ok {
-			assert.Contains(t, goConfig.Out, expectedPath, "Template %s should have output path containing %s", tmpl.Name())
+			assert.Contains(
+				t,
+				goConfig.Out,
+				expectedPath,
+				"Template %s should have output path containing %s",
+				tmpl.Name(),
+			)
 		}
 
 		t.Logf("✓ Template %s output path is appropriate", tmpl.Name())

@@ -68,7 +68,9 @@ var _ = Describe("Wizard with Dependency Injection", func() {
 
 			Expect(err).ToNot(HaveOccurred())
 			Expect(mockTemplate.GenerateCalls).To(Equal(1))
-			Expect(mockTemplate.LastCallData.ProjectType).To(Equal(generated.ProjectTypeMicroservice))
+			Expect(
+				mockTemplate.LastCallData.ProjectType,
+			).To(Equal(generated.ProjectTypeMicroservice))
 		})
 	})
 
@@ -115,7 +117,11 @@ func verifyAllStepsCalled(mockSteps map[string]*MockStep) {
 }
 
 // testStepFailure is a helper function that tests step failure scenarios.
-func testStepFailure(wiz *wizard.Wizard, mockSteps map[string]*MockStep, stepName, errorMessage string) {
+func testStepFailure(
+	wiz *wizard.Wizard,
+	mockSteps map[string]*MockStep,
+	stepName, errorMessage string,
+) {
 	mockSteps[stepName].ShouldFail = true
 	mockSteps[stepName].FailError = NewTestError(errorMessage)
 

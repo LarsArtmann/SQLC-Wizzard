@@ -12,7 +12,11 @@ import (
 )
 
 // runRuleTransformationTest runs a generic test for safety rule transformation.
-func runRuleTransformationTest(transformer *validation.RuleTransformer, ruleName, expectedRule, expectedMessage string, setupRules func() *generated.SafetyRules) {
+func runRuleTransformationTest(
+	transformer *validation.RuleTransformer,
+	ruleName, expectedRule, expectedMessage string,
+	setupRules func() *generated.SafetyRules,
+) {
 	rules := setupRules()
 	configRules := transformer.TransformSafetyRules(rules)
 
@@ -23,7 +27,11 @@ func runRuleTransformationTest(transformer *validation.RuleTransformer, ruleName
 }
 
 // expectSingleRule verifies that a single rule with the expected name and rule expression is generated.
-func expectSingleRule(transformer *validation.RuleTransformer, rules *domain.TypeSafeSafetyRules, expectedName, expectedRule string) {
+func expectSingleRule(
+	transformer *validation.RuleTransformer,
+	rules *domain.TypeSafeSafetyRules,
+	expectedName, expectedRule string,
+) {
 	configRules := transformer.TransformTypeSafeSafetyRules(rules)
 
 	Expect(configRules).To(HaveLen(1))
@@ -296,7 +304,9 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 				Rule:    "query.contains('DOMAIN_PATTERNS')",
 				Message: "Domain patterns not allowed",
 			}
-			rules := testingHelper.CreateGeneratedSafetyRulesAllowedWithCustomRules([]generated.SafetyRule{customRule})
+			rules := testingHelper.CreateGeneratedSafetyRulesAllowedWithCustomRules(
+				[]generated.SafetyRule{customRule},
+			)
 
 			configRules := transformer.TransformDomainSafetyRules(rules)
 
@@ -334,21 +344,33 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 
 			Expect(configRules).To(HaveLen(1))
 			Expect(configRules[0].Name).To(Equal("require-where"))
-			Expect(configRules[0].Rule).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
+			Expect(
+				configRules[0].Rule,
+			).To(Equal("query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()"))
 		})
 
 		It("should transform LimitRequirement.RequiresOnSelect() correctly", func() {
 			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 			rules.SafetyRules.LimitRequirement = domain.LimitClauseOnSelect
 
-			expectSingleRule(transformer, rules, "require-limit", "query.type == 'SELECT' && !query.hasLimitClause()")
+			expectSingleRule(
+				transformer,
+				rules,
+				"require-limit",
+				"query.type == 'SELECT' && !query.hasLimitClause()",
+			)
 		})
 
 		It("should transform MaxRowsWithoutLimit correctly", func() {
 			rules := testingHelper.CreateBaseTypeSafeSafetyRules()
 			rules.SafetyRules.MaxRowsWithoutLimit = 100
 
-			expectSingleRule(transformer, rules, "max-rows-without-limit", "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)")
+			expectSingleRule(
+				transformer,
+				rules,
+				"max-rows-without-limit",
+				"query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > 100)",
+			)
 		})
 	})
 
@@ -397,7 +419,9 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			//
 			// This is consistent: the boolean flag + expression together mean "flag is true → violation condition"
 
-			result := transformer.TransformTypeSafeSafetyRules(testingHelper.CreateTypeSafeSafetyRules(nil))
+			result := transformer.TransformTypeSafeSafetyRules(
+				testingHelper.CreateTypeSafeSafetyRules(nil),
+			)
 
 			// Should have 4 rules: no-select-star, require-where, require-limit, max-rows-without-limit, no-drop-table, no-truncate
 			Expect(result).To(HaveLen(6))
@@ -409,7 +433,9 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			}
 
 			// NoSelectStar: violation when SELECT * exists → !contains('SELECT *')
-			Expect(ruleMap["no-select-star"].Rule).To(MatchRegexp(`!query\.contains\('SELECT \*'\)`))
+			Expect(
+				ruleMap["no-select-star"].Rule,
+			).To(MatchRegexp(`!query\.contains\('SELECT \*'\)`))
 
 			// RequireWhere: violation when WHERE is missing → hasWhereClause() in expression
 			Expect(ruleMap["require-where"].Rule).To(ContainSubstring("hasWhereClause()"))
@@ -422,7 +448,9 @@ var _ = Describe("RuleTransformer Unit Tests", func() {
 			Expect(ruleMap["max-rows-without-limit"].Rule).To(ContainSubstring("limitValue()"))
 
 			// NoDropTable: violation when DROP TABLE exists
-			Expect(ruleMap["no-drop-table"].Rule).To(MatchRegexp(`!query\.contains\('DROP TABLE'\)`))
+			Expect(
+				ruleMap["no-drop-table"].Rule,
+			).To(MatchRegexp(`!query\.contains\('DROP TABLE'\)`))
 
 			// NoTruncate: violation when TRUNCATE exists
 			Expect(ruleMap["no-truncate"].Rule).To(MatchRegexp(`!query\.contains\('TRUNCATE'\)`))

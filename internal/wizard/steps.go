@@ -11,7 +11,10 @@ import (
 )
 
 // createValidatedInput creates a validated input field with common error checking.
-func createValidatedInput(title, description, placeholder, fieldName string, value *string) *huh.Input {
+func createValidatedInput(
+	title, description, placeholder, fieldName string,
+	value *string,
+) *huh.Input {
 	var localValue string
 	if value != nil {
 		localValue = *value
@@ -23,7 +26,10 @@ func createValidatedInput(title, description, placeholder, fieldName string, val
 		Placeholder(placeholder).
 		Validate(func(val string) error {
 			if val == "" {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, fieldName+" cannot be empty")
+				return apperrors.NewError(
+					apperrors.ErrorCodeValidationError,
+					fieldName+" cannot be empty",
+				)
 			}
 			return nil
 		})
@@ -98,13 +104,22 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 		Value(&projectName).
 		Validate(func(name string) error {
 			if name == "" {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name cannot be empty")
+				return apperrors.NewError(
+					apperrors.ErrorCodeValidationError,
+					"project name cannot be empty",
+				)
 			}
 			if len(name) < 2 {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be at least 2 characters")
+				return apperrors.NewError(
+					apperrors.ErrorCodeValidationError,
+					"project name must be at least 2 characters",
+				)
 			}
 			if len(name) > 50 {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, "project name must be less than 50 characters")
+				return apperrors.NewError(
+					apperrors.ErrorCodeValidationError,
+					"project name must be less than 50 characters",
+				)
 			}
 			return nil
 		})
@@ -187,7 +202,10 @@ func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
 		Placeholder(placeholder).
 		Validate(func(url string) error {
 			if url == "" {
-				return apperrors.NewError(apperrors.ErrorCodeValidationError, "database URL cannot be empty")
+				return apperrors.NewError(
+					apperrors.ErrorCodeValidationError,
+					"database URL cannot be empty",
+				)
 			}
 			return nil
 		})
