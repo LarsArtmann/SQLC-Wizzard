@@ -20,28 +20,28 @@
 
 ### A) Fully Done ✅
 
-| Task | Status | Notes |
-|------|--------|-------|
-| oxfmt formatting | ✅ COMPLETE | Fixed `.github/ISSUE_TEMPLATE/bug_report.yml` YAML indentation |
-| Compilation errors | ✅ FIXED | 16 `:=` → `=` fixes across 9 files |
-| Build verification | ✅ PASSING | `just build` succeeds |
+| Task               | Status      | Notes                                                          |
+| ------------------ | ----------- | -------------------------------------------------------------- |
+| oxfmt formatting   | ✅ COMPLETE | Fixed `.github/ISSUE_TEMPLATE/bug_report.yml` YAML indentation |
+| Compilation errors | ✅ FIXED    | 16 `:=` → `=` fixes across 9 files                             |
+| Build verification | ✅ PASSING  | `just build` succeeds                                          |
 
 ### B) Partially Done 🔄
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Tests | 🔄 BLOCKED | Disk space issue on device (`no space left on device`) |
-| Linting | ⏳ NOT RUN | Blocked by disk space |
-| Full verification | ⏳ PENDING | Requires disk space cleanup |
+| Task              | Status     | Notes                                                  |
+| ----------------- | ---------- | ------------------------------------------------------ |
+| Tests             | 🔄 BLOCKED | Disk space issue on device (`no space left on device`) |
+| Linting           | ⏳ NOT RUN | Blocked by disk space                                  |
+| Full verification | ⏳ PENDING | Requires disk space cleanup                            |
 
 ### C) Not Started ⏳
 
-| Task | Status | Notes |
-|------|--------|-------|
-| Test execution | ⏳ PENDING | Requires disk space |
-| CI/CD pipeline | ⏳ NOT STARTED | Not in project yet |
-| Performance benchmarks | ⏳ NOT STARTED | No benchmarks defined |
-| Integration tests | ⏳ NOT STARTED | No integration test suite |
+| Task                   | Status         | Notes                     |
+| ---------------------- | -------------- | ------------------------- |
+| Test execution         | ⏳ PENDING     | Requires disk space       |
+| CI/CD pipeline         | ⏳ NOT STARTED | Not in project yet        |
+| Performance benchmarks | ⏳ NOT STARTED | No benchmarks defined     |
+| Integration tests      | ⏳ NOT STARTED | No integration test suite |
 
 ### D) Totally Fucked Up 🚨
 
@@ -53,18 +53,18 @@ None at this time.
 
 ### Files Modified (10 total)
 
-| File | Changes | Type |
-|------|---------|------|
+| File                                    | Changes                                                 | Type    |
+| --------------------------------------- | ------------------------------------------------------- | ------- |
 | `.github/ISSUE_TEMPLATE/bug_report.yml` | Fixed YAML indentation for GitHub issue template format | Bug Fix |
-| `internal/adapters/migration_real.go` | 2 `:=` → `=` fixes | Bug Fix |
-| `internal/commands/commands_test.go` | 2 `:=` → `=` fixes | Bug Fix |
-| `internal/commands/generate.go` | 1 `:=` → `=` fix | Bug Fix |
-| `internal/commands/migrate_utils.go` | 1 `:=` → `=` fix | Bug Fix |
-| `internal/creators/project_creator.go` | 5 `:=` → `=` fixes | Bug Fix |
-| `internal/generators/generator.go` | 2 `:=` → `=` fixes | Bug Fix |
-| `internal/wizard/features.go` | 2 `:=` → `=` fixes | Bug Fix |
-| `internal/wizard/project_details.go` | 1 `:=` → `=` fix | Bug Fix |
-| `pkg/config/path_or_paths.go` | 1 `:=` → `=` fix | Bug Fix |
+| `internal/adapters/migration_real.go`   | 2 `:=` → `=` fixes                                      | Bug Fix |
+| `internal/commands/commands_test.go`    | 2 `:=` → `=` fixes                                      | Bug Fix |
+| `internal/commands/generate.go`         | 1 `:=` → `=` fix                                        | Bug Fix |
+| `internal/commands/migrate_utils.go`    | 1 `:=` → `=` fix                                        | Bug Fix |
+| `internal/creators/project_creator.go`  | 5 `:=` → `=` fixes                                      | Bug Fix |
+| `internal/generators/generator.go`      | 2 `:=` → `=` fixes                                      | Bug Fix |
+| `internal/wizard/features.go`           | 2 `:=` → `=` fixes                                      | Bug Fix |
+| `internal/wizard/project_details.go`    | 1 `:=` → `=` fix                                        | Bug Fix |
+| `pkg/config/path_or_paths.go`           | 1 `:=` → `=` fix                                        | Bug Fix |
 
 **Total:** 10 files, 134 insertions(+), 134 deletions(-)
 
@@ -141,6 +141,7 @@ None at this time.
 **QUESTION:** Why did the Go compiler allow `err :=` declarations inside `if err != nil` blocks when `err` was already declared in an outer scope? This pattern existed in 16 places across the codebase and compiled successfully before my fixes. Is this a quirk of Go's variable shadowing rules, or was there a tool/configuration that should have caught these?
 
 Specifically:
+
 - Go 1.26.1 was being used
 - The code compiled without errors
 - Only LSP/gopls reported the issue after I ran `just build`
@@ -160,12 +161,12 @@ Specifically:
 
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|------------|--------|-----------|
-| Tests fail after disk fix | Medium | Low | Fix tests as they appear |
-| Linting reveals more issues | High | Low | Fix incrementally |
-| Disk space persists | High | Medium | Investigate root cause |
-| Git conflicts on commit | Low | Medium | Pull before push |
+| Risk                        | Likelihood | Impact | Mitigation               |
+| --------------------------- | ---------- | ------ | ------------------------ |
+| Tests fail after disk fix   | Medium     | Low    | Fix tests as they appear |
+| Linting reveals more issues | High       | Low    | Fix incrementally        |
+| Disk space persists         | High       | Medium | Investigate root cause   |
+| Git conflicts on commit     | Low        | Medium | Pull before push         |
 
 ---
 
