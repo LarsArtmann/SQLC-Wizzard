@@ -47,13 +47,13 @@ func (pc *ProjectCreator) CreateProject(ctx context.Context, config *CreateConfi
 	}
 
 	// Generate sqlc.yaml
-	err := pc.generateSQLCConfig(ctx, config)
+	err = pc.generateSQLCConfig(ctx, config)
 	if err != nil {
 		return fmt.Errorf("failed to generate sqlc.yaml: %w", err)
 	}
 
 	// Generate database schema
-	err := pc.generateDatabaseSchema(ctx, config)
+	err = pc.generateDatabaseSchema(ctx, config)
 	if err != nil {
 		return fmt.Errorf("failed to generate database schema: %w", err)
 	}
@@ -185,7 +185,7 @@ func (pc *ProjectCreator) generateQueryFiles(ctx context.Context, cfg *CreateCon
 
 	// Generate basic queries based on database schema
 	usersQueries := pc.buildUsersQueries(templateData)
-	err := pc.fs.WriteFile(ctx, "queries/users.sql", []byte(usersQueries), 0o644)
+	err = pc.fs.WriteFile(ctx, "queries/users.sql", []byte(usersQueries), 0o644)
 	if err != nil {
 		return fmt.Errorf("failed to write users queries: %w", err)
 	}
@@ -286,14 +286,14 @@ func (pc *ProjectCreator) generateGoModuleStructure(ctx context.Context, cfg *Cr
 	}
 
 	// Create basic package structure
-	err := pc.fs.MkdirAll(ctx, "internal/db", 0o755)
+	err = pc.fs.MkdirAll(ctx, "internal/db", 0o755)
 	if err != nil {
 		return fmt.Errorf("failed to create db package directory: %w", err)
 	}
 
 	// Create db package file
 	dbGoContent := pc.buildDBPackage(cfg.TemplateData)
-	err := pc.fs.WriteFile(ctx, "internal/db/db.go", []byte(dbGoContent), 0o644)
+	err = pc.fs.WriteFile(ctx, "internal/db/db.go", []byte(dbGoContent), 0o644)
 	if err != nil {
 		return fmt.Errorf("failed to write db package: %w", err)
 	}

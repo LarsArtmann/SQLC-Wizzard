@@ -29,7 +29,7 @@ func writeMigrationResult(cfg *config.SqlcConfig, destination string, force bool
 	}
 
 	// Write configuration
-	err := config.WriteFileFormatted(cfg, destination)
+	err = config.WriteFileFormatted(cfg, destination)
 	if err != nil {
 		return &MigrationError{
 			Code:    "WRITE_FAILED",

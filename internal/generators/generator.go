@@ -63,7 +63,7 @@ func (g *Generator) GenerateSqlcConfig(cfg *config.SqlcConfig) error {
 	}
 
 	// Write config file
-	err := config.WriteFileFormatted(cfg, path)
+	err = config.WriteFileFormatted(cfg, path)
 	if err != nil {
 		return fmt.Errorf("failed to write config: %w", err)
 	}
@@ -120,7 +120,7 @@ func (g *Generator) generateFileWithTemplate(
 
 	// Write to output
 	outputPath := filepath.Join(dir, filename)
-	err := os.WriteFile(outputPath, []byte(content), 0o644)
+	err = os.WriteFile(outputPath, []byte(content), 0o644)
 	if err != nil {
 		return fmt.Errorf("failed to write %s file: %w", templateType, err)
 	}

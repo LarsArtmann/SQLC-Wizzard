@@ -32,13 +32,13 @@ func (s *FeaturesStep) Execute(data *generated.TemplateData) error {
 	}
 
 	// Safety rules
-	err := s.configureSafetyRules(data)
+	err = s.configureSafetyRules(data)
 	if err != nil {
 		return err
 	}
 
 	// Database features
-	err := s.configureDatabaseFeatures(data)
+	err = s.configureDatabaseFeatures(data)
 	if err != nil {
 		return err
 	}

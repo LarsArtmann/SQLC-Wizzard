@@ -303,7 +303,7 @@ func generateExampleFiles(outputDir string, force bool) error {
 		return err
 	}
 
-	err := os.MkdirAll(queriesDir, 0o755)
+	err = os.MkdirAll(queriesDir, 0o755)
 	if err != nil {
 		return err
 	}
@@ -312,7 +312,7 @@ func generateExampleFiles(outputDir string, force bool) error {
 	schemaFile := filepath.Join(schemaDir, "001_users_table.sql")
 	queriesFile := filepath.Join(queriesDir, "users.sql")
 
-	err := os.WriteFile(schemaFile, []byte("-- Schema file"), 0o644)
+	err = os.WriteFile(schemaFile, []byte("-- Schema file"), 0o644)
 	if err != nil {
 		return err
 	}

@@ -85,7 +85,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 		),
 	).WithTheme(s.theme)
 
-	err := packageForm.Run()
+	err = packageForm.Run()
 	if err != nil {
 		return fmt.Errorf("package name input failed: %w", err)
 	}

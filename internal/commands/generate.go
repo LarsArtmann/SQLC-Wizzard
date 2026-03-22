@@ -99,7 +99,7 @@ func generateExampleFiles(outputDir string, force bool) error {
 		return fmt.Errorf("failed to generate schema: %w", err)
 	}
 
-	err := generator.GenerateExampleQueries(templateData)
+	err = generator.GenerateExampleQueries(templateData)
 	if err != nil {
 		return fmt.Errorf("failed to generate queries: %w", err)
 	}
