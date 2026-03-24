@@ -34,6 +34,7 @@ func (dc *DirectoryCreator) Create(ctx context.Context, config CreatorConfig) er
 
 	for _, dir := range dirs {
 		fullPath := filepath.Join(config.OutputPath, dir)
+
 		err := dc.fs.MkdirAll(ctx, fullPath, 0o755)
 		if err != nil {
 			return fmt.Errorf("failed to create directory %s: %w", dir, err)

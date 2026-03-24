@@ -52,6 +52,7 @@ func (p PathOrPaths) Strings() []string {
 func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 	// Try to unmarshal as a slice of strings first
 	var paths []string
+
 	err := value.Decode(&paths)
 	if err == nil {
 		p.paths = paths
@@ -61,6 +62,7 @@ func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 
 	// If that fails, try as a single string
 	var singlePath string
+
 	err = value.Decode(&singlePath)
 	if err == nil {
 		p.paths = []string{singlePath}

@@ -120,6 +120,7 @@ func (g *Generator) generateFileWithTemplate(
 
 	// Write to output
 	outputPath := filepath.Join(dir, filename)
+
 	err = os.WriteFile(outputPath, []byte(content), 0o644)
 	if err != nil {
 		return fmt.Errorf("failed to write %s file: %w", templateType, err)

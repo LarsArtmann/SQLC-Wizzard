@@ -29,6 +29,7 @@ func ParseFile(path string) (*SqlcConfig, error) {
 // Parse parses YAML data into a SqlcConfig.
 func Parse(data []byte) (*SqlcConfig, error) {
 	var cfg SqlcConfig
+
 	err := yaml.Unmarshal(data, &cfg)
 	if err != nil {
 		return nil, apperrors.Wrapf(err, apperrors.ErrConfigParseFailed, "failed to parse YAML")
