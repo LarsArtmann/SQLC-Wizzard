@@ -40,14 +40,14 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 					if len(str) < 2 {
 						return apperrors.NewError(
 							apperrors.ErrorCodeValidationError,
-							"project name must be at least 2 characters",
+							fmt.Sprintf("project name must be at least 2 characters (got %d)", len(str)),
 						)
 					}
 
 					if len(str) > 50 {
 						return apperrors.NewError(
 							apperrors.ErrorCodeValidationError,
-							"project name must be less than 50 characters",
+							fmt.Sprintf("project name must be less than 50 characters (got %d)", len(str)),
 						)
 					}
 
@@ -58,7 +58,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 
 	err := nameForm.Run()
 	if err != nil {
-		return fmt.Errorf("project name input failed: %w", err)
+		return fmt.Errorf("project name input failed for %q: %w", projectName, err)
 	}
 
 	data.ProjectName = projectName
@@ -76,7 +76,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 					if len(str) < 2 {
 						return apperrors.NewError(
 							apperrors.ErrorCodeValidationError,
-							"package name must be at least 2 characters",
+							fmt.Sprintf("package name must be at least 2 characters (got %d)", len(str)),
 						)
 					}
 
@@ -87,7 +87,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 
 	err = packageForm.Run()
 	if err != nil {
-		return fmt.Errorf("package name input failed: %w", err)
+		return fmt.Errorf("package name input failed for %q (projectName=%q): %w", packageName, projectName, err)
 	}
 
 	if packageName == "" {

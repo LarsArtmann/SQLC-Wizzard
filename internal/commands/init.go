@@ -68,7 +68,7 @@ func runInit(opts *InitOptions) error {
 	if _, err := os.Stat("sqlc.yaml"); err == nil {
 		return apperrors.NewError(
 			apperrors.ErrorCodeInternalServer,
-			"sqlc.yaml already exists in current directory. Remove it first or run in a different directory",
+			fmt.Sprintf("sqlc.yaml already exists in current directory. Remove it first or run in a different directory (outputDir=%s)", opts.OutputDir),
 		)
 	}
 
@@ -98,7 +98,7 @@ func runInit(opts *InitOptions) error {
 		result.GenerateQueries,
 		result.GenerateSchema,
 	); err != nil {
-		return fmt.Errorf("generation failed: %w", err)
+		return fmt.Errorf("generation failed for outputDir %s: %w", opts.OutputDir, err)
 	}
 
 	// Show success message
@@ -112,21 +112,21 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 	if opts.ProjectType == "" {
 		return nil, apperrors.NewError(
 			apperrors.ErrorCodeInternalServer,
-			"--project-type is required in non-interactive mode",
+			fmt.Sprintf("--project-type is required in non-interactive mode (opts=%+v)", opts),
 		)
 	}
 
 	if opts.Database == "" {
 		return nil, apperrors.NewError(
 			apperrors.ErrorCodeInternalServer,
-			"--database is required in non-interactive mode",
+			fmt.Sprintf("--database is required in non-interactive mode (opts=%+v)", opts),
 		)
 	}
 
 	if opts.PackagePath == "" {
 		return nil, apperrors.NewError(
 			apperrors.ErrorCodeInternalServer,
-			"--package is required in non-interactive mode",
+			fmt.Sprintf("--package is required in non-interactive mode (opts=%+v)", opts),
 		)
 	}
 
@@ -156,12 +156,12 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 	// Generate config from template
 	tmpl, err := templates.GetTemplate(data.ProjectType)
 	if err != nil {
-		return nil, fmt.Errorf("invalid project type: %w", err)
+		return nil, fmt.Errorf("invalid project type %s: %w", opts.ProjectType, err)
 	}
 
 	cfg, err := tmpl.Generate(data)
 	if err != nil {
-		return nil, fmt.Errorf("failed to generate config: %w", err)
+		return nil, fmt.Errorf("failed to generate config for project type %s: %w", opts.ProjectType, err)
 	}
 
 	return &wizard.WizardResult{

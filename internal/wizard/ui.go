@@ -87,13 +87,13 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 func GenerateConfiguration(schema *schema.Schema, data generated.TemplateData) (string, error) {
 	// Validate inputs
 	if err := ValidateConfiguration(schema); err != nil {
-		return "", err
+		return "", fmt.Errorf("config validation failed: %w", err)
 	}
 
 	// Generate configuration using typed data
 	config, err := generateConfigFromSchema(schema, data)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to generate config: %w", err)
 	}
 
 	return config, nil

@@ -96,12 +96,12 @@ func generateExampleFiles(outputDir string, force bool) error {
 	// Generate example files
 	err := generator.GenerateExampleSchema(templateData)
 	if err != nil {
-		return fmt.Errorf("failed to generate schema: %w", err)
+		return fmt.Errorf("failed to generate schema in %s: %w", outputDir, err)
 	}
 
 	err = generator.GenerateExampleQueries(templateData)
 	if err != nil {
-		return fmt.Errorf("failed to generate queries: %w", err)
+		return fmt.Errorf("failed to generate queries in %s: %w", outputDir, err)
 	}
 
 	fmt.Printf("✅ Successfully generated example SQL files to %s\n", outputDir)

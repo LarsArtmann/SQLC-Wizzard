@@ -226,7 +226,7 @@ func (s *FeaturesStep) configureDatabaseFeatures(data *generated.TemplateData) e
 
 	err := form.Run()
 	if err != nil {
-		return fmt.Errorf("database features configuration failed: %w", err)
+		return fmt.Errorf("database features form input failed: %w", err)
 	}
 
 	data.Database.UseUUIDs = useUUIDs

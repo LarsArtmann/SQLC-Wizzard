@@ -24,7 +24,7 @@ func (a *RealCLIAdapter) RunCommand(
 
 	output, err := command.CombinedOutput()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("failed to run command %s with args %v: %w", cmd, args, err)
 	}
 
 	return string(output), nil

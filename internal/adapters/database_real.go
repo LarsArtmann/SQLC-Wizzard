@@ -35,7 +35,7 @@ func (a *RealDatabaseAdapter) performDatabaseOperation(
 ) error {
 	err := validateDatabaseConfig(cfg)
 	if err != nil {
-		return err
+		return fmt.Errorf("database operation %s failed: %w", operation, err)
 	}
 
 	logDatabaseOperation(operation, cfg.URI)

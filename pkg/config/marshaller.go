@@ -11,7 +11,7 @@ import (
 func Marshal(cfg *SqlcConfig) ([]byte, error) {
 	data, err := yaml.Marshal(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to marshal config: %w", err)
+		return nil, fmt.Errorf("failed to marshal config to YAML: %w", err)
 	}
 
 	return data, nil
@@ -25,7 +25,7 @@ func WriteFile(cfg *SqlcConfig, path string) error {
 	}
 
 	if err := os.WriteFile(path, data, 0o644); err != nil {
-		return fmt.Errorf("failed to write config file: %w", err)
+		return fmt.Errorf("failed to write config file to %s: %w", path, err)
 	}
 
 	return nil
@@ -36,7 +36,7 @@ func WriteFileFormatted(cfg *SqlcConfig, path string) error {
 	// Use yaml.Encoder for better control over formatting
 	file, err := os.Create(path)
 	if err != nil {
-		return fmt.Errorf("failed to create file: %w", err)
+		return fmt.Errorf("failed to create file %s: %w", path, err)
 	}
 
 	defer func() {
@@ -51,7 +51,7 @@ func WriteFileFormatted(cfg *SqlcConfig, path string) error {
 	encoder.SetIndent(2) // Use 2 spaces for indentation
 
 	if err := encoder.Encode(cfg); err != nil {
-		return fmt.Errorf("failed to encode config: %w", err)
+		return fmt.Errorf("failed to encode config to file %s: %w", path, err)
 	}
 
 	return encoder.Close()

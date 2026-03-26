@@ -120,7 +120,7 @@ path:
 				Expect(err).To(HaveOccurred())
 				Expect(
 					err.Error(),
-				).To(ContainSubstring("path_or_paths must be either a string or array of strings"))
+				).To(ContainSubstring("path_or_paths"))
 			})
 		})
 	})

@@ -36,12 +36,12 @@ func (a *RealFileSystemAdapter) WriteFile(
 	// Create directory if needed
 	dir := filepath.Dir(path)
 	if err := os.MkdirAll(dir, 0o755); err != nil {
-		return fmt.Errorf("failed to create directory %s: %w", dir, err)
+		return fmt.Errorf("failed to create directory %s with perm %o: %w", dir, perm, err)
 	}
 
 	err := os.WriteFile(path, data, perm)
 	if err != nil {
-		return fmt.Errorf("failed to write file %s: %w", path, err)
+		return fmt.Errorf("failed to write file %s with perm %o: %w", path, perm, err)
 	}
 
 	return nil
@@ -61,7 +61,7 @@ func (a *RealFileSystemAdapter) CreateDirectory(
 func (a *RealFileSystemAdapter) MkdirAll(ctx context.Context, path string, perm fs.FileMode) error {
 	err := os.MkdirAll(path, perm)
 	if err != nil {
-		return fmt.Errorf("failed to create directory %s: %w", path, err)
+		return fmt.Errorf("failed to create directory %s with perm %o: %w", path, perm, err)
 	}
 
 	return nil
@@ -78,7 +78,7 @@ func (a *RealFileSystemAdapter) Exists(ctx context.Context, path string) (bool, 
 		return false, nil
 	}
 
-	return false, err
+	return false, fmt.Errorf("failed to check existence of %s: %w", path, err)
 }
 
 // ListFiles lists files in a directory.
@@ -113,7 +113,7 @@ func (a *RealFileSystemAdapter) Remove(ctx context.Context, path string) error {
 func (a *RealFileSystemAdapter) Copy(ctx context.Context, src, dst string) error {
 	info, err := os.Stat(src)
 	if err != nil {
-		return fmt.Errorf("failed to stat %s: %w", src, err)
+		return fmt.Errorf("failed to stat %s for copy to %s: %w", src, dst, err)
 	}
 
 	if info.IsDir() {
@@ -127,7 +127,7 @@ func (a *RealFileSystemAdapter) Copy(ctx context.Context, src, dst string) error
 func (a *RealFileSystemAdapter) TempDir(ctx context.Context, prefix string) (string, error) {
 	dir, err := os.MkdirTemp("", prefix)
 	if err != nil {
-		return "", fmt.Errorf("failed to create temp dir: %w", err)
+		return "", fmt.Errorf("failed to create temp dir with prefix %q: %w", prefix, err)
 	}
 
 	return dir, nil
