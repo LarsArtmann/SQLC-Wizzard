@@ -3,10 +3,10 @@ package wizard
 import (
 	"fmt"
 
+	"charm.land/huh/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"charm.land/huh/v2"
 )
 
 // WizardResult contains the output of running the wizard.

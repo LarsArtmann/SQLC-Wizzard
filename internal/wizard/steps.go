@@ -4,10 +4,10 @@ package wizard
 import (
 	"fmt"
 
+	"charm.land/huh/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
-	"charm.land/huh/v2"
 )
 
 // createValidatedInput creates a validated input field with common error checking.

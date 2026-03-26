@@ -3,8 +3,8 @@ package wizard
 import (
 	"fmt"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"charm.land/huh/v2"
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 )
 
 // DatabaseStep handles database selection and configuration.
