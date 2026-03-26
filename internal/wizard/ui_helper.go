@@ -3,13 +3,13 @@ package wizard
 import (
 	"fmt"
 
+	"charm.land/lipgloss/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/charmbracelet/huh"
-	"charm.land/lipgloss/v2"
 )
 
 // UIHelper manages UI styling and display.

@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 
+	"charm.land/lipgloss/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/generators"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
-	"charm.land/lipgloss/v2"
 	"github.com/spf13/cobra"
 )
 

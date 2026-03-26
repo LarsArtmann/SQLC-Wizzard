@@ -3,8 +3,8 @@ package commands
 import (
 	"fmt"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"charm.land/lipgloss/v2"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"github.com/spf13/cobra"
 )
 

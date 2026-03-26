@@ -9,10 +9,10 @@ import (
 	"strconv"
 	"time"
 
+	"charm.land/log/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/migration"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"charm.land/log/v2"
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/source/file"
 	"github.com/samber/lo"

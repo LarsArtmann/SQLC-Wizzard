@@ -5,8 +5,8 @@ import (
 	"os"
 	"path/filepath"
 
-	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	"charm.land/log/v2"
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
 // writeMigrationResult writes migrated configuration to file.
