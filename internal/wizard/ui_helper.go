@@ -9,18 +9,18 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // UIHelper manages UI styling and display.
 type UIHelper struct {
-	theme *huh.Theme
+	themeFunc huh.ThemeFunc
 }
 
 // NewUIHelper creates a new UI helper.
 func NewUIHelper() *UIHelper {
 	return &UIHelper{
-		theme: huh.ThemeBase(),
+		themeFunc: huh.ThemeBase,
 	}
 }
 
@@ -142,7 +142,7 @@ func (ui *UIHelper) GetConfirmation() (bool, error) {
 				Description("You can edit this later in the generated yaml file").
 				Value(&confirmed),
 		),
-	).WithTheme(ui.theme).Run()
+	).WithTheme(ui.themeFunc).Run()
 	if err != nil {
 		return false, err
 	}

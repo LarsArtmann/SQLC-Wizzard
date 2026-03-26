@@ -6,7 +6,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // WizardResult contains the output of running the wizard.
@@ -18,11 +18,12 @@ type WizardResult struct {
 }
 
 // Wizard manages the interactive configuration flow.
+
 type Wizard struct {
-	result *WizardResult
-	theme  *huh.Theme
-	ui     *UIHelper
-	deps   *WizardDependencies // For dependency injection in tests
+	result    *WizardResult
+	themeFunc huh.ThemeFunc
+	ui        *UIHelper
+	deps      *WizardDependencies // For dependency injection in tests
 
 	// Step handlers
 	projectTypeStep *ProjectTypeStep
@@ -34,16 +35,16 @@ type Wizard struct {
 
 // NewWizard creates a new wizard instance.
 func NewWizard() *Wizard {
-	theme := huh.ThemeBase()
+	themeFunc := huh.ThemeBase
 	ui := NewUIHelper()
 
 	deps := WizardDependencies{
 		UI:          ui,
-		ProjectType: NewProjectTypeStep(theme, ui),
-		Database:    NewDatabaseStep(theme, ui),
-		Details:     NewProjectDetailsStep(theme, ui),
-		Features:    NewFeaturesStep(theme, ui),
-		Output:      NewOutputStep(theme, ui),
+		ProjectType: NewProjectTypeStep(themeFunc, ui),
+		Database:    NewDatabaseStep(themeFunc, ui),
+		Details:     NewProjectDetailsStep(themeFunc, ui),
+		Features:    NewFeaturesStep(themeFunc, ui),
+		Output:      NewOutputStep(themeFunc, ui),
 		TemplateFunc: func(projectType templates.ProjectType) (templates.Template, error) {
 			tmpl, err := templates.GetTemplate(projectType)
 			if err != nil {
@@ -59,16 +60,16 @@ func NewWizard() *Wizard {
 			GenerateQueries: true,
 			GenerateSchema:  true,
 		},
-		theme: theme,
-		ui:    ui,
-		deps:  &deps,
+		themeFunc: themeFunc,
+		ui:        ui,
+		deps:      &deps,
 
 		// Initialize step handlers
-		projectTypeStep: NewProjectTypeStep(theme, ui),
-		databaseStep:    NewDatabaseStep(theme, ui),
-		projectDetails:  NewProjectDetailsStep(theme, ui),
-		featuresStep:    NewFeaturesStep(theme, ui),
-		outputStep:      NewOutputStep(theme, ui),
+		projectTypeStep: NewProjectTypeStep(themeFunc, ui),
+		databaseStep:    NewDatabaseStep(themeFunc, ui),
+		projectDetails:  NewProjectDetailsStep(themeFunc, ui),
+		featuresStep:    NewFeaturesStep(themeFunc, ui),
+		outputStep:      NewOutputStep(themeFunc, ui),
 	}
 }
 

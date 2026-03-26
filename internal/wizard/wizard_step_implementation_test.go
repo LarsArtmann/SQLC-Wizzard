@@ -4,23 +4,23 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
 
 var _ = Describe("Individual Step Implementation Tests", func() {
-	var theme *huh.Theme
+	var themeFunc huh.ThemeFunc
 
 	BeforeEach(func() {
-		theme = huh.ThemeBase()
+		themeFunc = huh.ThemeBase
 	})
 
 	Describe("ProjectTypeStep", func() {
 		var step *wizard.ProjectTypeStep
 
 		BeforeEach(func() {
-			step = wizard.NewProjectTypeStep(theme, wizard.NewUIHelper())
+			step = wizard.NewProjectTypeStep(themeFunc, wizard.NewUIHelper())
 		})
 
 		It("should create project type step successfully", func() {
@@ -48,7 +48,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		var step *wizard.DatabaseStep
 
 		BeforeEach(func() {
-			step = wizard.NewDatabaseStep(theme, wizard.NewUIHelper())
+			step = wizard.NewDatabaseStep(themeFunc, wizard.NewUIHelper())
 		})
 
 		It("should create database step successfully", func() {
@@ -74,7 +74,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		var step *wizard.ProjectDetailsStep
 
 		BeforeEach(func() {
-			step = wizard.NewProjectDetailsStep(theme, wizard.NewUIHelper())
+			step = wizard.NewProjectDetailsStep(themeFunc, wizard.NewUIHelper())
 		})
 
 		It("should create project details step successfully", func() {
@@ -129,7 +129,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		var step *wizard.FeaturesStep
 
 		BeforeEach(func() {
-			step = wizard.NewFeaturesStep(theme, wizard.NewUIHelper())
+			step = wizard.NewFeaturesStep(themeFunc, wizard.NewUIHelper())
 		})
 
 		It("should create features step successfully", func() {
@@ -208,7 +208,7 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		var step *wizard.OutputStep
 
 		BeforeEach(func() {
-			step = wizard.NewOutputStep(theme, wizard.NewUIHelper())
+			step = wizard.NewOutputStep(themeFunc, wizard.NewUIHelper())
 		})
 
 		It("should create output step successfully", func() {

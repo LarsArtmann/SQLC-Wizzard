@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // DatabaseStep handles database selection and configuration.
 type DatabaseStep struct {
-	theme *huh.Theme
-	ui    *UIHelper
+	themeFunc huh.ThemeFunc
+	ui        *UIHelper
 }
 
 // NewDatabaseStep creates a new database step.
-func NewDatabaseStep(theme *huh.Theme, ui *UIHelper) *DatabaseStep {
+func NewDatabaseStep(themeFunc huh.ThemeFunc, ui *UIHelper) *DatabaseStep {
 	return &DatabaseStep{
-		theme: theme,
-		ui:    ui,
+		themeFunc: themeFunc,
+		ui:        ui,
 	}
 }
 
@@ -38,7 +38,7 @@ func (s *DatabaseStep) Execute(data *generated.TemplateData) error {
 				).
 				Value(&database),
 		),
-	).WithTheme(s.theme)
+	).WithTheme(s.themeFunc)
 
 	err := form.Run()
 	if err != nil {

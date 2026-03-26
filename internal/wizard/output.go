@@ -5,20 +5,20 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // OutputStep handles output configuration and file paths.
 type OutputStep struct {
-	theme *huh.Theme
-	ui    *UIHelper
+	themeFunc huh.ThemeFunc
+	ui        *UIHelper
 }
 
 // NewOutputStep creates a new output step.
-func NewOutputStep(theme *huh.Theme, ui *UIHelper) *OutputStep {
+func NewOutputStep(themeFunc huh.ThemeFunc, ui *UIHelper) *OutputStep {
 	return &OutputStep{
-		theme: theme,
-		ui:    ui,
+		themeFunc: themeFunc,
+		ui:        ui,
 	}
 }
 
@@ -46,7 +46,7 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 				Placeholder("./sql/schema").
 				Value(&schemaDir),
 		),
-	).WithTheme(s.theme)
+	).WithTheme(s.themeFunc)
 
 	err := form.Run()
 	if err != nil {

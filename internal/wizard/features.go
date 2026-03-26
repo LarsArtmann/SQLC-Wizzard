@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // FeaturesStep handles feature selection and validation configuration.
 type FeaturesStep struct {
-	theme *huh.Theme
-	ui    *UIHelper
+	themeFunc huh.ThemeFunc
+	ui        *UIHelper
 }
 
 // NewFeaturesStep creates a new features step.
-func NewFeaturesStep(theme *huh.Theme, ui *UIHelper) *FeaturesStep {
+func NewFeaturesStep(themeFunc huh.ThemeFunc, ui *UIHelper) *FeaturesStep {
 	return &FeaturesStep{
-		theme: theme,
-		ui:    ui,
+		themeFunc: themeFunc,
+		ui:        ui,
 	}
 }
 
@@ -174,7 +174,7 @@ func (s *FeaturesStep) runFeatureConfigForm(
 
 	form := huh.NewForm(
 		huh.NewGroup(formFields...),
-	).WithTheme(s.theme)
+	).WithTheme(s.themeFunc)
 
 	err := form.Run()
 	if err != nil {
@@ -222,7 +222,7 @@ func (s *FeaturesStep) configureDatabaseFeatures(data *generated.TemplateData) e
 				Description("Enable full-text search capabilities").
 				Value(&useFullText),
 		),
-	).WithTheme(s.theme)
+	).WithTheme(s.themeFunc)
 
 	err := form.Run()
 	if err != nil {

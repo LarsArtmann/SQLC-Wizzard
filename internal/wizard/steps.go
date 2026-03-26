@@ -7,7 +7,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // createValidatedInput creates a validated input field with common error checking.

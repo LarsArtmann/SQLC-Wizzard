@@ -6,20 +6,20 @@ import (
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // ProjectDetailsStep handles project name and configuration details.
 type ProjectDetailsStep struct {
-	theme *huh.Theme
-	ui    *UIHelper
+	themeFunc huh.ThemeFunc
+	ui        *UIHelper
 }
 
 // NewProjectDetailsStep creates a new project details step.
-func NewProjectDetailsStep(theme *huh.Theme, ui *UIHelper) *ProjectDetailsStep {
+func NewProjectDetailsStep(themeFunc huh.ThemeFunc, ui *UIHelper) *ProjectDetailsStep {
 	return &ProjectDetailsStep{
-		theme: theme,
-		ui:    ui,
+		themeFunc: themeFunc,
+		ui:        ui,
 	}
 }
 
@@ -54,7 +54,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 					return nil
 				}),
 		),
-	).WithTheme(s.theme)
+	).WithTheme(s.themeFunc)
 
 	err := nameForm.Run()
 	if err != nil {
@@ -83,7 +83,7 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 					return nil
 				}),
 		),
-	).WithTheme(s.theme)
+	).WithTheme(s.themeFunc)
 
 	err = packageForm.Run()
 	if err != nil {

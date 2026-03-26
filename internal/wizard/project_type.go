@@ -4,20 +4,20 @@ import (
 	"fmt"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 )
 
 // ProjectTypeStep handles project type selection.
 type ProjectTypeStep struct {
-	theme *huh.Theme
-	ui    *UIHelper
+	themeFunc huh.ThemeFunc
+	ui        *UIHelper
 }
 
 // NewProjectTypeStep creates a new project type step.
-func NewProjectTypeStep(theme *huh.Theme, ui *UIHelper) *ProjectTypeStep {
+func NewProjectTypeStep(themeFunc huh.ThemeFunc, ui *UIHelper) *ProjectTypeStep {
 	return &ProjectTypeStep{
-		theme: theme,
-		ui:    ui,
+		themeFunc: themeFunc,
+		ui:        ui,
 	}
 }
 
@@ -43,7 +43,7 @@ func (s *ProjectTypeStep) Execute(data *generated.TemplateData) error {
 				).
 				Value(&projectType),
 		),
-	).WithTheme(s.theme)
+	).WithTheme(s.themeFunc)
 
 	err := form.Run()
 	if err != nil {

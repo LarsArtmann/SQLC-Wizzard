@@ -2,7 +2,7 @@ package wizard
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/charmbracelet/huh"
+	"charm.land/huh/v2"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 )
