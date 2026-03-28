@@ -33,7 +33,11 @@ func getVersion(m *migrate.Migrate, source string) (version uint, dirty bool, er
 	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
 		log.Error("Failed to get migration version", "error", err, "source", source)
 
-		return 0, false, fmt.Errorf("failed to get migration version for source %s: %w", source, err)
+		return 0, false, fmt.Errorf(
+			"failed to get migration version for source %s: %w",
+			source,
+			err,
+		)
 	}
 
 	return version, dirty, err

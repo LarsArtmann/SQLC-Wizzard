@@ -60,6 +60,8 @@
 package templates
 
 import (
+	"fmt"
+
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
@@ -577,7 +579,15 @@ func (t *BaseTemplate) GenerateWithDefaults(
 
 	cfg, err := builder.Build()
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf(
+			"config builder failed for project %q (package=%s, path=%s, baseDir=%s, strict=%v): %w",
+			projectName,
+			packageName,
+			packagePath,
+			baseDir,
+			strict,
+			err,
+		)
 	}
 
 	// Generate Go config with template-specific settings
