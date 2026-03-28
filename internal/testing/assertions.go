@@ -78,7 +78,7 @@ func AssertTemplateDefaultData(t *testing.T, helper TemplateTestHelper) {
 		)
 	}
 
-	assert.Equal(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle)
+	assert.JSONEq(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle)
 
 	// Check prepared queries - defaults to true unless explicitly set
 	expectedPreparedQueries := helper.ExpectPreparedQueries

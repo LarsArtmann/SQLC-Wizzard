@@ -27,6 +27,25 @@ func NewRealMigrationAdapter() *RealMigrationAdapter {
 	return &RealMigrationAdapter{}
 }
 
+// getVersion safely retrieves migration version, treating ErrNilVersion as non-error.
+func getVersion(m *migrate.Migrate, source string) (version uint, dirty bool, err error) {
+	version, dirty, err = m.Version()
+	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
+		log.Error("Failed to get migration version", "error", err, "source", source)
+
+		return 0, false, fmt.Errorf("failed to get migration version for source %s: %w", source, err)
+	}
+
+	return version, dirty, err
+}
+
+// isValidDatabaseURI checks if the current URI matches any of the valid prefixes.
+func isValidDatabaseURI(currentURI string, validPrefixes []string) bool {
+	return lo.ContainsBy(validPrefixes, func(prefix string) bool {
+		return currentURI == prefix
+	})
+}
+
 // Migrate runs database migrations from a source.
 func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL string) error {
 	log.Info("Starting database migration", "source", source, "database", databaseURL)
@@ -45,11 +64,9 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 		}
 	}()
 
-	version, dirty, err := m.Version()
-	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
-		log.Error("Failed to get migration version", "error", err, "source", source)
-
-		return fmt.Errorf("failed to get migration version for source %s: %w", source, err)
+	version, dirty, err := getVersion(m, source)
+	if err != nil {
+		return err
 	}
 
 	if dirty {
@@ -186,9 +203,19 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 
 	m, err := migrate.New(source, "file://tmp")
 	if err != nil {
-		log.Error("Failed to create migration instance for validation", "error", err, "source", source)
+		log.Error(
+			"Failed to create migration instance for validation",
+			"error",
+			err,
+			"source",
+			source,
+		)
 
-		return fmt.Errorf("failed to create migration instance for validation of source %s: %w", source, err)
+		return fmt.Errorf(
+			"failed to create migration instance for validation of source %s: %w",
+			source,
+			err,
+		)
 	}
 
 	defer func() {
@@ -198,11 +225,9 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 		}
 	}()
 
-	version, _, err := m.Version()
-	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
-		log.Error("Migration validation failed", "error", err, "source", source)
-
-		return fmt.Errorf("migration validation failed for source %s: %w", source, err)
+	version, _, err := getVersion(m, source)
+	if err != nil {
+		return err
 	}
 
 	log.Info("Migration files validated", "latest_version", version, "source", source)
@@ -300,7 +325,11 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(
 	// Update database configuration based on target database type
 	err := r.updateDatabaseConfig(&newConfig, targetDatabase)
 	if err != nil {
-		return nil, fmt.Errorf("failed to update database config for target database %s: %w", targetDatabase, err)
+		return nil, fmt.Errorf(
+			"failed to update database config for target database %s: %w",
+			targetDatabase,
+			err,
+		)
 	}
 
 	log.Info("SQLC configuration migration completed")
@@ -310,44 +339,29 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(
 
 // updateDatabaseConfig updates database-specific configuration.
 func (r *RealMigrationAdapter) updateDatabaseConfig(
-	config *config.SqlcConfig,
+	cfg *config.SqlcConfig,
 	targetDatabase generated.DatabaseType,
 ) error {
-	for i := range config.SQL {
-		sqlConfig := &config.SQL[i]
+	for i := range cfg.SQL {
+		sqlConfig := &cfg.SQL[i]
+		if sqlConfig.Database == nil {
+			continue
+		}
 
 		switch targetDatabase {
 		case generated.DatabaseTypePostgreSQL:
-			// PostgreSQL-specific settings
-			if sqlConfig.Database != nil {
-				if !lo.ContainsBy([]string{"postgres", "postgresql"}, func(db string) bool {
-					return sqlConfig.Database.URI == db
-				}) {
-					// Default PostgreSQL connection string template
-					sqlConfig.Database.URI = "postgres://user:password@localhost:5432/dbname?sslmode=disable"
-				}
+			if !isValidDatabaseURI(sqlConfig.Database.URI, []string{"postgres", "postgresql"}) {
+				sqlConfig.Database.URI = "postgres://user:password@localhost:5432/dbname?sslmode=disable"
 			}
 
 		case generated.DatabaseTypeMySQL:
-			// MySQL-specific settings
-			if sqlConfig.Database != nil {
-				if !lo.ContainsBy([]string{"mysql"}, func(db string) bool {
-					return sqlConfig.Database.URI == db
-				}) {
-					// Default MySQL connection string template
-					sqlConfig.Database.URI = "user:password@tcp(localhost:3306)/dbname"
-				}
+			if !isValidDatabaseURI(sqlConfig.Database.URI, []string{"mysql"}) {
+				sqlConfig.Database.URI = "user:password@tcp(localhost:3306)/dbname"
 			}
 
 		case generated.DatabaseTypeSQLite:
-			// SQLite-specific settings
-			if sqlConfig.Database != nil {
-				if !lo.ContainsBy([]string{"sqlite", "sqlite3"}, func(db string) bool {
-					return sqlConfig.Database.URI == db
-				}) {
-					// Default SQLite file path
-					sqlConfig.Database.URI = "./database.db"
-				}
+			if !isValidDatabaseURI(sqlConfig.Database.URI, []string{"sqlite", "sqlite3"}) {
+				sqlConfig.Database.URI = "./database.db"
 			}
 		}
 	}

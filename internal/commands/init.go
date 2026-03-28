@@ -68,7 +68,10 @@ func runInit(opts *InitOptions) error {
 	if _, err := os.Stat("sqlc.yaml"); err == nil {
 		return apperrors.NewError(
 			apperrors.ErrorCodeInternalServer,
-			fmt.Sprintf("sqlc.yaml already exists in current directory. Remove it first or run in a different directory (outputDir=%s)", opts.OutputDir),
+			fmt.Sprintf(
+				"sqlc.yaml already exists in current directory. Remove it first or run in a different directory (outputDir=%s)",
+				opts.OutputDir,
+			),
 		)
 	}
 
@@ -161,7 +164,11 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 
 	cfg, err := tmpl.Generate(data)
 	if err != nil {
-		return nil, fmt.Errorf("failed to generate config for project type %s: %w", opts.ProjectType, err)
+		return nil, fmt.Errorf(
+			"failed to generate config for project type %s: %w",
+			opts.ProjectType,
+			err,
+		)
 	}
 
 	return &wizard.WizardResult{
