@@ -75,15 +75,6 @@ func createFieldTestCases(
 			}(),
 			description: fieldDescription,
 		},
-		{
-			data: func() *generated.TemplateData {
-				data := &generated.TemplateData{}
-				setupFields(data)
-
-				return data
-			}(),
-			description: fieldDescription,
-		},
 	}
 }
 

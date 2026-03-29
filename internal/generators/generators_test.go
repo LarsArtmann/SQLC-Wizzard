@@ -78,6 +78,15 @@ func verifyQueryContent(content string) {
 	Expect(content).To(ContainSubstring("-- name:"))
 }
 
+// Helper function to set up test generator with temporary directory.
+func setupTestGenerator() (*generators.Generator, string, func()) {
+	tempDir, err := os.MkdirTemp("", "sqlc-wizard-test-*")
+	Expect(err).NotTo(HaveOccurred())
+
+	gen, cleanup := setupGenerator(tempDir)
+	return gen, tempDir, cleanup
+}
+
 var _ = Describe("NewGenerator", func() {
 	It("should create a generator with valid output directory", func() {
 		tempDir, err := os.MkdirTemp("", "sqlc-wizard-test-*")
@@ -103,14 +112,10 @@ var _ = Describe("Generator Schema Generation", func() {
 		gen     *generators.Generator
 		tempDir string
 		cleanup func()
-		err     error
 	)
 
 	BeforeEach(func() {
-		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
-		Expect(err).NotTo(HaveOccurred())
-
-		gen, cleanup = setupGenerator(tempDir)
+		gen, tempDir, cleanup = setupTestGenerator()
 	})
 
 	AfterEach(func() {
@@ -149,14 +154,10 @@ var _ = Describe("Generator Query Generation", func() {
 		gen     *generators.Generator
 		tempDir string
 		cleanup func()
-		err     error
 	)
 
 	BeforeEach(func() {
-		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
-		Expect(err).NotTo(HaveOccurred())
-
-		gen, cleanup = setupGenerator(tempDir)
+		gen, tempDir, cleanup = setupTestGenerator()
 	})
 
 	AfterEach(func() {
@@ -195,14 +196,10 @@ var _ = Describe("Error Handling", func() {
 		gen     *generators.Generator
 		tempDir string
 		cleanup func()
-		err     error
 	)
 
 	BeforeEach(func() {
-		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
-		Expect(err).NotTo(HaveOccurred())
-
-		gen, cleanup = setupGenerator(tempDir)
+		gen, tempDir, cleanup = setupTestGenerator()
 	})
 
 	AfterEach(func() {
@@ -285,14 +282,10 @@ var _ = Describe("File Structure", func() {
 		gen     *generators.Generator
 		tempDir string
 		cleanup func()
-		err     error
 	)
 
 	BeforeEach(func() {
-		tempDir, err = os.MkdirTemp("", "sqlc-wizard-test-*")
-		Expect(err).NotTo(HaveOccurred())
-
-		gen, cleanup = setupGenerator(tempDir)
+		gen, tempDir, cleanup = setupTestGenerator()
 	})
 
 	AfterEach(func() {
