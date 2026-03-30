@@ -18,12 +18,12 @@ type WizardResult struct {
 }
 
 // Wizard manages the interactive configuration flow.
-
 type Wizard struct {
 	result    *WizardResult
 	themeFunc huh.ThemeFunc
 	ui        *UIHelper
 	deps      *WizardDependencies // For dependency injection in tests
+	context   *FlowContext      // Branching flow context
 
 	// Step handlers
 	projectTypeStep *ProjectTypeStep
@@ -63,6 +63,7 @@ func NewWizard() *Wizard {
 		themeFunc: themeFunc,
 		ui:        ui,
 		deps:      &deps,
+		context:   NewFlowContext(),
 
 		// Initialize step handlers
 		projectTypeStep: NewProjectTypeStep(themeFunc, ui),
@@ -78,7 +79,7 @@ func (w *Wizard) GetResult() *WizardResult {
 	return w.result
 }
 
-// Run executes the interactive wizard.
+// Run executes the interactive wizard with branching flow support.
 func (w *Wizard) Run() (*WizardResult, error) {
 	// Display welcome banner
 	w.showWelcome()
@@ -86,17 +87,8 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	// Initialize template data with defaults
 	data := generated.DefaultTemplateData()
 
-	// Execute wizard steps in order
-	steps := []struct {
-		name    string
-		execute func(*generated.TemplateData) error
-	}{
-		{"Project Type", w.getProjectTypeStep().Execute},
-		{"Database", w.getDatabaseStep().Execute},
-		{"Project Details", w.getProjectDetailsStep().Execute},
-		{"Features", w.getFeaturesStep().Execute},
-		{"Output Configuration", w.getOutputStep().Execute},
-	}
+	// Get dynamic steps based on flow context
+	steps := w.buildStepList(&data)
 
 	for _, step := range steps {
 		w.showStepHeader(step.name)
@@ -105,6 +97,10 @@ func (w *Wizard) Run() (*WizardResult, error) {
 		if err != nil {
 			return nil, fmt.Errorf("step '%s' failed: %w", step.name, err)
 		}
+
+		// Update flow context with completed step
+		w.context.MarkStepCompleted(step.id)
+		w.context.UpdateFromTemplateData(&data)
 
 		w.showStepComplete(step.name, "Completed successfully")
 	}
@@ -119,6 +115,74 @@ func (w *Wizard) Run() (*WizardResult, error) {
 	w.showSummary(&data)
 
 	return w.result, nil
+}
+
+// stepDefinition defines a single step in the wizard flow.
+type stepDefinition struct {
+	name    string
+	id      StepID
+	execute func(*generated.TemplateData) error
+}
+
+// buildStepList builds the dynamic step list based on flow context.
+func (w *Wizard) buildStepList(data *generated.TemplateData) []stepDefinition {
+	var steps []stepDefinition
+
+	// Project Type step - always first
+	steps = append(steps, stepDefinition{
+		name:    "Project Type",
+		id:      StepProjectType,
+		execute: w.getProjectTypeStep().Execute,
+	})
+
+	// Update context with project type for dynamic step building
+	if data != nil && data.ProjectType != "" {
+		w.context.ProjectType = data.ProjectType
+	}
+
+	// Database step - always second
+	steps = append(steps, stepDefinition{
+		name:    "Database",
+		id:      StepDatabase,
+		execute: w.getDatabaseStep().Execute,
+	})
+
+	// Update context with database type
+	if data != nil && data.Database.Engine != "" {
+		w.context.DatabaseType = data.Database.Engine
+	}
+
+	// Project Details step - always third
+	steps = append(steps, stepDefinition{
+		name:    "Project Details",
+		id:      StepProjectDetail,
+		execute: w.getProjectDetailsStep().Execute,
+	})
+
+	// Features step - conditional based on project type
+	shouldShowFeatures := w.context.ProjectType != generated.ProjectTypeHobby &&
+		w.context.ProjectType != generated.ProjectTypeTesting
+	if shouldShowFeatures {
+		steps = append(steps, stepDefinition{
+			name:    "Features",
+			id:      StepFeatures,
+			execute: w.getFeaturesStep().Execute,
+		})
+	}
+
+	// Output step - always last
+	steps = append(steps, stepDefinition{
+		name:    "Output Configuration",
+		id:      StepOutput,
+		execute: w.getOutputStep().Execute,
+	})
+
+	return steps
+}
+
+// GetFlowContext returns the current flow context.
+func (w *Wizard) GetFlowContext() *FlowContext {
+	return w.context
 }
 
 // Helper methods to get the appropriate step implementation.

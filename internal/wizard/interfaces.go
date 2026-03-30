@@ -44,6 +44,7 @@ func NewTestableWizard(deps WizardDependencies) *Wizard {
 			GenerateQueries: true,
 			GenerateSchema:  true,
 		},
-		deps: &deps,
+		deps:    &deps,
+		context: NewFlowContext(),
 	}
 }

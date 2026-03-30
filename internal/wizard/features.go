@@ -21,24 +21,30 @@ func NewFeaturesStep(themeFunc huh.ThemeFunc, ui *UIHelper) *FeaturesStep {
 	}
 }
 
-// Execute runs the feature selection step.
+// Execute runs the feature selection step with branching support.
 func (s *FeaturesStep) Execute(data *generated.TemplateData) error {
 	s.ui.ShowStepHeader("Features & Validation")
 
-	// Code generation options
+	// Code generation options - conditional based on project type
 	err := s.configureCodeGeneration(data)
 	if err != nil {
 		return err
 	}
 
-	// Safety rules
+	// Safety rules - conditional based on project type
 	err = s.configureSafetyRules(data)
 	if err != nil {
 		return err
 	}
 
-	// Database features
+	// Database features - fully dynamic based on database engine
 	err = s.configureDatabaseFeatures(data)
+	if err != nil {
+		return err
+	}
+
+	// Project-type specific features - conditional based on project type
+	err = s.configureProjectTypeFeatures(data)
 	if err != nil {
 		return err
 	}
@@ -199,47 +205,159 @@ func (s *FeaturesStep) configureSafetyRules(data *generated.TemplateData) error 
 	return s.runFeatureConfigForm(data, safetyRuleConfigs, "safety rules")
 }
 
-// configureDatabaseFeatures configures database-specific features.
-func (s *FeaturesStep) configureDatabaseFeatures(data *generated.TemplateData) error {
-	var useUUIDs, useJSON, useArrays, useFullText bool
+// configureProjectTypeFeatures configures project-type specific features.
+// This method is called after database features and adds additional configuration
+// based on the project type (e.g., strict mode for enterprise, prepared queries for API-first).
+func (s *FeaturesStep) configureProjectTypeFeatures(data *generated.TemplateData) error {
+	// Only show additional project-type specific features for complex project types
+	switch data.ProjectType {
+	case generated.ProjectTypeEnterprise, generated.ProjectTypeMultiTenant:
+		// Enterprise projects benefit from strict mode and prepared queries
+		return s.configureEnterpriseFeatures(data)
+
+	case generated.ProjectTypeAPIFirst:
+		// API-first projects benefit from interface generation
+		return s.configureAPIFirstFeatures(data)
+
+	case generated.ProjectTypeAnalytics:
+		// Analytics projects benefit from strict ORDER BY
+		return s.configureAnalyticsFeatures(data)
+
+	default:
+		// For hobby, microservice, testing, and library - skip additional features
+		return nil
+	}
+}
+
+// configureEnterpriseFeatures adds enterprise-specific feature configuration.
+func (s *FeaturesStep) configureEnterpriseFeatures(data *generated.TemplateData) error {
+	var enableStrictMode bool
 
 	form := huh.NewForm(
 		huh.NewGroup(
 			huh.NewConfirm().
+				Title("Enable strict mode?").
+				Description("Enable strict validation for all queries to catch potential issues early").
+				Value(&enableStrictMode),
+		),
+	).WithTheme(s.themeFunc)
+
+	err := form.Run()
+	if err != nil {
+		return fmt.Errorf("enterprise features configuration failed: %w", err)
+	}
+
+	data.Validation.StrictFunctions = enableStrictMode
+	data.Validation.StrictOrderBy = enableStrictMode
+
+	return nil
+}
+
+// configureAPIFirstFeatures adds API-first specific feature configuration.
+func (s *FeaturesStep) configureAPIFirstFeatures(data *generated.TemplateData) error {
+	// Ensure JSON tags are enabled for API-first projects
+	data.Validation.EmitOptions.EmitJSONTags = true
+
+	return nil
+}
+
+// configureAnalyticsFeatures adds analytics-specific feature configuration.
+func (s *FeaturesStep) configureAnalyticsFeatures(data *generated.TemplateData) error {
+	var enableStrictOrderBy bool
+
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewConfirm().
+				Title("Enable strict ORDER BY?").
+				Description("Require ORDER BY in all SELECT queries to ensure predictable results").
+				Value(&enableStrictOrderBy),
+		),
+	).WithTheme(s.themeFunc)
+
+	err := form.Run()
+	if err != nil {
+		return fmt.Errorf("analytics features configuration failed: %w", err)
+	}
+
+	data.Validation.StrictOrderBy = enableStrictOrderBy
+
+	return nil
+}
+
+// configureDatabaseFeatures configures database-specific features using branching context.
+func (s *FeaturesStep) configureDatabaseFeatures(data *generated.TemplateData) error {
+	// Build dynamic database features based on engine type
+	var fields []huh.Field
+
+	switch data.Database.Engine {
+	case generated.DatabaseTypePostgreSQL:
+		// PostgreSQL supports all features
+		fields = []huh.Field{
+			huh.NewConfirm().
 				Title("Use UUID primary keys?").
 				Description("Generate UUID primary keys instead of auto-increment integers").
-				Value(&useUUIDs),
+				Value(&data.Database.UseUUIDs),
 			huh.NewConfirm().
 				Title("Use JSON columns?").
 				Description("Enable JSON column support for flexible data storage").
-				Value(&useJSON),
+				Value(&data.Database.UseJSON),
 			huh.NewConfirm().
 				Title("Use array columns?").
-				Description("Enable array column support (PostgreSQL only)").
-				Value(&useArrays),
+				Description("Enable array column support").
+				Value(&data.Database.UseArrays),
 			huh.NewConfirm().
 				Title("Use full-text search?").
 				Description("Enable full-text search capabilities").
-				Value(&useFullText),
-		),
+				Value(&data.Database.UseFullText),
+		}
+
+	case generated.DatabaseTypeMySQL:
+		// MySQL supports UUIDs, JSON, and full-text (but not arrays)
+		fields = []huh.Field{
+			huh.NewConfirm().
+				Title("Use UUID primary keys?").
+				Description("Generate UUID primary keys instead of auto-increment integers").
+				Value(&data.Database.UseUUIDs),
+			huh.NewConfirm().
+				Title("Use JSON columns?").
+				Description("Enable JSON column support for flexible data storage").
+				Value(&data.Database.UseJSON),
+			huh.NewConfirm().
+				Title("Use full-text search?").
+				Description("Enable full-text search capabilities (MySQL 5.7+)").
+				Value(&data.Database.UseFullText),
+		}
+
+	case generated.DatabaseTypeSQLite:
+		// SQLite has limited features
+		fields = []huh.Field{
+			huh.NewConfirm().
+				Title("Use JSON columns?").
+				Description("Enable JSON column support for flexible data storage").
+				Value(&data.Database.UseJSON),
+		}
+
+	default:
+		// For unknown database types, show no specific features
+		s.ui.ShowInfo("No database-specific features available for this engine type")
+		return nil
+	}
+
+	form := huh.NewForm(
+		huh.NewGroup(fields...),
 	).WithTheme(s.themeFunc)
 
 	err := form.Run()
 	if err != nil {
 		return fmt.Errorf(
 			"database features form input failed (UUIDs=%v, JSON=%v, Arrays=%v, FullText=%v): %w",
-			useUUIDs,
-			useJSON,
-			useArrays,
-			useFullText,
+			data.Database.UseUUIDs,
+			data.Database.UseJSON,
+			data.Database.UseArrays,
+			data.Database.UseFullText,
 			err,
 		)
 	}
-
-	data.Database.UseUUIDs = useUUIDs
-	data.Database.UseJSON = useJSON
-	data.Database.UseArrays = useArrays
-	data.Database.UseFullText = useFullText
 
 	return nil
 }
