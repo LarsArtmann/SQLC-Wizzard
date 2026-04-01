@@ -68,6 +68,20 @@ import (
 	"github.com/samber/lo"
 )
 
+// TransformSafetyRulesToConfig converts generated safety rules to config rule configs.
+// This centralized function eliminates duplicated rule transformation code across templates.
+func TransformSafetyRulesToConfig(safetyRules *generated.SafetyRules) []config.RuleConfig {
+	transformer := validation.NewRuleTransformer()
+	rules := transformer.TransformSafetyRules(safetyRules)
+	return lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
+		return config.RuleConfig{
+			Name:    r.Name,
+			Rule:    r.Rule,
+			Message: r.Message,
+		}
+	})
+}
+
 // ConfigBuilder helps construct sqlc configurations with common patterns.
 // This eliminates duplication across template implementations.
 type ConfigBuilder struct {
@@ -349,16 +363,7 @@ func (t *BaseTemplate) ApplyValidationRules(
 		config.ApplyEmitOptions(&data.Validation.EmitOptions, cfg.SQL[0].Gen.Go)
 
 		// Convert rule types using the centralized transformer
-		transformer := validation.NewRuleTransformer()
-		rules := transformer.TransformSafetyRules(&data.Validation.SafetyRules)
-		configRules := lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
-			return config.RuleConfig{
-				Name:    r.Name,
-				Rule:    r.Rule,
-				Message: r.Message,
-			}
-		})
-		cfg.SQL[0].Rules = configRules
+		cfg.SQL[0].Rules = TransformSafetyRulesToConfig(&data.Validation.SafetyRules)
 	}
 
 	return cfg, nil

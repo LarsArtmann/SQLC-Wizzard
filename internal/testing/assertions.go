@@ -10,12 +10,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+// TemplateInterface defines the interface for template implementations used in testing.
+type TemplateInterface interface {
+	DefaultData() generated.TemplateData
+	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
+}
+
 // TemplateTestHelper contains parameters for generic template tests using testify.
 type TemplateTestHelper struct {
-	Template interface {
-		DefaultData() generated.TemplateData
-		Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-	}
+	Template TemplateInterface
 	ExpectedProjectType       generated.ProjectType
 	ExpectedProjectName       string
 	ExpectedEngine            string
@@ -136,11 +139,7 @@ func AssertTemplateGenerateBasic(t *testing.T, helper TemplateTestHelper) {
 //	        "enterprise-service",
 //	    )
 //	}
-func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
-	DefaultData() generated.TemplateData
-	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-}, expectedProjectType generated.ProjectType, expectedProjectName string,
-) {
+func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template TemplateInterface, expectedProjectType generated.ProjectType, expectedProjectName string) {
 	t.Helper()
 
 	data := template.DefaultData()
@@ -199,10 +198,7 @@ func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template interface {
 //	}
 func AssertTemplateGenerateBasicWithConfigs(
 	t *testing.T,
-	template interface {
-		DefaultData() generated.TemplateData
-		Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-	},
+	template TemplateInterface,
 	expectedProjectType generated.ProjectType,
 	expectedProjectName, expectedEngine string,
 	commonConfigs []TemplateTestHelperOption,
@@ -343,11 +339,7 @@ func WithJSONTagsCaseStyle(style string) TemplateTestHelperOption {
 //	    testing.WithPreparedQueries(true),
 //	)
 //	testing.AssertTemplateDefaultData(t, helper)
-func NewTemplateTestHelper(template interface {
-	DefaultData() generated.TemplateData
-	Generate(data generated.TemplateData) (*config.SqlcConfig, error)
-}, opts ...TemplateTestHelperOption,
-) TemplateTestHelper {
+func NewTemplateTestHelper(template TemplateInterface, opts ...TemplateTestHelperOption) TemplateTestHelper {
 	helper := TemplateTestHelper{
 		Template: template,
 	}

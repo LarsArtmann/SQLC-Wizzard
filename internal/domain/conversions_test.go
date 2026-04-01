@@ -154,17 +154,8 @@ var _ = Describe("EmitOptions Conversions", func() {
 		})
 
 		It("should handle invalid JSON tag style with fallback", func() {
-			old := generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      true,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "INVALID",
-			}
+			old := commonEmitOptions()
+			old.JSONTagsCaseStyle = "INVALID"
 
 			typeSafe := domain.EmitOptionsToTypeSafe(old)
 

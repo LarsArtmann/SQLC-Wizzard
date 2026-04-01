@@ -5,6 +5,46 @@ import (
 	"unicode"
 )
 
+// irregularSingularToPlural maps singular nouns to their plural forms for irregular nouns.
+var irregularSingularToPlural = map[string]string{
+	"person": "people",
+	"child":  "children",
+	"index":  "indices",
+	"status": "statuses",
+	"match":  "matches",
+	"box":    "boxes",
+	"sheep":  "sheep",
+	"data":   "data",
+}
+
+// irregularPluralToSingular maps plural nouns to their singular forms for irregular nouns.
+var irregularPluralToSingular = map[string]string{
+	"people":  "person",
+	"children": "child",
+	"indices": "index",
+	"statuses": "status",
+	"matches": "match",
+	"boxes":   "box",
+	"data":    "data",
+	"sheep":   "sheep",
+}
+
+// getIrregularPlural returns the plural form of an irregular noun, or empty string if not found.
+func getIrregularPlural(singular string) string {
+	if plural, ok := irregularSingularToPlural[strings.ToLower(singular)]; ok {
+		return plural
+	}
+	return ""
+}
+
+// getIrregularSingular returns the singular form of an irregular plural noun, or empty string if not found.
+func getIrregularSingular(plural string) string {
+	if singular, ok := irregularPluralToSingular[strings.ToLower(plural)]; ok {
+		return singular
+	}
+	return ""
+}
+
 // StringToCamelCase converts snake_case to CamelCase.
 func StringToCamelCase(s string) string {
 	if s == "" {
@@ -61,23 +101,8 @@ func Pluralize(word string) string {
 	}
 
 	// Handle common irregular nouns
-	switch strings.ToLower(word) {
-	case "person":
-		return "people"
-	case "child":
-		return "children"
-	case "index":
-		return "indices"
-	case "status":
-		return "statuses"
-	case "match":
-		return "matches"
-	case "box":
-		return "boxes"
-	case "sheep":
-		return "sheep"
-	case "data":
-		return "data" // Already plural or irregular
+	if plural := getIrregularPlural(word); plural != "" {
+		return plural
 	}
 
 	// Handle words ending in specific patterns
@@ -105,29 +130,13 @@ func Singularize(word string) string {
 		return ""
 	}
 
-	lowered := strings.ToLower(word)
-
 	// Handle common irregular nouns
-	switch lowered {
-	case "people":
-		return "person"
-	case "children":
-		return "child"
-	case "indices":
-		return "index"
-	case "statuses":
-		return "status"
-	case "matches":
-		return "match"
-	case "boxes":
-		return "box"
-	case "data":
-		return "data" // Already singular or irregular
-	case "sheep":
-		return "sheep"
+	if singular := getIrregularSingular(word); singular != "" {
+		return singular
 	}
 
 	// Handle words ending in specific patterns
+	lowered := strings.ToLower(word)
 	if strings.HasSuffix(lowered, "ies") {
 		return word[:len(word)-3] + "y"
 	}
