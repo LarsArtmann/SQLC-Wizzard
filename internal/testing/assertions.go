@@ -18,7 +18,7 @@ type TemplateInterface interface {
 
 // TemplateTestHelper contains parameters for generic template tests using testify.
 type TemplateTestHelper struct {
-	Template TemplateInterface
+	Template                  TemplateInterface
 	ExpectedProjectType       generated.ProjectType
 	ExpectedProjectName       string
 	ExpectedEngine            string

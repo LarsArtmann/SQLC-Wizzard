@@ -23,7 +23,7 @@ type Wizard struct {
 	themeFunc huh.ThemeFunc
 	ui        *UIHelper
 	deps      *WizardDependencies // For dependency injection in tests
-	context   *FlowContext      // Branching flow context
+	context   *FlowContext        // Branching flow context
 
 	// Step handlers
 	projectTypeStep *ProjectTypeStep

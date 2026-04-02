@@ -19,14 +19,14 @@ var irregularSingularToPlural = map[string]string{
 
 // irregularPluralToSingular maps plural nouns to their singular forms for irregular nouns.
 var irregularPluralToSingular = map[string]string{
-	"people":  "person",
+	"people":   "person",
 	"children": "child",
-	"indices": "index",
+	"indices":  "index",
 	"statuses": "status",
-	"matches": "match",
-	"boxes":   "box",
-	"data":    "data",
-	"sheep":   "sheep",
+	"matches":  "match",
+	"boxes":    "box",
+	"data":     "data",
+	"sheep":    "sheep",
 }
 
 // getIrregularPlural returns the plural form of an irregular noun, or empty string if not found.
