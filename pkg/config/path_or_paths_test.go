@@ -1,11 +1,10 @@
 package config_test
 
 import (
+	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
 	"gopkg.in/yaml.v3"
-
-	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
 var _ = Describe("PathOrPaths", func() {

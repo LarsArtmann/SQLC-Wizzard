@@ -205,20 +205,48 @@ func (fc *FlowContext) GetDatabaseSpecificFeatures() []FeatureSpec {
 	switch fc.DatabaseType {
 	case generated.DatabaseTypePostgreSQL:
 		features = []FeatureSpec{
-			{Key: "uuid", Title: "Use UUID primary keys?", Description: "Generate UUID primary keys instead of auto-increment integers"},
-			{Key: "json", Title: "Use JSON columns?", Description: "Enable JSON column support for flexible data storage"},
+			{
+				Key:         "uuid",
+				Title:       "Use UUID primary keys?",
+				Description: "Generate UUID primary keys instead of auto-increment integers",
+			},
+			{
+				Key:         "json",
+				Title:       "Use JSON columns?",
+				Description: "Enable JSON column support for flexible data storage",
+			},
 			{Key: "array", Title: "Use array columns?", Description: "Enable array column support"},
-			{Key: "fulltext", Title: "Use full-text search?", Description: "Enable full-text search capabilities"},
+			{
+				Key:         "fulltext",
+				Title:       "Use full-text search?",
+				Description: "Enable full-text search capabilities",
+			},
 		}
 	case generated.DatabaseTypeMySQL:
 		features = []FeatureSpec{
-			{Key: "uuid", Title: "Use UUID primary keys?", Description: "Generate UUID primary keys instead of auto-increment integers"},
-			{Key: "json", Title: "Use JSON columns?", Description: "Enable JSON column support for flexible data storage"},
-			{Key: "fulltext", Title: "Use full-text search?", Description: "Enable full-text search capabilities (MySQL 5.7+)"},
+			{
+				Key:         "uuid",
+				Title:       "Use UUID primary keys?",
+				Description: "Generate UUID primary keys instead of auto-increment integers",
+			},
+			{
+				Key:         "json",
+				Title:       "Use JSON columns?",
+				Description: "Enable JSON column support for flexible data storage",
+			},
+			{
+				Key:         "fulltext",
+				Title:       "Use full-text search?",
+				Description: "Enable full-text search capabilities (MySQL 5.7+)",
+			},
 		}
 	case generated.DatabaseTypeSQLite:
 		features = []FeatureSpec{
-			{Key: "json", Title: "Use JSON columns?", Description: "Enable JSON column support for flexible data storage"},
+			{
+				Key:         "json",
+				Title:       "Use JSON columns?",
+				Description: "Enable JSON column support for flexible data storage",
+			},
 		}
 	}
 
@@ -232,23 +260,55 @@ func (fc *FlowContext) GetProjectTypeFeatures() []FeatureSpec {
 	switch fc.ProjectType {
 	case "enterprise", "multi-tenant":
 		features = []FeatureSpec{
-			{Key: "strict_mode", Title: "Enable strict mode?", Description: "Enable strict validation for all queries"},
-			{Key: "prepared_queries", Title: "Use prepared queries?", Description: "Generate prepared query methods for better performance"},
+			{
+				Key:         "strict_mode",
+				Title:       "Enable strict mode?",
+				Description: "Enable strict validation for all queries",
+			},
+			{
+				Key:         "prepared_queries",
+				Title:       "Use prepared queries?",
+				Description: "Generate prepared query methods for better performance",
+			},
 		}
 	case "api-first":
 		features = []FeatureSpec{
-			{Key: "json_tags", Title: "Include JSON tags?", Description: "Add JSON struct tags to generated models"},
-			{Key: "interface", Title: "Generate interfaces?", Description: "Create interfaces for query methods"},
+			{
+				Key:         "json_tags",
+				Title:       "Include JSON tags?",
+				Description: "Add JSON struct tags to generated models",
+			},
+			{
+				Key:         "interface",
+				Title:       "Generate interfaces?",
+				Description: "Create interfaces for query methods",
+			},
 		}
 	case "analytics":
 		features = []FeatureSpec{
-			{Key: "fulltext", Title: "Enable full-text search?", Description: "Enable full-text search capabilities"},
-			{Key: "strict_orderby", Title: "Strict ORDER BY?", Description: "Require ORDER BY in SELECT queries"},
+			{
+				Key:         "fulltext",
+				Title:       "Enable full-text search?",
+				Description: "Enable full-text search capabilities",
+			},
+			{
+				Key:         "strict_orderby",
+				Title:       "Strict ORDER BY?",
+				Description: "Require ORDER BY in SELECT queries",
+			},
 		}
 	case "library":
 		features = []FeatureSpec{
-			{Key: "interface", Title: "Generate interfaces?", Description: "Create interfaces for maximum flexibility"},
-			{Key: "json_tags", Title: "Include JSON tags?", Description: "Add JSON struct tags for serialization"},
+			{
+				Key:         "interface",
+				Title:       "Generate interfaces?",
+				Description: "Create interfaces for maximum flexibility",
+			},
+			{
+				Key:         "json_tags",
+				Title:       "Include JSON tags?",
+				Description: "Add JSON struct tags for serialization",
+			},
 		}
 	}
 

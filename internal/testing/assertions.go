@@ -139,7 +139,12 @@ func AssertTemplateGenerateBasic(t *testing.T, helper TemplateTestHelper) {
 //	        "enterprise-service",
 //	    )
 //	}
-func AssertTemplateGenerateBasicWithDefaults(t *testing.T, template TemplateInterface, expectedProjectType generated.ProjectType, expectedProjectName string) {
+func AssertTemplateGenerateBasicWithDefaults(
+	t *testing.T,
+	template TemplateInterface,
+	expectedProjectType generated.ProjectType,
+	expectedProjectName string,
+) {
 	t.Helper()
 
 	data := template.DefaultData()
@@ -339,7 +344,10 @@ func WithJSONTagsCaseStyle(style string) TemplateTestHelperOption {
 //	    testing.WithPreparedQueries(true),
 //	)
 //	testing.AssertTemplateDefaultData(t, helper)
-func NewTemplateTestHelper(template TemplateInterface, opts ...TemplateTestHelperOption) TemplateTestHelper {
+func NewTemplateTestHelper(
+	template TemplateInterface,
+	opts ...TemplateTestHelperOption,
+) TemplateTestHelper {
 	helper := TemplateTestHelper{
 		Template: template,
 	}
