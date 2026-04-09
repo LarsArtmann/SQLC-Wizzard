@@ -246,7 +246,7 @@ func (r *RealMigrationAdapter) CreateMigration(
 ) (string, error) {
 	log.Info("Creating migration", "name", name, "directory", directory)
 
-	err := os.MkdirAll(directory, 0o755)
+	err := os.MkdirAll(directory, DefaultDirPermissions)
 	if err != nil {
 		log.Error("Failed to create migrations directory", "directory", directory, "error", err)
 
@@ -266,7 +266,7 @@ func (r *RealMigrationAdapter) CreateMigration(
 
 `, name, timestamp)
 
-	err = os.WriteFile(upFile, []byte(upContent), 0o644)
+	err = os.WriteFile(upFile, []byte(upContent), DefaultFilePermissions)
 	if err != nil {
 		log.Error("Failed to create up migration file", "file", upFile, "error", err)
 
@@ -281,7 +281,7 @@ func (r *RealMigrationAdapter) CreateMigration(
 
 `, name, timestamp)
 
-	err = os.WriteFile(downFile, []byte(downContent), 0o644)
+	err = os.WriteFile(downFile, []byte(downContent), DefaultFilePermissions)
 	if err != nil {
 		log.Error("Failed to create down migration file", "file", downFile, "error", err)
 

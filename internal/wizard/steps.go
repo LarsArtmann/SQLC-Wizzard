@@ -10,6 +10,12 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 )
 
+// Validation constants for wizard steps.
+const (
+	minProjectNameLength = 2
+	maxProjectNameLength = 50
+)
+
 // createValidatedInput creates a validated input field with common error checking.
 func createValidatedInput(
 	title, description, placeholder, fieldName string,
@@ -117,17 +123,17 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 				)
 			}
 
-			if len(name) < 2 {
+			if len(name) < minProjectNameLength {
 				return apperrors.NewError(
 					apperrors.ErrorCodeValidationError,
-					"project name must be at least 2 characters",
+					fmt.Sprintf("project name must be at least %d characters", minProjectNameLength),
 				)
 			}
 
-			if len(name) > 50 {
+			if len(name) > maxProjectNameLength {
 				return apperrors.NewError(
 					apperrors.ErrorCodeValidationError,
-					"project name must be less than 50 characters",
+					fmt.Sprintf("project name must be less than %d characters", maxProjectNameLength),
 				)
 			}
 

@@ -12,6 +12,16 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// Memory calculation constants.
+const (
+	// bytesPerKB is the number of bytes in a kilobyte.
+	bytesPerKB = 1024
+	// bytesPerMB is the number of bytes in a megabyte.
+	bytesPerMB = 1024 * bytesPerKB
+	// minRecommendedMemoryMB is the minimum recommended memory in MB.
+	minRecommendedMemoryMB = 512
+)
+
 // DoctorCommand creates a new doctor command.
 func NewDoctorCommand() *cobra.Command {
 	return &cobra.Command{
@@ -259,7 +269,7 @@ func checkFileSystemPermissions(ctx context.Context) *DoctorResult {
 	testContent := []byte("test")
 	testFile := "/tmp/sqlc-wizard-test"
 
-	err := fsAdapter.WriteFile(ctx, testFile, testContent, 0o644)
+	err := fsAdapter.WriteFile(ctx, testFile, testContent, adapters.DefaultFilePermissions)
 	if err != nil {
 		return &DoctorResult{
 			Status:   DoctorStatusFail,
@@ -295,8 +305,8 @@ func checkMemoryAvailability(ctx context.Context) *DoctorResult {
 	runtime.ReadMemStats(&m)
 
 	// Convert bytes to MB
-	availableMB := int(m.Sys / 1024 / 1024)
-	minMemoryMB := 512 // 512MB minimum recommended
+	availableMB := int(m.Sys / bytesPerMB)
+	minMemoryMB := minRecommendedMemoryMB // 512MB minimum recommended
 
 	if availableMB < minMemoryMB {
 		return &DoctorResult{

@@ -158,7 +158,7 @@ func newTypeSafeSafetyRules() *domain.TypeSafeSafetyRules {
 		SafetyRules: domain.QuerySafetyRules{
 			WhereRequirement:    domain.WhereClauseOnDestructive,
 			LimitRequirement:    domain.LimitClauseOnSelect,
-			MaxRowsWithoutLimit: 100,
+			MaxRowsWithoutLimit: domain.MaxRowsWithoutLimitProduction,
 		},
 		DestructiveOps: domain.DestructiveForbidden,
 		CustomRules:    []generated.SafetyRule{},
@@ -206,7 +206,7 @@ func CreateRestrictiveTypeSafeSafetyRulesWithCustomRules(
 	return CreateTypeSafeSafetyRules(func(r *domain.TypeSafeSafetyRules) {
 		r.SafetyRules.WhereRequirement = domain.WhereClauseAlways
 		r.SafetyRules.LimitRequirement = domain.LimitClauseNever
-		r.SafetyRules.MaxRowsWithoutLimit = 1000
+		r.SafetyRules.MaxRowsWithoutLimit = domain.MaxRowsWithoutLimitDefault
 		r.CustomRules = customRules
 	})
 }
@@ -237,7 +237,7 @@ func CreateQuerySafetyRulesStrict() domain.QuerySafetyRules {
 	return domain.QuerySafetyRules{
 		WhereRequirement:    domain.WhereClauseAlways,
 		LimitRequirement:    domain.LimitClauseNever,
-		MaxRowsWithoutLimit: 1000,
+		MaxRowsWithoutLimit: domain.MaxRowsWithoutLimitDefault,
 	}
 }
 

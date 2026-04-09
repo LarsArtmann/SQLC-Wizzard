@@ -5,6 +5,12 @@ import (
 	"strings"
 )
 
+// Schema limits.
+const (
+	// MaxTablesLimit is the maximum number of tables allowed in a schema.
+	MaxTablesLimit = 1000
+)
+
 // Schema represents a database schema with proper type safety
 // Eliminates interface{} returns from adapter methods.
 type Schema struct {
@@ -161,10 +167,10 @@ func NewSchema(name string, tables []Table) (*Schema, error) {
 		}
 	}
 
-	if len(tables) > 1000 {
+	if len(tables) > MaxTablesLimit {
 		return nil, &SchemaError{
 			Code:    "TOO_MANY_TABLES",
-			Message: "Schema exceeds reasonable limit of 1000 tables",
+			Message: fmt.Sprintf("Schema exceeds reasonable limit of %d tables", MaxTablesLimit),
 		}
 	}
 
@@ -255,10 +261,10 @@ func (s *Schema) Validate() error {
 		}
 	}
 
-	if len(s.Tables) > 1000 {
+	if len(s.Tables) > MaxTablesLimit {
 		return &SchemaError{
 			Code:    "TOO_MANY_TABLES",
-			Message: "Schema exceeds reasonable limit of 1000 tables",
+			Message: fmt.Sprintf("Schema exceeds reasonable limit of %d tables", MaxTablesLimit),
 		}
 	}
 

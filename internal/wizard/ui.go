@@ -10,6 +10,11 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
+// UI validation constants.
+const (
+	maxSchemaTables = 100
+)
+
 // ShowCompletion displays final configuration summary with typed schema
 // Replaces 'any' type with proper typed schema parameter.
 func ShowCompletion(cfg *schema.Schema, data generated.TemplateData) {
@@ -73,7 +78,7 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 	}
 
 	// Additional business logic validation
-	if len(cfg.Tables) > 100 {
+	if len(cfg.Tables) > maxSchemaTables {
 		return apperrors.NewError(
 			apperrors.ErrorCodeSchemaValidation,
 			"Schema exceeds maximum allowed tables",

@@ -7,6 +7,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+// YAML formatting constants.
+const (
+	// yamlIndentSpaces is the number of spaces used for YAML indentation.
+	yamlIndentSpaces = 2
+)
+
 // Marshal converts a SqlcConfig to YAML bytes.
 func Marshal(cfg *SqlcConfig) ([]byte, error) {
 	data, err := yaml.Marshal(cfg)
@@ -48,7 +54,7 @@ func WriteFileFormatted(cfg *SqlcConfig, path string) error {
 	}()
 
 	encoder := yaml.NewEncoder(file)
-	encoder.SetIndent(2) // Use 2 spaces for indentation
+	encoder.SetIndent(yamlIndentSpaces) // Use 2 spaces for indentation
 
 	if err := encoder.Encode(cfg); err != nil {
 		return fmt.Errorf("failed to encode config to file %s: %w", path, err)

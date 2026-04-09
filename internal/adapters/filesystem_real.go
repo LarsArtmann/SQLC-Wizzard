@@ -35,7 +35,7 @@ func (a *RealFileSystemAdapter) WriteFile(
 ) error {
 	// Create directory if needed
 	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0o755); err != nil {
+	if err := os.MkdirAll(dir, DefaultDirPermissions); err != nil {
 		return fmt.Errorf("failed to create directory %s with perm %o: %w", dir, perm, err)
 	}
 

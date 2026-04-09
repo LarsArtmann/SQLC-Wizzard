@@ -1,6 +1,8 @@
 package domain
 
-import "github.com/LarsArtmann/SQLC-Wizzard/generated"
+import (
+	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+)
 
 // This file provides bidirectional conversions between OLD boolean-heavy types
 // and NEW type-safe enum-based types. These conversions enable gradual migration
@@ -117,7 +119,7 @@ func SafetyRulesToTypeSafe(old generated.SafetyRules) TypeSafeSafetyRules {
 			WhereRequirement: convertWhereRequirement(old.RequireWhere),
 			LimitRequirement: convertLimitRequirement(old.RequireLimit),
 			// MaxRowsWithoutLimit not present in old structure, use safe default
-			MaxRowsWithoutLimit: 1000,
+			MaxRowsWithoutLimit: MaxRowsWithoutLimitDefault,
 		},
 		DestructiveOps: destructiveOps,
 		CustomRules:    old.Rules,

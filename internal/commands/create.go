@@ -15,6 +15,11 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// UI styling constants.
+const (
+	commandPaddingLeft = 2
+)
+
 // CreateOptions contains options for the create command.
 type CreateOptions struct {
 	ProjectType     string
@@ -91,7 +96,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 
 	// Create output directory if needed
 	outputPath := filepath.Join(opts.OutputDir, projectName)
-	if err := os.MkdirAll(outputPath, 0o755); err != nil {
+	if err := os.MkdirAll(outputPath, adapters.DefaultDirPermissions); err != nil {
 		return fmt.Errorf("failed to create output directory: %w", err)
 	}
 
@@ -227,7 +232,7 @@ func showCreateSuccess(
 
 	commandStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("8")).
-		PaddingLeft(2)
+		PaddingLeft(commandPaddingLeft)
 
 	fmt.Println(successStyle.Render("🚀 Successfully created SQLC project!"))
 	fmt.Printf("Project: %s\n", projectName)

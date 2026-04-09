@@ -203,7 +203,8 @@ func TruncateString(s string, length int) string {
 		return s
 	}
 
-	if length <= 3 {
+	const ellipsisLength = 3
+	if length <= ellipsisLength {
 		return s[:length]
 	}
 

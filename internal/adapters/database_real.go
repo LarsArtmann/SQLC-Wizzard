@@ -135,7 +135,8 @@ func (a *RealDatabaseAdapter) GenerateMigrations(
 
 // maskSensitiveInfo masks sensitive information in database URIs.
 func maskSensitiveInfo(uri string) string {
-	if len(uri) <= 10 {
+	const minURIMaskLength = 10
+	if len(uri) <= minURIMaskLength {
 		return uri
 	}
 

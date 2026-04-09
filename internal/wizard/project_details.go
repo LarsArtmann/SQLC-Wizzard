@@ -9,6 +9,18 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 )
 
+// Package name validation constants.
+const (
+	minPackageNameLength = 2
+	maxPackageNameLength = 50
+)
+
+// ASCII case conversion constants.
+const (
+	// lowercaseOffsetASCII is the difference between uppercase and lowercase ASCII letters.
+	lowercaseOffsetASCII = 32
+)
+
 // ProjectDetailsStep handles project name and configuration details.
 type ProjectDetailsStep struct {
 	themeFunc huh.ThemeFunc
@@ -37,21 +49,23 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Placeholder("my-awesome-project").
 				Value(&projectName).
 				Validate(func(str string) error {
-					if len(str) < 2 {
+					if len(str) < MinProjectNameLength {
 						return apperrors.NewError(
 							apperrors.ErrorCodeValidationError,
 							fmt.Sprintf(
-								"project name must be at least 2 characters (got %d)",
+								"project name must be at least %d characters (got %d)",
+								MinProjectNameLength,
 								len(str),
 							),
 						)
 					}
 
-					if len(str) > 50 {
+					if len(str) > MaxProjectNameLength {
 						return apperrors.NewError(
 							apperrors.ErrorCodeValidationError,
 							fmt.Sprintf(
-								"project name must be less than 50 characters (got %d)",
+								"project name must be less than %d characters (got %d)",
+								MaxProjectNameLength,
 								len(str),
 							),
 						)
@@ -79,11 +93,12 @@ func (s *ProjectDetailsStep) Execute(data *generated.TemplateData) error {
 				Placeholder(s.generatePackageName(projectName)).
 				Value(&packageName).
 				Validate(func(str string) error {
-					if len(str) < 2 {
+					if len(str) < minPackageNameLength {
 						return apperrors.NewError(
 							apperrors.ErrorCodeValidationError,
 							fmt.Sprintf(
-								"package name must be at least 2 characters (got %d)",
+								"package name must be at least %d characters (got %d)",
+								minPackageNameLength,
 								len(str),
 							),
 						)
@@ -157,7 +172,7 @@ func (s *ProjectDetailsStep) lowerCaseFirst(input string) string {
 	}
 
 	if input[0] >= 'A' && input[0] <= 'Z' {
-		return string(input[0]+32) + input[1:]
+		return string(input[0]+lowercaseOffsetASCII) + input[1:]
 	}
 
 	return input

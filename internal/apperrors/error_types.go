@@ -79,15 +79,23 @@ func (e ErrorSeverity) IsValid() bool {
 // TODO: Define priority values
 // TODO: Add comparison methods.
 func (e ErrorSeverity) Priority() int {
+	// Severity priority constants (higher = more severe).
+	const (
+		infoPriority     = 1
+		warningPriority  = 2
+		errorPriority    = 3
+		criticalPriority = 4
+	)
+
 	switch e {
 	case ErrorSeverityInfo:
-		return 1
+		return infoPriority
 	case ErrorSeverityWarning:
-		return 2
+		return warningPriority
 	case ErrorSeverityError:
-		return 3
+		return errorPriority
 	case ErrorSeverityCritical:
-		return 4
+		return criticalPriority
 	default:
 		return 0
 	}

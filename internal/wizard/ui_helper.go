@@ -12,6 +12,12 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 
+// UI layout constants.
+const (
+	contentPaddingLeft = 2
+	uiWidth           = 76
+)
+
 // UIHelper manages UI styling and display.
 type UIHelper struct {
 	themeFunc huh.ThemeFunc
@@ -38,7 +44,7 @@ func (ui *UIHelper) ShowStepComplete(title, message string) {
 
 	messageStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#00D084")).
-		PaddingLeft(2)
+		PaddingLeft(contentPaddingLeft)
 
 	fmt.Println(titleStyle.Render("✅ " + title))
 	fmt.Println(messageStyle.Render(message))
@@ -69,7 +75,7 @@ func (ui *UIHelper) showTitledSection(title string, vertical, horizontal int) {
 func (ui *UIHelper) ShowInfo(message string) {
 	infoStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("240")).
-		PaddingLeft(2).
+		PaddingLeft(contentPaddingLeft).
 		Width(76).
 		Align(lipgloss.Left)
 
@@ -104,8 +110,8 @@ func (ui *UIHelper) ShowPreview(data *templates.TemplateData, cfg *config.SqlcCo
 		MarginBottom(1)
 
 	contentStyle := lipgloss.NewStyle().
-		PaddingLeft(2).
-		Width(76).
+		PaddingLeft(contentPaddingLeft).
+		Width(uiWidth).
 		Align(lipgloss.Left)
 
 	preview := titleStyle.Render("Configuration Preview")
@@ -182,7 +188,7 @@ func (ui *UIHelper) formatCompletionDetails(
 ) string {
 	detailStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#99")).
-		PaddingLeft(2)
+		PaddingLeft(contentPaddingLeft)
 
 	details := detailStyle.Render("Generated Files:")
 	details += "\n" + "- sqlc.yaml configuration"
@@ -201,7 +207,7 @@ func (ui *UIHelper) showErrorWithSchemaDetails(err *schema.SchemaError) {
 
 	detailStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#FF8888")).
-		PaddingLeft(2)
+		PaddingLeft(contentPaddingLeft)
 
 	fmt.Println(errorStyle.Render("❌ Schema Error"))
 	fmt.Println(detailStyle.Render("Code: " + err.Code))
@@ -217,7 +223,7 @@ func (ui *UIHelper) showErrorWithTypedDetails(err *apperrors.Error) {
 
 	detailStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#FF8888")).
-		PaddingLeft(2)
+		PaddingLeft(contentPaddingLeft)
 
 	fmt.Println(errorStyle.Render("❌ Error"))
 	fmt.Println(detailStyle.Render("Code: " + string(err.Code)))
