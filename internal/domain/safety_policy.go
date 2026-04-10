@@ -303,8 +303,8 @@ func NewTypeSafeSafetyRules() TypeSafeSafetyRules {
 			ColumnExplicitness: ColumnExplicitnessDefault, // Not too strict by default
 		},
 		SafetyRules: QuerySafetyRules{
-			WhereRequirement:    WhereClauseOnDestructive,     // Require WHERE on UPDATE/DELETE only
-			LimitRequirement:    LimitClauseNever,             // Not enforced by default (too restrictive)
+			WhereRequirement:    WhereClauseOnDestructive,   // Require WHERE on UPDATE/DELETE only
+			LimitRequirement:    LimitClauseNever,           // Not enforced by default (too restrictive)
 			MaxRowsWithoutLimit: MaxRowsWithoutLimitDefault, // Soft limit when no LIMIT clause
 		},
 		DestructiveOps: DestructiveForbidden, // Production-safe default
@@ -337,8 +337,8 @@ func NewProductionSafetyRules() TypeSafeSafetyRules {
 			ColumnExplicitness: ColumnExplicitnessRequired, // Extra strict
 		},
 		SafetyRules: QuerySafetyRules{
-			WhereRequirement:    WhereClauseAlways,               // Always require WHERE
-			LimitRequirement:    LimitClauseAlways,               // Always require LIMIT
+			WhereRequirement:    WhereClauseAlways,             // Always require WHERE
+			LimitRequirement:    LimitClauseAlways,             // Always require LIMIT
 			MaxRowsWithoutLimit: MaxRowsWithoutLimitProduction, // Very conservative
 		},
 		DestructiveOps: DestructiveForbidden, // Never allow destructive ops

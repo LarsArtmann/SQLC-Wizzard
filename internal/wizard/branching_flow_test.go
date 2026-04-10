@@ -94,7 +94,8 @@ var _ = Describe("Branching Flow Context", func() {
 	})
 
 	Describe("Database-Specific Features", func() {
-		DescribeTable("database feature defaults",
+		DescribeTable(
+			"database feature defaults",
 			func(dbType generated.DatabaseType, enableUUIDs, enableJSON, enableArrays, enableFullText bool, featureCount int) {
 				ctx.DatabaseType = dbType
 				Expect(ctx.ShouldEnableUUIDs()).To(Equal(enableUUIDs))
@@ -103,9 +104,33 @@ var _ = Describe("Branching Flow Context", func() {
 				Expect(ctx.ShouldEnableFullText()).To(Equal(enableFullText))
 				Expect(ctx.GetDatabaseSpecificFeatures()).To(HaveLen(featureCount))
 			},
-			Entry("PostgreSQL enables all features", generated.DatabaseTypePostgreSQL, true, true, true, true, 4),
-			Entry("MySQL enables UUIDs, JSON but not arrays or full-text", generated.DatabaseTypeMySQL, true, true, false, false, 3),
-			Entry("SQLite enables minimal features", generated.DatabaseTypeSQLite, false, false, false, false, 1),
+			Entry(
+				"PostgreSQL enables all features",
+				generated.DatabaseTypePostgreSQL,
+				true,
+				true,
+				true,
+				true,
+				4,
+			),
+			Entry(
+				"MySQL enables UUIDs, JSON but not arrays or full-text",
+				generated.DatabaseTypeMySQL,
+				true,
+				true,
+				false,
+				false,
+				3,
+			),
+			Entry(
+				"SQLite enables minimal features",
+				generated.DatabaseTypeSQLite,
+				false,
+				false,
+				false,
+				false,
+				1,
+			),
 		)
 	})
 

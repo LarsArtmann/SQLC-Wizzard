@@ -126,14 +126,20 @@ func CreateProjectNameStep(data *generated.TemplateData) *huh.Input {
 			if len(name) < minProjectNameLength {
 				return apperrors.NewError(
 					apperrors.ErrorCodeValidationError,
-					fmt.Sprintf("project name must be at least %d characters", minProjectNameLength),
+					fmt.Sprintf(
+						"project name must be at least %d characters",
+						minProjectNameLength,
+					),
 				)
 			}
 
 			if len(name) > maxProjectNameLength {
 				return apperrors.NewError(
 					apperrors.ErrorCodeValidationError,
-					fmt.Sprintf("project name must be less than %d characters", maxProjectNameLength),
+					fmt.Sprintf(
+						"project name must be less than %d characters",
+						maxProjectNameLength,
+					),
 				)
 			}
 

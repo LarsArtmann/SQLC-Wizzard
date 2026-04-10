@@ -15,7 +15,7 @@ import (
 // UI layout constants.
 const (
 	contentPaddingLeft = 2
-	uiWidth           = 76
+	uiWidth            = 76
 )
 
 // UIHelper manages UI styling and display.
