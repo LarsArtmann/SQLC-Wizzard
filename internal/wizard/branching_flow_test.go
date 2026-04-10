@@ -94,88 +94,19 @@ var _ = Describe("Branching Flow Context", func() {
 	})
 
 	Describe("Database-Specific Features", func() {
-		Context("for PostgreSQL", func() {
-			BeforeEach(func() {
-				ctx.DatabaseType = generated.DatabaseTypePostgreSQL
-			})
-
-			It("should enable UUIDs by default", func() {
-				Expect(ctx.ShouldEnableUUIDs()).To(BeTrue())
-			})
-
-			It("should enable JSON by default", func() {
-				Expect(ctx.ShouldEnableJSON()).To(BeTrue())
-			})
-
-			It("should enable arrays", func() {
-				Expect(ctx.ShouldEnableArrays()).To(BeTrue())
-			})
-
-			It("should enable full-text search", func() {
-				Expect(ctx.ShouldEnableFullText()).To(BeTrue())
-			})
-
-			It("should return 4 database-specific features", func() {
-				features := ctx.GetDatabaseSpecificFeatures()
-				Expect(features).To(HaveLen(4))
-			})
-		})
-
-		Context("for MySQL", func() {
-			BeforeEach(func() {
-				ctx.DatabaseType = generated.DatabaseTypeMySQL
-			})
-
-			It("should enable UUIDs by default", func() {
-				Expect(ctx.ShouldEnableUUIDs()).To(BeTrue())
-			})
-
-			It("should enable JSON by default", func() {
-				Expect(ctx.ShouldEnableJSON()).To(BeTrue())
-			})
-
-			It("should not enable arrays", func() {
-				Expect(ctx.ShouldEnableArrays()).To(BeFalse())
-			})
-
-			// MySQL has full-text but it's limited, so the implementation
-			// only enables it for PostgreSQL by default
-			It("should not enable full-text by default", func() {
-				Expect(ctx.ShouldEnableFullText()).To(BeFalse())
-			})
-
-			It("should return 3 database-specific features", func() {
-				features := ctx.GetDatabaseSpecificFeatures()
-				Expect(features).To(HaveLen(3))
-			})
-		})
-
-		Context("for SQLite", func() {
-			BeforeEach(func() {
-				ctx.DatabaseType = generated.DatabaseTypeSQLite
-			})
-
-			It("should not enable UUIDs by default", func() {
-				Expect(ctx.ShouldEnableUUIDs()).To(BeFalse())
-			})
-
-			It("should not enable JSON by default", func() {
-				Expect(ctx.ShouldEnableJSON()).To(BeFalse())
-			})
-
-			It("should not enable arrays", func() {
-				Expect(ctx.ShouldEnableArrays()).To(BeFalse())
-			})
-
-			It("should not enable full-text search", func() {
-				Expect(ctx.ShouldEnableFullText()).To(BeFalse())
-			})
-
-			It("should return 1 database-specific feature", func() {
-				features := ctx.GetDatabaseSpecificFeatures()
-				Expect(features).To(HaveLen(1))
-			})
-		})
+		DescribeTable("database feature defaults",
+			func(dbType generated.DatabaseType, enableUUIDs, enableJSON, enableArrays, enableFullText bool, featureCount int) {
+				ctx.DatabaseType = dbType
+				Expect(ctx.ShouldEnableUUIDs()).To(Equal(enableUUIDs))
+				Expect(ctx.ShouldEnableJSON()).To(Equal(enableJSON))
+				Expect(ctx.ShouldEnableArrays()).To(Equal(enableArrays))
+				Expect(ctx.ShouldEnableFullText()).To(Equal(enableFullText))
+				Expect(ctx.GetDatabaseSpecificFeatures()).To(HaveLen(featureCount))
+			},
+			Entry("PostgreSQL enables all features", generated.DatabaseTypePostgreSQL, true, true, true, true, 4),
+			Entry("MySQL enables UUIDs, JSON but not arrays or full-text", generated.DatabaseTypeMySQL, true, true, false, false, 3),
+			Entry("SQLite enables minimal features", generated.DatabaseTypeSQLite, false, false, false, false, 1),
+		)
 	})
 
 	Describe("Project Type Features", func() {
