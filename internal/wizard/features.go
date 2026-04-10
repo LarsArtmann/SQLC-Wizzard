@@ -340,6 +340,7 @@ func (s *FeaturesStep) configureDatabaseFeatures(data *generated.TemplateData) e
 	default:
 		// For unknown database types, show no specific features
 		s.ui.ShowInfo("No database-specific features available for this engine type")
+
 		return nil
 	}
 

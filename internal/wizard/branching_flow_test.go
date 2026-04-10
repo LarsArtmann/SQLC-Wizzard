@@ -228,8 +228,10 @@ var _ = Describe("Branching Flow Context", func() {
 })
 
 var _ = Describe("Branching Policy", func() {
-	var policy *wizard.DefaultBranchingPolicy
-	var ctx *wizard.FlowContext
+	var (
+		policy *wizard.DefaultBranchingPolicy
+		ctx    *wizard.FlowContext
+	)
 
 	BeforeEach(func() {
 		policy = wizard.NewDefaultBranchingPolicy()
@@ -334,8 +336,10 @@ var _ = Describe("Branching Policy", func() {
 })
 
 var _ = Describe("Simple Branching Policy", func() {
-	var policy *wizard.SimpleBranchingPolicy
-	var ctx *wizard.FlowContext
+	var (
+		policy *wizard.SimpleBranchingPolicy
+		ctx    *wizard.FlowContext
+	)
 
 	BeforeEach(func() {
 		policy = wizard.NewSimpleBranchingPolicy()

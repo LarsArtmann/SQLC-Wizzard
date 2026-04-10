@@ -84,6 +84,7 @@ func setupTestGenerator() (*generators.Generator, string, func()) {
 	Expect(err).NotTo(HaveOccurred())
 
 	gen, cleanup := setupGenerator(tempDir)
+
 	return gen, tempDir, cleanup
 }
 

@@ -34,6 +34,7 @@ func getIrregularPlural(singular string) string {
 	if plural, ok := irregularSingularToPlural[strings.ToLower(singular)]; ok {
 		return plural
 	}
+
 	return ""
 }
 
@@ -42,6 +43,7 @@ func getIrregularSingular(plural string) string {
 	if singular, ok := irregularPluralToSingular[strings.ToLower(plural)]; ok {
 		return singular
 	}
+
 	return ""
 }
 

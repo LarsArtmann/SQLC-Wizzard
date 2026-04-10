@@ -1,6 +1,8 @@
 package wizard
 
 import (
+	"slices"
+
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 )
 
@@ -87,24 +89,12 @@ func (fc *FlowContext) MarkStepSkipped(step StepID) {
 
 // IsStepCompleted checks if a step was completed.
 func (fc *FlowContext) IsStepCompleted(step StepID) bool {
-	for _, s := range fc.CompletedSteps {
-		if s == step {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(fc.CompletedSteps, step)
 }
 
 // IsStepSkipped checks if a step was skipped.
 func (fc *FlowContext) IsStepSkipped(step StepID) bool {
-	for _, s := range fc.SkippedSteps {
-		if s == step {
-			return true
-		}
-	}
-
-	return false
+	return slices.Contains(fc.SkippedSteps, step)
 }
 
 // GetRequiredSteps returns the list of steps that should be executed based on context.

@@ -73,6 +73,7 @@ import (
 func TransformSafetyRulesToConfig(safetyRules *generated.SafetyRules) []config.RuleConfig {
 	transformer := validation.NewRuleTransformer()
 	rules := transformer.TransformSafetyRules(safetyRules)
+
 	return lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
 		return config.RuleConfig{
 			Name:    r.Name,
