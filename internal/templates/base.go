@@ -279,14 +279,7 @@ func (t *BaseTemplate) GetTypeOverrides(data generated.TemplateData) []config.Ov
 				GoImportPath: "github.com/google/uuid",
 			})
 		}
-
-		if data.Database.UseJSON {
-			overrides = append(overrides, config.Override{
-				DBType:       "json",
-				GoType:       "RawMessage",
-				GoImportPath: "encoding/json",
-			})
-		}
+		fallthrough
 	case DatabaseTypeMySQL:
 		if data.Database.UseJSON {
 			overrides = append(overrides, config.Override{

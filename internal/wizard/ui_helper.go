@@ -141,14 +141,12 @@ func (ui *UIHelper) ShowPreview(data *templates.TemplateData, cfg *config.SqlcCo
 func (ui *UIHelper) GetConfirmation() (bool, error) {
 	var confirmed bool
 
-	err := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().
-				Title("Generate configuration with these settings?").
-				Description("You can edit this later in the generated yaml file").
-				Value(&confirmed),
-		),
-	).WithTheme(ui.themeFunc).Run()
+	err := runConfirmationForm(
+		ui.themeFunc,
+		"Generate configuration with these settings?",
+		"You can edit this later in the generated yaml file",
+		&confirmed,
+	)
 	if err != nil {
 		return false, fmt.Errorf("confirmation form failed: %w", err)
 	}

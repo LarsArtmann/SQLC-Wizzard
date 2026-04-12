@@ -10,100 +10,84 @@ import (
 )
 
 func main() {
-	// Open database connection
-	// SQLite creates file automatically if it doesn't exist
 	db, err := sql.Open("sqlite3", "./database.db")
 	if err != nil {
 		log.Fatalf("Failed to open database: %v", err)
 	}
 	defer db.Close()
 
-	// Use generated queries
 	queries := db.New(db)
 	ctx := context.Background()
 
 	fmt.Println("=== Hobby Project Example ===")
 	fmt.Println()
 
-	// Example 1: Create a user
-	fmt.Println("1. Creating a user...")
-	user, err := queries.CreateUser(ctx, db.CreateUserParams{
-		ID:       "user-001",
-		Email:    "john.doe@example.com",
-		FullName: "John Doe",
-	})
-	if err != nil {
-		log.Printf("Error creating user: %v", err)
-	} else {
+	runExample("Creating a user", func() error {
+		user, createErr := queries.CreateUser(ctx, db.CreateUserParams{
+			ID:       "user-001",
+			Email:    "john.doe@example.com",
+			FullName: "John Doe",
+		})
+		if createErr != nil {
+			return createErr
+		}
 		fmt.Printf("   Created user: %s <%s>\n", user.FullName, user.Email)
-	}
-	fmt.Println()
-
-	// Example 2: Get user by ID
-	fmt.Println("2. Getting user by ID...")
-	user, err = queries.GetUserByID(ctx, "user-001")
-	if err != nil {
-		log.Printf("Error getting user: %v", err)
-	} else {
-		fmt.Printf("   Found user: %s <%s>\n", user.FullName, user.Email)
-	}
-	fmt.Println()
-
-	// Example 3: List all users
-	fmt.Println("3. Listing all users...")
-	limit := int32(10)
-	offset := int32(0)
-	users, err := queries.ListUsers(ctx, db.ListUsersParams{
-		Limit:  limit,
-		Offset: offset,
+		return nil
 	})
-	if err != nil {
-		log.Printf("Error listing users: %v", err)
-	} else {
+
+	runExample("Getting user by ID", func() error {
+		user, getErr := queries.GetUserByID(ctx, "user-001")
+		if getErr != nil {
+			return getErr
+		}
+		fmt.Printf("   Found user: %s <%s>\n", user.FullName, user.Email)
+		return nil
+	})
+
+	runExample("Listing all users", func() error {
+		users, listErr := queries.ListUsers(ctx, db.ListUsersParams{
+			Limit:  int32(10),
+			Offset: int32(0),
+		})
+		if listErr != nil {
+			return listErr
+		}
 		fmt.Printf("   Found %d users:\n", len(users))
 		for _, u := range users {
 			fmt.Printf("   - %s <%s>\n", u.FullName, u.Email)
 		}
-	}
-	fmt.Println()
-
-	// Example 4: Update user
-	fmt.Println("4. Updating user...")
-	user, err = queries.UpdateUser(ctx, db.UpdateUserParams{
-		ID:       "user-001",
-		FullName: "John Updated",
+		return nil
 	})
-	if err != nil {
-		log.Printf("Error updating user: %v", err)
-	} else {
+
+	runExample("Updating user", func() error {
+		user, updateErr := queries.UpdateUser(ctx, db.UpdateUserParams{
+			ID:       "user-001",
+			FullName: "John Updated",
+		})
+		if updateErr != nil {
+			return updateErr
+		}
 		fmt.Printf("   Updated user: %s <%s>\n", user.FullName, user.Email)
-	}
-	fmt.Println()
-
-	// Example 5: Search users
-	fmt.Println("5. Searching users...")
-	users, err = queries.SearchUsersByEmail(ctx, db.SearchUsersByEmailParams{
-		Email: "%john%",
+		return nil
 	})
-	if err != nil {
-		log.Printf("Error searching users: %v", err)
-	} else {
+
+	runExample("Searching users", func() error {
+		users, searchErr := queries.SearchUsersByEmail(ctx, db.SearchUsersByEmailParams{
+			Email: "%john%",
+		})
+		if searchErr != nil {
+			return searchErr
+		}
 		fmt.Printf("   Found %d users matching 'john':\n", len(users))
 		for _, u := range users {
 			fmt.Printf("   - %s <%s>\n", u.FullName, u.Email)
 		}
-	}
-	fmt.Println()
+		return nil
+	})
 
-	// Example 6: Delete user
-	fmt.Println("6. Deleting user...")
-	err = queries.DeleteUser(ctx, "user-001")
-	if err != nil {
-		log.Printf("Error deleting user: %v", err)
-	} else {
-		fmt.Println("   Deleted user-001")
-	}
-	fmt.Println()
+	runExample("Deleting user", func() error {
+		return queries.DeleteUser(ctx, "user-001")
+	})
 
 	fmt.Println("=== All Examples Completed ===")
 	fmt.Println()
@@ -112,4 +96,12 @@ func main() {
 	fmt.Println()
 	fmt.Println("To regenerate code:")
 	fmt.Println("  sqlc generate")
+}
+
+func runExample(name string, fn func() error) {
+	fmt.Printf("%s...\n", name)
+	if err := fn(); err != nil {
+		log.Printf("   Error: %v", err)
+	}
+	fmt.Println()
 }

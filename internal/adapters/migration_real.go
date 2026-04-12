@@ -50,6 +50,14 @@ func isValidDatabaseURI(currentURI string, validPrefixes []string) bool {
 	})
 }
 
+// closeMigration safely closes a migration instance, logging any errors.
+func closeMigration(m *migrate.Migrate) {
+	_, closeErr := m.Close()
+	if closeErr != nil {
+		log.Warn("Failed to close migration", "error", closeErr)
+	}
+}
+
 // Migrate runs database migrations from a source.
 func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL string) error {
 	log.Info("Starting database migration", "source", source, "database", databaseURL)
@@ -61,12 +69,7 @@ func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL 
 		return fmt.Errorf("failed to create migration instance for source %s: %w", source, err)
 	}
 
-	defer func() {
-		_, closeErr := m.Close()
-		if closeErr != nil {
-			log.Warn("Failed to close migration", "error", closeErr)
-		}
-	}()
+	defer closeMigration(m)
 
 	version, dirty, err := getVersion(m, source)
 	if err != nil {
@@ -117,12 +120,7 @@ func (r *RealMigrationAdapter) Rollback(
 		return fmt.Errorf("failed to create migration instance: %w", err)
 	}
 
-	defer func() {
-		_, closeErr := m.Close()
-		if closeErr != nil {
-			log.Warn("Failed to close migration", "error", closeErr)
-		}
-	}()
+	defer closeMigration(m)
 
 	for i := range steps {
 		err := m.Steps(-1)
@@ -162,12 +160,7 @@ func (r *RealMigrationAdapter) Status(
 		return nil, fmt.Errorf("failed to create migration instance: %w", err)
 	}
 
-	defer func() {
-		_, closeErr := m.Close()
-		if closeErr != nil {
-			log.Warn("Failed to close migration", "error", closeErr)
-		}
-	}()
+	defer closeMigration(m)
 
 	version, dirty, err := m.Version()
 	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
@@ -222,12 +215,7 @@ func (r *RealMigrationAdapter) Validate(ctx context.Context, source string) erro
 		)
 	}
 
-	defer func() {
-		_, closeErr := m.Close()
-		if closeErr != nil {
-			log.Warn("Failed to close migration", "error", closeErr)
-		}
-	}()
+	defer closeMigration(m)
 
 	version, _, err := getVersion(m, source)
 	if err != nil {

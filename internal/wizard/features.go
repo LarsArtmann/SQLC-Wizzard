@@ -7,6 +7,20 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 )
 
+// runConfirmationForm creates and runs a confirmation form, returning the result in the provided value pointer.
+func runConfirmationForm(themeFunc huh.ThemeFunc, title, description string, result *bool) error {
+	form := huh.NewForm(
+		huh.NewGroup(
+			huh.NewConfirm().
+				Title(title).
+				Description(description).
+				Value(result),
+		),
+	).WithTheme(themeFunc)
+
+	return form.Run()
+}
+
 // FeaturesStep handles feature selection and validation configuration.
 type FeaturesStep struct {
 	themeFunc huh.ThemeFunc
@@ -233,16 +247,12 @@ func (s *FeaturesStep) configureProjectTypeFeatures(data *generated.TemplateData
 func (s *FeaturesStep) configureEnterpriseFeatures(data *generated.TemplateData) error {
 	var enableStrictMode bool
 
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().
-				Title("Enable strict mode?").
-				Description("Enable strict validation for all queries to catch potential issues early").
-				Value(&enableStrictMode),
-		),
-	).WithTheme(s.themeFunc)
-
-	err := form.Run()
+	err := runConfirmationForm(
+		s.themeFunc,
+		"Enable strict mode?",
+		"Enable strict validation for all queries to catch potential issues early",
+		&enableStrictMode,
+	)
 	if err != nil {
 		return fmt.Errorf("enterprise features configuration failed: %w", err)
 	}
@@ -265,16 +275,12 @@ func (s *FeaturesStep) configureAPIFirstFeatures(data *generated.TemplateData) e
 func (s *FeaturesStep) configureAnalyticsFeatures(data *generated.TemplateData) error {
 	var enableStrictOrderBy bool
 
-	form := huh.NewForm(
-		huh.NewGroup(
-			huh.NewConfirm().
-				Title("Enable strict ORDER BY?").
-				Description("Require ORDER BY in all SELECT queries to ensure predictable results").
-				Value(&enableStrictOrderBy),
-		),
-	).WithTheme(s.themeFunc)
-
-	err := form.Run()
+	err := runConfirmationForm(
+		s.themeFunc,
+		"Enable strict ORDER BY?",
+		"Require ORDER BY in all SELECT queries to ensure predictable results",
+		&enableStrictOrderBy,
+	)
 	if err != nil {
 		return fmt.Errorf("analytics features configuration failed: %w", err)
 	}

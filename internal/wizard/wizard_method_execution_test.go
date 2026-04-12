@@ -2,6 +2,7 @@ package wizard_test
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -210,18 +211,7 @@ var _ = Describe("Wizard Method Execution Tests", func() {
 		It("should handle summary formatting for all project types", func() {
 			result := wiz.GetResult()
 
-			projectTypes := []generated.ProjectType{
-				generated.ProjectTypeHobby,
-				generated.ProjectTypeMicroservice,
-				generated.ProjectTypeEnterprise,
-				generated.ProjectTypeAPIFirst,
-				generated.ProjectTypeAnalytics,
-				generated.ProjectTypeTesting,
-				generated.ProjectTypeMultiTenant,
-				generated.ProjectTypeLibrary,
-			}
-
-			for _, projectType := range projectTypes {
+			for _, projectType := range testing.ValidProjectTypes {
 				testData := generated.TemplateData{
 					ProjectName: "summary-" + string(projectType),
 					ProjectType: projectType,

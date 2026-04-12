@@ -13,6 +13,26 @@ func TestSchema(t *testing.T) {
 	RunSpecs(t, "Schema Suite")
 }
 
+var singleTableWithIntID = []schema.Table{
+	{
+		Name: "users",
+		Columns: []schema.Column{
+			{Name: "id", Type: schema.ColumnTypeInteger},
+		},
+	},
+}
+
+func makeTable(name string) []schema.Table {
+	return []schema.Table{
+		{
+			Name: name,
+			Columns: []schema.Column{
+				{Name: "id", Type: schema.ColumnTypeInteger},
+			},
+		},
+	}
+}
+
 var _ = Describe("ColumnType", func() {
 	Context("IsValid", func() {
 		It("should return true for valid column types", func() {
@@ -164,16 +184,7 @@ var _ = Describe("Table", func() {
 var _ = Describe("Schema", func() {
 	Context("NewSchema", func() {
 		It("should create schema with valid data", func() {
-			tables := []schema.Table{
-				{
-					Name: "users",
-					Columns: []schema.Column{
-						{Name: "id", Type: schema.ColumnTypeInteger},
-					},
-				},
-			}
-
-			s, err := schema.NewSchema("mydb", tables)
+			s, err := schema.NewSchema("mydb", singleTableWithIntID)
 
 			Expect(err).NotTo(HaveOccurred())
 			Expect(s).NotTo(BeNil())
@@ -184,16 +195,7 @@ var _ = Describe("Schema", func() {
 		})
 
 		It("should reject empty schema name", func() {
-			tables := []schema.Table{
-				{
-					Name: "users",
-					Columns: []schema.Column{
-						{Name: "id", Type: schema.ColumnTypeInteger},
-					},
-				},
-			}
-
-			s, err := schema.NewSchema("", tables)
+			s, err := schema.NewSchema("", singleTableWithIntID)
 
 			Expect(err).To(HaveOccurred())
 			Expect(s).To(BeNil())
@@ -228,16 +230,7 @@ var _ = Describe("Schema", func() {
 		})
 
 		It("should reject schema with empty table name", func() {
-			tables := []schema.Table{
-				{
-					Name: "",
-					Columns: []schema.Column{
-						{Name: "id", Type: schema.ColumnTypeInteger},
-					},
-				},
-			}
-
-			s, err := schema.NewSchema("mydb", tables)
+			s, err := schema.NewSchema("mydb", makeTable(""))
 
 			Expect(err).To(HaveOccurred())
 			Expect(s).To(BeNil())
