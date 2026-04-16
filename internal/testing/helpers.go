@@ -350,3 +350,50 @@ func TestStringRepresentationSuite(testCases func() []EnumTestCase) {
 		})
 	})
 }
+
+// ExpectToBeTrue asserts that the given value is true with a descriptive message.
+// This helper reduces duplication of "Expect(x).To(BeTrue())" patterns in tests.
+func ExpectToBeTrue(actual interface{}, msgAndArgs ...interface{}) {
+	Expect(actual).To(BeTrue(), msgAndArgs...)
+}
+
+// ExpectToBeFalse asserts that the given value is false with a descriptive message.
+// This helper reduces duplication of "Expect(x).To(BeFalse())" patterns in tests.
+func ExpectToBeFalse(actual interface{}, msgAndArgs ...interface{}) {
+	Expect(actual).To(BeFalse(), msgAndArgs...)
+}
+
+// ExpectToBeNil asserts that the given value is nil with a descriptive message.
+func ExpectToBeNil(actual interface{}, msgAndArgs ...interface{}) {
+	Expect(actual).To(BeNil(), msgAndArgs...)
+}
+
+// ExpectNotToBeNil asserts that the given value is not nil with a descriptive message.
+// This helper reduces duplication of "Expect(x).NotTo(BeNil())" patterns in tests.
+func ExpectNotToBeNil(actual interface{}, msgAndArgs ...interface{}) {
+	Expect(actual).NotTo(BeNil(), msgAndArgs...)
+}
+
+// ExpectToEqual asserts that the actual value equals the expected value with a descriptive message.
+// This helper reduces duplication of "Expect(x).To(Equal(y))" patterns in tests.
+func ExpectToEqual(actual, expected interface{}, msgAndArgs ...interface{}) {
+	Expect(actual).To(Equal(expected), msgAndArgs...)
+}
+
+// ExpectToNotEqual asserts that the actual value does not equal the unexpected value.
+// This helper reduces duplication of "Expect(x).NotTo(Equal(y))" patterns in tests.
+func ExpectToNotEqual(actual, expected interface{}, msgAndArgs ...interface{}) {
+	Expect(actual).NotTo(Equal(expected), msgAndArgs...)
+}
+
+// ExpectToContain asserts that the actual slice or string contains the expected element or substring.
+// This helper reduces duplication of "Expect(x).To(ContainElement(y))" patterns in tests.
+func ExpectToContain(actual interface{}, expected interface{}, msgAndArgs ...interface{}) {
+	Expect(actual).To(ContainElement(expected), msgAndArgs...)
+}
+
+// ExpectLength asserts that the actual value has the expected length.
+// This helper reduces duplication of "Expect(x).To(HaveLen(n))" patterns in tests.
+func ExpectLength(actual interface{}, length int, msgAndArgs ...interface{}) {
+	Expect(actual).To(HaveLen(length), msgAndArgs...)
+}

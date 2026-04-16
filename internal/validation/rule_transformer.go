@@ -31,6 +31,13 @@ func (a *ruleAppender) add(name, rule, message string) {
 	})
 }
 
+// addSafetyRules appends safety rules to the rule appender.
+func (a *ruleAppender) addSafetyRules(safetyRules []generated.SafetyRule) {
+	for _, rule := range safetyRules {
+		a.rules = append(a.rules, generated.RuleConfig(rule))
+	}
+}
+
 // TransformSafetyRules converts safety rules to configuration format
 // This is the single source of truth for rule transformation logic.
 func (rt *RuleTransformer) TransformSafetyRules(
@@ -54,9 +61,7 @@ func (rt *RuleTransformer) TransformSafetyRules(
 		a.add("require-limit", "query.type == 'SELECT' && !query.hasLimitClause()", "LIMIT clause is required for SELECT queries")
 	}
 
-	for _, customRule := range rules.Rules {
-		a.rules = append(a.rules, generated.RuleConfig(customRule))
-	}
+	a.addSafetyRules(rules.Rules)
 
 	return a.rules
 }
@@ -122,9 +127,7 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(
 
 	// ========== CUSTOM RULES ==========
 
-	for _, customRule := range rules.CustomRules {
-		a.rules = append(a.rules, generated.RuleConfig(customRule))
-	}
+	a.addSafetyRules(rules.CustomRules)
 
 	return a.rules
 }

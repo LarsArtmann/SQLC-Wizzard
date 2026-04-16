@@ -7,15 +7,10 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
+	uistyles "github.com/LarsArtmann/SQLC-Wizzard/internal/ui"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-)
-
-// UI layout constants.
-const (
-	contentPaddingLeft = 2
-	uiWidth            = 76
 )
 
 // UIHelper manages UI styling and display.
@@ -37,17 +32,8 @@ func (ui *UIHelper) ShowStepHeader(title string) {
 
 // ShowStepComplete displays a step completion message.
 func (ui *UIHelper) ShowStepComplete(title, message string) {
-	titleStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("#00D084")).
-		Padding(1, 0)
-
-	messageStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#00D084")).
-		PaddingLeft(contentPaddingLeft)
-
-	fmt.Println(titleStyle.Render("✅ " + title))
-	fmt.Println(messageStyle.Render(message))
+	fmt.Println(uistyles.SuccessTitle.Render("✅ " + title))
+	fmt.Println(uistyles.SuccessMessage.Render(message))
 	fmt.Println()
 }
 
@@ -58,6 +44,11 @@ func (ui *UIHelper) ShowSection(title string) {
 
 // createTitleStyle creates a consistent title style with configurable padding.
 func (ui *UIHelper) createTitleStyle(vertical, horizontal int) lipgloss.Style {
+	return uistyles.NewTitleStyle(vertical, horizontal)
+}
+
+// NewTitleStyle creates a consistent title style with configurable padding.
+func (ui *UIHelper) NewTitleStyle(vertical, horizontal int) lipgloss.Style {
 	return lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("#7D56F4")).
@@ -73,28 +64,13 @@ func (ui *UIHelper) showTitledSection(title string, vertical, horizontal int) {
 
 // ShowInfo displays information.
 func (ui *UIHelper) ShowInfo(message string) {
-	infoStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("240")).
-		PaddingLeft(contentPaddingLeft).
-		Width(76).
-		Align(lipgloss.Left)
-
-	fmt.Println(infoStyle.Render(message))
+	fmt.Println(uistyles.InfoText.Render(message))
 }
 
 // showWelcome displays welcome banner.
 func (ui *UIHelper) ShowWelcome() {
-	titleStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("99")).
-		Padding(1, 0)
-
-	descStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("240")).
-		Padding(0, 0, 1, 0)
-
-	fmt.Println(titleStyle.Render("🧙‍♂️  SQLC Configuration Wizard"))
-	fmt.Println(descStyle.Render("Let's create a perfect sqlc setup for your project!\n"))
+	fmt.Println(uistyles.HighlightBold.Render("🧙‍♂️  SQLC Configuration Wizard"))
+	fmt.Println(uistyles.InfoBlock.Render("Let's create a perfect sqlc setup for your project!\n"))
 }
 
 // showPreview displays configuration preview.
@@ -110,8 +86,8 @@ func (ui *UIHelper) ShowPreview(data *templates.TemplateData, cfg *config.SqlcCo
 		MarginBottom(1)
 
 	contentStyle := lipgloss.NewStyle().
-		PaddingLeft(contentPaddingLeft).
-		Width(uiWidth).
+		PaddingLeft(uistyles.ContentPaddingLeft).
+		Width(uistyles.UIWidth).
 		Align(lipgloss.Left)
 
 	preview := titleStyle.Render("Configuration Preview")
@@ -182,11 +158,11 @@ func (ui *UIHelper) formatConfigurationSummary(
 // formatCompletionDetails formats completion details for display.
 func (ui *UIHelper) formatCompletionDetails(
 	cfg *schema.Schema,
-	data generated.TemplateData,
+	_ generated.TemplateData,
 ) string {
 	detailStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#99")).
-		PaddingLeft(contentPaddingLeft)
+		PaddingLeft(uistyles.ContentPaddingLeft)
 
 	details := detailStyle.Render("Generated Files:")
 	details += "\n" + "- sqlc.yaml configuration"
@@ -205,7 +181,7 @@ func (ui *UIHelper) createErrorStyles() (errorStyle, detailStyle lipgloss.Style)
 
 	detailStyle = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#FF8888")).
-		PaddingLeft(contentPaddingLeft)
+		PaddingLeft(uistyles.ContentPaddingLeft)
 
 	return errorStyle, detailStyle
 }
