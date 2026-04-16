@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 
-	"charm.land/lipgloss/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/generators"
@@ -180,19 +179,6 @@ func runNonInteractive(opts *InitOptions) (*wizard.WizardResult, error) {
 }
 
 func showSuccess(gen *generators.Generator, result *wizard.WizardResult) {
-	successStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("10")).
-		Padding(1, 0)
-
-	summaryStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("240")).
-		Padding(0, 0, 1, 0)
-
-	fmt.Println(successStyle.Render("✓ Successfully generated sqlc configuration!"))
-	fmt.Println(
-		summaryStyle.Render(
-			gen.GenerateSummary(result.Config, result.GenerateQueries, result.GenerateSchema),
-		),
-	)
+	PrintSuccess("Successfully generated sqlc configuration!")
+	PrintInfo(gen.GenerateSummary(result.Config, result.GenerateQueries, result.GenerateSchema))
 }

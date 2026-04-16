@@ -7,7 +7,7 @@ import (
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/domain"
 )
 
-// RuleTransformer consolidates rule transformation logic from duplicate implementations
+// RuleTransformer consolidates rule transformation logic from duplicate implementations.
 // This eliminates the split brain between generated/types.go and internal/domain/
 // and provides a single source of truth for rule configuration generation.
 type RuleTransformer struct{}
@@ -15,6 +15,20 @@ type RuleTransformer struct{}
 // NewRuleTransformer creates a new rule transformer.
 func NewRuleTransformer() *RuleTransformer {
 	return &RuleTransformer{}
+}
+
+// ruleAppender is a helper to reduce duplication in rule creation patterns.
+type ruleAppender struct {
+	rules []generated.RuleConfig
+}
+
+// add appends a new rule with the given name, rule expression, and message.
+func (a *ruleAppender) add(name, rule, message string) {
+	a.rules = append(a.rules, generated.RuleConfig{
+		Name:    name,
+		Rule:    rule,
+		Message: message,
+	})
 }
 
 // TransformSafetyRules converts safety rules to configuration format
@@ -26,42 +40,25 @@ func (rt *RuleTransformer) TransformSafetyRules(
 		return []generated.RuleConfig{}
 	}
 
-	var configRules []generated.RuleConfig
+	a := &ruleAppender{}
 
-	// Transform NoSelectStar rule
 	if rules.NoSelectStar {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "no-select-star",
-			Rule:    "!query.contains('SELECT *')",
-			Message: "SELECT * is not allowed",
-		})
+		a.add("no-select-star", "!query.contains('SELECT *')", "SELECT * is not allowed")
 	}
 
-	// Transform RequireWhere rule
-	// Violation when: query lacks WHERE clause (required for safety)
 	if rules.RequireWhere {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "require-where",
-			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
-			Message: "WHERE clause is required for this query type",
-		})
+		a.add("require-where", "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()", "WHERE clause is required for this query type")
 	}
 
-	// Transform RequireLimit rule
 	if rules.RequireLimit {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "require-limit",
-			Rule:    "query.type == 'SELECT' && !query.hasLimitClause()",
-			Message: "LIMIT clause is required for SELECT queries",
-		})
+		a.add("require-limit", "query.type == 'SELECT' && !query.hasLimitClause()", "LIMIT clause is required for SELECT queries")
 	}
 
-	// Transform additional rules
 	for _, customRule := range rules.Rules {
-		configRules = append(configRules, generated.RuleConfig(customRule))
+		a.rules = append(a.rules, generated.RuleConfig(customRule))
 	}
 
-	return configRules
+	return a.rules
 }
 
 // TransformDomainSafetyRules converts domain safety rules to configuration format
@@ -82,105 +79,54 @@ func (rt *RuleTransformer) TransformDomainSafetyRules(
 func (rt *RuleTransformer) TransformTypeSafeSafetyRules(
 	rules *domain.TypeSafeSafetyRules,
 ) []generated.RuleConfig {
-	var configRules []generated.RuleConfig
+	a := &ruleAppender{}
 
 	// ========== STYLE RULES (Code Quality) ==========
 
-	// Transform SelectStarPolicy rule
 	if rules.StyleRules.SelectStarPolicy.ForbidsSelectStar() {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "no-select-star",
-			Rule:    "!query.contains('SELECT *')",
-			Message: "SELECT * is not allowed - use explicit column names",
-		})
+		a.add("no-select-star", "!query.contains('SELECT *')", "SELECT * is not allowed - use explicit column names")
 	}
 
-	// Transform RequireExplicitColumns rule (NEW!)
 	if rules.StyleRules.ColumnExplicitness.RequiresExplicitColumns() {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "require-explicit-columns",
-			Rule:    "query.type == 'SELECT' && query.hasExplicitColumns()",
-			Message: "All columns must be explicitly named",
-		})
+		a.add("require-explicit-columns", "query.type == 'SELECT' && query.hasExplicitColumns()", "All columns must be explicitly named")
 	}
 
 	// ========== SAFETY RULES (Prevent Bugs) ==========
 
-	// Transform RequireWhere rule
-	// Violation when: query lacks WHERE clause (required for safety)
 	if rules.SafetyRules.WhereRequirement.RequiresOnDestructive() {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "require-where",
-			Rule:    "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
-			Message: "WHERE clause is required for SELECT/UPDATE/DELETE queries to prevent accidental full-table operations",
-		})
+		a.add("require-where", "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()", "WHERE clause is required for SELECT/UPDATE/DELETE queries to prevent accidental full-table operations")
 	}
 
-	// Transform RequireLimit rule
 	if rules.SafetyRules.LimitRequirement.RequiresOnSelect() {
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "require-limit",
-			Rule:    "query.type == 'SELECT' && !query.hasLimitClause()",
-			Message: "LIMIT clause is required for SELECT queries to prevent unbounded result sets",
-		})
+		a.add("require-limit", "query.type == 'SELECT' && !query.hasLimitClause()", "LIMIT clause is required for SELECT queries to prevent unbounded result sets")
 	}
 
-	// Transform MaxRowsWithoutLimit rule
-	// Violation when: no LIMIT clause OR LIMIT exceeds threshold (too permissive)
-	// This prevents unbounded or excessively large result sets
 	if rules.SafetyRules.MaxRowsWithoutLimit > 0 {
 		limitStr := uintToString(rules.SafetyRules.MaxRowsWithoutLimit)
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "max-rows-without-limit",
-			Rule:    "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > " + limitStr + ")",
-			Message: "SELECT queries without LIMIT or with LIMIT > " + limitStr + " are not allowed",
-		})
+		a.add("max-rows-without-limit", "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > "+limitStr+")", "SELECT queries without LIMIT or with LIMIT > "+limitStr+" are not allowed")
 	}
 
 	// ========== DESTRUCTIVE OPERATIONS (Policy-Based) ==========
 
-	// Transform DestructiveOps policy
 	switch rules.DestructiveOps {
 	case domain.DestructiveForbidden:
-		// Forbid DROP TABLE
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "no-drop-table",
-			Rule:    "!query.contains('DROP TABLE')",
-			Message: "DROP TABLE is forbidden by safety policy",
-		})
-		// Forbid TRUNCATE
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "no-truncate",
-			Rule:    "!query.contains('TRUNCATE')",
-			Message: "TRUNCATE is forbidden by safety policy",
-		})
+		a.add("no-drop-table", "!query.contains('DROP TABLE')", "DROP TABLE is forbidden by safety policy")
+		a.add("no-truncate", "!query.contains('TRUNCATE')", "TRUNCATE is forbidden by safety policy")
 
 	case domain.DestructiveWithConfirmation:
-		// Require confirmation for DROP TABLE
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "drop-table-requires-confirmation",
-			Rule:    "query.contains('DROP TABLE') && query.hasComment('CONFIRMED')",
-			Message: "DROP TABLE requires explicit confirmation (add comment: -- CONFIRMED)",
-		})
-		// Require confirmation for TRUNCATE
-		configRules = append(configRules, generated.RuleConfig{
-			Name:    "truncate-requires-confirmation",
-			Rule:    "query.contains('TRUNCATE') && query.hasComment('CONFIRMED')",
-			Message: "TRUNCATE requires explicit confirmation (add comment: -- CONFIRMED)",
-		})
+		a.add("drop-table-requires-confirmation", "query.contains('DROP TABLE') && query.hasComment('CONFIRMED')", "DROP TABLE requires explicit confirmation (add comment: -- CONFIRMED)")
+		a.add("truncate-requires-confirmation", "query.contains('TRUNCATE') && query.hasComment('CONFIRMED')", "TRUNCATE requires explicit confirmation (add comment: -- CONFIRMED)")
 
 	case domain.DestructiveAllowed:
-		// No rules needed - destructive operations are allowed
 	}
 
 	// ========== CUSTOM RULES ==========
 
-	// Transform custom CEL rules
 	for _, customRule := range rules.CustomRules {
-		configRules = append(configRules, generated.RuleConfig(customRule))
+		a.rules = append(a.rules, generated.RuleConfig(customRule))
 	}
 
-	return configRules
+	return a.rules
 }
 
 // uintToString converts uint to string for rule generation.

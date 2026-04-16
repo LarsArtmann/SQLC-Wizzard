@@ -6,7 +6,7 @@ require (
 	charm.land/huh/v2 v2.0.3
 	charm.land/lipgloss/v2 v2.0.3
 	charm.land/log/v2 v2.0.0
-	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20260412100738-eb813e7a7d42
+	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20260413215136-b2299f825953
 	github.com/golang-migrate/migrate/v4 v4.19.1
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.28.1
@@ -19,12 +19,12 @@ require (
 
 require (
 	charm.land/bubbles/v2 v2.1.0 // indirect
-	charm.land/bubbletea/v2 v2.0.5 // indirect
+	charm.land/bubbletea/v2 v2.0.6 // indirect
 	github.com/Masterminds/semver/v3 v3.4.0 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/catppuccin/go v0.3.0 // indirect
 	github.com/charmbracelet/colorprofile v0.4.3 // indirect
-	github.com/charmbracelet/ultraviolet v0.0.0-20260413211237-bd52878bcec2 // indirect
+	github.com/charmbracelet/ultraviolet v0.0.0-20260416161146-9c68a866306c // indirect
 	github.com/charmbracelet/x/ansi v0.11.7 // indirect
 	github.com/charmbracelet/x/exp/ordered v0.1.0 // indirect
 	github.com/charmbracelet/x/exp/strings v0.1.0 // indirect

@@ -6,18 +6,12 @@ import (
 	"os"
 	"path/filepath"
 
-	"charm.land/lipgloss/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/creators"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
 	"github.com/spf13/cobra"
-)
-
-// UI styling constants.
-const (
-	commandPaddingLeft = 2
 )
 
 // CreateOptions contains options for the create command.
@@ -220,33 +214,20 @@ func showCreateSuccess(
 	databaseType generated.DatabaseType,
 	outputPath string,
 ) {
-	successStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("10")).
-		Padding(1, 0)
-
-	nextStepsStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("14")).
-		Bold(true).
-		MarginTop(1)
-
-	commandStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("8")).
-		PaddingLeft(commandPaddingLeft)
-
-	fmt.Println(successStyle.Render("🚀 Successfully created SQLC project!"))
+	PrintSuccess("Successfully created SQLC project!")
 	fmt.Printf("Project: %s\n", projectName)
 	fmt.Printf("Type: %s\n", projectType)
 	fmt.Printf("Database: %s\n", databaseType)
 	fmt.Printf("Location: %s\n", outputPath)
 
-	fmt.Println(nextStepsStyle.Render("Next Steps:"))
-	fmt.Println(commandStyle.Render("1. cd " + projectName))
-	fmt.Println(commandStyle.Render("2. make setup          # Install dependencies"))
-	fmt.Println(commandStyle.Render("3. make dev             # Start development environment"))
-	fmt.Println(commandStyle.Render("4. sqlc generate        # Generate Go code"))
-	fmt.Println(commandStyle.Render("5. make test            # Run tests"))
+	PrintNextSteps([]string{
+		"1. cd " + projectName,
+		"2. make setup          # Install dependencies",
+		"3. make dev             # Start development environment",
+		"4. sqlc generate        # Generate Go code",
+		"5. make test            # Run tests",
+	})
 
 	fmt.Println()
-	fmt.Println(successStyle.Render("✨ Your SQLC project is ready!"))
+	PrintSuccess("Your SQLC project is ready!")
 }

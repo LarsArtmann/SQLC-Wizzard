@@ -196,32 +196,32 @@ func (ui *UIHelper) formatCompletionDetails(
 	return details
 }
 
-// showErrorWithSchemaDetails displays schema apperrors.
-func (ui *UIHelper) showErrorWithSchemaDetails(err *schema.SchemaError) {
-	errorStyle := lipgloss.NewStyle().
+// createErrorStyles returns consistent error styling for display.
+func (ui *UIHelper) createErrorStyles() (errorStyle, detailStyle lipgloss.Style) {
+	errorStyle = lipgloss.NewStyle().
 		Bold(true).
 		Foreground(lipgloss.Color("#FF5555")).
 		Padding(0, 1)
 
-	detailStyle := lipgloss.NewStyle().
+	detailStyle = lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#FF8888")).
 		PaddingLeft(contentPaddingLeft)
+
+	return errorStyle, detailStyle
+}
+
+// showErrorWithSchemaDetails displays schema errors.
+func (ui *UIHelper) showErrorWithSchemaDetails(err *schema.SchemaError) {
+	errorStyle, detailStyle := ui.createErrorStyles()
 
 	fmt.Println(errorStyle.Render("❌ Schema Error"))
 	fmt.Println(detailStyle.Render("Code: " + err.Code))
 	fmt.Println(detailStyle.Render("Message: " + err.Message))
 }
 
-// showErrorWithTypedDetails displays typed apperrors.
+// showErrorWithTypedDetails displays typed errors.
 func (ui *UIHelper) showErrorWithTypedDetails(err *apperrors.Error) {
-	errorStyle := lipgloss.NewStyle().
-		Bold(true).
-		Foreground(lipgloss.Color("#FF5555")).
-		Padding(0, 1)
-
-	detailStyle := lipgloss.NewStyle().
-		Foreground(lipgloss.Color("#FF8888")).
-		PaddingLeft(contentPaddingLeft)
+	errorStyle, detailStyle := ui.createErrorStyles()
 
 	fmt.Println(errorStyle.Render("❌ Error"))
 	fmt.Println(detailStyle.Render("Code: " + string(err.Code)))
