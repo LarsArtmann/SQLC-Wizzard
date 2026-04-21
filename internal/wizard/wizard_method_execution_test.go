@@ -64,20 +64,11 @@ var _ = Describe("Wizard Method Execution Tests", func() {
 			result := wiz.GetResult()
 
 			// Set up complete data as if all steps executed successfully
-			result.TemplateData = generated.TemplateData{
-				ProjectName: "success-test",
-				ProjectType: generated.ProjectTypeMicroservice,
-				Package: generated.PackageConfig{
-					Name: "successdb",
-					Path: "github.com/example/success",
-				},
-				Database: generated.DatabaseConfig{
-					Engine:    generated.DatabaseTypePostgreSQL,
-					UseUUIDs:  true,
-					UseJSON:   true,
-					UseArrays: true,
-				},
-			}
+			result.TemplateData = testing.CreateMicroserviceTemplateData(
+				"success-test",
+				"successdb",
+				"github.com/example/success",
+			)
 
 			// This tests the successful completion path
 			// where w.result.TemplateData = *data would be executed

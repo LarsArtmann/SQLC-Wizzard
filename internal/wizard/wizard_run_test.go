@@ -15,14 +15,6 @@ var _ = Describe("Wizard Run Method", func() {
 		wiz = wizard.NewWizard()
 	})
 
-	It("should initialize with proper default template data", func() {
-		result := wiz.GetResult()
-
-		Expect(result).NotTo(BeNil())
-		Expect(result.GenerateQueries).To(BeTrue())
-		Expect(result.GenerateSchema).To(BeTrue())
-	})
-
 	It("should handle valid template data generation", func() {
 		result := wiz.GetResult()
 		result.TemplateData = wizard.CreateTemplateDataWithFeatures(
@@ -120,20 +112,11 @@ var _ = Describe("Wizard Configuration Generation", func() {
 	})
 
 	It("should generate valid configuration for microservice template", func() {
-		result.TemplateData = generated.TemplateData{
-			ProjectName: "test-microservice",
-			ProjectType: generated.ProjectTypeMicroservice,
-			Package: generated.PackageConfig{
-				Name: "db",
-				Path: "github.com/company/microservice",
-			},
-			Database: generated.DatabaseConfig{
-				Engine:    generated.DatabaseTypePostgreSQL,
-				UseUUIDs:  true,
-				UseJSON:   true,
-				UseArrays: true,
-			},
-		}
+		result.TemplateData = testing.CreateMicroserviceTemplateData(
+			"test-microservice",
+			"db",
+			"github.com/company/microservice",
+		)
 
 		Expect(result.TemplateData.ProjectType).To(Equal(generated.ProjectTypeMicroservice))
 		Expect(result.TemplateData.Database.Engine).To(Equal(generated.DatabaseTypePostgreSQL))

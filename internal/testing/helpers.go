@@ -397,3 +397,22 @@ func ExpectToContain(actual interface{}, expected interface{}, msgAndArgs ...int
 func ExpectLength(actual interface{}, length int, msgAndArgs ...interface{}) {
 	Expect(actual).To(HaveLen(length), msgAndArgs...)
 }
+
+// CreateMicroserviceTemplateData creates a TemplateData for microservice projects.
+// This helper eliminates duplicate template data creation patterns across tests.
+func CreateMicroserviceTemplateData(projectName, packageName, packagePath string) generated.TemplateData {
+	return generated.TemplateData{
+		ProjectName: projectName,
+		ProjectType: generated.ProjectTypeMicroservice,
+		Package: generated.PackageConfig{
+			Name: packageName,
+			Path: packagePath,
+		},
+		Database: generated.DatabaseConfig{
+			Engine:    generated.DatabaseTypePostgreSQL,
+			UseUUIDs:  true,
+			UseJSON:   true,
+			UseArrays: true,
+		},
+	}
+}

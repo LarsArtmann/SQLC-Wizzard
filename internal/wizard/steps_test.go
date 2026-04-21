@@ -303,37 +303,15 @@ var _ = Describe("CreateFeatureSteps", func() {
 })
 
 var _ = Describe("createValidatedInput", func() {
-	Context("with all parameters provided", func() {
-		It("should create a valid input field", func() {
-			value := ""
-
-			input := createValidatedInput(
-				"Test Title",
-				"Test Description",
-				"test-placeholder",
-				"testField",
-				&value,
-			)
-
+	DescribeTable("should create a valid input field",
+		func(title, description, placeholder, fieldName string, value *string) {
+			input := createValidatedInput(title, description, placeholder, fieldName, value)
 			Expect(input).ToNot(BeNil())
-		})
-	})
-
-	Context("with empty title", func() {
-		It("should create a valid input field", func() {
-			value := ""
-
-			input := createValidatedInput(
-				"",
-				"Test Description",
-				"test-placeholder",
-				"testField",
-				&value,
-			)
-
-			Expect(input).ToNot(BeNil())
-		})
-	})
+		},
+		Entry("with all parameters provided", "Test Title", "Test Description", "test-placeholder", "testField", func() *string { v := ""; return &v }()),
+		Entry("with empty title", "", "Test Description", "test-placeholder", "testField", func() *string { v := ""; return &v }()),
+		Entry("with empty field name", "Test Title", "Test Description", "test-placeholder", "", func() *string { v := ""; return &v }()),
+	)
 
 	Context("with nil value pointer", func() {
 		It("should not panic", func() {
@@ -343,22 +321,6 @@ var _ = Describe("createValidatedInput", func() {
 				"test-placeholder",
 				"testField",
 				nil,
-			)
-
-			Expect(input).ToNot(BeNil())
-		})
-	})
-
-	Context("with empty field name", func() {
-		It("should create a valid input field", func() {
-			value := ""
-
-			input := createValidatedInput(
-				"Test Title",
-				"Test Description",
-				"test-placeholder",
-				"",
-				&value,
 			)
 
 			Expect(input).ToNot(BeNil())
