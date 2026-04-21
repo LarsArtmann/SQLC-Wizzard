@@ -416,3 +416,22 @@ func CreateMicroserviceTemplateData(projectName, packageName, packagePath string
 		},
 	}
 }
+
+// CreateMinimalTemplateData creates a minimal TemplateData for hobby/simple projects.
+func CreateMinimalTemplateData(projectName string) generated.TemplateData {
+	return generated.TemplateData{
+		ProjectName: projectName,
+		ProjectType: generated.ProjectTypeHobby,
+		Package:     generated.PackageConfig{Name: "db", Path: "github.com/user/minimal"},
+		Database:    generated.DatabaseConfig{Engine: generated.DatabaseTypeSQLite},
+	}
+}
+
+// CreateFullEmitOptions creates EmitOptions with all fields set for comprehensive testing.
+func CreateFullEmitOptions() generated.EmitOptions {
+	return generated.EmitOptions{
+		EmitJSONTags: true, EmitPreparedQueries: true, EmitInterface: true, EmitEmptySlices: true,
+		EmitResultStructPointers: false, EmitParamsStructPointers: false, EmitEnumValidMethod: true,
+		EmitAllEnumValues: true, JSONTagsCaseStyle: "camel",
+	}
+}

@@ -204,21 +204,19 @@ var _ = Describe("Type-Safe Integration Tests", func() {
 			// Step 4: Verify custom rules are preserved
 			customRulesFound := 0
 
-			for _, rule := range configRules {
-				if rule.Name == "no-cross-db-joins" {
-					customRulesFound++
-
-					Expect(rule.Rule).To(Equal("query.databases().count() <= 1"))
-					Expect(rule.Message).To(Equal("Cross-database joins not allowed"))
-				}
-
-				if rule.Name == "max-subqueries" {
-					customRulesFound++
-
-					Expect(rule.Rule).To(Equal("query.subqueries().count() <= 2"))
-					Expect(rule.Message).To(Equal("Maximum 2 subqueries allowed"))
+			verifyCustomRule := func(name, expectedRule, expectedMsg string) {
+				for _, rule := range configRules {
+					if rule.Name == name {
+						customRulesFound++
+						Expect(rule.Rule).To(Equal(expectedRule))
+						Expect(rule.Message).To(Equal(expectedMsg))
+						return
+					}
 				}
 			}
+
+			verifyCustomRule("no-cross-db-joins", "query.databases().count() <= 1", "Cross-database joins not allowed")
+			verifyCustomRule("max-subqueries", "query.subqueries().count() <= 2", "Maximum 2 subqueries allowed")
 
 			Expect(customRulesFound).To(Equal(2), "Both custom rules should be preserved")
 		})

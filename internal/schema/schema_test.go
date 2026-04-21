@@ -394,19 +394,15 @@ var _ = Describe("Schema", func() {
 			Expect(col.Type).To(Equal(schema.ColumnTypeString))
 		})
 
-		It("should return false for non-existent table", func() {
-			col, found := s.GetColumn("non_existent", "email")
-
-			Expect(found).To(BeFalse())
-			Expect(col).To(BeNil())
-		})
-
-		It("should return false for non-existent column", func() {
-			col, found := s.GetColumn("users", "non_existent")
-
-			Expect(found).To(BeFalse())
-			Expect(col).To(BeNil())
-		})
+		DescribeTable("should return false for GetColumn",
+			func(tableName, columnName string) {
+				col, found := s.GetColumn(tableName, columnName)
+				Expect(found).To(BeFalse())
+				Expect(col).To(BeNil())
+			},
+			Entry("non-existent table", "non_existent", "email"),
+			Entry("non-existent column", "users", "non_existent"),
+		)
 	})
 })
 

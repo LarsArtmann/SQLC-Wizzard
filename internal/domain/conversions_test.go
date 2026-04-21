@@ -219,17 +219,7 @@ var _ = Describe("EmitOptions Conversions", func() {
 
 	Context("Roundtrip Conversions", func() {
 		It("should preserve data through old→new→old conversion", func() {
-			original := generated.EmitOptions{
-				EmitJSONTags:             true,
-				EmitPreparedQueries:      true,
-				EmitInterface:            true,
-				EmitEmptySlices:          true,
-				EmitResultStructPointers: false,
-				EmitParamsStructPointers: false,
-				EmitEnumValidMethod:      true,
-				EmitAllEnumValues:        true,
-				JSONTagsCaseStyle:        "camel",
-			}
+			original := testing.CreateFullEmitOptions()
 
 			typeSafe := domain.EmitOptionsToTypeSafe(original)
 			roundtrip := domain.EmitOptionsToTypeSafe(typeSafe.ToTemplateData())

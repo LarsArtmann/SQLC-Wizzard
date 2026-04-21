@@ -15,43 +15,28 @@ var _ = Describe("Branching Flow Context", func() {
 	})
 
 	Describe("Step Filtering", func() {
-		Context("for hobby project type", func() {
-			BeforeEach(func() {
-				ctx.ProjectType = generated.ProjectTypeHobby
-				ctx.DatabaseType = generated.DatabaseTypeSQLite
-			})
-
-			It("should skip features step when SkipOptionalSteps is true", func() {
+		DescribeTable("should skip features step when SkipOptionalSteps is true",
+			func(projectType generated.ProjectType, dbType generated.DatabaseType) {
+				ctx.ProjectType = projectType
+				ctx.DatabaseType = dbType
 				ctx.SkipOptionalSteps = true
 				steps := ctx.GetRequiredSteps()
 				Expect(steps).NotTo(ContainElement(wizard.StepFeatures))
-			})
+			},
+			Entry("for hobby project type", generated.ProjectTypeHobby, generated.DatabaseTypeSQLite),
+			Entry("for testing project type", generated.ProjectTypeTesting, generated.DatabaseTypeSQLite),
+		)
 
-			It("should include features step by default (simple wizard)", func() {
-				// By default, hobby projects still show the features step
-				// but with simplified options
+		DescribeTable("should include features step by default",
+			func(projectType generated.ProjectType, dbType generated.DatabaseType, description string) {
+				ctx.ProjectType = projectType
+				ctx.DatabaseType = dbType
 				steps := ctx.GetRequiredSteps()
 				Expect(steps).To(ContainElement(wizard.StepFeatures))
-			})
-		})
-
-		Context("for testing project type", func() {
-			BeforeEach(func() {
-				ctx.ProjectType = generated.ProjectTypeTesting
-				ctx.DatabaseType = generated.DatabaseTypeSQLite
-			})
-
-			It("should skip features step when SkipOptionalSteps is true", func() {
-				ctx.SkipOptionalSteps = true
-				steps := ctx.GetRequiredSteps()
-				Expect(steps).NotTo(ContainElement(wizard.StepFeatures))
-			})
-
-			It("should include features step by default", func() {
-				steps := ctx.GetRequiredSteps()
-				Expect(steps).To(ContainElement(wizard.StepFeatures))
-			})
-		})
+			},
+			Entry("for hobby project type", generated.ProjectTypeHobby, generated.DatabaseTypeSQLite, "simple wizard"),
+			Entry("for testing project type", generated.ProjectTypeTesting, generated.DatabaseTypeSQLite, "default"),
+		)
 
 		Context("for enterprise project type", func() {
 			BeforeEach(func() {

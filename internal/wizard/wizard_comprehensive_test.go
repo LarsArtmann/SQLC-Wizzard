@@ -52,17 +52,7 @@ var _ = Describe("Wizard Steps", func() {
 
 		It("should handle minimal template data configuration", func() {
 			result := wiz.GetResult()
-			result.TemplateData = generated.TemplateData{
-				ProjectName: "minimal-project",
-				ProjectType: generated.ProjectTypeHobby,
-				Package: generated.PackageConfig{
-					Name: "db",
-					Path: "github.com/user/minimal",
-				},
-				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypeSQLite,
-				},
-			}
+			result.TemplateData = testing.CreateMinimalTemplateData("minimal-project")
 
 			// Verify minimal configuration
 			Expect(result.TemplateData.ProjectType).To(Equal(generated.ProjectTypeHobby))

@@ -431,37 +431,26 @@ var _ = Describe("ProjectCreator", func() {
 	})
 
 	Context("Error Handling", func() {
-		It("should return descriptive error when mkdir fails", func() {
-			mockFS.shouldFailMkdir = true
-
-			cfg := &creators.CreateConfig{
+		createTestConfig := func() *creators.CreateConfig {
+			return &creators.CreateConfig{
 				ProjectName: "test",
 				ProjectType: generated.ProjectTypeMicroservice,
 				Database:    generated.DatabaseTypePostgreSQL,
 				Config:      &config.SqlcConfig{Version: "2"},
 			}
+		}
 
-			err := creator.CreateProject(ctx, cfg)
-
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("failed to create directory structure"))
-			Expect(err.Error()).To(ContainSubstring("mkdir failed"))
-		})
-
-		It("should return descriptive error when YAML write fails", func() {
-			mockFS.shouldFailWrite = true
-
-			cfg := &creators.CreateConfig{
-				ProjectName: "test",
-				ProjectType: generated.ProjectTypeMicroservice,
-				Database:    generated.DatabaseTypePostgreSQL,
-				Config:      &config.SqlcConfig{Version: "2"},
-			}
-
-			err := creator.CreateProject(ctx, cfg)
-
-			Expect(err).To(HaveOccurred())
-			Expect(err.Error()).To(ContainSubstring("failed to generate sqlc.yaml"))
-		})
+		DescribeTable("should return descriptive error",
+			func(setup func(), expectedError string) {
+				mockFS.shouldFailMkdir = false
+				mockFS.shouldFailWrite = false
+				setup()
+				err := creator.CreateProject(ctx, createTestConfig())
+				Expect(err).To(HaveOccurred())
+				Expect(err.Error()).To(ContainSubstring(expectedError))
+			},
+			Entry("when mkdir fails", func() { mockFS.shouldFailMkdir = true }, "failed to create directory structure"),
+			Entry("when YAML write fails", func() { mockFS.shouldFailWrite = true }, "failed to generate sqlc.yaml"),
+		)
 	})
 })

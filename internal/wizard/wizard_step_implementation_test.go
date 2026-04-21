@@ -216,23 +216,10 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		})
 
 		It("should validate output configuration", func() {
-			// Test valid configurations
 			validConfigs := []generated.OutputConfig{
-				{
-					BaseDir:    "./internal/db",
-					QueriesDir: "./sql/queries",
-					SchemaDir:  "./sql/schema",
-				},
-				{
-					BaseDir:    "./generated/db",
-					QueriesDir: "./queries",
-					SchemaDir:  "./schema",
-				},
-				{
-					BaseDir:    "/absolute/path/db",
-					QueriesDir: "/absolute/path/queries",
-					SchemaDir:  "/absolute/path/schema",
-				},
+				{BaseDir: "./internal/db", QueriesDir: "./sql/queries", SchemaDir: "./sql/schema"},
+				{BaseDir: "./generated/db", QueriesDir: "./queries", SchemaDir: "./schema"},
+				{BaseDir: "/absolute/path/db", QueriesDir: "/absolute/path/queries", SchemaDir: "/absolute/path/schema"},
 			}
 
 			for _, config := range validConfigs {
@@ -243,36 +230,23 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 		})
 
 		It("should detect invalid output configurations", func() {
-			// Test invalid configurations
-			invalidConfigs := []generated.OutputConfig{
-				{
-					BaseDir:    "", // Empty base dir
-					QueriesDir: "./sql/queries",
-					SchemaDir:  "./sql/schema",
-				},
-				{
-					BaseDir:    "./internal/db",
-					QueriesDir: "", // Empty queries dir
-					SchemaDir:  "./sql/schema",
-				},
-				{
-					BaseDir:    "./internal/db",
-					QueriesDir: "./sql/queries",
-					SchemaDir:  "", // Empty schema dir
-				},
+			invalidConfigs := []struct {
+				config     generated.OutputConfig
+				emptyField string
+			}{
+				{config: generated.OutputConfig{BaseDir: "", QueriesDir: "./sql/queries", SchemaDir: "./sql/schema"}, emptyField: "BaseDir"},
+				{config: generated.OutputConfig{BaseDir: "./internal/db", QueriesDir: "", SchemaDir: "./sql/schema"}, emptyField: "QueriesDir"},
+				{config: generated.OutputConfig{BaseDir: "./internal/db", QueriesDir: "./sql/queries", SchemaDir: ""}, emptyField: "SchemaDir"},
 			}
 
-			for _, config := range invalidConfigs {
-				if config.BaseDir == "" {
-					Expect(config.BaseDir).To(BeEmpty())
-				}
-
-				if config.QueriesDir == "" {
-					Expect(config.QueriesDir).To(BeEmpty())
-				}
-
-				if config.SchemaDir == "" {
-					Expect(config.SchemaDir).To(BeEmpty())
+			for _, tc := range invalidConfigs {
+				switch tc.emptyField {
+				case "BaseDir":
+					Expect(tc.config.BaseDir).To(BeEmpty())
+				case "QueriesDir":
+					Expect(tc.config.QueriesDir).To(BeEmpty())
+				case "SchemaDir":
+					Expect(tc.config.SchemaDir).To(BeEmpty())
 				}
 			}
 		})

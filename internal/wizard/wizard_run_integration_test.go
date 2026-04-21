@@ -2,6 +2,7 @@ package wizard_test
 
 import (
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/testing"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/wizard"
 	. "github.com/onsi/ginkgo/v2"
 	. "github.com/onsi/gomega"
@@ -63,23 +64,9 @@ var _ = Describe("Wizard Run Method Integration", func() {
 				Validation: generated.ValidationConfig{
 					StrictFunctions: true,
 					StrictOrderBy:   true,
-					EmitOptions: generated.EmitOptions{
-						EmitJSONTags:             true,
-						EmitPreparedQueries:      true,
-						EmitInterface:            true,
-						EmitEmptySlices:          true,
-						EmitResultStructPointers: false,
-						EmitParamsStructPointers: false,
-						EmitEnumValidMethod:      true,
-						EmitAllEnumValues:        true,
-						JSONTagsCaseStyle:        "camel",
-					},
+					EmitOptions:     testing.CreateFullEmitOptions(),
 					SafetyRules: generated.SafetyRules{
-						NoSelectStar: true,
-						RequireWhere: true,
-						RequireLimit: false,
-						NoDropTable:  true,
-						NoTruncate:   true,
+						NoSelectStar: true, RequireWhere: true, RequireLimit: false, NoDropTable: true, NoTruncate: true,
 					},
 				},
 			}
@@ -356,17 +343,7 @@ var _ = Describe("Wizard Run Method Integration", func() {
 			result := wiz.GetResult()
 
 			// Minimal configuration with missing optional fields
-			result.TemplateData = generated.TemplateData{
-				ProjectName: "minimal-missing-opts",
-				ProjectType: generated.ProjectTypeHobby,
-				Package: generated.PackageConfig{
-					Name: "db",
-					Path: "github.com/user/minimal",
-				},
-				Database: generated.DatabaseConfig{
-					Engine: generated.DatabaseTypeSQLite,
-				},
-			}
+			result.TemplateData = testing.CreateMinimalTemplateData("minimal-missing-opts")
 
 			// Verify minimal configuration works
 			Expect(result.TemplateData.ProjectName).To(Equal("minimal-missing-opts"))

@@ -208,21 +208,16 @@ var _ = Describe("CreatePackagePathStep", func() {
 })
 
 var _ = Describe("CreateOutputDirStep", func() {
-	Context("with default template data", func() {
-		It("should create a valid step", func() {
+	DescribeTable("should create a valid step",
+		func(baseDir string) {
 			step := CreateOutputDirStep(&generated.TemplateData{
-				Output: generated.OutputConfig{BaseDir: "./internal/db"},
+				Output: generated.OutputConfig{BaseDir: baseDir},
 			})
 			Expect(step).ToNot(BeNil())
-		})
-
-		It("should bind to output directory field", func() {
-			step := CreateOutputDirStep(&generated.TemplateData{
-				Output: generated.OutputConfig{BaseDir: "./gen/db"},
-			})
-			Expect(step).ToNot(BeNil())
-		})
-	})
+		},
+		Entry("with default path", "./internal/db"),
+		Entry("with custom path", "./gen/db"),
+	)
 
 	Context("with nil template data", func() {
 		It("should not panic", func() {

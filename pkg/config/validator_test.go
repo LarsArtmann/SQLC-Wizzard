@@ -156,32 +156,18 @@ var _ = Describe("Validator", func() {
 	})
 
 	Context("ValidationError", func() {
-		It("should format error message correctly", func() {
-			err := ValidationError{
-				Field:   "testField",
-				Message: "test message",
-			}
-
-			Expect(err.Error()).To(Equal("testField: test message"))
-		})
-
-		It("should handle empty field and message", func() {
-			err := ValidationError{
-				Field:   "",
-				Message: "",
-			}
-
-			Expect(err.Error()).To(Equal(": "))
-		})
-
-		It("should handle special characters in field and message", func() {
-			err := ValidationError{
-				Field:   "field.name[0]",
-				Message: "Message with: special characters!",
-			}
-
-			Expect(err.Error()).To(Equal("field.name[0]: Message with: special characters!"))
-		})
+		DescribeTable("should format error message correctly",
+			func(field, message, expected string) {
+				err := ValidationError{
+					Field:   field,
+					Message: message,
+				}
+				Expect(err.Error()).To(Equal(expected))
+			},
+			Entry("with standard field and message", "testField", "test message", "testField: test message"),
+			Entry("with empty field and message", "", "", ": "),
+			Entry("with special characters", "field.name[0]", "Message with: special characters!", "field.name[0]: Message with: special characters!"),
+		)
 	})
 
 	Context("Validate Function", func() {
