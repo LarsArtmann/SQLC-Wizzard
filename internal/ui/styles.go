@@ -12,7 +12,7 @@ const (
 
 // Shared lipgloss styles for consistent UI across the application.
 var (
-	// Success styles
+	// Success styles.
 	SuccessTitle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("#00D084")).
@@ -22,7 +22,7 @@ var (
 			Foreground(lipgloss.Color("#00D084")).
 			PaddingLeft(ContentPaddingLeft)
 
-	// Title styles
+		// Title styles.
 	TitlePrimary = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("#7D56F4")).
@@ -34,7 +34,7 @@ var (
 			Foreground(lipgloss.Color("#7D56F4")).
 			MarginBottom(1)
 
-	// Info styles
+		// Info styles.
 	InfoText = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("240")).
 			PaddingLeft(ContentPaddingLeft).
@@ -45,7 +45,7 @@ var (
 			Foreground(lipgloss.Color("240")).
 			Padding(0, 0, 1, 0)
 
-	// Error styles
+		// Error styles.
 	ErrorTitle = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("#FF5555")).
@@ -55,7 +55,7 @@ var (
 			Foreground(lipgloss.Color("#FF8888")).
 			PaddingLeft(ContentPaddingLeft)
 
-	// Command output styles
+		// Command output styles.
 	SuccessOutput = lipgloss.NewStyle().
 			Bold(true).
 			Foreground(lipgloss.Color("10")).
@@ -70,13 +70,13 @@ var (
 			Foreground(lipgloss.Color("8")).
 			PaddingLeft(ContentPaddingLeft)
 
-	// Content styles
+		// Content styles.
 	ContentText = lipgloss.NewStyle().
 			PaddingLeft(ContentPaddingLeft).
 			Width(UIWidth).
 			Align(lipgloss.Left)
 
-	// Highlight styles
+		// Highlight styles.
 	HighlightAccent = lipgloss.NewStyle().
 			Foreground(lipgloss.Color("#FF7E67"))
 

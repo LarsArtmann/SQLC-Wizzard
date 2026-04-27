@@ -219,7 +219,11 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 			validConfigs := []generated.OutputConfig{
 				{BaseDir: "./internal/db", QueriesDir: "./sql/queries", SchemaDir: "./sql/schema"},
 				{BaseDir: "./generated/db", QueriesDir: "./queries", SchemaDir: "./schema"},
-				{BaseDir: "/absolute/path/db", QueriesDir: "/absolute/path/queries", SchemaDir: "/absolute/path/schema"},
+				{
+					BaseDir:    "/absolute/path/db",
+					QueriesDir: "/absolute/path/queries",
+					SchemaDir:  "/absolute/path/schema",
+				},
 			}
 
 			for _, config := range validConfigs {
@@ -234,9 +238,30 @@ var _ = Describe("Individual Step Implementation Tests", func() {
 				config     generated.OutputConfig
 				emptyField string
 			}{
-				{config: generated.OutputConfig{BaseDir: "", QueriesDir: "./sql/queries", SchemaDir: "./sql/schema"}, emptyField: "BaseDir"},
-				{config: generated.OutputConfig{BaseDir: "./internal/db", QueriesDir: "", SchemaDir: "./sql/schema"}, emptyField: "QueriesDir"},
-				{config: generated.OutputConfig{BaseDir: "./internal/db", QueriesDir: "./sql/queries", SchemaDir: ""}, emptyField: "SchemaDir"},
+				{
+					config: generated.OutputConfig{
+						BaseDir:    "",
+						QueriesDir: "./sql/queries",
+						SchemaDir:  "./sql/schema",
+					},
+					emptyField: "BaseDir",
+				},
+				{
+					config: generated.OutputConfig{
+						BaseDir:    "./internal/db",
+						QueriesDir: "",
+						SchemaDir:  "./sql/schema",
+					},
+					emptyField: "QueriesDir",
+				},
+				{
+					config: generated.OutputConfig{
+						BaseDir:    "./internal/db",
+						QueriesDir: "./sql/queries",
+						SchemaDir:  "",
+					},
+					emptyField: "SchemaDir",
+				},
 			}
 
 			for _, tc := range invalidConfigs {

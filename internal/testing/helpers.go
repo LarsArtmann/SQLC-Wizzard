@@ -353,54 +353,56 @@ func TestStringRepresentationSuite(testCases func() []EnumTestCase) {
 
 // ExpectToBeTrue asserts that the given value is true with a descriptive message.
 // This helper reduces duplication of "Expect(x).To(BeTrue())" patterns in tests.
-func ExpectToBeTrue(actual interface{}, msgAndArgs ...interface{}) {
+func ExpectToBeTrue(actual any, msgAndArgs ...any) {
 	Expect(actual).To(BeTrue(), msgAndArgs...)
 }
 
 // ExpectToBeFalse asserts that the given value is false with a descriptive message.
 // This helper reduces duplication of "Expect(x).To(BeFalse())" patterns in tests.
-func ExpectToBeFalse(actual interface{}, msgAndArgs ...interface{}) {
+func ExpectToBeFalse(actual any, msgAndArgs ...any) {
 	Expect(actual).To(BeFalse(), msgAndArgs...)
 }
 
 // ExpectToBeNil asserts that the given value is nil with a descriptive message.
-func ExpectToBeNil(actual interface{}, msgAndArgs ...interface{}) {
+func ExpectToBeNil(actual any, msgAndArgs ...any) {
 	Expect(actual).To(BeNil(), msgAndArgs...)
 }
 
 // ExpectNotToBeNil asserts that the given value is not nil with a descriptive message.
 // This helper reduces duplication of "Expect(x).NotTo(BeNil())" patterns in tests.
-func ExpectNotToBeNil(actual interface{}, msgAndArgs ...interface{}) {
+func ExpectNotToBeNil(actual any, msgAndArgs ...any) {
 	Expect(actual).NotTo(BeNil(), msgAndArgs...)
 }
 
 // ExpectToEqual asserts that the actual value equals the expected value with a descriptive message.
 // This helper reduces duplication of "Expect(x).To(Equal(y))" patterns in tests.
-func ExpectToEqual(actual, expected interface{}, msgAndArgs ...interface{}) {
+func ExpectToEqual(actual, expected any, msgAndArgs ...any) {
 	Expect(actual).To(Equal(expected), msgAndArgs...)
 }
 
 // ExpectToNotEqual asserts that the actual value does not equal the unexpected value.
 // This helper reduces duplication of "Expect(x).NotTo(Equal(y))" patterns in tests.
-func ExpectToNotEqual(actual, expected interface{}, msgAndArgs ...interface{}) {
+func ExpectToNotEqual(actual, expected any, msgAndArgs ...any) {
 	Expect(actual).NotTo(Equal(expected), msgAndArgs...)
 }
 
 // ExpectToContain asserts that the actual slice or string contains the expected element or substring.
 // This helper reduces duplication of "Expect(x).To(ContainElement(y))" patterns in tests.
-func ExpectToContain(actual interface{}, expected interface{}, msgAndArgs ...interface{}) {
+func ExpectToContain(actual any, expected any, msgAndArgs ...any) {
 	Expect(actual).To(ContainElement(expected), msgAndArgs...)
 }
 
 // ExpectLength asserts that the actual value has the expected length.
 // This helper reduces duplication of "Expect(x).To(HaveLen(n))" patterns in tests.
-func ExpectLength(actual interface{}, length int, msgAndArgs ...interface{}) {
+func ExpectLength(actual any, length int, msgAndArgs ...any) {
 	Expect(actual).To(HaveLen(length), msgAndArgs...)
 }
 
 // CreateMicroserviceTemplateData creates a TemplateData for microservice projects.
 // This helper eliminates duplicate template data creation patterns across tests.
-func CreateMicroserviceTemplateData(projectName, packageName, packagePath string) generated.TemplateData {
+func CreateMicroserviceTemplateData(
+	projectName, packageName, packagePath string,
+) generated.TemplateData {
 	return generated.TemplateData{
 		ProjectName: projectName,
 		ProjectType: generated.ProjectTypeMicroservice,

@@ -15,7 +15,8 @@ var _ = Describe("Branching Flow Context", func() {
 	})
 
 	Describe("Step Filtering", func() {
-		DescribeTable("should skip features step when SkipOptionalSteps is true",
+		DescribeTable(
+			"should skip features step when SkipOptionalSteps is true",
 			func(projectType generated.ProjectType, dbType generated.DatabaseType) {
 				ctx.ProjectType = projectType
 				ctx.DatabaseType = dbType
@@ -23,19 +24,38 @@ var _ = Describe("Branching Flow Context", func() {
 				steps := ctx.GetRequiredSteps()
 				Expect(steps).NotTo(ContainElement(wizard.StepFeatures))
 			},
-			Entry("for hobby project type", generated.ProjectTypeHobby, generated.DatabaseTypeSQLite),
-			Entry("for testing project type", generated.ProjectTypeTesting, generated.DatabaseTypeSQLite),
+			Entry(
+				"for hobby project type",
+				generated.ProjectTypeHobby,
+				generated.DatabaseTypeSQLite,
+			),
+			Entry(
+				"for testing project type",
+				generated.ProjectTypeTesting,
+				generated.DatabaseTypeSQLite,
+			),
 		)
 
-		DescribeTable("should include features step by default",
+		DescribeTable(
+			"should include features step by default",
 			func(projectType generated.ProjectType, dbType generated.DatabaseType, description string) {
 				ctx.ProjectType = projectType
 				ctx.DatabaseType = dbType
 				steps := ctx.GetRequiredSteps()
 				Expect(steps).To(ContainElement(wizard.StepFeatures))
 			},
-			Entry("for hobby project type", generated.ProjectTypeHobby, generated.DatabaseTypeSQLite, "simple wizard"),
-			Entry("for testing project type", generated.ProjectTypeTesting, generated.DatabaseTypeSQLite, "default"),
+			Entry(
+				"for hobby project type",
+				generated.ProjectTypeHobby,
+				generated.DatabaseTypeSQLite,
+				"simple wizard",
+			),
+			Entry(
+				"for testing project type",
+				generated.ProjectTypeTesting,
+				generated.DatabaseTypeSQLite,
+				"default",
+			),
 		)
 
 		Context("for enterprise project type", func() {

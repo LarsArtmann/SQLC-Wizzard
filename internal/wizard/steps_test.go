@@ -298,14 +298,45 @@ var _ = Describe("CreateFeatureSteps", func() {
 })
 
 var _ = Describe("createValidatedInput", func() {
-	DescribeTable("should create a valid input field",
+	DescribeTable(
+		"should create a valid input field",
 		func(title, description, placeholder, fieldName string, value *string) {
 			input := createValidatedInput(title, description, placeholder, fieldName, value)
 			Expect(input).ToNot(BeNil())
 		},
-		Entry("with all parameters provided", "Test Title", "Test Description", "test-placeholder", "testField", func() *string { v := ""; return &v }()),
-		Entry("with empty title", "", "Test Description", "test-placeholder", "testField", func() *string { v := ""; return &v }()),
-		Entry("with empty field name", "Test Title", "Test Description", "test-placeholder", "", func() *string { v := ""; return &v }()),
+		Entry(
+			"with all parameters provided",
+			"Test Title",
+			"Test Description",
+			"test-placeholder",
+			"testField",
+			func() *string {
+				v := ""
+				return &v
+			}(),
+		),
+		Entry(
+			"with empty title",
+			"",
+			"Test Description",
+			"test-placeholder",
+			"testField",
+			func() *string {
+				v := ""
+				return &v
+			}(),
+		),
+		Entry(
+			"with empty field name",
+			"Test Title",
+			"Test Description",
+			"test-placeholder",
+			"",
+			func() *string {
+				v := ""
+				return &v
+			}(),
+		),
 	)
 
 	Context("with nil value pointer", func() {

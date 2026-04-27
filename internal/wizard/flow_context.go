@@ -150,7 +150,8 @@ func (fc *FlowContext) ShouldShowAdvancedFeatures() bool {
 
 // ShouldEnableUUIDs returns whether UUIDs should be enabled by default.
 func (fc *FlowContext) ShouldEnableUUIDs() bool {
-	return fc.DatabaseType == generated.DatabaseTypePostgreSQL || fc.DatabaseType == generated.DatabaseTypeMySQL
+	return fc.DatabaseType == generated.DatabaseTypePostgreSQL ||
+		fc.DatabaseType == generated.DatabaseTypeMySQL
 }
 
 // ShouldEnableJSON returns whether JSON support should be enabled by default.
@@ -180,20 +181,48 @@ func (fc *FlowContext) GetDatabaseSpecificFeatures() []FeatureSpec {
 	switch fc.DatabaseType {
 	case generated.DatabaseTypePostgreSQL:
 		return []FeatureSpec{
-			featureSpec("uuid", "Use UUID primary keys?", "Generate UUID primary keys instead of auto-increment integers"),
-			featureSpec("json", "Use JSON columns?", "Enable JSON column support for flexible data storage"),
+			featureSpec(
+				"uuid",
+				"Use UUID primary keys?",
+				"Generate UUID primary keys instead of auto-increment integers",
+			),
+			featureSpec(
+				"json",
+				"Use JSON columns?",
+				"Enable JSON column support for flexible data storage",
+			),
 			featureSpec("array", "Use array columns?", "Enable array column support"),
-			featureSpec("fulltext", "Use full-text search?", "Enable full-text search capabilities"),
+			featureSpec(
+				"fulltext",
+				"Use full-text search?",
+				"Enable full-text search capabilities",
+			),
 		}
 	case generated.DatabaseTypeMySQL:
 		return []FeatureSpec{
-			featureSpec("uuid", "Use UUID primary keys?", "Generate UUID primary keys instead of auto-increment integers"),
-			featureSpec("json", "Use JSON columns?", "Enable JSON column support for flexible data storage"),
-			featureSpec("fulltext", "Use full-text search?", "Enable full-text search capabilities (MySQL 5.7+)"),
+			featureSpec(
+				"uuid",
+				"Use UUID primary keys?",
+				"Generate UUID primary keys instead of auto-increment integers",
+			),
+			featureSpec(
+				"json",
+				"Use JSON columns?",
+				"Enable JSON column support for flexible data storage",
+			),
+			featureSpec(
+				"fulltext",
+				"Use full-text search?",
+				"Enable full-text search capabilities (MySQL 5.7+)",
+			),
 		}
 	case generated.DatabaseTypeSQLite:
 		return []FeatureSpec{
-			featureSpec("json", "Use JSON columns?", "Enable JSON column support for flexible data storage"),
+			featureSpec(
+				"json",
+				"Use JSON columns?",
+				"Enable JSON column support for flexible data storage",
+			),
 		}
 	}
 
@@ -205,23 +234,47 @@ func (fc *FlowContext) GetProjectTypeFeatures() []FeatureSpec {
 	switch fc.ProjectType {
 	case "enterprise", "multi-tenant":
 		return []FeatureSpec{
-			featureSpec("strict_mode", "Enable strict mode?", "Enable strict validation for all queries"),
-			featureSpec("prepared_queries", "Use prepared queries?", "Generate prepared query methods for better performance"),
+			featureSpec(
+				"strict_mode",
+				"Enable strict mode?",
+				"Enable strict validation for all queries",
+			),
+			featureSpec(
+				"prepared_queries",
+				"Use prepared queries?",
+				"Generate prepared query methods for better performance",
+			),
 		}
 	case "api-first":
 		return []FeatureSpec{
-			featureSpec("json_tags", "Include JSON tags?", "Add JSON struct tags to generated models"),
+			featureSpec(
+				"json_tags",
+				"Include JSON tags?",
+				"Add JSON struct tags to generated models",
+			),
 			featureSpec("interface", "Generate interfaces?", "Create interfaces for query methods"),
 		}
 	case "analytics":
 		return []FeatureSpec{
-			featureSpec("fulltext", "Enable full-text search?", "Enable full-text search capabilities"),
+			featureSpec(
+				"fulltext",
+				"Enable full-text search?",
+				"Enable full-text search capabilities",
+			),
 			featureSpec("strict_orderby", "Strict ORDER BY?", "Require ORDER BY in SELECT queries"),
 		}
 	case "library":
 		return []FeatureSpec{
-			featureSpec("interface", "Generate interfaces?", "Create interfaces for maximum flexibility"),
-			featureSpec("json_tags", "Include JSON tags?", "Add JSON struct tags for serialization"),
+			featureSpec(
+				"interface",
+				"Generate interfaces?",
+				"Create interfaces for maximum flexibility",
+			),
+			featureSpec(
+				"json_tags",
+				"Include JSON tags?",
+				"Add JSON struct tags for serialization",
+			),
 		}
 	}
 

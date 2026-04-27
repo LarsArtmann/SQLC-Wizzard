@@ -7,9 +7,9 @@ import (
 	"charm.land/lipgloss/v2"
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
-	uistyles "github.com/LarsArtmann/SQLC-Wizzard/internal/ui"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/schema"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/templates"
+	uistyles "github.com/LarsArtmann/SQLC-Wizzard/internal/ui"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
 )
 

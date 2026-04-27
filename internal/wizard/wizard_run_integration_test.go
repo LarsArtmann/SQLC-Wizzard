@@ -66,7 +66,11 @@ var _ = Describe("Wizard Run Method Integration", func() {
 					StrictOrderBy:   true,
 					EmitOptions:     testing.CreateFullEmitOptions(),
 					SafetyRules: generated.SafetyRules{
-						NoSelectStar: true, RequireWhere: true, RequireLimit: false, NoDropTable: true, NoTruncate: true,
+						NoSelectStar: true,
+						RequireWhere: true,
+						RequireLimit: false,
+						NoDropTable:  true,
+						NoTruncate:   true,
 					},
 				},
 			}

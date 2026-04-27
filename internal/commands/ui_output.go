@@ -14,7 +14,7 @@ func PrintSuccess(message string) {
 }
 
 // PrintSuccessf prints a formatted success message.
-func PrintSuccessf(format string, args ...interface{}) {
+func PrintSuccessf(format string, args ...any) {
 	PrintSuccess(fmt.Sprintf(format, args...))
 }
 
@@ -33,6 +33,7 @@ func PrintInfoWithSummary(message, summary string) {
 // PrintNextSteps prints next steps with consistent styling.
 func PrintNextSteps(steps []string) {
 	fmt.Println(ui.NextStepsTitle.Render("Next Steps:"))
+
 	for _, step := range steps {
 		fmt.Println(ui.CommandText.Render(step))
 	}

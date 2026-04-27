@@ -440,17 +440,28 @@ var _ = Describe("ProjectCreator", func() {
 			}
 		}
 
-		DescribeTable("should return descriptive error",
+		DescribeTable(
+			"should return descriptive error",
 			func(setup func(), expectedError string) {
 				mockFS.shouldFailMkdir = false
 				mockFS.shouldFailWrite = false
+
 				setup()
+
 				err := creator.CreateProject(ctx, createTestConfig())
 				Expect(err).To(HaveOccurred())
 				Expect(err.Error()).To(ContainSubstring(expectedError))
 			},
-			Entry("when mkdir fails", func() { mockFS.shouldFailMkdir = true }, "failed to create directory structure"),
-			Entry("when YAML write fails", func() { mockFS.shouldFailWrite = true }, "failed to generate sqlc.yaml"),
+			Entry(
+				"when mkdir fails",
+				func() { mockFS.shouldFailMkdir = true },
+				"failed to create directory structure",
+			),
+			Entry(
+				"when YAML write fails",
+				func() { mockFS.shouldFailWrite = true },
+				"failed to generate sqlc.yaml",
+			),
 		)
 	})
 })

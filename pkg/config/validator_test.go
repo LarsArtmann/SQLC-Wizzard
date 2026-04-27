@@ -156,7 +156,8 @@ var _ = Describe("Validator", func() {
 	})
 
 	Context("ValidationError", func() {
-		DescribeTable("should format error message correctly",
+		DescribeTable(
+			"should format error message correctly",
 			func(field, message, expected string) {
 				err := ValidationError{
 					Field:   field,
@@ -164,9 +165,19 @@ var _ = Describe("Validator", func() {
 				}
 				Expect(err.Error()).To(Equal(expected))
 			},
-			Entry("with standard field and message", "testField", "test message", "testField: test message"),
+			Entry(
+				"with standard field and message",
+				"testField",
+				"test message",
+				"testField: test message",
+			),
 			Entry("with empty field and message", "", "", ": "),
-			Entry("with special characters", "field.name[0]", "Message with: special characters!", "field.name[0]: Message with: special characters!"),
+			Entry(
+				"with special characters",
+				"field.name[0]",
+				"Message with: special characters!",
+				"field.name[0]: Message with: special characters!",
+			),
 		)
 	})
 

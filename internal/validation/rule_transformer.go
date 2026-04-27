@@ -54,11 +54,19 @@ func (rt *RuleTransformer) TransformSafetyRules(
 	}
 
 	if rules.RequireWhere {
-		a.add("require-where", "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()", "WHERE clause is required for this query type")
+		a.add(
+			"require-where",
+			"query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
+			"WHERE clause is required for this query type",
+		)
 	}
 
 	if rules.RequireLimit {
-		a.add("require-limit", "query.type == 'SELECT' && !query.hasLimitClause()", "LIMIT clause is required for SELECT queries")
+		a.add(
+			"require-limit",
+			"query.type == 'SELECT' && !query.hasLimitClause()",
+			"LIMIT clause is required for SELECT queries",
+		)
 	}
 
 	a.addSafetyRules(rules.Rules)
@@ -89,38 +97,74 @@ func (rt *RuleTransformer) TransformTypeSafeSafetyRules(
 	// ========== STYLE RULES (Code Quality) ==========
 
 	if rules.StyleRules.SelectStarPolicy.ForbidsSelectStar() {
-		a.add("no-select-star", "!query.contains('SELECT *')", "SELECT * is not allowed - use explicit column names")
+		a.add(
+			"no-select-star",
+			"!query.contains('SELECT *')",
+			"SELECT * is not allowed - use explicit column names",
+		)
 	}
 
 	if rules.StyleRules.ColumnExplicitness.RequiresExplicitColumns() {
-		a.add("require-explicit-columns", "query.type == 'SELECT' && query.hasExplicitColumns()", "All columns must be explicitly named")
+		a.add(
+			"require-explicit-columns",
+			"query.type == 'SELECT' && query.hasExplicitColumns()",
+			"All columns must be explicitly named",
+		)
 	}
 
 	// ========== SAFETY RULES (Prevent Bugs) ==========
 
 	if rules.SafetyRules.WhereRequirement.RequiresOnDestructive() {
-		a.add("require-where", "query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()", "WHERE clause is required for SELECT/UPDATE/DELETE queries to prevent accidental full-table operations")
+		a.add(
+			"require-where",
+			"query.type in ('SELECT', 'UPDATE', 'DELETE') && !query.hasWhereClause()",
+			"WHERE clause is required for SELECT/UPDATE/DELETE queries to prevent accidental full-table operations",
+		)
 	}
 
 	if rules.SafetyRules.LimitRequirement.RequiresOnSelect() {
-		a.add("require-limit", "query.type == 'SELECT' && !query.hasLimitClause()", "LIMIT clause is required for SELECT queries to prevent unbounded result sets")
+		a.add(
+			"require-limit",
+			"query.type == 'SELECT' && !query.hasLimitClause()",
+			"LIMIT clause is required for SELECT queries to prevent unbounded result sets",
+		)
 	}
 
 	if rules.SafetyRules.MaxRowsWithoutLimit > 0 {
 		limitStr := uintToString(rules.SafetyRules.MaxRowsWithoutLimit)
-		a.add("max-rows-without-limit", "query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > "+limitStr+")", "SELECT queries without LIMIT or with LIMIT > "+limitStr+" are not allowed")
+		a.add(
+			"max-rows-without-limit",
+			"query.type == 'SELECT' && (!query.hasLimitClause() || query.limitValue() > "+limitStr+")",
+			"SELECT queries without LIMIT or with LIMIT > "+limitStr+" are not allowed",
+		)
 	}
 
 	// ========== DESTRUCTIVE OPERATIONS (Policy-Based) ==========
 
 	switch rules.DestructiveOps {
 	case domain.DestructiveForbidden:
-		a.add("no-drop-table", "!query.contains('DROP TABLE')", "DROP TABLE is forbidden by safety policy")
-		a.add("no-truncate", "!query.contains('TRUNCATE')", "TRUNCATE is forbidden by safety policy")
+		a.add(
+			"no-drop-table",
+			"!query.contains('DROP TABLE')",
+			"DROP TABLE is forbidden by safety policy",
+		)
+		a.add(
+			"no-truncate",
+			"!query.contains('TRUNCATE')",
+			"TRUNCATE is forbidden by safety policy",
+		)
 
 	case domain.DestructiveWithConfirmation:
-		a.add("drop-table-requires-confirmation", "query.contains('DROP TABLE') && query.hasComment('CONFIRMED')", "DROP TABLE requires explicit confirmation (add comment: -- CONFIRMED)")
-		a.add("truncate-requires-confirmation", "query.contains('TRUNCATE') && query.hasComment('CONFIRMED')", "TRUNCATE requires explicit confirmation (add comment: -- CONFIRMED)")
+		a.add(
+			"drop-table-requires-confirmation",
+			"query.contains('DROP TABLE') && query.hasComment('CONFIRMED')",
+			"DROP TABLE requires explicit confirmation (add comment: -- CONFIRMED)",
+		)
+		a.add(
+			"truncate-requires-confirmation",
+			"query.contains('TRUNCATE') && query.hasComment('CONFIRMED')",
+			"TRUNCATE requires explicit confirmation (add comment: -- CONFIRMED)",
+		)
 
 	case domain.DestructiveAllowed:
 	}
