@@ -312,6 +312,7 @@ var _ = Describe("createValidatedInput", func() {
 			"testField",
 			func() *string {
 				v := ""
+
 				return &v
 			}(),
 		),
@@ -323,6 +324,7 @@ var _ = Describe("createValidatedInput", func() {
 			"testField",
 			func() *string {
 				v := ""
+
 				return &v
 			}(),
 		),
@@ -334,6 +336,7 @@ var _ = Describe("createValidatedInput", func() {
 			"",
 			func() *string {
 				v := ""
+
 				return &v
 			}(),
 		),

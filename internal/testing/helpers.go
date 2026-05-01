@@ -388,7 +388,7 @@ func ExpectToNotEqual(actual, expected any, msgAndArgs ...any) {
 
 // ExpectToContain asserts that the actual slice or string contains the expected element or substring.
 // This helper reduces duplication of "Expect(x).To(ContainElement(y))" patterns in tests.
-func ExpectToContain(actual any, expected any, msgAndArgs ...any) {
+func ExpectToContain(actual, expected any, msgAndArgs ...any) {
 	Expect(actual).To(ContainElement(expected), msgAndArgs...)
 }
 

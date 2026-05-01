@@ -54,3 +54,9 @@ test-*.sql
 *.log
 # Dependencies
 node_modules/
+# Test coverage
+/coverage
+# Copy/paste detection report
+/report/jscpd-report.json
+# Build artifacts
+/SQLC-Wizzard
