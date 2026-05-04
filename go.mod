@@ -6,7 +6,7 @@ require (
 	charm.land/huh/v2 v2.0.3
 	charm.land/lipgloss/v2 v2.0.3
 	charm.land/log/v2 v2.0.0
-	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20260504171105-63862e2ea856
+	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20260504181409-ba8146c868b5
 	github.com/golang-migrate/migrate/v4 v4.19.1
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.28.3
