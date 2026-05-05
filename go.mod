@@ -62,5 +62,3 @@ require (
 )
 
 replace github.com/LarsArtmann/SQLC-Wizzard/generated => ./generated
-
-replace github.com/larsartmann/go-composable-business-types => /Users/larsartmann/projects/go-composable-business-types
