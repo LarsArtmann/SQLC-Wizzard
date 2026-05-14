@@ -8,12 +8,12 @@
 
 ## Task Overview
 
-| Tier | Tasks | Impact |
-|---|---|---|
-| 1% → 51% | 1–3 | Foundational: fix module path, extract core, fix layer violation |
-| 4% → 64% | 4–5 | High leverage: extract config, add go.work |
-| 20% → 80% | 6–8 | Broad value: update CI, update linters, documentation |
-| Remaining | 9–10 | Polish: delete dead code, verify independence |
+| Tier      | Tasks | Impact                                                           |
+| --------- | ----- | ---------------------------------------------------------------- |
+| 1% → 51%  | 1–3   | Foundational: fix module path, extract core, fix layer violation |
+| 4% → 64%  | 4–5   | High leverage: extract config, add go.work                       |
+| 20% → 80% | 6–8   | Broad value: update CI, update linters, documentation            |
+| Remaining | 9–10  | Polish: delete dead code, verify independence                    |
 
 ---
 
@@ -30,12 +30,14 @@
 **Why:** The current mismatch (`module sqlc-wizard-types` vs imports using `github.com/LarsArtmann/SQLC-Wizzard/generated`) relies entirely on the `replace` directive. Aligning the module path makes it explicit and prepares for `go.work`.
 
 **Steps:**
+
 1. Edit `generated/go.mod`: change `module sqlc-wizard-types` to `module github.com/LarsArtmann/SQLC-Wizzard/generated`
 2. Run `go mod tidy` in root
 3. Run `go build ./...`
 4. Run `go test ./...`
 
 **Verification:**
+
 ```bash
 go build ./... && go test ./... && go vet ./...
 ```
@@ -55,12 +57,14 @@ go build ./... && go test ./... && go vet ./...
 **Why:** Two error packages is confusing. `pkg/errors` is dead code. Removing it before modularization eliminates the split brain.
 
 **Steps:**
+
 1. Delete `pkg/errors/errors.go`
 2. Run `go mod tidy`
 3. Run `go build ./...`
 4. Run `go test ./...`
 
 **Verification:**
+
 ```bash
 go build ./... && go test ./... && go vet ./...
 ```
@@ -78,23 +82,27 @@ go build ./... && go test ./... && go vet ./...
 **What:** Create `core/` directory with its own `go.mod`, move 4 packages from root's `internal/` into it.
 
 **Packages to move:**
+
 - `internal/apperrors` → `core/apperrors`
 - `internal/domain` → `core/domain`
 - `internal/validation` → `core/validation`
 - `internal/schema` → `core/schema`
 
 **Steps:**
+
 1. Create `core/` directory
 2. Create `core/go.mod`:
+
    ```
    module github.com/LarsArtmann/SQLC-Wizzard/core
-   
+
    go 1.26.2
-   
+
    require github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20260504181409-ba8146c868b5
-   
+
    require github.com/samber/lo v1.53.0 // indirect
    ```
+
 3. Move each package directory:
    - `git mv internal/apperrors core/apperrors`
    - `git mv internal/domain core/domain`
@@ -116,6 +124,7 @@ go build ./... && go test ./... && go vet ./...
 13. Run `go test ./...`
 
 **Files that need import updates (root module):**
+
 - `internal/templates/*.go` — imports `internal/apperrors`, `internal/validation`
 - `internal/adapters/*.go` — imports `internal/apperrors`, `internal/schema`, `internal/migration`
 - `internal/commands/*.go` — imports `internal/apperrors`
@@ -125,6 +134,7 @@ go build ./... && go test ./... && go vet ./...
 - `internal/testing/*.go` — imports `internal/domain`
 
 **Verification:**
+
 ```bash
 # In core/
 cd core && go build ./... && go test ./... && go vet ./... && cd ..
@@ -146,19 +156,22 @@ go mod tidy && go build ./... && go test ./... && go vet ./...
 **What:** Create `config/` directory with its own `go.mod`, move `pkg/config` into it.
 
 **Steps:**
+
 1. Create `config/` directory
 2. Create `config/go.mod`:
+
    ```
    module github.com/LarsArtmann/SQLC-Wizzard/config
-   
+
    go 1.26.2
-   
+
    require (
        github.com/LarsArtmann/SQLC-Wizzard/core v0.0.0
        github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20260504181409-ba8146c868b5
        gopkg.in/yaml.v3 v3.0.1
    )
    ```
+
 3. Move all files from `pkg/config/` to `config/`:
    - `git mv pkg/config/config_suite_test.go config/`
    - `git mv pkg/config/marshaller.go config/`
@@ -183,6 +196,7 @@ go mod tidy && go build ./... && go test ./... && go vet ./...
 13. Run `go test ./...`
 
 **Verification:**
+
 ```bash
 # In config/
 cd config && go build ./... && go test ./... && go vet ./... && cd ..
@@ -204,10 +218,12 @@ go mod tidy && go build ./... && go test ./... && go vet ./...
 **What:** Create `go.work` at repo root, remove `replace` directive from root `go.mod`.
 
 **Steps:**
+
 1. Create `go.work`:
+
    ```go
    go 1.26.2
-   
+
    use (
        ./generated
        ./core
@@ -215,6 +231,7 @@ go mod tidy && go build ./... && go test ./... && go vet ./...
        .
    )
    ```
+
 2. Edit root `go.mod`: remove the `replace github.com/LarsArtmann/SQLC-Wizzard/generated => ./generated` line
 3. Run `go work sync`
 4. Run `go mod tidy` in each module directory
@@ -222,6 +239,7 @@ go mod tidy && go build ./... && go test ./... && go vet ./...
 6. Run `go test ./...` at root
 
 **Verification:**
+
 ```bash
 go work sync && go build ./... && go test ./... && go vet ./...
 # Verify each module builds independently
@@ -243,6 +261,7 @@ cd generated && go build ./... && cd ..
 **What:** Update `.github/workflows/ci-cd.yml` to build/test per module and at workspace level.
 
 **Steps:**
+
 1. Read current CI workflow
 2. Add per-module build/test steps:
    ```yaml
@@ -273,6 +292,7 @@ cd generated && go build ./... && cd ..
 **What:** Update `.golangci.yml` and `.go-arch-lint.yml` for new module paths.
 
 **Steps:**
+
 1. Update `.golangci.yml` depguard rules:
    - Remove rules about `internal/apperrors` → now `core/apperrors`
    - Update allowed imports for each package
@@ -283,6 +303,7 @@ cd generated && go build ./... && cd ..
 4. Fix any new lint findings
 
 **Verification:**
+
 ```bash
 go vet ./...
 # golangci-lint run ./... (if available)
@@ -301,6 +322,7 @@ go vet ./...
 **What:** Update `justfile`, `AGENTS.md`, `README.md`, and `Dockerfile` for new module structure.
 
 **Steps:**
+
 1. Update `justfile`:
    - `just build` should use `go work sync` before build
    - `just test` should test per-module then workspace
@@ -319,6 +341,7 @@ go vet ./...
    - Update `go mod download` to workspace-aware
 
 **Verification:**
+
 ```bash
 just build && just test
 ```
@@ -336,6 +359,7 @@ just build && just test
 **What:** Prove each module can be built and tested in isolation.
 
 **Steps:**
+
 1. Verify `generated/` builds independently:
    ```bash
    cd generated && go build ./... && go test ./... && cd ..
@@ -371,6 +395,7 @@ just build && just test
 **What:** Final cleanup commit ensuring everything is clean.
 
 **Steps:**
+
 1. Run `go work sync` one final time
 2. Run `go mod tidy` in every module
 3. Remove `pkg/` directory if it's now empty
@@ -380,6 +405,7 @@ just build && just test
 7. Commit all cleanup
 
 **Verification:**
+
 ```bash
 go build ./... && go test ./... && go vet ./... && go work sync
 git status  # Should show clean state

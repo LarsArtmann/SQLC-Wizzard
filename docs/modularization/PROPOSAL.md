@@ -20,6 +20,7 @@ SQLC-Wizard currently has a **partial split** structure: a root `go.mod`, a `gen
 **Goal:** Split the monolithic root `go.mod` into 4 independently versionable sub-modules coordinated by a `go.work` file, with clean DAG enforcement and eliminated layer violations.
 
 **Expected benefits:**
+
 - Compile-time enforced module boundaries (no accidental coupling)
 - Faster CI — modules build/test independently
 - Clearer ownership and responsibility per module
@@ -33,11 +34,11 @@ SQLC-Wizard currently has a **partial split** structure: a root `go.mod`, a `gen
 
 ### 2.1 Module Landscape
 
-| Module | Path | Internal Deps | External Deps | Replace Directives | State |
-|---|---|---|---|---|---|
-| Root | `go.mod` | `generated` | 15+ (charm, cobra, ginkgo, etc.) | `generated => ./generated` | Leaky |
-| Generated | `generated/go.mod` | None | None | None | Clean |
-| Hobby Example | `examples/hobby-project/go.mod` | None | `mattn/go-sqlite3` | None | Clean |
+| Module        | Path                            | Internal Deps | External Deps                    | Replace Directives         | State |
+| ------------- | ------------------------------- | ------------- | -------------------------------- | -------------------------- | ----- |
+| Root          | `go.mod`                        | `generated`   | 15+ (charm, cobra, ginkgo, etc.) | `generated => ./generated` | Leaky |
+| Generated     | `generated/go.mod`              | None          | None                             | None                       | Clean |
+| Hobby Example | `examples/hobby-project/go.mod` | None          | `mattn/go-sqlite3`               | None                       | Clean |
 
 **Classification:** Partial split — one submodule extracted (`generated`), everything else in root.
 
@@ -60,25 +61,25 @@ Layer 6:            cmd/sqlc-wizard → commands
 
 ### 2.3 Coupling Hotspots
 
-| Hotspot | Description | Severity |
-|---|---|---|
-| `pkg/config` → `internal/apperrors` | Public package imports internal — violates Go convention | 🔴 Critical |
-| `internal/commands` | Fan-out of 9 internal dependencies — god-package orchestrator | 🟡 High |
-| `internal/testing` | ~60 exported symbols — mix of assertions, factories, enums | 🔴 Critical |
-| `internal/wizard` | ~42 exports — mixes UI, steps, flow, branching, test helpers | 🟡 High |
-| `internal/templates` | ~32 exports — 9 template types + registry + validation | 🟡 High |
-| `pkg/errors` vs `internal/apperrors` | Two competing error systems | 🟠 Medium |
-| `generated.DatabaseConfig` vs `config.DatabaseConfig` | Duplicate type with same name | 🟠 Medium |
-| Adapter global vars | 6 mutable `var` function pointers — race condition risk | 🟠 Medium |
-| Template `init()` singleton | Global state, untestable | 🟠 Medium |
+| Hotspot                                               | Description                                                   | Severity    |
+| ----------------------------------------------------- | ------------------------------------------------------------- | ----------- |
+| `pkg/config` → `internal/apperrors`                   | Public package imports internal — violates Go convention      | 🔴 Critical |
+| `internal/commands`                                   | Fan-out of 9 internal dependencies — god-package orchestrator | 🟡 High     |
+| `internal/testing`                                    | ~60 exported symbols — mix of assertions, factories, enums    | 🔴 Critical |
+| `internal/wizard`                                     | ~42 exports — mixes UI, steps, flow, branching, test helpers  | 🟡 High     |
+| `internal/templates`                                  | ~32 exports — 9 template types + registry + validation        | 🟡 High     |
+| `pkg/errors` vs `internal/apperrors`                  | Two competing error systems                                   | 🟠 Medium   |
+| `generated.DatabaseConfig` vs `config.DatabaseConfig` | Duplicate type with same name                                 | 🟠 Medium   |
+| Adapter global vars                                   | 6 mutable `var` function pointers — race condition risk       | 🟠 Medium   |
+| Template `init()` singleton                           | Global state, untestable                                      | 🟠 Medium   |
 
 ### 2.4 Banned Dependencies in go.mod
 
 Per the `how-to-golang` skill banned libraries list:
 
-| Banned Dependency | Severity | Replacement |
-|---|---|---|
-| `gopkg.in/yaml.v3` | Critical | `go-faster/yaml` |
+| Banned Dependency             | Severity | Replacement                                        |
+| ----------------------------- | -------- | -------------------------------------------------- |
+| `gopkg.in/yaml.v3`            | Critical | `go-faster/yaml`                                   |
 | `github.com/stretchr/testify` | Critical | `onsi/ginkgo/v2` + `onsi/gomega` (already present) |
 
 **Note:** `testify` is imported but should be migrated to pure ginkgo/gomega. `yaml.v3` is used extensively in `pkg/config` for YAML marshalling.
@@ -91,33 +92,34 @@ Per the `how-to-golang` skill banned libraries list:
 
 #### Module 1: `generated/` (Existing — Keep As-Is)
 
-| Field | Content |
-|---|---|
-| Name & path | `generated/` |
-| Module path | `sqlc-wizard-types` |
-| Purpose | Type-safe enums and domain models generated from TypeSpec |
-| Dependencies (prod) | None |
-| Dependencies (test) | None |
-| Public API | `ProjectType`, `DatabaseType`, `TemplateData`, `EmitOptions`, `SafetyRules`, all config structs, CQRS types |
-| Internal packages | N/A (single file) |
-| External deps | None |
+| Field               | Content                                                                                                     |
+| ------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Name & path         | `generated/`                                                                                                |
+| Module path         | `sqlc-wizard-types`                                                                                         |
+| Purpose             | Type-safe enums and domain models generated from TypeSpec                                                   |
+| Dependencies (prod) | None                                                                                                        |
+| Dependencies (test) | None                                                                                                        |
+| Public API          | `ProjectType`, `DatabaseType`, `TemplateData`, `EmitOptions`, `SafetyRules`, all config structs, CQRS types |
+| Internal packages   | N/A (single file)                                                                                           |
+| External deps       | None                                                                                                        |
 
 **Rationale:** Already isolated. This is the foundation — every other module depends on it. Zero changes needed.
 
 #### Module 2: `core/` (New — Extract from internal/)
 
-| Field | Content |
-|---|---|
-| Name & path | `core/` |
-| Module path | `github.com/LarsArtmann/SQLC-Wizzard/core` |
-| Purpose | Pure domain logic, type-safe enums, validation, error types, schema — no I/O or UI |
-| Dependencies (prod) | `generated/` |
-| Dependencies (test) | None |
-| Public API | Type-safe `EmitModes`, `SafetyPolicy`, `Domain` types, `Schema`, `Validation`, `AppErrors` |
-| Internal packages | `apperrors/`, `domain/`, `validation/`, `schema/` |
-| External deps | `samber/lo` |
+| Field               | Content                                                                                    |
+| ------------------- | ------------------------------------------------------------------------------------------ |
+| Name & path         | `core/`                                                                                    |
+| Module path         | `github.com/LarsArtmann/SQLC-Wizzard/core`                                                 |
+| Purpose             | Pure domain logic, type-safe enums, validation, error types, schema — no I/O or UI         |
+| Dependencies (prod) | `generated/`                                                                               |
+| Dependencies (test) | None                                                                                       |
+| Public API          | Type-safe `EmitModes`, `SafetyPolicy`, `Domain` types, `Schema`, `Validation`, `AppErrors` |
+| Internal packages   | `apperrors/`, `domain/`, `validation/`, `schema/`                                          |
+| External deps       | `samber/lo`                                                                                |
 
 **Packages extracted from root:**
+
 - `internal/apperrors` → `core/apperrors`
 - `internal/domain` → `core/domain`
 - `internal/validation` → `core/validation`
@@ -127,18 +129,19 @@ Per the `how-to-golang` skill banned libraries list:
 
 #### Module 3: `config/` (New — Extract from pkg/config)
 
-| Field | Content |
-|---|---|
-| Name & path | `config/` |
-| Module path | `github.com/LarsArtmann/SQLC-Wizzard/config` |
-| Purpose | sqlc.yaml configuration types, parsing, marshalling, and validation |
-| Dependencies (prod) | `generated/`, `core/apperrors` |
-| Dependencies (test) | None |
-| Public API | `SqlcConfig`, `GoGenConfig`, `Parser`, `Validator`, `Marshaller`, `ApplyEmitOptions()` |
-| Internal packages | N/A (single package) |
-| External deps | `go-faster/yaml` (migrate from `gopkg.in/yaml.v3`) |
+| Field               | Content                                                                                |
+| ------------------- | -------------------------------------------------------------------------------------- |
+| Name & path         | `config/`                                                                              |
+| Module path         | `github.com/LarsArtmann/SQLC-Wizzard/config`                                           |
+| Purpose             | sqlc.yaml configuration types, parsing, marshalling, and validation                    |
+| Dependencies (prod) | `generated/`, `core/apperrors`                                                         |
+| Dependencies (test) | None                                                                                   |
+| Public API          | `SqlcConfig`, `GoGenConfig`, `Parser`, `Validator`, `Marshaller`, `ApplyEmitOptions()` |
+| Internal packages   | N/A (single package)                                                                   |
+| External deps       | `go-faster/yaml` (migrate from `gopkg.in/yaml.v3`)                                     |
 
 **Packages extracted from root:**
+
 - `pkg/config` → `config/`
 - `pkg/errors` → DELETE (merge into `core/apperrors`)
 
@@ -148,16 +151,16 @@ Per the `how-to-golang` skill banned libraries list:
 
 #### Module 4: Root (Remaining — Slim Down)
 
-| Field | Content |
-|---|---|
-| Name & path | `./` (repo root) |
-| Module path | `github.com/LarsArtmann/SQLC-Wizzard` |
-| Purpose | CLI application, wizard TUI, templates, adapters, generators |
-| Dependencies (prod) | `generated/`, `core/`, `config/` |
-| Dependencies (test) | `generated/`, `core/`, `config/` |
-| Public API | CLI binary (no public library API) |
-| Internal packages | `internal/templates`, `internal/wizard`, `internal/adapters`, `internal/commands`, `internal/creators`, `internal/generators`, `internal/migration`, `internal/ui`, `internal/utils`, `internal/testing` |
-| External deps | `charm.land/huh/v2`, `charm.land/lipgloss/v2`, `spf13/cobra`, `golang-migrate/migrate/v4`, `onsi/ginkgo/v2`, `onsi/gomega`, `samber/lo` |
+| Field               | Content                                                                                                                                                                                                  |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Name & path         | `./` (repo root)                                                                                                                                                                                         |
+| Module path         | `github.com/LarsArtmann/SQLC-Wizzard`                                                                                                                                                                    |
+| Purpose             | CLI application, wizard TUI, templates, adapters, generators                                                                                                                                             |
+| Dependencies (prod) | `generated/`, `core/`, `config/`                                                                                                                                                                         |
+| Dependencies (test) | `generated/`, `core/`, `config/`                                                                                                                                                                         |
+| Public API          | CLI binary (no public library API)                                                                                                                                                                       |
+| Internal packages   | `internal/templates`, `internal/wizard`, `internal/adapters`, `internal/commands`, `internal/creators`, `internal/generators`, `internal/migration`, `internal/ui`, `internal/utils`, `internal/testing` |
+| External deps       | `charm.land/huh/v2`, `charm.land/lipgloss/v2`, `spf13/cobra`, `golang-migrate/migrate/v4`, `onsi/ginkgo/v2`, `onsi/gomega`, `samber/lo`                                                                  |
 
 **Rationale:** The root module becomes the application layer — everything that depends on I/O, UI, or external services. It's the only module that imports CLI/TUI libraries.
 
@@ -184,6 +187,7 @@ Direction: DOWN only. No cycles. No upward dependencies.
 ```
 
 **Proof of acyclicity:**
+
 - `generated` has zero internal deps → cannot create cycle
 - `core` depends only on `generated` → cannot create cycle
 - `config` depends on `generated` + `core` → cannot create cycle
@@ -195,12 +199,12 @@ Direction: DOWN only. No cycles. No upward dependencies.
 
 **Chosen: `go.work` at repo root.**
 
-| Module | go.work entry |
-|---|---|
-| `generated/` | ✅ |
-| `core/` | ✅ |
-| `config/` | ✅ |
-| `./` (root) | ✅ |
+| Module       | go.work entry |
+| ------------ | ------------- |
+| `generated/` | ✅            |
+| `core/`      | ✅            |
+| `config/`    | ✅            |
+| `./` (root)  | ✅            |
 
 ```go
 // go.work
@@ -215,6 +219,7 @@ use (
 ```
 
 **Rules:**
+
 - No `replace` directives in any `go.mod` — `go.work` handles local development
 - `go.work` is committed to git (all modules are in-repo)
 - `go mod tidy` works both with and without workspace (verified in CI)
@@ -222,14 +227,15 @@ use (
 
 ### 3.4 Test Dependency Isolation
 
-| Module | Production Deps | Test Deps |
-|---|---|---|
-| `generated/` | None | None |
-| `core/` | `generated/` | None |
-| `config/` | `generated/`, `core/apperrors` | None |
-| Root (app) | `generated/`, `core/`, `config/` | `core/`, `config/` (via `internal/testing`) |
+| Module       | Production Deps                  | Test Deps                                   |
+| ------------ | -------------------------------- | ------------------------------------------- |
+| `generated/` | None                             | None                                        |
+| `core/`      | `generated/`                     | None                                        |
+| `config/`    | `generated/`, `core/apperrors`   | None                                        |
+| Root (app)   | `generated/`, `core/`, `config/` | `core/`, `config/` (via `internal/testing`) |
 
 **Testhelpers strategy:**
+
 - `internal/testing` stays in root module — it provides wizard/template-specific test helpers
 - If shared test fixtures for `core/` are needed in the future, create `core/testing/` within the `core/` module
 - Root module's `internal/testing` depends on `core/` types only (never on infrastructure adapters)
@@ -249,11 +255,11 @@ The adapter pattern stays in the root module since adapters are an application c
 
 **Chosen: Shared version (single git tag).**
 
-| Strategy | Why |
-|---|---|
-| Shared version | All modules are tightly coupled, single team, no external consumers yet |
-| Tag format | `v1.2.3` at repo root |
-| All modules bump together | Atomic releases |
+| Strategy                  | Why                                                                     |
+| ------------------------- | ----------------------------------------------------------------------- |
+| Shared version            | All modules are tightly coupled, single team, no external consumers yet |
+| Tag format                | `v1.2.3` at repo root                                                   |
+| All modules bump together | Atomic releases                                                         |
 
 **Rationale:** The project has no external consumers of individual modules. `generated/` is the only published module (`sqlc-wizard-types`) and could be independently versioned in the future. Until there's a consumer need, shared versioning is simplest.
 
@@ -288,52 +294,52 @@ See `EXECUTION_PLAN.md` for the full step-by-step migration with verification ch
 
 ### 4.4 Cross-Reference with how-to-golang
 
-| Check | Status |
-|---|---|
+| Check                              | Status                                                       |
+| ---------------------------------- | ------------------------------------------------------------ |
 | No banned deps in proposed modules | ⚠️ `gopkg.in/yaml.v3` in config/ (documented, migrate later) |
-| No banned deps in proposed modules | ⚠️ `testify` in root module (non-test code, document) |
-| Domain types in correct location | ✅ `generated/` is canonical source |
-| Architecture patterns aligned | ✅ Layered with DAG enforcement |
-| Required libraries present | ✅ ginkgo/gomega for testing |
+| No banned deps in proposed modules | ⚠️ `testify` in root module (non-test code, document)        |
+| Domain types in correct location   | ✅ `generated/` is canonical source                          |
+| Architecture patterns aligned      | ✅ Layered with DAG enforcement                              |
+| Required libraries present         | ✅ ginkgo/gomega for testing                                 |
 
 ### 4.5 Split Brain Check
 
-| Type | Location 1 | Location 2 | Resolution |
-|---|---|---|---|
-| `DatabaseConfig` | `generated.DatabaseConfig` | `config.DatabaseConfig` (YAML-specific) | ✅ Different purposes — keep both |
-| `RuleConfig` | `generated.RuleConfig` | `config.RuleConfig` | ✅ Different purposes — keep both |
-| `EmitOptions` | `generated.EmitOptions` | `domain.EmitOptions` (deprecated alias) | ⚠️ Remove alias during extraction |
-| `SafetyRules` | `generated.SafetyRules` | `domain.SafetyRules` (deprecated alias) | ⚠️ Remove alias during extraction |
-| Error types | `pkg/errors.BaseError` | `internal/apperrors.Error` | ⚠️ Delete `pkg/errors` — it's unused |
+| Type             | Location 1                 | Location 2                              | Resolution                           |
+| ---------------- | -------------------------- | --------------------------------------- | ------------------------------------ |
+| `DatabaseConfig` | `generated.DatabaseConfig` | `config.DatabaseConfig` (YAML-specific) | ✅ Different purposes — keep both    |
+| `RuleConfig`     | `generated.RuleConfig`     | `config.RuleConfig`                     | ✅ Different purposes — keep both    |
+| `EmitOptions`    | `generated.EmitOptions`    | `domain.EmitOptions` (deprecated alias) | ⚠️ Remove alias during extraction    |
+| `SafetyRules`    | `generated.SafetyRules`    | `domain.SafetyRules` (deprecated alias) | ⚠️ Remove alias during extraction    |
+| Error types      | `pkg/errors.BaseError`     | `internal/apperrors.Error`              | ⚠️ Delete `pkg/errors` — it's unused |
 
 ---
 
 ## 5. Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|---|---|---|---|
-| Import path breaks after extraction | Medium | High | Update all imports in one commit per module, verify with `go build ./...` |
-| Test dependencies leak into prod go.mod | Low | Medium | Audit each module's go.mod after `go mod tidy` |
-| Circular dependency discovered during extraction | Low | High | DAG analysis above shows no cycles; if found, adjust boundaries before proceeding |
-| `pkg/config` → `internal/apperrors` breakage | High | Medium | Must extract `apperrors` to `core/` before `config/` extraction |
-| `gopkg.in/yaml.v3` replacement breaks config parsing | Medium | High | Migrate to `go-faster/yaml` after modularization, not during |
-| `go.work` conflicts with existing `replace` directive | Medium | Low | Remove `replace` directive when adding `go.work` |
-| `generated` module path mismatch | Medium | Medium | Align `generated/go.mod` to `github.com/LarsArtmann/SQLC-Wizzard/generated` |
-| `testify` in non-test code | Low | Low | Refactor `internal/testing/assertions.go` to gomega (orthogonal to modularization) |
+| Risk                                                  | Likelihood | Impact | Mitigation                                                                         |
+| ----------------------------------------------------- | ---------- | ------ | ---------------------------------------------------------------------------------- |
+| Import path breaks after extraction                   | Medium     | High   | Update all imports in one commit per module, verify with `go build ./...`          |
+| Test dependencies leak into prod go.mod               | Low        | Medium | Audit each module's go.mod after `go mod tidy`                                     |
+| Circular dependency discovered during extraction      | Low        | High   | DAG analysis above shows no cycles; if found, adjust boundaries before proceeding  |
+| `pkg/config` → `internal/apperrors` breakage          | High       | Medium | Must extract `apperrors` to `core/` before `config/` extraction                    |
+| `gopkg.in/yaml.v3` replacement breaks config parsing  | Medium     | High   | Migrate to `go-faster/yaml` after modularization, not during                       |
+| `go.work` conflicts with existing `replace` directive | Medium     | Low    | Remove `replace` directive when adding `go.work`                                   |
+| `generated` module path mismatch                      | Medium     | Medium | Align `generated/go.mod` to `github.com/LarsArtmann/SQLC-Wizzard/generated`        |
+| `testify` in non-test code                            | Low        | Low    | Refactor `internal/testing/assertions.go` to gomega (orthogonal to modularization) |
 
 ---
 
 ## 6. Build System Impact
 
-| System | Changes Needed |
-|---|---|
-| `justfile` | Update `build`, `test`, `lint` commands to work with go.work |
-| `Makefile` | Update `types` target if needed |
-| `.golangci.yml` | Update `depguard` rules for new module paths |
-| `.go-arch-lint.yml` | Update architecture constraints for new module layout |
-| `Dockerfile` | Update `COPY` and `go mod download` for multi-module |
-| `.github/workflows/ci-cd.yml` | Add per-module build/test steps, cache per module |
-| `flake.nix` | Not present yet — future work |
+| System                        | Changes Needed                                               |
+| ----------------------------- | ------------------------------------------------------------ |
+| `justfile`                    | Update `build`, `test`, `lint` commands to work with go.work |
+| `Makefile`                    | Update `types` target if needed                              |
+| `.golangci.yml`               | Update `depguard` rules for new module paths                 |
+| `.go-arch-lint.yml`           | Update architecture constraints for new module layout        |
+| `Dockerfile`                  | Update `COPY` and `go mod download` for multi-module         |
+| `.github/workflows/ci-cd.yml` | Add per-module build/test steps, cache per module            |
+| `flake.nix`                   | Not present yet — future work                                |
 
 ---
 
