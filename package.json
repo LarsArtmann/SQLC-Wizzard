@@ -1,8 +1,8 @@
 {
   "dependencies": {},
   "devDependencies": {
-    "@typespec/compiler": "^1.10.0",
-    "@typespec/http": "^1.10.0",
-    "@typespec/openapi3": "^1.10.0"
+    "@typespec/compiler": "^1.12.0",
+    "@typespec/http": "^1.12.0",
+    "@typespec/openapi3": "^1.12.0"
   }
 }
