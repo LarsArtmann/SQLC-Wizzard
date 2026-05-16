@@ -1,64 +1,32 @@
-# Multi-stage Docker build for SQLC-Wizard
+FROM --platform=$BUILDPLATFORM golang:1.26-alpine AS builder
 
-# Build stage
-FROM golang:1.25-alpine AS builder
-
-# Install git for version info
 RUN apk add --no-cache git ca-certificates
 
-WORKDIR /app
+ARG TARGETOS
+ARG TARGETARCH
+ARG VERSION=dev
+ARG COMMIT=unknown
+ARG BUILD_DATE=unknown
 
-# Copy go mod files
+WORKDIR /build
+
 COPY go.mod go.sum ./
-
-# Download dependencies
 RUN go mod download
 
-# Copy source code
 COPY . .
 
-# Build the binary
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
-    -ldflags="-w -s -X main.Version=${GIT_VERSION:-dev} -X main.Commit=${GIT_COMMIT:-unknown} -X main.BuildDate=$(date -u +'%Y-%m-%dT%H:%M:%SZ')" \
+RUN CGO_ENABLED=0 GOOS=${TARGETOS} GOARCH=${TARGETARCH} go build \
+    -tags netgo \
+    -ldflags="-s -w -X main.Version=${VERSION} -X main.Commit=${COMMIT} -X main.BuildDate=${BUILD_DATE}" \
+    -trimpath \
     -o sqlc-wizard \
-    cmd/sqlc-wizard/main.go
+    ./cmd/sqlc-wizard
 
-# Final stage
-FROM alpine:latest
+FROM gcr.io/distroless/static-debian13:nonroot
 
-# Install ca-certificates for HTTPS requests
-RUN apk --no-cache add ca-certificates tzdata
+COPY --from=builder /build/sqlc-wizard /sqlc-wizard
 
-WORKDIR /root/
+USER 65532:65532
 
-# Copy binary from builder stage
-COPY --from=builder /app/sqlc-wizard .
-
-# Copy license and readme
-COPY --from=builder /app/LICENSE .
-COPY --from=builder /app/README.md .
-
-# Set timezone
-ENV TZ=UTC
-
-# Create non-root user
-RUN addgroup -S sqlcwizard && adduser -S sqlcwizard -G sqlcwizard
-USER sqlcwizard
-
-# Expose volume for configs
-VOLUME ["/configs"]
-
-# Set entrypoint
-ENTRYPOINT ["./sqlc-wizard"]
-
-# Default command shows help
+ENTRYPOINT ["/sqlc-wizard"]
 CMD ["--help"]
-
-# Labels for metadata
-LABEL maintainer="Lars Artmann <lars@artmann.email>"
-LABEL description="SQLC-Wizard - Interactive CLI wizard for generating sqlc configurations"
-LABEL version="${GIT_VERSION:-dev}"
-LABEL org.opencontainers.image.title="SQLC-Wizard"
-LABEL org.opencontainers.image.description="Interactive CLI wizard for sqlc configurations"
-LABEL org.opencontainers.image.vendor="Lars Artmann"
-LABEL org.opencontainers.image.licenses="MIT"
