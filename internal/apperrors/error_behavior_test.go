@@ -80,16 +80,16 @@ var _ = Describe("Error Behavior and Comparison", func() {
 		})
 	})
 
-	Context("ErrorList Behavior", func() {
+	Context("MultiError Behavior", func() {
 		It("should return correct error message for single error", func() {
-			list := NewErrorList()
+			list := NewMultiError()
 			list.AddError(ErrorCodeValidationError, "single error")
 
 			Expect(list.Error()).To(Equal("[VALIDATION_ERROR] single error"))
 		})
 
 		It("should return summary message for multiple errors", func() {
-			list := NewErrorList()
+			list := NewMultiError()
 			list.AddError(ErrorCodeValidationError, "error 1")
 			list.AddError(ErrorCodeInternalServer, "error 2")
 
@@ -98,7 +98,7 @@ var _ = Describe("Error Behavior and Comparison", func() {
 		})
 
 		It("should return message for empty list", func() {
-			list := NewErrorList()
+			list := NewMultiError()
 
 			Expect(list.Error()).To(Equal("no errors"))
 		})

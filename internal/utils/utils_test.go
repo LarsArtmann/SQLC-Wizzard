@@ -68,7 +68,6 @@ var commonCaseConversionInputs = []struct {
 // caseConversionTestCase represents a test case for string case conversion functions.
 type caseConversionTestCase struct {
 	testCases    []stringTestCase
-	edgeCaseFunc func(string) string
 	edgeExpected string
 	edgeLeading  string
 	edgeTrailing string

@@ -49,6 +49,15 @@ const (
 	ErrorCodeTimeout          ErrorCode = "TIMEOUT"
 	ErrorCodePermissionDenied ErrorCode = "PERMISSION_DENIED"
 	ErrorCodeNotFound         ErrorCode = "NOT_FOUND"
+
+	// CLI Errors.
+	ErrorCodeCLINotFound       ErrorCode = "CLI_NOT_FOUND"
+	ErrorCodeCLIVersionUnknown ErrorCode = "CLI_VERSION_UNKNOWN"
+	ErrorCodeCLINotInstallable ErrorCode = "CLI_NOT_INSTALLABLE"
+
+	// Generator Errors.
+	ErrorCodeInvalidTemplate      ErrorCode = "INVALID_TEMPLATE"
+	ErrorCodeDatabaseNotSupported ErrorCode = "DATABASE_NOT_SUPPORTED"
 )
 
 // ErrorSeverity represents error severity levels

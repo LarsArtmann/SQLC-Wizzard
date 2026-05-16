@@ -40,24 +40,24 @@ func WrapWithUserID(original error, code ErrorCode, userID, component string) *E
 	return err.WithUserID(userID)
 }
 
-// Combine combines multiple errors into an ErrorList
+// Combine combines multiple errors into a MultiError
 // TODO: Add nil error filtering
 // TODO: Add duplicate error detection.
-func Combine(errors ...*Error) *ErrorList {
-	errorList := NewErrorList()
+func Combine(errors ...*Error) *MultiError {
+	multiErr := NewMultiError()
 	for _, err := range errors {
 		// TODO: Add error validation
-		errorList.Add(err)
+		multiErr.Add(err)
 	}
 
-	return errorList
+	return multiErr
 }
 
-// CombineErrors combines error interface types into ErrorList
+// CombineErrors combines error interface types into MultiError
 // TODO: Add better handling of wrapped errors
 // TODO: Add error type detection and categorization.
-func CombineErrors(errs ...error) *ErrorList {
-	errorList := NewErrorList()
+func CombineErrors(errs ...error) *MultiError {
+	multiErr := NewMultiError()
 
 	for _, err := range errs {
 		if err == nil {
@@ -66,15 +66,15 @@ func CombineErrors(errs ...error) *ErrorList {
 
 		appErr := &Error{}
 		if errors.As(err, &appErr) {
-			errorList.Add(appErr)
+			multiErr.Add(appErr)
 		} else {
 			// Wrap non-application errors
 			wrapped := Wrap(err, ErrorCodeInternalServer, "unknown")
-			errorList.Add(wrapped)
+			multiErr.Add(wrapped)
 		}
 	}
 
-	return errorList
+	return multiErr
 }
 
 // Helper constructors for common error types
@@ -217,4 +217,15 @@ var (
 	ErrInvalidValue      = NewError(ErrorCodeInvalidValue, "Invalid value")
 	ErrFileNotFound      = NewError(ErrorCodeFileNotFound, "File not found")
 	ErrInvalidType       = NewError(ErrorCodeValidationError, "Invalid type")
+
+	// CLI Errors.
+	ErrCLIVersionUnknown = NewError(ErrorCodeCLIVersionUnknown, "Could not determine CLI version")
+	ErrCLINotInstallable = NewError(
+		ErrorCodeCLINotInstallable,
+		"Auto-install not implemented for this CLI",
+	)
+
+	// Generator Errors.
+	ErrInvalidTemplate      = NewError(ErrorCodeInvalidTemplate, "Invalid template")
+	ErrDatabaseNotSupported = NewError(ErrorCodeDatabaseNotSupported, "Database not supported")
 )

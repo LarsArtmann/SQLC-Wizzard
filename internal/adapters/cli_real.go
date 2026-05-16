@@ -1,9 +1,12 @@
+// Package adapters provides implementations for external system interfaces.
 package adapters
 
 import (
 	"context"
 	"fmt"
 	"os/exec"
+
+	"github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors"
 )
 
 // RealCLIAdapter provides actual CLI operations.
@@ -31,15 +34,14 @@ func (a *RealCLIAdapter) RunCommand(
 }
 
 // CheckCommand checks if a command is available.
-func (a *RealCLIAdapter) CheckCommand(ctx context.Context, cmd string) error {
+func (a *RealCLIAdapter) CheckCommand(_ context.Context, cmd string) error {
 	_, err := exec.LookPath(cmd)
 
-	return err
+	return err //nolint:wrapcheck // external package error
 }
 
 // GetVersion returns version of a CLI tool.
 func (a *RealCLIAdapter) GetVersion(ctx context.Context, cmd string) (string, error) {
-	// Try common version flags
 	versionFlags := []string{"--version", "-v", "version"}
 
 	for _, flag := range versionFlags {
@@ -49,17 +51,25 @@ func (a *RealCLIAdapter) GetVersion(ctx context.Context, cmd string) (string, er
 		}
 	}
 
-	return "", fmt.Errorf("could not determine version for %s", cmd)
+	return "", fmt.Errorf(
+		"could not determine version for %s: %w",
+		cmd,
+		apperrors.ErrCLIVersionUnknown,
+	)
 }
 
 // Install installs a CLI tool.
-func (a *RealCLIAdapter) Install(ctx context.Context, cmd string) error {
-	return fmt.Errorf("auto-install not implemented for: %s", cmd)
+func (a *RealCLIAdapter) Install(_ context.Context, cmd string) error {
+	return fmt.Errorf(
+		"auto-install not implemented for %s: %w",
+		cmd,
+		apperrors.ErrCLINotInstallable,
+	)
 }
 
 // Println prints a message to output.
-func (a *RealCLIAdapter) Println(ctx context.Context, message string) error {
-	fmt.Println(message)
+func (a *RealCLIAdapter) Println(_ context.Context, message string) error {
+	fmt.Println(message) //nolint:forbidigo // User-facing output requires direct print
 
 	return nil
 }

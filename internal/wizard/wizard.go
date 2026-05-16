@@ -48,7 +48,7 @@ func NewWizard() *Wizard {
 		TemplateFunc: func(projectType templates.ProjectType) (templates.Template, error) {
 			tmpl, err := templates.GetTemplate(projectType)
 			if err != nil {
-				return nil, err
+				return nil, fmt.Errorf("failed to get template for %s: %w", projectType, err)
 			}
 
 			return tmpl, nil

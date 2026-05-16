@@ -74,7 +74,7 @@ func ValidateConfiguration(cfg *schema.Schema) error {
 	// Validate schema using typed validation
 	err := cfg.Validate()
 	if err != nil {
-		return err
+		return fmt.Errorf("schema validation failed: %w", err)
 	}
 
 	// Additional business logic validation

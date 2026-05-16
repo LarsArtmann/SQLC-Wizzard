@@ -18,7 +18,11 @@ func runConfirmationForm(themeFunc huh.ThemeFunc, title, description string, res
 		),
 	).WithTheme(themeFunc)
 
-	return form.Run()
+	if err := form.Run(); err != nil {
+		return fmt.Errorf("failed to run confirmation form: %w", err)
+	}
+
+	return nil
 }
 
 // FeaturesStep handles feature selection and validation configuration.
@@ -99,12 +103,6 @@ func createFeatureConfig(title, description string, assign fieldAssignment) Feat
 		description: description,
 		assign:      assign,
 	}
-}
-
-// buildFeatures creates a FeatureConfig slice from variadic arguments, eliminating
-// the need for rawFeatureConfig structs and buildFeatureConfigs intermediate step.
-func buildFeatures(configs ...FeatureConfig) []FeatureConfig {
-	return configs
 }
 
 // configSpec defines a feature configuration specification.

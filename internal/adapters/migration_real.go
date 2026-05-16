@@ -29,18 +29,18 @@ func NewRealMigrationAdapter() *RealMigrationAdapter {
 
 // getVersion safely retrieves migration version, treating ErrNilVersion as non-error.
 func getVersion(m *migrate.Migrate, source string) (version uint, dirty bool, err error) {
-	version, dirty, err = m.Version()
-	if err != nil && !errors.Is(err, migrate.ErrNilVersion) {
-		log.Error("Failed to get migration version", "error", err, "source", source)
+	version, dirty, verErr := m.Version()
+	if verErr != nil && !errors.Is(verErr, migrate.ErrNilVersion) {
+		log.Error("Failed to get migration version", "error", verErr, "source", source)
 
 		return 0, false, fmt.Errorf(
 			"failed to get migration version for source %s: %w",
 			source,
-			err,
+			verErr,
 		)
 	}
 
-	return version, dirty, err
+	return version, dirty, nil
 }
 
 // isValidDatabaseURI checks if the current URI matches any of the valid prefixes.

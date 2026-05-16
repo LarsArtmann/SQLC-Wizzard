@@ -2,6 +2,7 @@ package integration_test
 
 import (
 	"bytes"
+	"fmt"
 	"testing"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/commands"
@@ -14,7 +15,11 @@ import (
 func executeCommand(cmd *cobra.Command, args []string) error {
 	cmd.SetArgs(args)
 
-	return cmd.Execute()
+	if err := cmd.Execute(); err != nil {
+		return fmt.Errorf("failed to execute command: %w", err)
+	}
+
+	return nil
 }
 
 // executeCommandWithOutput executes a command and returns both output and error.
@@ -24,9 +29,13 @@ func executeCommandWithOutput(cmd *cobra.Command, args []string) (string, error)
 	cmd.SetArgs(args)
 	cmd.SetOut(&output)
 	cmd.SetErr(&output)
-	err := cmd.Execute()
 
-	return output.String(), err
+	err := cmd.Execute()
+	if err != nil {
+		return output.String(), fmt.Errorf("failed to execute command: %w", err)
+	}
+
+	return output.String(), nil
 }
 
 // executeCommandWithHelp executes a command with --help flag.
@@ -38,7 +47,11 @@ func executeCommandWithHelp(cmd *cobra.Command) error {
 	cmd.SetArgs(args)
 	cmd.SetOut(&output)
 
-	return cmd.Execute()
+	if err := cmd.Execute(); err != nil {
+		return fmt.Errorf("failed to execute help command: %w", err)
+	}
+
+	return nil
 }
 
 func TestIntegration(t *testing.T) {

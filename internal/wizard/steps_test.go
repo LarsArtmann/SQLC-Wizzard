@@ -45,20 +45,6 @@ func generateStepTests(
 	})
 }
 
-// createStepTestCases creates test cases for step creation with default values.
-func createStepTestCases() []stepTestCase {
-	return []stepTestCase{
-		{
-			data:        &generated.TemplateData{},
-			description: "default template data",
-		},
-		{
-			data:        &generated.TemplateData{},
-			description: "default template data",
-		},
-	}
-}
-
 // createFieldTestCases creates test cases with custom field configuration.
 // This eliminates duplication across similar test case helper functions.
 func createFieldTestCases(

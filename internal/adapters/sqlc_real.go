@@ -2,6 +2,7 @@ package adapters
 
 import (
 	"context"
+	"fmt"
 	"os/exec"
 	"path/filepath"
 
@@ -21,7 +22,11 @@ func (a *RealSQLCAdapter) Generate(ctx context.Context, cfg *config.SqlcConfig) 
 	cmd := exec.CommandContext(ctx, "sqlc", "generate")
 	cmd.Dir = filepath.Dir(".")
 
-	return cmd.Run()
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("sqlc generate failed: %w", err)
+	}
+
+	return nil
 }
 
 // Validate validates sqlc configuration.
@@ -29,7 +34,11 @@ func (a *RealSQLCAdapter) Validate(ctx context.Context, cfg *config.SqlcConfig) 
 	cmd := exec.CommandContext(ctx, "sqlc", "validate")
 	cmd.Dir = filepath.Dir(".")
 
-	return cmd.Run()
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("sqlc validate failed: %w", err)
+	}
+
+	return nil
 }
 
 // Version returns sqlc version.
@@ -38,7 +47,7 @@ func (a *RealSQLCAdapter) Version(ctx context.Context) (string, error) {
 
 	output, err := cmd.Output()
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("sqlc version failed: %w", err)
 	}
 
 	return string(output), nil
@@ -48,5 +57,9 @@ func (a *RealSQLCAdapter) Version(ctx context.Context) (string, error) {
 func (a *RealSQLCAdapter) CheckInstallation(ctx context.Context) error {
 	cmd := exec.CommandContext(ctx, "sqlc", "--help")
 
-	return cmd.Run()
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("sqlc check failed: %w", err)
+	}
+
+	return nil
 }

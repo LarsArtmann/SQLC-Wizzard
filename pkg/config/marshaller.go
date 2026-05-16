@@ -60,5 +60,9 @@ func WriteFileFormatted(cfg *SqlcConfig, path string) error {
 		return fmt.Errorf("failed to encode config to file %s: %w", path, err)
 	}
 
-	return encoder.Close()
+	if closeErr := encoder.Close(); closeErr != nil {
+		return fmt.Errorf("failed to close encoder: %w", closeErr)
+	}
+
+	return nil
 }

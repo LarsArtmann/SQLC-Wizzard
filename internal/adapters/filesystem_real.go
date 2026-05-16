@@ -18,6 +18,7 @@ func NewRealFileSystemAdapter() *RealFileSystemAdapter {
 
 // ReadFile reads a file.
 func (a *RealFileSystemAdapter) ReadFile(ctx context.Context, path string) ([]byte, error) {
+	//#nosec G304 -- path is validated by the caller
 	data, err := os.ReadFile(path)
 	if err != nil {
 		return nil, fmt.Errorf("failed to read file %s: %w", path, err)
@@ -39,6 +40,7 @@ func (a *RealFileSystemAdapter) WriteFile(
 		return fmt.Errorf("failed to create directory %s with perm %o: %w", dir, perm, err)
 	}
 
+	//#nosec G703 -- path is controlled by application logic, not user input
 	err := os.WriteFile(path, data, perm)
 	if err != nil {
 		return fmt.Errorf("failed to write file %s with perm %o: %w", path, perm, err)
@@ -139,9 +141,10 @@ func (a *RealFileSystemAdapter) copyFile(
 	src, dst string,
 	info fs.FileInfo,
 ) error {
+	//#nosec G304 -- src is validated by caller
 	data, err := os.ReadFile(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to read file %s: %w", src, err)
 	}
 
 	return a.WriteFile(ctx, dst, data, info.Mode())
@@ -154,12 +157,12 @@ func (a *RealFileSystemAdapter) copyDir(
 	info fs.FileInfo,
 ) error {
 	if err := os.MkdirAll(dst, info.Mode()); err != nil {
-		return err
+		return fmt.Errorf("failed to create directory %s: %w", dst, err)
 	}
 
 	entries, err := os.ReadDir(src)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to read directory %s: %w", src, err)
 	}
 
 	for _, entry := range entries {

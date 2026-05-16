@@ -2,6 +2,7 @@ package commands_test
 
 import (
 	"context"
+	"fmt"
 	"os"
 	"path/filepath"
 	"testing"
@@ -300,12 +301,12 @@ func generateExampleFiles(outputDir string, force bool) error {
 
 	err := os.MkdirAll(schemaDir, 0o755)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create schema directory: %w", err)
 	}
 
 	err = os.MkdirAll(queriesDir, 0o755)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to create queries directory: %w", err)
 	}
 
 	// Create dummy files
@@ -314,8 +315,12 @@ func generateExampleFiles(outputDir string, force bool) error {
 
 	err = os.WriteFile(schemaFile, []byte("-- Schema file"), 0o644)
 	if err != nil {
-		return err
+		return fmt.Errorf("failed to write schema file: %w", err)
 	}
 
-	return os.WriteFile(queriesFile, []byte("-- Query file"), 0o644)
+	if err := os.WriteFile(queriesFile, []byte("-- Query file"), 0o644); err != nil {
+		return fmt.Errorf("failed to write queries file: %w", err)
+	}
+
+	return nil
 }

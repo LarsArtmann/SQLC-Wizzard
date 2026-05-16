@@ -54,7 +54,12 @@ func (a *RealTemplateAdapter) GenerateConfig(
 		return nil, err
 	}
 
-	return template.Generate(data)
+	cfg, genErr := template.Generate(data)
+	if genErr != nil {
+		return nil, fmt.Errorf("failed to generate config: %w", genErr)
+	}
+
+	return cfg, nil
 }
 
 // GenerateFiles generates files from template.

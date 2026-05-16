@@ -11,54 +11,6 @@ import (
 // Test cases for bidirectional conversions between old and new types
 // Run via TestDomain in domain_test.go
 
-// emitOptionsTestCase represents a test case for EmitOptions conversion.
-type emitOptionsTestCase struct {
-	description          string
-	input                generated.EmitOptions
-	expectedNullHandling domain.NullHandlingMode
-	expectedPointers     domain.StructPointerMode
-	expectedJSONStyle    domain.JSONTagStyle
-}
-
-// withColumnExplicitness sets the ColumnExplicitness style rule.
-func withColumnExplicitness(v domain.ColumnExplicitnessPolicy) func(*domain.TypeSafeSafetyRules) {
-	return func(ts *domain.TypeSafeSafetyRules) {
-		ts.StyleRules.ColumnExplicitness = v
-	}
-}
-
-// withLimitRequirement sets the LimitRequirement safety rule.
-func withLimitRequirement(v domain.LimitClauseRequirement) func(*domain.TypeSafeSafetyRules) {
-	return func(ts *domain.TypeSafeSafetyRules) {
-		ts.SafetyRules.LimitRequirement = v
-	}
-}
-
-// withMaxRowsWithoutLimit sets the MaxRowsWithoutLimit safety rule.
-func withMaxRowsWithoutLimit(v uint) func(*domain.TypeSafeSafetyRules) {
-	return func(ts *domain.TypeSafeSafetyRules) {
-		ts.SafetyRules.MaxRowsWithoutLimit = v
-	}
-}
-
-// withCustomRules sets the CustomRules.
-func withCustomRules(rules []generated.SafetyRule) func(*domain.TypeSafeSafetyRules) {
-	return func(ts *domain.TypeSafeSafetyRules) {
-		ts.CustomRules = rules
-	}
-}
-
-// runEmitOptionsTest runs conversion test with given input and expected values.
-func runEmitOptionsTest(testCase emitOptionsTestCase) {
-	It("should convert "+testCase.description+" correctly", func() {
-		typeSafe := domain.EmitOptionsToTypeSafe(testCase.input)
-
-		Expect(typeSafe.NullHandling).To(Equal(testCase.expectedNullHandling))
-		Expect(typeSafe.StructPointers).To(Equal(testCase.expectedPointers))
-		Expect(typeSafe.JSONTagStyle).To(Equal(testCase.expectedJSONStyle))
-	})
-}
-
 // baseEmitOptions creates base EmitOptions with minimal settings.
 func baseEmitOptions() generated.EmitOptions {
 	return generated.EmitOptions{
@@ -87,24 +39,6 @@ func commonEmitOptions() generated.EmitOptions {
 		EmitAllEnumValues:        true,
 		JSONTagsCaseStyle:        "camel",
 	}
-}
-
-// emitOptionsExplicitNull creates EmitOptions for explicit_null mode.
-func emitOptionsExplicitNull() generated.EmitOptions {
-	opts := baseEmitOptions()
-	opts.EmitEnumValidMethod = true
-	opts.JSONTagsCaseStyle = "pascal"
-
-	return opts
-}
-
-// emitOptionsMixed creates EmitOptions for mixed mode.
-func emitOptionsMixed() generated.EmitOptions {
-	opts := commonEmitOptions()
-	opts.EmitResultStructPointers = true
-	opts.JSONTagsCaseStyle = "kebab"
-
-	return opts
 }
 
 // emitOptionsEmptySlices creates EmitOptions for empty_slices mode.

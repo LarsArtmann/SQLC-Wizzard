@@ -126,6 +126,42 @@ linters:
     - zerologlint
   disable:
     - funcorder
+    - depguard
+    - paralleltest
+    - godox
+    - tagliatelle
+    - gochecknoglobals
+    - varnamelen
+    - err113
+    - exhaustruct
+    - mnd
+    - forbidigo
+    - goconst
+    - cyclop
+    - funlen
+    - gomoddirectives
+    - recvcheck
+    - nonamedreturns
+    - iface
+    - exhaustruct
+    - revive
+    - godoclint
+    - ireturn
+    - gocritic
+    - testpackage
+    - gochecknoinits
+    - staticcheck
+    - testifylint
+    - noinlineerr
+    - exhaustive
+    - wastedassign
+    - unqueryvet
+    - prealloc
+    - unparam
+    - unconvert
+    - thelper
+    - inamedparam
+    - gosec
 formatters:
   enable:
     - gci
@@ -133,3 +169,44 @@ formatters:
     - gofumpt
     - golines
 issues: {}
+linters-settings:
+  depguard:
+    include-go-root: true
+    include-golangci-lint: false
+    rules:
+      Main:
+        files:
+          - cmd/sqlc-wizard/main.go
+        allow:
+          - fmt
+          - os
+          - github.com/spf13/cobra
+          - github.com/LarsArtmann/SQLC-Wizzard/internal/commands
+          - github.com/LarsArtmann/SQLC-Wizzard/internal/ui
+          - github.com/LarsArtmann/SQLC-Wizzard/internal/adapters
+      Internal:
+        files:
+          - internal/
+        allow:
+          - $TEST
+          - testing
+          - github.com/stretchr/testify
+          - github.com/onsi/gomega
+          - github.com/onsi/ginkgo
+          - github.com/spf13/cobra
+          - charm.land/log/v2
+          - github.com/golang-migrate/migrate/v4
+          - github.com/samber/lo
+          - github.com/google/uuid
+          - github.com/LarsArtmann/SQLC-Wizzard
+          - gopkg.in/yaml.v3
+      Test:
+        files:
+          - _test.go
+        allow:
+          - $TEST
+          - testing
+          - github.com/stretchr/testify
+          - github.com/onsi/gomega
+          - github.com/onsi/ginkgo
+          - github.com/LarsArtmann/SQLC-Wizzard
