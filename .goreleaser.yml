@@ -147,6 +147,27 @@ docker_manifests:
       - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-amd64"
       - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-arm64"
 
+
+nfpms:
+  - id: default
+    package_name: sqlc-wizard
+    file_name_template: "{"{"} .ConventionalFileName {"}"}"
+    homepage: https://github.com/LarsArtmann/SQLC-Wizzard
+    description: "Interactive CLI wizard that generates perfect sqlc configurations"
+    license: MIT
+    maintainer: "Lars Artmann <lars@larsartmann.com>"
+    formats:
+      - deb
+      - rpm
+      - apk
+    contents:
+      - src: LICENSE
+        dst: /usr/share/doc/sqlc-wizard/LICENSE
+      - src: README.md
+        dst: /usr/share/doc/sqlc-wizard/README.md
+    deb:
+      fields:
+        Bugs: https://github.com/LarsArtmann/SQLC-Wizzard/issues
 nix:
   - name: sqlc-wizard
     repository:
@@ -155,10 +176,25 @@ nix:
     homepage: https://github.com/LarsArtmann/SQLC-Wizzard
     description: "Interactive CLI wizard that generates perfect sqlc configurations"
     license: mit
+    formatter: nixfmt
     path: pkgs/sqlc-wizard/default.nix
     install: |
       mkdir -p $out/bin
       cp -vr ./{binary} $out/bin/sqlc-wizard
+
+
+scoops:
+  - name: sqlc-wizard
+    repository:
+      owner: LarsArtmann
+      name: homebrew-tap
+    folder: Scoop
+    commit_author:
+      name: goreleaserbot
+      email: goreleaser@larsartmann.com
+    homepage: "https://github.com/LarsArtmann/SQLC-Wizzard"
+    description: "Interactive CLI wizard that generates perfect sqlc configurations"
+    license: MIT
 
 release:
   github:
