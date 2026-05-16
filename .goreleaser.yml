@@ -151,7 +151,7 @@ docker_manifests:
 nfpms:
   - id: default
     package_name: sqlc-wizard
-    file_name_template: "{"{"} .ConventionalFileName {"}"}"
+    file_name_template: "{{ .ConventionalFileName }}
     homepage: https://github.com/LarsArtmann/SQLC-Wizzard
     description: "Interactive CLI wizard that generates perfect sqlc configurations"
     license: MIT
