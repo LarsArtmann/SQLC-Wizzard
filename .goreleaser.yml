@@ -1,4 +1,4 @@
-# The GoReleaser Configuration File
+# GoReleaser Configuration
 # Documentation: https://goreleaser.com
 
 version: 2
@@ -9,12 +9,15 @@ before:
     - go generate ./...
 
 builds:
-  - env:
+  - id: sqlc-wizard
+    main: ./cmd/sqlc-wizard
+    binary: sqlc-wizard
+    env:
       - CGO_ENABLED=0
     goos:
       - linux
-      - windows
       - darwin
+      - windows
     goarch:
       - amd64
       - arm64
@@ -23,7 +26,9 @@ builds:
         goarch: "386"
       - goos: windows
         goarch: arm64
-    binary: sqlc-wizard
+    tags:
+      - netgo
+      - osusergo
     ldflags:
       - -s -w
       - -X main.Version={{.Version}}
@@ -31,20 +36,26 @@ builds:
       - -X main.BuildDate={{.Date}}
 
 archives:
-  - format: tar.gz
+  - id: default
+    format: tar.gz
     name_template: >-
-      {{ .ProjectName }}_{{ .Version }}_
-      {{- title .Os }}_{{ .Arch }}
+      {{ .ProjectName }}_
+      {{ .Version }}_
+      {{- title .Os }}_
+      {{- if eq .Arch "amd64" }}x86_64
+        {{- else if eq .Arch "386" }}i386
+        {{- else }}{{ .Arch }}{{ end }}
     format_overrides:
       - goos: windows
         format: zip
     files:
       - README.md
       - LICENSE
-      - docs/*
+      - CHANGELOG*
 
 checksum:
   name_template: "checksums.txt"
+  algorithm: sha256
 
 snapshot:
   version_template: "{{ incpatch .Version }}-next"
@@ -60,28 +71,43 @@ changelog:
       - Merge pull request
       - Merge branch
 
-# Homebrew formula
+signs:
+  - cmd: cosign
+    certificate: "${artifact}.pem"
+    args:
+      - sign-blob
+      - "--oidc-issuer=https://token.actions.githubusercontent.com"
+      - "--output-certificate=${certificate}"
+      - "--output-signature=${signature}"
+      - "${artifact}"
+    artifacts: all
+    output: true
+
+sboms:
+  - artifacts: archive
+
 brews:
   - name: sqlc-wizard
     homepage: https://github.com/LarsArtmann/SQLC-Wizzard
+    description: "Interactive CLI wizard that generates perfect sqlc configurations"
+    license: MIT
     repository:
       owner: LarsArtmann
       name: homebrew-tap
+    folder: Formula
     commit_author:
       name: goreleaserbot
-      email: goreleaser@carlosbecker.com
-    folder: Formula
+      email: goreleaser@larsartmann.com
     install: |
       bin.install "sqlc-wizard"
+    test: |
+      system "#{bin}/sqlc-wizard --version"
 
-# Docker images
 dockers:
   - image_templates:
-      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}"
-      - "ghcr.io/larsartmann/sqlc-wizard:v{{ .Major }}"
-      - "ghcr.io/larsartmann/sqlc-wizard:v{{ .Major }}.{{ .Minor }}"
-      - "ghcr.io/larsartmann/sqlc-wizard:latest"
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-amd64"
     dockerfile: Dockerfile
+    goarch: amd64
     build_flag_templates:
       - "--pull"
       - "--label=org.opencontainers.image.created={{.Date}}"
@@ -90,44 +116,79 @@ dockers:
       - "--label=org.opencontainers.image.version={{.Version}}"
       - "--label=org.opencontainers.image.source={{.GitURL}}"
       - "--platform=linux/amd64"
+  - image_templates:
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-arm64"
+    dockerfile: Dockerfile
+    goarch: arm64
+    build_flag_templates:
+      - "--pull"
+      - "--label=org.opencontainers.image.created={{.Date}}"
+      - "--label=org.opencontainers.image.title={{.ProjectName}}"
+      - "--label=org.opencontainers.image.revision={{.FullCommit}}"
+      - "--label=org.opencontainers.image.version={{.Version}}"
+      - "--label=org.opencontainers.image.source={{.GitURL}}"
+      - "--platform=linux/arm64"
 
-# GitHub release
+docker_manifests:
+  - name_template: "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}"
+    image_templates:
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-amd64"
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/larsartmann/sqlc-wizard:v{{ .Major }}"
+    image_templates:
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-amd64"
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/larsartmann/sqlc-wizard:v{{ .Major }}.{{ .Minor }}"
+    image_templates:
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-amd64"
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-arm64"
+  - name_template: "ghcr.io/larsartmann/sqlc-wizard:latest"
+    image_templates:
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-amd64"
+      - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-arm64"
+
+nix:
+  - name: sqlc-wizard
+    repository:
+      owner: LarsArtmann
+      name: nur-packages
+    homepage: https://github.com/LarsArtmann/SQLC-Wizzard
+    description: "Interactive CLI wizard that generates perfect sqlc configurations"
+    license: mit
+    path: pkgs/sqlc-wizard/default.nix
+    install: |
+      mkdir -p $out/bin
+      cp -vr ./{binary} $out/bin/sqlc-wizard
+
 release:
   github:
     owner: LarsArtmann
-    name: SQLC-Wizard
+    name: SQLC-Wizzard
   draft: false
   prerelease: auto
-  name_template: "{{.ProjectName}} v{{.Version}}"
-  header: |
-    ## SQLC-Wizard {{.Version}}
-
-    🧙‍♂️ An interactive CLI wizard that generates perfect sqlc configurations in minutes, not hours.
-
-    ### 📦 Installation
+  name_template: "SQLC-Wizard v{{.Version}}"
+  footer: |
+    ## Installation
 
     **Homebrew:**
     ```bash
+    brew tap LarsArtmann/tap
     brew install sqlc-wizard
+    ```
+
+    **Nix:**
+    ```bash
+    nix run github:LarsArtmann/nur-packages#sqlc-wizard
     ```
 
     **Go Install:**
     ```bash
-    go install github.com/LarsArtmann/SQLC-Wizzard@{{.Version}}
+    go install github.com/LarsArtmann/SQLC-Wizzard/cmd/sqlc-wizard@{{.Version}}
     ```
 
-    **Binary:**
+    **Docker:**
+    ```bash
+    docker pull ghcr.io/larsartmann/sqlc-wizard:{{.Version}}
+    ```
+
     Download the appropriate binary for your platform from the assets below.
-
-    ### 🚀 What's New
-
-    {{ .Changelog }}
-
-# Configure notification
-notification:
-  slack:
-    webhook_url: https://hooks.slack.com/...
-    channel: "#releases"
-    message: |
-      🚀 SQLC-Wizard {{.Version}} has been released!
-      Download it here: {{ .ReleaseURL }}
