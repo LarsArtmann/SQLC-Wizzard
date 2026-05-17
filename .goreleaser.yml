@@ -148,7 +148,6 @@ docker_manifests:
       - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-amd64"
       - "ghcr.io/larsartmann/sqlc-wizard:{{ .Tag }}-arm64"
 
-
 nfpms:
   - id: default
     package_name: sqlc-wizard
@@ -183,7 +182,6 @@ nix:
     install: |
       mkdir -p $out/bin
       cp -vr ./{binary} $out/bin/sqlc-wizard
-
 
 scoops:
   - name: sqlc-wizard
