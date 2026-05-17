@@ -88,7 +88,7 @@ sboms:
 
 brews:
   - name: sqlc-wizard
-    skip_upload: auto
+    skip_upload: true
     homepage: https://github.com/LarsArtmann/SQLC-Wizzard
     description: "Interactive CLI wizard that generates perfect sqlc configurations"
     license: MIT
@@ -187,7 +187,7 @@ nix:
 
 scoops:
   - name: sqlc-wizard
-    skip_upload: auto
+    skip_upload: true
     repository:
       owner: LarsArtmann
       name: homebrew-tap
