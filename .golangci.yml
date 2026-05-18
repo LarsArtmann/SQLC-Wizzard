@@ -1,212 +1,200 @@
 version: "2"
 run:
-  timeout: 5m
-  go: 1.26.1
-  build-tags:
-    - goexperiment.goroutineleakprofile
-    - goexperiment.jsonv2
-    - goexperiment.simd
-  modules-download-mode: readonly
-  allow-parallel-runners: true
-  allow-serial-runners: true
-  issues-exit-code: 1
-  tests: true
+    timeout: 5m
+    go: 1.26.2
+    build-tags:
+        - goexperiment.arenas
+        - goexperiment.goroutineleakprofile
+        - goexperiment.jsonv2
+        - goexperiment.runtimesecret
+        - goexperiment.simd
+    modules-download-mode: readonly
+    allow-parallel-runners: true
+    allow-serial-runners: true
+    issues-exit-code: 1
+    tests: true
 output:
-  formats: {}
+    formats: {}
 linters:
-  enable:
-    - arangolint
-    - asasalint
-    - asciicheck
-    - bidichk
-    - bodyclose
-    - canonicalheader
-    - containedctx
-    - contextcheck
-    - copyloopvar
-    - cyclop
-    - decorder
-    - depguard
-    - dogsled
-    - dupl
-    - dupword
-    - durationcheck
-    - embeddedstructfieldcheck
-    - err113
-    - errcheck
-    - errchkjson
-    - errname
-    - errorlint
-    - exhaustive
-    - exhaustruct
-    - exptostd
-    - fatcontext
-    - forbidigo
-    - forcetypeassert
-    - funlen
-    - ginkgolinter
-    - gocheckcompilerdirectives
-    - gochecknoglobals
-    - gochecknoinits
-    - gochecksumtype
-    - gocognit
-    - goconst
-    - gocritic
-    - gocyclo
-    - godoclint
-    - godot
-    - godox
-    - goheader
-    - gomoddirectives
-    - gomodguard
-    - goprintffuncname
-    - gosec
-    - gosmopolitan
-    - govet
-    - grouper
-    - iface
-    - importas
-    - inamedparam
-    - ineffassign
-    - interfacebloat
-    - intrange
-    - iotamixing
-    - ireturn
-    - loggercheck
-    - maintidx
-    - makezero
-    - mirror
-    - misspell
-    - mnd
-    - modernize
-    - musttag
-    - nakedret
-    - nestif
-    - nilerr
-    - nilnesserr
-    - nilnil
-    - nlreturn
-    - noctx
-    - noinlineerr
-    - nolintlint
-    - nonamedreturns
-    - nosprintfhostport
-    - paralleltest
-    - perfsprint
-    - prealloc
-    - predeclared
-    - promlinter
-    - protogetter
-    - reassign
-    - recvcheck
-    - revive
-    - rowserrcheck
-    - sloglint
-    - spancheck
-    - sqlclosecheck
-    - staticcheck
-    - tagalign
-    - tagliatelle
-    - testableexamples
-    - testifylint
-    - testpackage
-    - thelper
-    - tparallel
-    - unconvert
-    - unparam
-    - unqueryvet
-    - unused
-    - usestdlibvars
-    - usetesting
-    - varnamelen
-    - wastedassign
-    - whitespace
-    - wrapcheck
-    - wsl_v5
-    - zerologlint
-  disable:
-    - funcorder
-    - depguard
-    - paralleltest
-    - godox
-    - tagliatelle
-    - gochecknoglobals
-    - varnamelen
-    - err113
-    - exhaustruct
-    - mnd
-    - forbidigo
-    - goconst
-    - cyclop
-    - funlen
-    - gomoddirectives
-    - recvcheck
-    - nonamedreturns
-    - iface
-    - exhaustruct
-    - revive
-    - godoclint
-    - ireturn
-    - gocritic
-    - testpackage
-    - gochecknoinits
-    - staticcheck
-    - testifylint
-    - noinlineerr
-    - exhaustive
-    - wastedassign
-    - unqueryvet
-    - prealloc
-    - unparam
-    - unconvert
-    - thelper
-    - inamedparam
-    - gosec
+    enable:
+        - arangolint
+        - asasalint
+        - asciicheck
+        - bidichk
+        - bodyclose
+        - canonicalheader
+        - containedctx
+        - contextcheck
+        - copyloopvar
+        - cyclop
+        - decorder
+        - depguard
+        - dogsled
+        - dupl
+        - dupword
+        - durationcheck
+        - embeddedstructfieldcheck
+        - err113
+        - errcheck
+        - errchkjson
+        - errname
+        - errorlint
+        - exhaustive
+        - exhaustruct
+        - exptostd
+        - fatcontext
+        - forbidigo
+        - forcetypeassert
+        - funlen
+        - ginkgolinter
+        - gocheckcompilerdirectives
+        - gochecknoglobals
+        - gochecknoinits
+        - gochecksumtype
+        - gocognit
+        - goconst
+        - gocritic
+        - gocyclo
+        - godoclint
+        - godot
+        - godox
+        - goheader
+        - gomoddirectives
+        - gomodguard_v2
+        - goprintffuncname
+        - gosec
+        - gosmopolitan
+        - govet
+        - grouper
+        - iface
+        - importas
+        - inamedparam
+        - ineffassign
+        - interfacebloat
+        - intrange
+        - iotamixing
+        - ireturn
+        - loggercheck
+        - maintidx
+        - makezero
+        - mirror
+        - misspell
+        - mnd
+        - modernize
+        - musttag
+        - nakedret
+        - nestif
+        - nilerr
+        - nilnesserr
+        - nilnil
+        - nlreturn
+        - noctx
+        - noinlineerr
+        - nolintlint
+        - nonamedreturns
+        - nosprintfhostport
+        - paralleltest
+        - perfsprint
+        - prealloc
+        - predeclared
+        - promlinter
+        - protogetter
+        - reassign
+        - recvcheck
+        - revive
+        - rowserrcheck
+        - sloglint
+        - spancheck
+        - sqlclosecheck
+        - staticcheck
+        - tagalign
+        - tagliatelle
+        - testableexamples
+        - testifylint
+        - testpackage
+        - thelper
+        - tparallel
+        - unconvert
+        - unparam
+        - unqueryvet
+        - unused
+        - usestdlibvars
+        - usetesting
+        - varnamelen
+        - wastedassign
+        - whitespace
+        - wrapcheck
+        - wsl_v5
+        - zerologlint
+    settings:
+        depguard:
+            include-go-root: true
+            include-golangci-lint: false
+            rules:
+                Internal:
+                    allow:
+                        - $TEST
+                        - testing
+                        - github.com/stretchr/testify
+                        - github.com/onsi/gomega
+                        - github.com/onsi/ginkgo
+                        - github.com/spf13/cobra
+                        - charm.land/log/v2
+                        - github.com/golang-migrate/migrate/v4
+                        - github.com/samber/lo
+                        - github.com/google/uuid
+                        - github.com/LarsArtmann/SQLC-Wizzard
+                        - gopkg.in/yaml.v3
+                    files:
+                        - internal/
+                Main:
+                    allow:
+                        - fmt
+                        - os
+                        - github.com/spf13/cobra
+                        - github.com/LarsArtmann/SQLC-Wizzard/internal/commands
+                        - github.com/LarsArtmann/SQLC-Wizzard/internal/ui
+                        - github.com/LarsArtmann/SQLC-Wizzard/internal/adapters
+                    files:
+                        - cmd/sqlc-wizard/main.go
+                Test:
+                    allow:
+                        - $TEST
+                        - testing
+                        - github.com/stretchr/testify
+                        - github.com/onsi/gomega
+                        - github.com/onsi/ginkgo
+                        - github.com/LarsArtmann/SQLC-Wizzard
+                    files:
+                        - _test.go
+        exhaustruct:
+            exclude:
+                - os/exec.Cmd
+        gocritic:
+            disabled-checks:
+                - dupImport
+                - ifElseChain
+                - octalLiteral
+                - whyNoLint
+        ireturn:
+            allow:
+                - error
+                - empty
+                - anon
+                - stdlib
+                - generic
+    exclusions:
+        generated: lax
+        paths:
+            - examples/hobby-project/internal/db/
 formatters:
-  enable:
-    - gci
-    - goimports
-    - gofumpt
-    - golines
+    enable:
+        - gci
+        - goimports
+        - gofumpt
+        - golines
+    exclusions:
+        generated: lax
+        paths:
+            - examples/hobby-project/internal/db/
 issues: {}
-linters-settings:
-  depguard:
-    include-go-root: true
-    include-golangci-lint: false
-    rules:
-      Main:
-        files:
-          - cmd/sqlc-wizard/main.go
-        allow:
-          - fmt
-          - os
-          - github.com/spf13/cobra
-          - github.com/LarsArtmann/SQLC-Wizzard/internal/commands
-          - github.com/LarsArtmann/SQLC-Wizzard/internal/ui
-          - github.com/LarsArtmann/SQLC-Wizzard/internal/adapters
-      Internal:
-        files:
-          - internal/
-        allow:
-          - $TEST
-          - testing
-          - github.com/stretchr/testify
-          - github.com/onsi/gomega
-          - github.com/onsi/ginkgo
-          - github.com/spf13/cobra
-          - charm.land/log/v2
-          - github.com/golang-migrate/migrate/v4
-          - github.com/samber/lo
-          - github.com/google/uuid
-          - github.com/LarsArtmann/SQLC-Wizzard
-          - gopkg.in/yaml.v3
-      Test:
-        files:
-          - _test.go
-        allow:
-          - $TEST
-          - testing
-          - github.com/stretchr/testify
-          - github.com/onsi/gomega
-          - github.com/onsi/ginkgo
-          - github.com/LarsArtmann/SQLC-Wizzard
