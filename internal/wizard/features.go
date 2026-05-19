@@ -18,7 +18,8 @@ func runConfirmationForm(themeFunc huh.ThemeFunc, title, description string, res
 		),
 	).WithTheme(themeFunc)
 
-	if err := form.Run(); err != nil {
+	err := form.Run()
+	if err != nil {
 		return fmt.Errorf("failed to run confirmation form: %w", err)
 	}
 

@@ -15,7 +15,8 @@ import (
 func executeCommand(cmd *cobra.Command, args []string) error {
 	cmd.SetArgs(args)
 
-	if err := cmd.Execute(); err != nil {
+	err := cmd.Execute()
+	if err != nil {
 		return fmt.Errorf("failed to execute command: %w", err)
 	}
 
@@ -47,7 +48,8 @@ func executeCommandWithHelp(cmd *cobra.Command) error {
 	cmd.SetArgs(args)
 	cmd.SetOut(&output)
 
-	if err := cmd.Execute(); err != nil {
+	err := cmd.Execute()
+	if err != nil {
 		return fmt.Errorf("failed to execute help command: %w", err)
 	}
 

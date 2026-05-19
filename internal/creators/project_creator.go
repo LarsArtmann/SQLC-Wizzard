@@ -149,7 +149,8 @@ func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateCon
 		return fmt.Errorf("failed to convert config to YAML: %w", err)
 	}
 
-	if writeErr := pc.fs.WriteFile(ctx, "sqlc.yaml", yamlContent, 0o644); writeErr != nil {
+	writeErr := pc.fs.WriteFile(ctx, "sqlc.yaml", yamlContent, 0o644)
+	if writeErr != nil {
 		return fmt.Errorf("failed to write sqlc.yaml: %w", writeErr)
 	}
 
@@ -168,12 +169,13 @@ func (pc *ProjectCreator) generateDatabaseSchema(ctx context.Context, cfg *Creat
 	}
 	schemaContent := pc.buildSchemaSQL(templateData)
 
-	if writeErr := pc.fs.WriteFile(
+	writeErr := pc.fs.WriteFile(
 		ctx,
 		"schema.sql",
 		[]byte(schemaContent),
 		0o644,
-	); writeErr != nil {
+	)
+	if writeErr != nil {
 		return fmt.Errorf("failed to write schema.sql: %w", writeErr)
 	}
 
