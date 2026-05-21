@@ -144,7 +144,8 @@ var _ = Describe("CreateProjectTypeStep", func() {
 })
 
 var _ = Describe("CreateDatabaseStep", func() {
-	DescribeTable("should create valid step for each database type",
+	DescribeTable(
+		"should create valid step for each database type",
 		func(engine generated.DatabaseType) {
 			data := &generated.TemplateData{
 				Database: generated.DatabaseConfig{
@@ -194,7 +195,8 @@ var _ = Describe("CreatePackagePathStep", func() {
 })
 
 var _ = Describe("CreateOutputDirStep", func() {
-	DescribeTable("should create a valid step",
+	DescribeTable(
+		"should create a valid step",
 		func(baseDir string) {
 			step := CreateOutputDirStep(&generated.TemplateData{
 				Output: generated.OutputConfig{BaseDir: baseDir},
@@ -214,7 +216,8 @@ var _ = Describe("CreateOutputDirStep", func() {
 })
 
 var _ = Describe("CreateDatabaseURLStep", func() {
-	DescribeTable("should create valid step with database-specific placeholders",
+	DescribeTable(
+		"should create valid step with database-specific placeholders",
 		func(engine generated.DatabaseType, url string) {
 			data := &generated.TemplateData{
 				Database: generated.DatabaseConfig{
@@ -261,7 +264,8 @@ var _ = Describe("CreateFeatureSteps", func() {
 	})
 
 	Context("with all features", func() {
-		DescribeTable("should create valid steps regardless of feature state",
+		DescribeTable(
+			"should create valid steps regardless of feature state",
 			func(enabled bool) {
 				data := createTemplateDataWithAllFeatures(enabled)
 

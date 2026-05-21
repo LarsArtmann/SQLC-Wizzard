@@ -310,7 +310,8 @@ func (w *Wizard) showSummary(data *generated.TemplateData) {
 
 	ui.ShowSection("🎉 Configuration Complete")
 
-	summary := fmt.Sprintf(`
+	summary := fmt.Sprintf(
+		`
 Project: %s
 Package: %s
 Type: %s

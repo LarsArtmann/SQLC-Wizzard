@@ -48,7 +48,8 @@ var _ = Describe("NullHandlingMode", func() {
 			methodCaller  func(domain.NullHandlingMode) bool
 		}
 
-		DescribeTable("should return true only for specific mode",
+		DescribeTable(
+			"should return true only for specific mode",
 			func(tc modeMethodTest) {
 				Expect(tc.methodCaller(tc.assertTrueFor)).To(BeTrue())
 

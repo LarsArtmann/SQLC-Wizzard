@@ -202,7 +202,8 @@ func TestEnterpriseTemplate_DefaultData(t *testing.T) {
 }
 
 func TestEnterpriseTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasicWithDefaults(t,
+	internal_testing.AssertTemplateGenerateBasicWithDefaults(
+		t,
 		&templates.EnterpriseTemplate{},
 		generated.ProjectTypeEnterprise,
 		"enterprise-service",
@@ -279,7 +280,8 @@ func TestAnalyticsTemplate_DefaultData(t *testing.T) {
 }
 
 func TestAnalyticsTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasicWithConfigs(t,
+	internal_testing.AssertTemplateGenerateBasicWithConfigs(
+		t,
 		&templates.AnalyticsTemplate{},
 		generated.ProjectType("analytics"),
 		"analytics-service",
@@ -315,7 +317,8 @@ func TestTestingTemplate_DefaultData(t *testing.T) {
 }
 
 func TestTestingTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasicWithConfigs(t,
+	internal_testing.AssertTemplateGenerateBasicWithConfigs(
+		t,
 		&templates.TestingTemplate{},
 		generated.ProjectType("testing"),
 		"test-project",
@@ -351,7 +354,8 @@ func TestMultiTenantTemplate_DefaultData(t *testing.T) {
 }
 
 func TestMultiTenantTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasicWithDefaults(t,
+	internal_testing.AssertTemplateGenerateBasicWithDefaults(
+		t,
 		&templates.MultiTenantTemplate{},
 		generated.ProjectTypeMultiTenant,
 		"multi-tenant-app",
@@ -382,7 +386,8 @@ func TestLibraryTemplate_DefaultData(t *testing.T) {
 }
 
 func TestLibraryTemplate_Generate_Basic(t *testing.T) {
-	internal_testing.AssertTemplateGenerateBasic(t,
+	internal_testing.AssertTemplateGenerateBasic(
+		t,
 		internal_testing.NewTemplateTestHelper(
 			templates.NewLibraryTemplate(),
 			internal_testing.WithProjectType(generated.ProjectTypeLibrary),

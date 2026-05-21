@@ -97,7 +97,8 @@ var _ = Describe("Validator", func() {
 				addMessage2 string
 			}
 
-			DescribeTable("should add items correctly",
+			DescribeTable(
+				"should add items correctly",
 				func(tc testCase) {
 					result := &ValidationResult{}
 

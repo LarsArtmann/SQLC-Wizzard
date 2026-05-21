@@ -124,6 +124,7 @@ func (s ProjectTypeTestSuite) GetTypeName() string { return "ProjectType" }
 type DatabaseTypeTestSuite struct{}
 
 func (s DatabaseTypeTestSuite) GetValidValues() []generated.DatabaseType { return ValidDatabaseTypes }
+
 func (s DatabaseTypeTestSuite) GetInvalidValues() []generated.DatabaseType {
 	return []generated.DatabaseType{generated.DatabaseType("invalid-db")}
 }

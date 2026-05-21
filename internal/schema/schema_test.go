@@ -394,7 +394,8 @@ var _ = Describe("Schema", func() {
 			Expect(col.Type).To(Equal(schema.ColumnTypeString))
 		})
 
-		DescribeTable("should return false for GetColumn",
+		DescribeTable(
+			"should return false for GetColumn",
 			func(tableName, columnName string) {
 				col, found := s.GetColumn(tableName, columnName)
 				Expect(found).To(BeFalse())

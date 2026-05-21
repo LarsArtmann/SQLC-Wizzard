@@ -183,7 +183,8 @@ func (s *FeaturesStep) runFeatureConfigForm(
 	// Build form fields
 	var formFields []huh.Field
 	for i, config := range configs {
-		formFields = append(formFields,
+		formFields = append(
+			formFields,
 			huh.NewConfirm().
 				Title(config.GetTitle()).
 				Description(config.GetDescription()).

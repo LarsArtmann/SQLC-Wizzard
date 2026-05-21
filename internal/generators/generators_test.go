@@ -125,7 +125,8 @@ var _ = Describe("Generator Schema Generation", func() {
 		}
 	})
 
-	DescribeTable("Schema generation for different databases",
+	DescribeTable(
+		"Schema generation for different databases",
 		func(engine generated.DatabaseType, expectedEngine string) {
 			templateData := createTemplateData(engine, tempDir)
 
@@ -167,7 +168,8 @@ var _ = Describe("Generator Query Generation", func() {
 		}
 	})
 
-	DescribeTable("Query generation for different databases",
+	DescribeTable(
+		"Query generation for different databases",
 		func(engine generated.DatabaseType) {
 			templateData := createTemplateData(engine, tempDir)
 
