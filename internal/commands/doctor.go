@@ -180,7 +180,7 @@ func runDoctor(cmd *cobra.Command, args []string) error {
 		)
 
 		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "health_check_failed").
-			WithDescription("environment issues detected")
+			WithDescription(fmt.Sprintf("environment issues detected: failed=%d, warned=%d", failed, warned))
 	}
 }
 

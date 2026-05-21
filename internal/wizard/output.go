@@ -50,7 +50,8 @@ func (s *OutputStep) Execute(data *generated.TemplateData) error {
 
 	err := form.Run()
 	if err != nil {
-		return fmt.Errorf("output configuration failed: %w", err)
+		return fmt.Errorf("output configuration failed (baseDir=%s, queriesDir=%s, schemaDir=%s): %w",
+			baseDir, queriesDir, schemaDir, err)
 	}
 
 	// Set defaults if empty

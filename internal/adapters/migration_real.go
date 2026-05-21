@@ -117,7 +117,7 @@ func (r *RealMigrationAdapter) Rollback(
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
 
-		return fmt.Errorf("failed to create migration instance: %w", err)
+		return fmt.Errorf("failed to create migration instance for source %s (steps=%d): %w", source, steps, err)
 	}
 
 	defer closeMigration(m)
@@ -238,7 +238,7 @@ func (r *RealMigrationAdapter) CreateMigration(
 	if err != nil {
 		log.Error("Failed to create migrations directory", "directory", directory, "error", err)
 
-		return "", fmt.Errorf("failed to create migrations directory: %w", err)
+		return "", fmt.Errorf("failed to create migrations directory %s: %w", directory, err)
 	}
 
 	// Generate timestamp for migration file
@@ -315,11 +315,12 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(
 	}
 
 	// Update database configuration based on target database type
-	err := r.updateDatabaseConfig(&newConfig, targetDatabase)
+	err := r.updateDatabaseConfig(&newConfig, targetDatabase, targetVersion)
 	if err != nil {
 		return nil, fmt.Errorf(
-			"failed to update database config for target database %s: %w",
+			"failed to update database config for target database %s (version=%s): %w",
 			targetDatabase,
+			targetVersion,
 			err,
 		)
 	}
@@ -333,7 +334,9 @@ func (r *RealMigrationAdapter) MigrateSQLCConfig(
 func (r *RealMigrationAdapter) updateDatabaseConfig(
 	cfg *config.SqlcConfig,
 	targetDatabase generated.DatabaseType,
+	targetVersion string,
 ) error {
+	_ = targetVersion // Currently unused but may be used for future version-specific configs
 	for i := range cfg.SQL {
 		sqlConfig := &cfg.SQL[i]
 		if sqlConfig.Database == nil {

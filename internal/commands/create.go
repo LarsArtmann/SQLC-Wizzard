@@ -85,20 +85,21 @@ Examples:
 func runCreate(projectName string, opts *CreateOptions) error {
 	// Validate project name
 	if projectName == "" {
-		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "project name cannot be empty")
+		return apperrors.NewError(apperrors.ErrorCodeInternalServer, "project name cannot be empty").
+			WithDescription("projectName is empty")
 	}
 
 	// Create output directory if needed
 	outputPath := filepath.Join(opts.OutputDir, projectName)
 	if err := os.MkdirAll(outputPath, adapters.DefaultDirPermissions); err != nil {
-		return fmt.Errorf("failed to create output directory: %w", err)
+		return fmt.Errorf("failed to create output directory %s: %w", outputPath, err)
 	}
 
 	// Change to project directory for relative paths
 	originalDir, _ := os.Getwd()
 
 	if err := os.Chdir(outputPath); err != nil {
-		return fmt.Errorf("failed to change to project directory: %w", err)
+		return fmt.Errorf("failed to change to project directory %s: %w", outputPath, err)
 	}
 
 	defer func() {
@@ -111,19 +112,19 @@ func runCreate(projectName string, opts *CreateOptions) error {
 			return apperrors.NewError(
 				apperrors.ErrorCodeInternalServer,
 				"directory is not empty. Use --force to overwrite",
-			)
+			).WithDescription(fmt.Sprintf("outputPath=%s", outputPath))
 		}
 	}
 
 	// Validate project type and database types
 	projectType, err := templates.NewProjectType(opts.ProjectType)
 	if err != nil {
-		return fmt.Errorf("invalid project type: %w", err)
+		return fmt.Errorf("invalid project type %q: %w", opts.ProjectType, err)
 	}
 
 	databaseType, err := templates.NewDatabaseType(opts.Database)
 	if err != nil {
-		return fmt.Errorf("invalid database type: %w", err)
+		return fmt.Errorf("invalid database type %q: %w", opts.Database, err)
 	}
 
 	// Create template data with smart defaults
@@ -132,13 +133,13 @@ func runCreate(projectName string, opts *CreateOptions) error {
 	// Get the appropriate template
 	template, err := templates.GetTemplate(projectType)
 	if err != nil {
-		return fmt.Errorf("failed to get template: %w", err)
+		return fmt.Errorf("failed to get template %q: %w", projectType, err)
 	}
 
 	// Generate SQLC configuration
 	config, err := template.Generate(templateData)
 	if err != nil {
-		return fmt.Errorf("failed to generate configuration: %w", err)
+		return fmt.Errorf("failed to generate configuration for project %q: %w", projectName, err)
 	}
 
 	// Create project creator with real adapters
@@ -159,7 +160,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 
 	// Create the complete project
 	if err := creator.CreateProject(context.Background(), createConfig); err != nil {
-		return fmt.Errorf("failed to create project: %w", err)
+		return fmt.Errorf("failed to create project %q: %w", projectName, err)
 	}
 
 	// Show success message with next steps

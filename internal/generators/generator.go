@@ -98,7 +98,8 @@ func (g *Generator) generateFileWithTemplate(
 
 		templateContent = getSchemaTemplate
 	default:
-		return fmt.Errorf("unsupported template type: %s", templateType)
+		return fmt.Errorf("unsupported template type %q (dirKey=%s, defaultDir=%s, filename=%s)",
+			templateType, dirKey, defaultDir, filename)
 	}
 
 	// Make it absolute path if relative
@@ -107,23 +108,23 @@ func (g *Generator) generateFileWithTemplate(
 	}
 
 	// Ensure directory exists
-	err := os.MkdirAll(dir, 0o755)
+	err := os.MkdirAll(dir, 0o750)
 	if err != nil {
-		return fmt.Errorf("failed to create %s directory: %w", templateType, err)
+		return fmt.Errorf("failed to create %s directory (dir=%s): %w", templateType, dir, err)
 	}
 
 	// Get template content based on database type
 	content := templateContent(data.Database.Engine)
 	if content == "" {
-		return fmt.Errorf("no %s template for database: %s", templateType, data.Database.Engine)
+		return fmt.Errorf("no %s template for database %s (engine=%s)", templateType, dir, data.Database.Engine)
 	}
 
 	// Write to output
 	outputPath := filepath.Join(dir, filename)
 
-	err = os.WriteFile(outputPath, []byte(content), 0o644)
+	err = os.WriteFile(outputPath, []byte(content), 0o600)
 	if err != nil {
-		return fmt.Errorf("failed to write %s file: %w", templateType, err)
+		return fmt.Errorf("failed to write %s file to %s: %w", templateType, outputPath, err)
 	}
 
 	return nil
