@@ -580,11 +580,13 @@ func (t *BaseTemplate) GenerateWithDefaults(
 	cfg, err := builder.Build()
 	if err != nil {
 		return nil, fmt.Errorf(
-			"config builder failed for project %q (package=%s, path=%s, baseDir=%s, strict=%v): %w",
+			"config builder failed for project %q (package=%s, path=%s, baseDir=%s, queriesDir=%s, schemaDir=%s, strict=%v): %w",
 			projectName,
 			packageName,
 			packagePath,
 			baseDir,
+			queriesDir,
+			schemaDir,
 			strict,
 			err,
 		)

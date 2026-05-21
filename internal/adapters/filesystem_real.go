@@ -144,7 +144,7 @@ func (a *RealFileSystemAdapter) copyFile(
 	//#nosec G304 -- src is validated by caller
 	data, err := os.ReadFile(src)
 	if err != nil {
-		return fmt.Errorf("failed to read file %s: %w", src, err)
+		return fmt.Errorf("failed to read file %s (copying to %s): %w", src, dst, err)
 	}
 
 	return a.WriteFile(ctx, dst, data, info.Mode())

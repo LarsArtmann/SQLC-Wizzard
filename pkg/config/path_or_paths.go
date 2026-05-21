@@ -72,7 +72,8 @@ func (p *PathOrPaths) UnmarshalYAML(value *yaml.Node) error {
 
 	return apperrors.Newf(
 		apperrors.ErrorCodeInvalidValue,
-		"path_or_paths: cannot be decoded as string or array of strings, got: %v",
+		"path_or_paths: cannot decode value as string or []string (singlePath=%q, kind=%v)",
+		singlePath,
 		value.Kind,
 	)
 }

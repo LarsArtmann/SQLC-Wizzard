@@ -6,12 +6,9 @@ import (
 )
 
 // Wrap wraps an existing error with additional context
-// TODO: Add validation for nil error handling
-// TODO: Add automatic component detection
-// TODO: Add context preservation.
 func Wrap(original error, code ErrorCode, component string) *Error {
 	if original == nil {
-		return NewError(ErrorCodeInternalServer, "Cannot wrap nil error")
+		return NewError(code, fmt.Sprintf("cannot wrap nil error (code=%s, component=%s)", code, component))
 	}
 
 	// TODO: Add validation for component
@@ -83,8 +80,6 @@ func CombineErrors(errs ...error) *MultiError {
 // TODO: Add validation constructors
 
 // NewInternal creates an internal server error with context
-// TODO: Add automatic component detection from call stack
-// TODO: Add operation validation.
 func NewInternal(component, operation string, cause error) *Error {
 	message := fmt.Sprintf("Internal error in %s during %s", component, operation)
 
