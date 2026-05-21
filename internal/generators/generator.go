@@ -116,7 +116,12 @@ func (g *Generator) generateFileWithTemplate(
 	// Get template content based on database type
 	content := templateContent(data.Database.Engine)
 	if content == "" {
-		return fmt.Errorf("no %s template for database %s (engine=%s)", templateType, dir, data.Database.Engine)
+		return fmt.Errorf(
+			"no %s template for database %s (engine=%s)",
+			templateType,
+			dir,
+			data.Database.Engine,
+		)
 	}
 
 	// Write to output

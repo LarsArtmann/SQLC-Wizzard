@@ -112,7 +112,7 @@ func runCreate(projectName string, opts *CreateOptions) error {
 			return apperrors.NewError(
 				apperrors.ErrorCodeInternalServer,
 				"directory is not empty. Use --force to overwrite",
-			).WithDescription(fmt.Sprintf("outputPath=%s", outputPath))
+			).WithDescription("outputPath=" + outputPath)
 		}
 	}
 

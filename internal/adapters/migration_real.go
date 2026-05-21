@@ -117,7 +117,12 @@ func (r *RealMigrationAdapter) Rollback(
 	if err != nil {
 		log.Error("Failed to create migration instance", "error", err)
 
-		return fmt.Errorf("failed to create migration instance for source %s (steps=%d): %w", source, steps, err)
+		return fmt.Errorf(
+			"failed to create migration instance for source %s (steps=%d): %w",
+			source,
+			steps,
+			err,
+		)
 	}
 
 	defer closeMigration(m)
@@ -337,6 +342,7 @@ func (r *RealMigrationAdapter) updateDatabaseConfig(
 	targetVersion string,
 ) error {
 	_ = targetVersion // Currently unused but may be used for future version-specific configs
+
 	for i := range cfg.SQL {
 		sqlConfig := &cfg.SQL[i]
 		if sqlConfig.Database == nil {
