@@ -60,3 +60,5 @@ node_modules/
 /report/jscpd-report.json
 # Build artifacts
 /SQLC-Wizzard
+# Nix build output
+/result
