@@ -5,7 +5,7 @@ package generated
 
 import "time"
 
-// ProjectType represents the type of project template
+// ProjectType represents the type of project template.
 type ProjectType string
 
 const (
@@ -20,7 +20,7 @@ const (
 )
 
 // IsValid returns true if ProjectType is valid
-// This prevents invalid states at runtime
+// This prevents invalid states at runtime.
 func (p ProjectType) IsValid() bool {
 	switch p {
 	case ProjectTypeHobby, ProjectTypeMicroservice, ProjectTypeEnterprise,
@@ -32,7 +32,7 @@ func (p ProjectType) IsValid() bool {
 	}
 }
 
-// DatabaseType represents the supported database engines
+// DatabaseType represents the supported database engines.
 type DatabaseType string
 
 const (
@@ -42,7 +42,7 @@ const (
 )
 
 // IsValid returns true if DatabaseType is valid
-// This prevents invalid states at runtime
+// This prevents invalid states at runtime.
 func (d DatabaseType) IsValid() bool {
 	switch d {
 	case DatabaseTypePostgreSQL, DatabaseTypeMySQL, DatabaseTypeSQLite:
@@ -53,7 +53,7 @@ func (d DatabaseType) IsValid() bool {
 }
 
 // PackageConfig represents complete package configuration
-// TypeSpec: model PackageConfig { ... }
+// TypeSpec: model PackageConfig { ... }.
 type PackageConfig struct {
 	Name      string `json:"name"`
 	Path      string `json:"path"`
@@ -61,7 +61,7 @@ type PackageConfig struct {
 }
 
 // DatabaseConfig represents database-specific configuration
-// TypeSpec: model DatabaseConfig { ... }
+// TypeSpec: model DatabaseConfig { ... }.
 type DatabaseConfig struct {
 	Engine      DatabaseType `json:"engine"`
 	URL         string       `json:"url,omitempty"`
@@ -72,7 +72,7 @@ type DatabaseConfig struct {
 	UseFullText bool         `json:"use_full_text"`
 }
 
-// OutputConfig represents output directory configuration
+// OutputConfig represents output directory configuration.
 type OutputConfig struct {
 	BaseDir    string `json:"base_dir"`
 	QueriesDir string `json:"queries_dir"`
@@ -80,7 +80,7 @@ type OutputConfig struct {
 }
 
 // ValidationConfig represents validation settings
-// TypeSpec: model ValidationConfig { ... }
+// TypeSpec: model ValidationConfig { ... }.
 type ValidationConfig struct {
 	StrictFunctions bool        `json:"strict_functions"`
 	StrictOrderBy   bool        `json:"strict_order_by"`
@@ -88,7 +88,7 @@ type ValidationConfig struct {
 	SafetyRules     SafetyRules `json:"safety_rules"`
 }
 
-// EmitOptions defines SQL code generation options
+// EmitOptions defines SQL code generation options.
 type EmitOptions struct {
 	EmitJSONTags             bool   `json:"emit_json_tags"`
 	EmitPreparedQueries      bool   `json:"emit_prepared_queries"`
@@ -102,7 +102,7 @@ type EmitOptions struct {
 }
 
 // SafetyRule represents a CEL-based validation rule
-// TypeSpec: model SafetyRule { ... }
+// TypeSpec: model SafetyRule { ... }.
 type SafetyRule struct {
 	Name    string `json:"name"`
 	Rule    string `json:"rule"`
@@ -110,7 +110,7 @@ type SafetyRule struct {
 }
 
 // SafetyRules represents validation rules configuration
-// TypeSpec: model SafetyRules { ... }
+// TypeSpec: model SafetyRules { ... }.
 type SafetyRules struct {
 	NoSelectStar bool         `json:"no_select_star"`
 	RequireWhere bool         `json:"require_where"`
@@ -124,14 +124,14 @@ type SafetyRules struct {
 // This eliminates the split brain and provides a single source of truth for rule transformation
 
 // RuleConfig represents a validation rule configuration
-// TypeSpec: model RuleConfig { ... }
+// TypeSpec: model RuleConfig { ... }.
 type RuleConfig struct {
 	Name    string `json:"name"`
 	Rule    string `json:"rule"`
 	Message string `json:"message"`
 }
 
-// DefaultEmitOptions returns safe defaults for code generation
+// DefaultEmitOptions returns safe defaults for code generation.
 func DefaultEmitOptions() EmitOptions {
 	return EmitOptions{
 		EmitJSONTags:             true,
@@ -146,7 +146,7 @@ func DefaultEmitOptions() EmitOptions {
 	}
 }
 
-// DefaultSafetyRules returns safe defaults for query validation
+// DefaultSafetyRules returns safe defaults for query validation.
 func DefaultSafetyRules() SafetyRules {
 	return SafetyRules{
 		NoSelectStar: true,
@@ -158,7 +158,7 @@ func DefaultSafetyRules() SafetyRules {
 	}
 }
 
-// DefaultTemplateData returns a TemplateData struct with default values
+// DefaultTemplateData returns a TemplateData struct with default values.
 func DefaultTemplateData() TemplateData {
 	return TemplateData{
 		Package: PackageConfig{
@@ -183,7 +183,7 @@ func DefaultTemplateData() TemplateData {
 	}
 }
 
-// TemplateData represents the complete data structure for template generation
+// TemplateData represents the complete data structure for template generation.
 type TemplateData struct {
 	ProjectName string      `json:"project_name"`
 	ProjectType ProjectType `json:"project_type"`
@@ -194,7 +194,7 @@ type TemplateData struct {
 	Validation ValidationConfig `json:"validation"`
 }
 
-// CreateProjectCommand represents a command to create a new project
+// CreateProjectCommand represents a command to create a new project.
 type CreateProjectCommand struct {
 	Name        string       `json:"name"`
 	ProjectType ProjectType  `json:"project_type"`
@@ -202,7 +202,7 @@ type CreateProjectCommand struct {
 	OutputDir   string       `json:"output_dir"`
 }
 
-// ProjectCreated represents a domain event when a project is created
+// ProjectCreated represents a domain event when a project is created.
 type ProjectCreated struct {
 	ID          string       `json:"id"`
 	Name        string       `json:"name"`
@@ -211,20 +211,20 @@ type ProjectCreated struct {
 	CreatedAt   time.Time    `json:"created_at"`
 }
 
-// ValidationResult represents the result of validation
+// ValidationResult represents the result of validation.
 type ValidationResult struct {
 	IsValid  bool     `json:"is_valid"`
 	Errors   []string `json:"errors"`
 	Warnings []string `json:"warnings"`
 }
 
-// GenerateFilesCommand represents a command to generate files
+// GenerateFilesCommand represents a command to generate files.
 type GenerateFilesCommand struct {
 	TemplateData TemplateData `json:"template_data"`
 	Force        bool         `json:"force"`
 }
 
-// FilesGenerated represents a domain event when files are generated
+// FilesGenerated represents a domain event when files are generated.
 type FilesGenerated struct {
 	TemplateData TemplateData `json:"template_data"`
 	OutputFiles  []string     `json:"output_files"`
