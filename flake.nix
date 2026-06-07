@@ -93,7 +93,7 @@
                 homepage = "https://github.com/LarsArtmann/SQLC-Wizzard";
                 license = licenses.mit;
                 mainProgram = "sqlc-wizard";
-                maintainers = [ ];
+                maintainers = [ maintainers.larsartmann ];;
                 platforms = platforms.unix;
               };
             };
@@ -112,7 +112,6 @@
                   gopls
                   golangci-lint
                   goreleaser
-                  just
                   bun
                   typescript
                   go-arch-lint
@@ -135,8 +134,7 @@
                 go
                 golangci-lint
               ];
-            };
-          };
+            };          };
 
           apps.default = {
             type = "app";
@@ -162,7 +160,7 @@
                       ./generated
                     ];
                   };
-                  nativeBuildInputs = [ pkgs.go ];
+                  nativeBuildInputs = [ pkgs.go_1_26 ];
                 }
                 ''
                   cd $src
@@ -182,7 +180,7 @@
                       ./generated
                     ];
                   };
-                  nativeBuildInputs = [ pkgs.go ];
+                  nativeBuildInputs = [ pkgs.go_1_26 ];
                 }
                 ''
                   cd $src
@@ -192,10 +190,16 @@
           };
 
           treefmt.config = {
-            projectRootFile = "flake.nix";
-            programs.nixfmt.enable = true;
-            programs.gofmt.enable = true;
-            programs.gofumpt.enable = true;
+            projectRootFile = "go.mod";
+            programs = {
+              nixfmt.enable = true;
+              gofmt.enable = true;
+              gofumpt.enable = true;
+              goimports.enable = true;
+            };
+
+          checks.format = config.treefmt.build.check self;
+          checks.build = config.packages.default;
           };
         };
     };
