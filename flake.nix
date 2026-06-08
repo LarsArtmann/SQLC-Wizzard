@@ -142,6 +142,7 @@
           };
 
           checks = {
+            format = config.treefmt.build.check self;
             build = config.packages.default;
 
             test = sqlc-wizard { withTests = true; };
@@ -197,9 +198,6 @@
               gofumpt.enable = true;
               goimports.enable = true;
             };
-
-          checks.format = config.treefmt.build.check self;
-          checks.build = config.packages.default;
           };
         };
     };
