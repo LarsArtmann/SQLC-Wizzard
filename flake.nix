@@ -200,5 +200,10 @@
             };
           };
         };
+
+      flake.overlays.default = final: _prev: {
+        SQLC-Wizzard = self.packages.${final.stdenv.system}.default;
+      };
+
     };
 }
