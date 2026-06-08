@@ -37,6 +37,7 @@
           buildDate = self.lastModifiedDate or "1970-01-01T00:00:00Z";
 
           vendorHash = "sha256-8YQp5yy3Xb/7TOd2klsOAeml8VNA4rCxjJSRAa/VYVY=";
+          proxyVendor = true;
 
           ldflags = [
             "-s"
