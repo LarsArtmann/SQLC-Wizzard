@@ -135,7 +135,8 @@
                 go
                 golangci-lint
               ];
-            };          };
+            };
+          };
 
           apps.default = {
             type = "app";
