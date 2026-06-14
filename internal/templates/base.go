@@ -60,161 +60,9 @@
 package templates
 
 import (
-	"fmt"
-
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
-	"github.com/LarsArtmann/SQLC-Wizzard/internal/validation"
 	"github.com/LarsArtmann/SQLC-Wizzard/pkg/config"
-	"github.com/samber/lo"
 )
-
-// TransformSafetyRulesToConfig converts generated safety rules to config rule configs.
-// This centralized function eliminates duplicated rule transformation code across templates.
-func TransformSafetyRulesToConfig(safetyRules *generated.SafetyRules) []config.RuleConfig {
-	transformer := validation.NewRuleTransformer()
-	rules := transformer.TransformSafetyRules(safetyRules)
-
-	return lo.Map(rules, func(r generated.RuleConfig, _ int) config.RuleConfig {
-		return config.RuleConfig{
-			Name:    r.Name,
-			Rule:    r.Rule,
-			Message: r.Message,
-		}
-	})
-}
-
-// ConfigBuilder helps construct sqlc configurations with common patterns.
-// This eliminates duplication across template implementations.
-type ConfigBuilder struct {
-	// Data holds the template configuration data.
-	Data generated.TemplateData
-	// DefaultName is used when ProjectName is empty.
-	DefaultName string
-	// DefaultDatabaseURL is used when Database.URL is empty.
-	DefaultDatabaseURL string
-	// Strict controls strict mode settings.
-	Strict bool
-}
-
-// BuildOptions holds all configuration options for BuildDefaultData.
-// This reduces the function signature from 21 parameters to a single struct,
-// making it easier to extend and maintain.
-type BuildOptions struct {
-	// Required fields
-	ProjectType   string
-	DbEngine      string
-	DatabaseURL   string
-	PackagePath   string
-	BaseOutputDir string
-
-	// Database features - all default to true
-	UseManaged  bool
-	UseUUIDs    bool
-	UseJSON     bool
-	UseArrays   bool
-	UseFullText bool
-
-	// Emit options
-	EmitJSONTags             bool
-	EmitPreparedQueries      bool
-	EmitInterface            bool
-	EmitEmptySlices          bool
-	EmitResultStructPointers bool
-	EmitParamsStructPointers bool
-	EmitEnumValidMethod      bool
-	EmitAllEnumValues        bool
-	JSONTagsCaseStyle        string
-
-	// Emit options - extended
-	StrictFunctions bool
-	StrictOrderBy   bool
-
-	// Safety rules
-	NoSelectStar bool
-	RequireWhere bool
-	NoDropTable  bool
-	NoTruncate   bool
-	RequireLimit bool
-}
-
-// NewBuildOptions creates BuildOptions with sensible defaults.
-// This is the preferred way to create options for BuildDefaultData.
-func NewBuildOptions(projectType, dbEngine string) BuildOptions {
-	return BuildOptions{
-		// Required fields - caller must override
-		ProjectType:   projectType,
-		DbEngine:      dbEngine,
-		DatabaseURL:   "${DATABASE_URL}",
-		PackagePath:   "internal/db",
-		BaseOutputDir: "internal/db",
-
-		// Database features - default to true
-		UseManaged:  true,
-		UseUUIDs:    true,
-		UseJSON:     true,
-		UseArrays:   true,
-		UseFullText: false,
-
-		// Emit options
-		EmitPreparedQueries:      true,
-		EmitResultStructPointers: true,
-		EmitParamsStructPointers: true,
-		EmitJSONTags:             false,
-		EmitInterface:            false,
-		EmitEmptySlices:          false,
-		EmitEnumValidMethod:      false,
-		EmitAllEnumValues:        false,
-		JSONTagsCaseStyle:        "snake",
-
-		// Emit options - extended
-		StrictFunctions: false,
-		StrictOrderBy:   false,
-
-		// Safety rules - conservative defaults
-		NoSelectStar: true,
-		RequireWhere: true,
-		NoDropTable:  false,
-		NoTruncate:   false,
-		RequireLimit: false,
-	}
-}
-
-// Build creates a SqlcConfig from the configured values.
-func (cb *ConfigBuilder) Build() (*config.SqlcConfig, error) {
-	base := &BaseTemplate{}
-
-	config := &config.SqlcConfig{
-		Version: "2",
-		SQL: []config.SQLConfig{
-			{
-				Name: lo.Ternary(
-					cb.Data.ProjectName != "",
-					cb.Data.ProjectName,
-					cb.DefaultName,
-				),
-				Engine:               string(cb.Data.Database.Engine),
-				Queries:              config.NewPathOrPaths([]string{cb.Data.Output.QueriesDir}),
-				Schema:               config.NewPathOrPaths([]string{cb.Data.Output.SchemaDir}),
-				StrictFunctionChecks: new(cb.Strict),
-				StrictOrderBy:        new(cb.Strict),
-				Database: &config.DatabaseConfig{
-					URI: lo.Ternary(
-						cb.Data.Database.URL != "",
-						cb.Data.Database.URL,
-						cb.DefaultDatabaseURL,
-					),
-					Managed: cb.Data.Database.UseManaged,
-				},
-				Gen: config.GenConfig{
-					Go: base.BuildGoGenConfig(cb.Data, base.GetSQLPackage(cb.Data.Database.Engine)),
-				},
-				Rules: []config.RuleConfig{},
-			},
-		},
-	}
-
-	return config, nil
-}
 
 // BaseTemplate provides common functionality for all templates.
 // Embed this struct in template implementations to inherit helper methods.
@@ -242,13 +90,13 @@ func (t *BaseTemplate) BuildGoGenConfig(
 func (t *BaseTemplate) GetSQLPackage(db generated.DatabaseType) string {
 	switch db {
 	case DatabaseTypePostgreSQL:
-		return "pgx/v5"
+		return SQLPackagePostgreSQL
 	case DatabaseTypeMySQL:
-		return "database/sql"
+		return SQLPackageStdlib
 	case DatabaseTypeSQLite:
-		return "database/sql"
+		return SQLPackageStdlib
 	default:
-		return "database/sql"
+		return SQLPackageStdlib
 	}
 }
 
@@ -256,11 +104,11 @@ func (t *BaseTemplate) GetSQLPackage(db generated.DatabaseType) string {
 func (t *BaseTemplate) GetBuildTags(data generated.TemplateData) string {
 	switch data.Database.Engine {
 	case DatabaseTypePostgreSQL:
-		return "postgres"
+		return BuildTagPostgreSQL
 	case DatabaseTypeMySQL:
-		return "mysql"
+		return BuildTagMySQL
 	case DatabaseTypeSQLite:
-		return "sqlite"
+		return BuildTagSQLite
 	default:
 		return ""
 	}
@@ -289,6 +137,8 @@ func (t *BaseTemplate) GetTypeOverrides(data generated.TemplateData) []config.Ov
 				GoImportPath: "encoding/json",
 			})
 		}
+	case DatabaseTypeSQLite:
+		// No SQLite-specific overrides currently
 	default:
 		// No default overrides
 	}
@@ -298,17 +148,7 @@ func (t *BaseTemplate) GetTypeOverrides(data generated.TemplateData) []config.Ov
 
 // GetRenameRules returns common rename rules for better Go naming.
 func (t *BaseTemplate) GetRenameRules() map[string]string {
-	return map[string]string{
-		"id":   "ID",
-		"uuid": "UUID",
-		"url":  "URL",
-		"uri":  "URI",
-		"api":  "API",
-		"http": "HTTP",
-		"json": "JSON",
-		"db":   "DB",
-		"otp":  "OTP",
-	}
+	return CommonRenameRules()
 }
 
 // BuildGoConfigWithOverrides builds a GoGenConfig with template-specific overrides.
@@ -327,23 +167,23 @@ func (t *BaseTemplate) ApplyDefaultValues(data *generated.TemplateData) {
 	}
 
 	if data.Package.Path == "" {
-		data.Package.Path = "internal/db"
+		data.Package.Path = DefaultPackagePath
 	}
 
 	if data.Output.BaseDir == "" {
-		data.Output.BaseDir = "internal/db"
+		data.Output.BaseDir = DefaultPackagePath
 	}
 
 	if data.Output.QueriesDir == "" {
-		data.Output.QueriesDir = "internal/db/queries"
+		data.Output.QueriesDir = DefaultPackagePath + "/queries"
 	}
 
 	if data.Output.SchemaDir == "" {
-		data.Output.SchemaDir = "internal/db/schema"
+		data.Output.SchemaDir = DefaultPackagePath + "/schema"
 	}
 
 	if data.Database.URL == "" {
-		data.Database.URL = "${DATABASE_URL}"
+		data.Database.URL = DefaultDatabaseURL
 	}
 }
 
@@ -362,239 +202,4 @@ func (t *BaseTemplate) ApplyValidationRules(
 	}
 
 	return cfg, nil
-}
-
-// BuildValidationConfig creates a ValidationConfig with the provided parameters.
-// This eliminates duplication of validation configuration across templates.
-func (t *BaseTemplate) BuildValidationConfig(
-	strictFunctions, strictOrderBy bool,
-	emitJSONTags, emitPreparedQueries, emitInterface, emitEmptySlices,
-	emitResultStructPointers, emitParamsStructPointers, emitEnumValidMethod, emitAllEnumValues bool,
-	jsonTagsCaseStyle string,
-	noSelectStar, requireWhere, noDropTable, noTruncate, requireLimit bool,
-) generated.ValidationConfig {
-	return generated.ValidationConfig{
-		StrictFunctions: strictFunctions,
-		StrictOrderBy:   strictOrderBy,
-		EmitOptions: generated.EmitOptions{
-			EmitJSONTags:             emitJSONTags,
-			EmitPreparedQueries:      emitPreparedQueries,
-			EmitInterface:            emitInterface,
-			EmitEmptySlices:          emitEmptySlices,
-			EmitResultStructPointers: emitResultStructPointers,
-			EmitParamsStructPointers: emitParamsStructPointers,
-			EmitEnumValidMethod:      emitEnumValidMethod,
-			EmitAllEnumValues:        emitAllEnumValues,
-			JSONTagsCaseStyle:        jsonTagsCaseStyle,
-		},
-		SafetyRules: generated.SafetyRules{
-			NoSelectStar: noSelectStar,
-			RequireWhere: requireWhere,
-			NoDropTable:  noDropTable,
-			NoTruncate:   noTruncate,
-			RequireLimit: requireLimit,
-			Rules:        []generated.SafetyRule{},
-		},
-	}
-}
-
-// BuildDefaultData creates default TemplateData with the provided parameters.
-// This eliminates duplication in template DefaultData() methods by providing
-// a template method that accepts the variable configuration values.
-func (t *BaseTemplate) BuildDefaultData(
-	projectType string,
-	dbEngine string,
-	databaseURL string,
-	packagePath string,
-	baseOutputDir string,
-	useManaged, useUUIDs, useJSON, useArrays, useFullText bool,
-	emitJSONTags, emitPreparedQueries, emitInterface, emitEmptySlices bool,
-	emitResultStructPointers, emitParamsStructPointers, emitEnumValidMethod, emitAllEnumValues bool,
-	jsonTagsCaseStyle string,
-	strictFunctions, strictOrderBy bool,
-	noSelectStar, requireWhere, noDropTable, noTruncate, requireLimit bool,
-) generated.TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType(projectType),
-
-		Package: generated.PackageConfig{
-			Name: "db",
-			Path: packagePath,
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType(dbEngine),
-			URL:         databaseURL,
-			UseManaged:  useManaged,
-			UseUUIDs:    useUUIDs,
-			UseJSON:     useJSON,
-			UseArrays:   useArrays,
-			UseFullText: useFullText,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    baseOutputDir,
-			QueriesDir: baseOutputDir + "/queries",
-			SchemaDir:  baseOutputDir + "/schema",
-		},
-
-		Validation: t.BuildValidationConfig(
-			strictFunctions,
-			strictOrderBy,
-			emitJSONTags,
-			emitPreparedQueries,
-			emitInterface,
-			emitEmptySlices,
-			emitResultStructPointers,
-			emitParamsStructPointers,
-			emitEnumValidMethod,
-			emitAllEnumValues,
-			jsonTagsCaseStyle,
-			noSelectStar,
-			requireWhere,
-			noDropTable,
-			noTruncate,
-			requireLimit,
-		),
-	}
-}
-
-// BuildDefaultDataFromOptions creates default TemplateData using BuildOptions.
-// This is the preferred API for new templates as it reduces the 21-parameter
-// signature to a single struct parameter.
-//
-// Example usage:
-//
-//	options := NewBuildOptions("microservice", "postgresql")
-//	options.UseArrays = false
-//	options.EmitJSONTags = true
-//	data := t.BuildDefaultDataFromOptions(options)
-func (t *BaseTemplate) BuildDefaultDataFromOptions(opts BuildOptions) generated.TemplateData {
-	return generated.TemplateData{
-		ProjectName: "",
-		ProjectType: MustNewProjectType(opts.ProjectType),
-
-		Package: generated.PackageConfig{
-			Name: "db",
-			Path: opts.PackagePath,
-		},
-
-		Database: generated.DatabaseConfig{
-			Engine:      MustNewDatabaseType(opts.DbEngine),
-			URL:         opts.DatabaseURL,
-			UseManaged:  opts.UseManaged,
-			UseUUIDs:    opts.UseUUIDs,
-			UseJSON:     opts.UseJSON,
-			UseArrays:   opts.UseArrays,
-			UseFullText: opts.UseFullText,
-		},
-
-		Output: generated.OutputConfig{
-			BaseDir:    opts.BaseOutputDir,
-			QueriesDir: opts.BaseOutputDir + "/queries",
-			SchemaDir:  opts.BaseOutputDir + "/schema",
-		},
-
-		Validation: t.BuildValidationConfig(
-			opts.StrictFunctions,
-			opts.StrictOrderBy,
-			opts.EmitJSONTags,
-			opts.EmitPreparedQueries,
-			opts.EmitInterface,
-			opts.EmitEmptySlices,
-			opts.EmitResultStructPointers,
-			opts.EmitParamsStructPointers,
-			opts.EmitEnumValidMethod,
-			opts.EmitAllEnumValues,
-			opts.JSONTagsCaseStyle,
-			opts.NoSelectStar,
-			opts.RequireWhere,
-			opts.NoDropTable,
-			opts.NoTruncate,
-			opts.RequireLimit,
-		),
-	}
-}
-
-// GenerateWithDefaults is a template method that eliminates duplicated code in template implementations.
-// It applies template-specific defaults to the data and builds a SqlcConfig using the shared ConfigBuilder.
-// Template implementations should call this method with their specific values.
-//
-// Parameters:
-//   - data: The template data to apply defaults to
-//   - packageName: Default package name to use when data.Package.Name is empty
-//   - packagePath: Default package path to use when data.Package.Path is empty
-//   - baseDir: Default base directory to use when data.Output.BaseDir is empty
-//   - queriesDir: Default queries directory to use when data.Output.QueriesDir is empty
-//   - schemaDir: Default schema directory to use when data.Output.SchemaDir is empty
-//   - databaseURL: Default database URL to use when data.Database.URL is empty
-//   - projectName: Default project name to use when data.ProjectName is empty
-//   - strict: Whether to enable strict mode settings
-//
-// Returns: A SqlcConfig configured with the provided values, or an error if building fails.
-func (t *BaseTemplate) GenerateWithDefaults(
-	data generated.TemplateData,
-	packageName string,
-	packagePath string,
-	baseDir string,
-	queriesDir string,
-	schemaDir string,
-	databaseURL string,
-	projectName string,
-	strict bool,
-) (*config.SqlcConfig, error) {
-	// Apply template-specific defaults to the data
-	if data.Package.Name == "" {
-		data.Package.Name = packageName
-	}
-
-	if data.Package.Path == "" {
-		data.Package.Path = packagePath
-	}
-
-	if data.Output.BaseDir == "" {
-		data.Output.BaseDir = baseDir
-	}
-
-	if data.Output.QueriesDir == "" {
-		data.Output.QueriesDir = queriesDir
-	}
-
-	if data.Output.SchemaDir == "" {
-		data.Output.SchemaDir = schemaDir
-	}
-
-	if data.Database.URL == "" {
-		data.Database.URL = databaseURL
-	}
-
-	// Build base config using shared builder
-	builder := &ConfigBuilder{
-		Data:               data,
-		DefaultName:        projectName,
-		DefaultDatabaseURL: databaseURL,
-		Strict:             strict,
-	}
-
-	cfg, err := builder.Build()
-	if err != nil {
-		return nil, fmt.Errorf(
-			"config builder failed for project %q (package=%s, path=%s, baseDir=%s, queriesDir=%s, schemaDir=%s, strict=%v): %w",
-			projectName,
-			packageName,
-			packagePath,
-			baseDir,
-			queriesDir,
-			schemaDir,
-			strict,
-			err,
-		)
-	}
-
-	// Generate Go config with template-specific settings
-	cfg.SQL[0].Gen.Go = t.BuildGoConfigWithOverrides(data)
-
-	// Apply validation rules using base helper
-	return t.ApplyValidationRules(cfg, data)
 }
