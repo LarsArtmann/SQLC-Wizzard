@@ -11,16 +11,7 @@
 
 SQLC-Wizard is an interactive CLI tool that generates production-ready `sqlc.yaml` configurations through an intuitive wizard interface. It supports multiple project types (hobby, microservice, enterprise, etc.) and databases (PostgreSQL, MySQL, SQLite) with smart defaults and comprehensive validation.
 
-### Key Features
-
-- Interactive TUI wizard using `charmbracelet/huh`
-- Type-safe configuration generation with validation
-- Multiple project templates with database-specific optimizations
-- CLI commands: `init`, `validate`, `doctor`, `generate`, `migrate`
-- Generated Go types from TypeSpec for compile-time safety
-
----
-
+#
 ## 🛠️ Essential Commands
 
 ### Build & Development
