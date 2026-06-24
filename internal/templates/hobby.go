@@ -12,31 +12,15 @@ type HobbyTemplate struct {
 
 // NewHobbyTemplate creates a new hobby template.
 func NewHobbyTemplate() *HobbyTemplate {
-	base := NewConfiguredTemplate(
+	base := NewMinimalConfiguredTemplate(
 		"hobby",
 		"Lightweight hobby configuration for personal projects and learning",
 		"db",
 		"hobby",
-		false, // strictMode
 		"hobby",
 		"sqlite",
+		[]string{}, // Hobby has no required features
 	)
-
-	// Override hobby-specific settings: SQLite, minimal features
-	base.UseManaged = false
-	base.UseUUIDs = false
-	base.UseJSON = false
-	base.UseArrays = false
-	base.UseFullText = false
-	base.EmitJSONTags = false
-	base.EmitInterface = false
-	base.EmitEmptySlices = true
-	base.JSONTagsCaseStyle = "camel"
-	base.StrictFunctions = false
-	base.StrictOrderBy = false
-	base.NoSelectStar = false
-	base.RequireWhere = false
-	base.Features = []string{} // Hobby has no required features
 
 	return &HobbyTemplate{ConfiguredTemplate: base}
 }
@@ -73,7 +57,7 @@ func (t *HobbyTemplate) DefaultData() generated.TemplateData {
 		false,         // emitParamsStructPointers
 		false,         // emitEnumValidMethod
 		false,         // emitAllEnumValues
-		"camel",       // jsonTagsCaseStyle
+		CamelCaseStyle, // jsonTagsCaseStyle
 		false,         // strictFunctions
 		false,         // strictOrderBy
 		false,         // noSelectStar

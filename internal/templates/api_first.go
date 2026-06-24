@@ -22,10 +22,8 @@ func NewAPIFirstTemplate() *APIFirstTemplate {
 		"postgresql",
 	)
 
-	// Override API-first specific settings
-	base.JSONTagsCaseStyle = "camel"
-	base.EmitJSONTags = true
-	base.EmitInterface = true
+	// Apply shared JSON + interface emitter pattern
+	ApplyJSONInterfaceOptions(&base)
 	base.Features = []string{"emit_interface", "prepared_queries", "json_tags", "camel_case"}
 
 	return &APIFirstTemplate{ConfiguredTemplate: base}
@@ -62,7 +60,7 @@ func (t *APIFirstTemplate) DefaultData() generated.TemplateData {
 		true,    // emitParamsStructPointers
 		false,   // emitEnumValidMethod
 		false,   // emitAllEnumValues
-		"camel", // jsonTagsCaseStyle
+		CamelCaseStyle, // jsonTagsCaseStyle
 		false,   // strictFunctions
 		false,   // strictOrderBy
 		true,    // noSelectStar

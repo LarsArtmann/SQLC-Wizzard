@@ -12,33 +12,19 @@ type TestingTemplate struct {
 
 // NewTestingTemplate creates a new testing template.
 func NewTestingTemplate() *TestingTemplate {
-	base := NewConfiguredTemplate(
+	base := NewMinimalConfiguredTemplate(
 		"testing",
 		"Lightweight configuration for test suites and database fixtures",
 		"testdata",
 		"test",
-		false, // strictMode
 		"testing",
 		"sqlite",
+		[]string{"empty_slices"},
 	)
 
-	// Override testing-specific settings
-	base.UseManaged = false
-	base.UseUUIDs = false
-	base.UseJSON = false
-	base.UseArrays = false
-	base.UseFullText = false
-	base.EmitJSONTags = false
-	base.EmitInterface = false
-	base.EmitEmptySlices = true
+	// Testing-specific overrides: keep prepared queries off and limit off
 	base.EmitPreparedQueries = false
-	base.JSONTagsCaseStyle = "camel"
-	base.StrictFunctions = false
-	base.StrictOrderBy = false
-	base.NoSelectStar = false
-	base.RequireWhere = false
 	base.RequireLimit = false
-	base.Features = []string{"empty_slices"}
 
 	return &TestingTemplate{ConfiguredTemplate: base}
 }
@@ -92,7 +78,7 @@ func (t *TestingTemplate) DefaultData() TemplateData {
 		false, // emitResultPointers
 		false, // emitParamsPointers
 		false, // emitEnumValidMethod
-		"camel",
+		CamelCaseStyle,
 		false, // noSelectStar
 		false, // requireWhere
 		true,  // noDropTable

@@ -36,7 +36,7 @@ func NewMultiTenantTemplate() *MultiTenantTemplate {
 		EmitParamsStructPointers: true,
 		EmitEnumValidMethod:      false,
 		EmitAllEnumValues:        false,
-		JSONTagsCaseStyle:        "camel",
+		JSONTagsCaseStyle:        CamelCaseStyle,
 		StrictFunctions:          true,
 		StrictOrderBy:            true,
 		NoSelectStar:             true,
@@ -110,7 +110,7 @@ func (t *MultiTenantTemplate) DefaultData() generated.TemplateData {
 		true,    // emitParamsStructPointers
 		false,   // emitEnumValidMethod
 		false,   // emitAllEnumValues
-		"camel", // jsonTagsCaseStyle
+		CamelCaseStyle, // jsonTagsCaseStyle
 		true,    // strictFunctions
 		true,    // strictOrderBy
 		true,    // noSelectStar

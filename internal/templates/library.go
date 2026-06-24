@@ -36,7 +36,7 @@ func NewLibraryTemplate() *LibraryTemplate {
 		EmitParamsStructPointers: false,
 		EmitEnumValidMethod:      true,
 		EmitAllEnumValues:        false,
-		JSONTagsCaseStyle:        "camel",
+		JSONTagsCaseStyle:        CamelCaseStyle,
 		StrictFunctions:          false,
 		StrictOrderBy:            false,
 		NoSelectStar:             false,

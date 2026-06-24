@@ -139,7 +139,7 @@ func (t *MicroserviceTemplate) DefaultData() TemplateData {
 				EmitParamsStructPointers: false,
 				EmitEnumValidMethod:      false,
 				EmitAllEnumValues:        false,
-				JSONTagsCaseStyle:        "camel",
+				JSONTagsCaseStyle:        CamelCaseStyle,
 			},
 			SafetyRules: generated.SafetyRules{
 				NoSelectStar: false,

@@ -18,4 +18,5 @@ const (
 	DefaultDatabaseURL = "${DATABASE_URL}"
 	DefaultPackagePath = "internal/db"
 	DefaultJSONStyle   = "snake"
+	CamelCaseStyle     = "camel"
 )

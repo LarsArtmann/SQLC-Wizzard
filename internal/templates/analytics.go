@@ -32,7 +32,7 @@ func NewAnalyticsTemplate() *AnalyticsTemplate {
 	base.EmitInterface = true
 	base.EmitEmptySlices = false
 	base.EmitPreparedQueries = false
-	base.JSONTagsCaseStyle = "camel"
+	base.JSONTagsCaseStyle = CamelCaseStyle
 	base.StrictFunctions = true
 	base.StrictOrderBy = true
 	base.NoSelectStar = false
@@ -92,7 +92,7 @@ func (t *AnalyticsTemplate) DefaultData() TemplateData {
 		false, // emitResultPointers
 		false, // emitParamsPointers
 		false, // emitEnumValidMethod
-		"camel",
+		CamelCaseStyle,
 		false, // noSelectStar
 		false, // requireWhere
 		true,  // noDropTable

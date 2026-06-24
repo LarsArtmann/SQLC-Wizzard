@@ -22,12 +22,10 @@ func NewEnterpriseTemplate() *EnterpriseTemplate {
 		"postgresql",
 	)
 
-	// Override enterprise-specific settings
+	// Enterprise-specific overrides beyond the JSON+interface shared pattern
 	base.UseFullText = true
 	base.RequireLimit = true
-	base.JSONTagsCaseStyle = "camel"
-	base.EmitJSONTags = true
-	base.EmitInterface = true
+	ApplyJSONInterfaceOptions(&base)
 	base.Features = []string{"emit_interface", "prepared_queries", "json_tags", "strict_checks"}
 
 	return &EnterpriseTemplate{ConfiguredTemplate: base}
@@ -64,7 +62,7 @@ func (t *EnterpriseTemplate) DefaultData() generated.TemplateData {
 		true,    // emitParamsStructPointers
 		false,   // emitEnumValidMethod
 		false,   // emitAllEnumValues
-		"camel", // jsonTagsCaseStyle
+		CamelCaseStyle, // jsonTagsCaseStyle
 		true,    // strictFunctions
 		true,    // strictOrderBy
 		true,    // noSelectStar
