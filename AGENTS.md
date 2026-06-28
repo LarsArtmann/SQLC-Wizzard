@@ -12,6 +12,7 @@
 SQLC-Wizard is an interactive CLI tool that generates production-ready `sqlc.yaml` configurations through an intuitive wizard interface. It supports multiple project types (hobby, microservice, enterprise, etc.) and databases (PostgreSQL, MySQL, SQLite) with smart defaults and comprehensive validation.
 
 #
+
 ## 🛠️ Essential Commands
 
 ### Build & Development
