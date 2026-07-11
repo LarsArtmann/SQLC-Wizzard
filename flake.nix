@@ -94,7 +94,12 @@
                 homepage = "https://github.com/LarsArtmann/SQLC-Wizzard";
                 license = licenses.mit;
                 mainProgram = "sqlc-wizard";
-                maintainers = [ maintainers.larsartmann ];
+                maintainers = [
+                  {
+                    name = "Lars Artmann";
+                    github = "LarsArtmann";
+                  }
+                ];
                 platforms = platforms.unix;
               };
             };
