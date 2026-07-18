@@ -1,6 +1,5 @@
 # SQLC-Wizard Agent Guide
 
-**Last Updated:** 2025-12-08  
 **Project:** Interactive CLI wizard for generating sqlc configurations  
 **Primary Language:** Go 1.24.7  
 **Architecture:** Domain-Driven Design (DDD) with layered architecture

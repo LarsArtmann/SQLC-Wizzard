@@ -70,15 +70,15 @@ chmod +x $(go env GOPATH)/bin/wizard
 version: "2"
 sql:
   - name: "db"
-    queries: "queries"           # Won't work
-    schema: "schema"             # Won't work
+    queries: "queries" # Won't work
+    schema: "schema" # Won't work
 
 # ✅ GOOD: Use relative or absolute paths
 version: "2"
 sql:
   - name: "db"
-    queries: "./sql/queries"      # Works!
-    schema: "./sql/schema"        # Works!
+    queries: "./sql/queries" # Works!
+    schema: "./sql/schema" # Works!
 ```
 
 #### Issue: "sqlc: path must be absolute or start with ./"

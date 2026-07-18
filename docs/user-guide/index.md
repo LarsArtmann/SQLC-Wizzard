@@ -740,14 +740,15 @@ Configure database-specific options.
 - **Generated schema:** Include sample schema files
 
 **Feature Dependencies:**
-| Feature | PostgreSQL | MySQL | SQLite |
-|----------|------------|-------|--------|
-| UUIDs | ✅ | ✅ | ✅ |
-| JSON columns | ✅ | ✅ | ❌ |
-| Array columns | ✅ | ❌ | ❌ |
-| Full-text search | ✅ | ✅ | ❌ |
-| Generated queries | ✅ | ✅ | ✅ |
-| Generated schema | ✅ | ✅ | ✅ |
+
+| Feature           | PostgreSQL | MySQL | SQLite |
+| ----------------- | ---------- | ----- | ------ |
+| UUIDs             | ✅         | ✅    | ✅     |
+| JSON columns      | ✅         | ✅    | ❌     |
+| Array columns     | ✅         | ❌    | ❌     |
+| Full-text search  | ✅         | ✅    | ❌     |
+| Generated queries | ✅         | ✅    | ✅     |
+| Generated schema  | ✅         | ✅    | ✅     |
 
 **Recommendations:**
 
