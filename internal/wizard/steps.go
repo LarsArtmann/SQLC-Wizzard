@@ -76,15 +76,20 @@ func CreateProjectTypeStep(data *generated.TemplateData) *huh.Select[string] {
 		})
 }
 
-// CreateDatabaseStep creates database selection step.
-func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
+// extractDatabaseEngine returns the database engine from data, defaulting to PostgreSQL.
+func extractDatabaseEngine(data *generated.TemplateData) generated.DatabaseType {
 	engine := generated.DatabaseTypePostgreSQL
 	if data != nil {
 		engine = data.Database.Engine
 	}
 
-	databasePtr := new(string)
-	*databasePtr = string(engine)
+	return engine
+}
+
+// CreateDatabaseStep creates database selection step.
+func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
+	engine := extractDatabaseEngine(data)
+	engineStr := string(engine)
 
 	return huh.NewSelect[string]().
 		Title("Select Database Engine").
@@ -94,7 +99,7 @@ func CreateDatabaseStep(data *generated.TemplateData) *huh.Select[string] {
 			huh.NewOption("🐬  MySQL - Popular relational database", "mysql"),
 			huh.NewOption("📁  SQLite - Lightweight file-based database", "sqlite"),
 		).
-		Value(databasePtr).
+		Value(&engineStr).
 		Validate(func(database string) error {
 			if !templates.IsValidDatabaseType(database) {
 				return fmt.Errorf("invalid database type: %s", database)
@@ -197,10 +202,7 @@ func CreateOutputDirStep(data *generated.TemplateData) *huh.Input {
 
 // CreateDatabaseURLStep creates database URL input step.
 func CreateDatabaseURLStep(data *generated.TemplateData) *huh.Input {
-	engine := generated.DatabaseTypePostgreSQL
-	if data != nil {
-		engine = data.Database.Engine
-	}
+	engine := extractDatabaseEngine(data)
 
 	placeholder := "postgresql://localhost:5432/dbname"
 	description := "Enter the database connection URL (use environment variables in production)"

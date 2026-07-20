@@ -3,6 +3,7 @@ package creators
 import (
 	"context"
 	"fmt"
+	"io/fs"
 
 	"github.com/LarsArtmann/SQLC-Wizzard/generated"
 	"github.com/LarsArtmann/SQLC-Wizzard/internal/adapters"
@@ -131,6 +132,22 @@ func (pc *ProjectCreator) createDirectoryStructure(
 	return nil
 }
 
+// writeGeneratedFile writes content via the filesystem adapter, wrapping the error
+// with the file's purpose for clear diagnostics.
+func (pc *ProjectCreator) writeGeneratedFile(
+	ctx context.Context,
+	filename string,
+	content []byte,
+	perm uint32,
+) error {
+	writeErr := pc.fs.WriteFile(ctx, filename, content, fs.FileMode(perm))
+	if writeErr != nil {
+		return fmt.Errorf("failed to write %s: %w", filename, writeErr)
+	}
+
+	return nil
+}
+
 // generateSQLCConfig generates the sqlc.yaml file.
 func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateConfig) error {
 	_ = pc.cli.Println(ctx, "⚙️  Generating sqlc.yaml...")
@@ -149,12 +166,7 @@ func (pc *ProjectCreator) generateSQLCConfig(ctx context.Context, cfg *CreateCon
 		return fmt.Errorf("failed to convert config to YAML: %w", err)
 	}
 
-	writeErr := pc.fs.WriteFile(ctx, "sqlc.yaml", yamlContent, 0o644)
-	if writeErr != nil {
-		return fmt.Errorf("failed to write sqlc.yaml: %w", writeErr)
-	}
-
-	return nil
+	return pc.writeGeneratedFile(ctx, "sqlc.yaml", yamlContent, 0o644)
 }
 
 // generateDatabaseSchema creates database schema file.
@@ -169,17 +181,7 @@ func (pc *ProjectCreator) generateDatabaseSchema(ctx context.Context, cfg *Creat
 	}
 	schemaContent := pc.buildSchemaSQL(templateData)
 
-	writeErr := pc.fs.WriteFile(
-		ctx,
-		"schema.sql",
-		[]byte(schemaContent),
-		0o644,
-	)
-	if writeErr != nil {
-		return fmt.Errorf("failed to write schema.sql: %w", writeErr)
-	}
-
-	return nil
+	return pc.writeGeneratedFile(ctx, "schema.sql", []byte(schemaContent), 0o644)
 }
 
 // buildSchemaSQL creates SQL schema content.

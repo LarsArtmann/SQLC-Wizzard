@@ -50,6 +50,24 @@ func isValidDatabaseURI(currentURI string, validPrefixes []string) bool {
 	})
 }
 
+// newMigration creates a migrate.Migrate instance, logs and returns a wrapped error
+// if creation fails. The optional action label distinguishes the call site in logs.
+func newMigration(source, databaseURL, action string) (*migrate.Migrate, error) {
+	m, err := migrate.New(source, databaseURL)
+	if err != nil {
+		log.Error("Failed to create migration instance", "error", err, "source", source)
+
+		return nil, fmt.Errorf(
+			"failed to create migration instance for source %s (action=%s): %w",
+			source,
+			action,
+			err,
+		)
+	}
+
+	return m, nil
+}
+
 // closeMigration safely closes a migration instance, logging any errors.
 func closeMigration(m *migrate.Migrate) {
 	_, closeErr := m.Close()
@@ -62,11 +80,9 @@ func closeMigration(m *migrate.Migrate) {
 func (r *RealMigrationAdapter) Migrate(ctx context.Context, source, databaseURL string) error {
 	log.Info("Starting database migration", "source", source, "database", databaseURL)
 
-	m, err := migrate.New(source, databaseURL)
+	m, err := newMigration(source, databaseURL, "migrate")
 	if err != nil {
-		log.Error("Failed to create migration instance", "error", err, "source", source)
-
-		return fmt.Errorf("failed to create migration instance for source %s: %w", source, err)
+		return err
 	}
 
 	defer closeMigration(m)
@@ -113,16 +129,9 @@ func (r *RealMigrationAdapter) Rollback(
 		steps,
 	)
 
-	m, err := migrate.New(source, databaseURL)
+	m, err := newMigration(source, databaseURL, "rollback")
 	if err != nil {
-		log.Error("Failed to create migration instance", "error", err)
-
-		return fmt.Errorf(
-			"failed to create migration instance for source %s (steps=%d): %w",
-			source,
-			steps,
-			err,
-		)
+		return err
 	}
 
 	defer closeMigration(m)
@@ -158,11 +167,9 @@ func (r *RealMigrationAdapter) Status(
 ) (*migration.MigrationStatus, error) {
 	log.Info("Checking migration status", "source", source, "database", databaseURL)
 
-	m, err := migrate.New(source, databaseURL)
+	m, err := newMigration(source, databaseURL, "status")
 	if err != nil {
-		log.Error("Failed to create migration instance", "error", err)
-
-		return nil, fmt.Errorf("failed to create migration instance: %w", err)
+		return nil, err
 	}
 
 	defer closeMigration(m)

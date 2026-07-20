@@ -111,23 +111,25 @@ func NewDatabaseType(database string) (DatabaseType, error) {
 	return dt, nil
 }
 
-// MustNew constructors - PANIC on invalid input (for constants).
+// MustNewProjectType constructs a ProjectType, panicking on programmer error.
 func MustNewProjectType(projectType string) ProjectType {
-	pt, err := NewProjectType(projectType)
-	if err != nil {
-		panic(err) // This is programmer error, not runtime error
-	}
-
-	return pt
+	return mustNew(NewProjectType, projectType)
 }
 
+// MustNewDatabaseType constructs a DatabaseType, panicking on programmer error.
 func MustNewDatabaseType(database string) DatabaseType {
-	dt, err := NewDatabaseType(database)
+	return mustNew(NewDatabaseType, database)
+}
+
+// mustNew panics on construction error. Centralizes the panic-or-return pattern
+// shared by every MustNew constructor.
+func mustNew[T ~string](constructor func(string) (T, error), raw string) T {
+	value, err := constructor(raw)
 	if err != nil {
 		panic(err) // This is programmer error, not runtime error
 	}
 
-	return dt
+	return value
 }
 
 // Constants - use generated types directly, NO MANUAL STRINGS!

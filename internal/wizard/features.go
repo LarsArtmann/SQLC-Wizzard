@@ -31,6 +31,19 @@ func runConfirmationForm(themeFunc huh.ThemeFunc, title, description string, res
 	return nil
 }
 
+// promptConfirm runs a confirmation form and returns the user's selection wrapped
+// with a context-specific error message if the form fails.
+func (s *FeaturesStep) promptConfirm(title, description, errorContext string) (bool, error) {
+	var value bool
+
+	err := runConfirmationForm(s.themeFunc, title, description, &value)
+	if err != nil {
+		return false, fmt.Errorf("%s configuration failed: %w", errorContext, err)
+	}
+
+	return value, nil
+}
+
 // FeaturesStep handles feature selection and validation configuration.
 type FeaturesStep struct {
 	themeFunc huh.ThemeFunc
@@ -248,22 +261,35 @@ func (s *FeaturesStep) configureProjectTypeFeatures(data *generated.TemplateData
 	}
 }
 
-// configureEnterpriseFeatures adds enterprise-specific feature configuration.
-func (s *FeaturesStep) configureEnterpriseFeatures(data *generated.TemplateData) error {
-	var enableStrictMode bool
-
-	err := runConfirmationForm(
-		s.themeFunc,
-		"Enable strict mode?",
-		"Enable strict validation for all queries to catch potential issues early",
-		&enableStrictMode,
-	)
+// promptConfirmAndAssign prompts the user for a confirmation and stores the answer
+// in *target. Returns an error if prompting fails.
+func (s *FeaturesStep) promptConfirmAndAssign(
+	title, description, errorContext string,
+	target *bool,
+) error {
+	value, err := s.promptConfirm(title, description, errorContext)
 	if err != nil {
-		return fmt.Errorf("enterprise features configuration failed: %w", err)
+		return err
 	}
 
-	data.Validation.StrictFunctions = enableStrictMode
-	data.Validation.StrictOrderBy = enableStrictMode
+	*target = value
+
+	return nil
+}
+
+// configureEnterpriseFeatures adds enterprise-specific feature configuration.
+func (s *FeaturesStep) configureEnterpriseFeatures(data *generated.TemplateData) error {
+	err := s.promptConfirmAndAssign(
+		"Enable strict mode?",
+		"Enable strict validation for all queries to catch potential issues early",
+		"enterprise features",
+		&data.Validation.StrictFunctions,
+	)
+	if err != nil {
+		return err
+	}
+
+	data.Validation.StrictOrderBy = data.Validation.StrictFunctions
 
 	return nil
 }
@@ -278,21 +304,12 @@ func (s *FeaturesStep) configureAPIFirstFeatures(data *generated.TemplateData) e
 
 // configureAnalyticsFeatures adds analytics-specific feature configuration.
 func (s *FeaturesStep) configureAnalyticsFeatures(data *generated.TemplateData) error {
-	var enableStrictOrderBy bool
-
-	err := runConfirmationForm(
-		s.themeFunc,
+	return s.promptConfirmAndAssign(
 		"Enable strict ORDER BY?",
 		"Require ORDER BY in all SELECT queries to ensure predictable results",
-		&enableStrictOrderBy,
+		"analytics features",
+		&data.Validation.StrictOrderBy,
 	)
-	if err != nil {
-		return fmt.Errorf("analytics features configuration failed: %w", err)
-	}
-
-	data.Validation.StrictOrderBy = enableStrictOrderBy
-
-	return nil
 }
 
 // configureDatabaseFeatures configures database-specific features using branching context.

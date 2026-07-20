@@ -17,30 +17,27 @@ func NewRealSQLCAdapter() *RealSQLCAdapter {
 	return &RealSQLCAdapter{}
 }
 
-// Generate generates Go code from SQL files.
-func (a *RealSQLCAdapter) Generate(ctx context.Context, cfg *config.SqlcConfig) error {
-	cmd := exec.CommandContext(ctx, "sqlc", "generate")
+// runSQLCCommand executes a sqlc subcommand in the current working directory and
+// wraps any failure with the supplied action label (e.g. "generate", "validate").
+func (a *RealSQLCAdapter) runSQLCCommand(ctx context.Context, subcommand, action string) error {
+	cmd := exec.CommandContext(ctx, "sqlc", subcommand)
 	cmd.Dir = filepath.Dir(".")
 
-	err := cmd.Run()
-	if err != nil {
-		return fmt.Errorf("sqlc generate failed: %w", err)
+	if err := cmd.Run(); err != nil {
+		return fmt.Errorf("sqlc %s failed: %w", action, err)
 	}
 
 	return nil
 }
 
+// Generate generates Go code from SQL files.
+func (a *RealSQLCAdapter) Generate(ctx context.Context, cfg *config.SqlcConfig) error {
+	return a.runSQLCCommand(ctx, "generate", "generate")
+}
+
 // Validate validates sqlc configuration.
 func (a *RealSQLCAdapter) Validate(ctx context.Context, cfg *config.SqlcConfig) error {
-	cmd := exec.CommandContext(ctx, "sqlc", "validate")
-	cmd.Dir = filepath.Dir(".")
-
-	err := cmd.Run()
-	if err != nil {
-		return fmt.Errorf("sqlc validate failed: %w", err)
-	}
-
-	return nil
+	return a.runSQLCCommand(ctx, "validate", "validate")
 }
 
 // Version returns sqlc version.
