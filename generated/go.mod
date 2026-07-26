@@ -2,4 +2,4 @@ module sqlc-wizard-types
 
 // Generated code - DO NOT EDIT manually
 // This code is generated from api/typespec.tsp
-go 1.26.5
+go 1.26.4
