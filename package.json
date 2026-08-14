@@ -4,5 +4,6 @@
     "@typespec/compiler": "^1.13.0",
     "@typespec/http": "^1.13.0",
     "@typespec/openapi3": "^1.13.0"
-  }
+  },
+  "packageManager": "pnpm@11.20.0"
 }

@@ -177,7 +177,7 @@
 
 **Remaining:**
 
-- ❌ Package manager releases (npm, cargo, etc.)
+- ❌ Package manager releases (pnpm, cargo, etc.)
 - ❌ IDE extensions (VS Code, GoLand)
 - ❌ Web-based configuration generator
 - ❌ Official website/landing page

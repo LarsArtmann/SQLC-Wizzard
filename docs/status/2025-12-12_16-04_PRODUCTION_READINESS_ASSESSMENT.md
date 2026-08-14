@@ -145,7 +145,7 @@ SQLC-Wizard has solid technical foundations but needs production-grade hardening
 - ❌ GitHub releases with proper versioning
 - ❌ Homebrew formula
 - ❌ Docker image
-- ❌ Package managers (npm, cargo, etc.)
+- ❌ Package managers (pnpm, cargo, etc.)
 
 **Impact:** Users cannot install or use the tool despite it being functional
 

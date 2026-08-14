@@ -65,7 +65,7 @@ This proposal outlines a phased migration that:
 | `dupl`           | Duplicate code detection | `go install ...@latest`  | **No**                   |
 | `goreleaser`     | Release automation       | CI action / manual       | **No** (CI uses `@v5`)   |
 | `just`           | Task runner              | Manual / Homebrew        | **No**                   |
-| `tsp` (TypeSpec) | Type generation          | `npx @typespec/compiler` | Partially (package.json) |
+| `tsp` (TypeSpec) | Type generation          | `pnpm dlx @typespec/compiler` | Partially (package.json) |
 | `git`            | Version info via ldflags | System                   | **No**                   |
 | `go-arch-lint`   | Architecture enforcement | Manual                   | **No**                   |
 

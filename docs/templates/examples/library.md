@@ -383,7 +383,7 @@ ORDER BY updated_at DESC;
 - ✅ Creating reusable Go libraries
 - ✅ Building SDKs
 - ✅ Developing shared packages
-- ✅ Publishing npm/go modules
+- ✅ Publishing pnpm/go modules
 - ✅ Projects requiring interface flexibility
 - ✅ Projects with many consumers
 - ✅ Libraries needing broad compatibility

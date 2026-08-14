@@ -626,7 +626,7 @@ sql:
 - Creating reusable Go libraries
 - Building SDKs
 - Developing shared packages
-- Publishing npm/go modules
+- Publishing pnpm/go modules
 - Projects requiring interface flexibility
 
 **When NOT to Use:**
