@@ -1,6 +1,6 @@
 # 🚀 GITHUB ISSUE CREATION TEMPLATES
 
-**Created:** 2025-11-11 09:12:22  
+**Created:** 2025-11-11 09:12:22\
 **Purpose:** GitHub Issues for next session creation
 
 ---

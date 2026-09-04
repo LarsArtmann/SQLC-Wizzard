@@ -116,5 +116,5 @@
 
 ---
 
-_Closure Recommendation: November 15, 2025 18:55 CET_  
+_Closure Recommendation: November 15, 2025 18:55 CET_\
 _Status: Superceded by comprehensive current documentation_ ✅

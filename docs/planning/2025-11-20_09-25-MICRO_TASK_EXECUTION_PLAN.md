@@ -1,7 +1,7 @@
 # Micro-Task Execution Plan - Critical Code Quality Fixes
 
-**Created:** 2025-11-20_09-25  
-**Task Count:** 27 micro-tasks (max 15min each)  
+**Created:** 2025-11-20_09-25\
+**Task Count:** 27 micro-tasks (max 15min each)\
 **Total Time:** ~2 hours including verification
 
 ---
@@ -10,7 +10,7 @@
 
 ### Task 1.1: Analyze project_creator.go nil check issue (3min)
 
-**File:** `internal/creators/project_creator.go:113-123`  
+**File:** `internal/creators/project_creator.go:113-123`\
 **Actions:**
 
 - Read current implementation
@@ -37,7 +37,7 @@
 
 ### Task 1.4: Analyze migration status underflow issue (3min)
 
-**File:** `internal/migration/status.go:103-107`  
+**File:** `internal/migration/status.go:103-107`\
 **Actions:**
 
 - Read GetPendingMigrations function
@@ -63,7 +63,7 @@
 
 ### Task 1.7: Analyze rule transformer semantic inconsistency (5min)
 
-**File:** `internal/validation/rule_transformer.go`  
+**File:** `internal/validation/rule_transformer.go`\
 **Actions:**
 
 - Compare RequireLimit logic between TransformSafetyRules and TransformTypeSafeSafetyRules
@@ -95,7 +95,7 @@
 
 ### Task 2.1: Analyze safety_policy.go rune conversion (3min)
 
-**File:** `internal/domain/safety_policy.go:98-123`  
+**File:** `internal/domain/safety_policy.go:98-123`\
 **Actions:**
 
 - Locate string(rune(i)) usage on line 112
@@ -121,7 +121,7 @@
 
 ### Task 2.4: Analyze nil rules test issue (3min)
 
-**File:** `internal/validation/rule_transformer_test.go:271-280`  
+**File:** `internal/validation/rule_transformer_test.go:271-280`\
 **Actions:**
 
 - Read current "should handle nil rules gracefully" test
@@ -147,7 +147,7 @@
 
 ### Task 2.7: Analyze uintToString optimization opportunity (3min)
 
-**File:** `internal/validation/rule_transformer.go:180-183`  
+**File:** `internal/validation/rule_transformer.go:180-183`\
 **Actions:**
 
 - Locate MaxRowsWithoutLimit usage around lines 125-126
@@ -177,7 +177,7 @@
 
 ### Task 3.1: Analyze redundant WithMessage tests (5min)
 
-**File:** `internal/errors/errors_test.go:146-165`  
+**File:** `internal/errors/errors_test.go:146-165`\
 **Actions:**
 
 - Read both WithMessage test specs
@@ -205,7 +205,7 @@
 
 ### Task 3.4: Analyze nil error wrapping test (3min)
 
-**File:** `internal/errors/errors_test.go:407-412`  
+**File:** `internal/errors/errors_test.go:407-412`\
 **Actions:**
 
 - Read current "should handle nil error" test
@@ -232,7 +232,7 @@
 
 ### Task 3.7: Analyze Wrapf description clobbering issue (5min)
 
-**File:** `internal/errors/errors_test.go:435-452`  
+**File:** `internal/errors/errors_test.go:435-452`\
 **Actions:**
 
 - Read Wrapf implementation and tests
@@ -260,7 +260,7 @@
 
 ### Task 3.10: Analyze CombineErrors test gaps (5min)
 
-**File:** `internal/errors/errors_test.go:477-497`  
+**File:** `internal/errors/errors_test.go:477-497`\
 **Actions:**
 
 - Read current CombineErrors tests
@@ -297,7 +297,7 @@
 
 ### Task 3.14: Analyze sentinel error message assertions (5min)
 
-**File:** `internal/errors/errors_test.go:525-545`  
+**File:** `internal/errors/errors_test.go:525-545`\
 **Actions:**
 
 - Identify which sentinel errors exist and their expected Messages
@@ -393,8 +393,8 @@
 
 ---
 
-**Total Estimated Time:** 120 minutes (2 hours)  
-**Buffer Time:** 30 minutes for investigation  
+**Total Estimated Time:** 120 minutes (2 hours)\
+**Buffer Time:** 30 minutes for investigation\
 **Maximum Session Time:** 2.5 hours
 
 ---

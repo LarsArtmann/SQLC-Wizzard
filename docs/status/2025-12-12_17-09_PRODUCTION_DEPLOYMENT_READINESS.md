@@ -22,9 +22,9 @@
 | **Legal & Distribution**      | ✅ **PRODUCTION READY** | 100%       | MIT license, GitHub releases, Homebrew ready |
 | **Domain Testing**            | ✅ **PRODUCTION READY** | 90%        | 83-98% coverage across all core modules      |
 | **Release Engineering**       | ✅ **PRODUCTION READY** | 90%        | Automated builds and releases working        |
-| **User Interface**            | ⚠️ **BETA READY**       | 85%        | Wizard works, but coverage gap exists        |
-| **Integration Testing**       | ⚠️ **BETA READY**       | 30%        | Manual testing complete, automated needed    |
-| **Security Hardening**        | ⚠️ **BETA READY**       | 50%        | Basic scanning in place, more needed         |
+| **User Interface**            | ⚠️ **BETA READY**        | 85%        | Wizard works, but coverage gap exists        |
+| **Integration Testing**       | ⚠️ **BETA READY**        | 30%        | Manual testing complete, automated needed    |
+| **Security Hardening**        | ⚠️ **BETA READY**        | 50%        | Basic scanning in place, more needed         |
 | **Performance Testing**       | ❌ **PRODUCTION GAPS**  | 20%        | Benchmarks and profiling needed              |
 
 ---

@@ -765,7 +765,6 @@ Successfully implemented comprehensive template documentation and testing infras
       "http": "HTTP",
       "db":   "DB",
   }
-
   ```
 
 - **Lines 145-150** show: `} } "http": "HTTP", "db": "DB", } }`

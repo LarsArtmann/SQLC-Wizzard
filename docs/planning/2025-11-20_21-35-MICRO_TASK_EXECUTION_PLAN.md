@@ -1,8 +1,8 @@
 # 🎯 SQLC-Wizard 125-Task Micro-Execution Plan
 
-**Created**: 2025-11-20_21-35  
-**Total Tasks**: 125 granular tasks (15min each)  
-**Total Execution Time**: 31.25 hours  
+**Created**: 2025-11-20_21-35\
+**Total Tasks**: 125 granular tasks (15min each)\
+**Total Execution Time**: 31.25 hours\
 **Focus**: RUTHLESS EFFICIENCY - Maximum impact, no wasted time
 
 ---
@@ -200,9 +200,9 @@ MINUTE 345-360: MVP-12 - Replace PIt with It
 
 ## 🎯 **EXECUTION MANTRA**
 
-> "**FOCUS ON THE 15-MINUTE CHUNK**"  
-> "**EXECUTE WITHOUT DISTRACTION**"  
-> "**VALUE-FIRST PARETO EXECUTION**"  
+> "**FOCUS ON THE 15-MINUTE CHUNK**"\
+> "**EXECUTE WITHOUT DISTRACTION**"\
+> "**VALUE-FIRST PARETO EXECUTION**"\
 > "**CRITICAL PATH BLOCKERS ELIMINATED**"
 
 This plan breaks down the entire SQLC-Wizard improvement into **125 precise, 15-minute tasks**. Each task is specifically actionable with exact file locations and clear dependencies.

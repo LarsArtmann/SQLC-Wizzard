@@ -13,7 +13,7 @@
 | ------------------- | ------------------------------------------ | --------------- |
 | Working Directory   | `/Users/larsartmann/projects/SQLC-Wizzard` | ✅ Verified     |
 | Build Flow Progress | 12% (2/17 steps)                           | 🚧 In Progress  |
-| Uncommitted Changes | 11 modified files                          | ⚠️ High Risk    |
+| Uncommitted Changes | 11 modified files                          | ⚠️ High Risk     |
 | Binary Status       | Not built (cleaned)                        | ❌ Missing      |
 | Test Coverage       | Unknown                                    | ❌ Not Measured |
 | TypeSpec Types      | Generated                                  | ✅ Present      |
@@ -497,57 +497,57 @@ Existing Reports in `reports/`:
 
 ### Immediate (Must Do Now - <15 min)
 
-| #   | Task                                | Priority    | Time  |
-| --- | ----------------------------------- | ----------- | ----- |
-| 1   | Commit or stash 11 modified files   | 🔴 CRITICAL | 5 min |
-| 2   | Clarify `buildflow -pv` user intent | 🔴 CRITICAL | 2 min |
-| 3   | Decide on backup strategy           | 🔴 CRITICAL | 1 min |
+| # | Task                                | Priority    | Time  |
+| - | ----------------------------------- | ----------- | ----- |
+| 1 | Commit or stash 11 modified files   | 🔴 CRITICAL | 5 min |
+| 2 | Clarify `buildflow -pv` user intent | 🔴 CRITICAL | 2 min |
+| 3 | Decide on backup strategy           | 🔴 CRITICAL | 1 min |
 
 ### Blockers (Must Complete Today - <2 hours)
 
-| #   | Task                                | Priority    | Time      |
-| --- | ----------------------------------- | ----------- | --------- |
-| 4   | Execute `just tidy` and `just deps` | 🟠 HIGH     | 5 min     |
-| 5   | Execute `just build`                | 🟠 HIGH     | 2 min     |
-| 6   | Verify binary execution             | 🟠 HIGH     | 1 min     |
-| 7   | Execute `just fmt`                  | 🟠 HIGH     | 1 min     |
-| 8   | Execute `just vet`                  | 🟠 HIGH     | 2 min     |
-| 9   | Execute `just test`                 | 🔴 CRITICAL | 5-15 min  |
-| 10  | Execute `just lint`                 | 🟠 HIGH     | 3-8 min   |
-| 11  | Fix any test failures               | 🔴 CRITICAL | 15-60 min |
-| 12  | Fix any lint errors                 | 🟠 HIGH     | 10-30 min |
+| #  | Task                                | Priority    | Time      |
+| -- | ----------------------------------- | ----------- | --------- |
+| 4  | Execute `just tidy` and `just deps` | 🟠 HIGH     | 5 min     |
+| 5  | Execute `just build`                | 🟠 HIGH     | 2 min     |
+| 6  | Verify binary execution             | 🟠 HIGH     | 1 min     |
+| 7  | Execute `just fmt`                  | 🟠 HIGH     | 1 min     |
+| 8  | Execute `just vet`                  | 🟠 HIGH     | 2 min     |
+| 9  | Execute `just test`                 | 🔴 CRITICAL | 5-15 min  |
+| 10 | Execute `just lint`                 | 🟠 HIGH     | 3-8 min   |
+| 11 | Fix any test failures               | 🔴 CRITICAL | 15-60 min |
+| 12 | Fix any lint errors                 | 🟠 HIGH     | 10-30 min |
 
 ### High Priority (Do This Week - <8 hours)
 
-| #   | Task                                 | Priority  | Time   |
-| --- | ------------------------------------ | --------- | ------ |
-| 13  | Review and analyze 11 modified files | 🟠 HIGH   | 30 min |
-| 14  | Execute `just find-duplicates`       | 🟡 MEDIUM | 2 min  |
-| 15  | Create proper feature branch         | 🟡 MEDIUM | 2 min  |
-| 16  | Document changes in CHANGELOG        | 🟡 MEDIUM | 15 min |
-| 17  | Add pre-build git check to justfile  | 🟠 HIGH   | 15 min |
-| 18  | Define/build `buildflow` command     | 🟠 HIGH   | 20 min |
+| #  | Task                                 | Priority  | Time   |
+| -- | ------------------------------------ | --------- | ------ |
+| 13 | Review and analyze 11 modified files | 🟠 HIGH   | 30 min |
+| 14 | Execute `just find-duplicates`       | 🟡 MEDIUM | 2 min  |
+| 15 | Create proper feature branch         | 🟡 MEDIUM | 2 min  |
+| 16 | Document changes in CHANGELOG        | 🟡 MEDIUM | 15 min |
+| 17 | Add pre-build git check to justfile  | 🟠 HIGH   | 15 min |
+| 18 | Define/build `buildflow` command     | 🟠 HIGH   | 20 min |
 
 ### Medium Priority (Do This Sprint - <2 days)
 
-| #   | Task                               | Priority  | Time   |
-| --- | ---------------------------------- | --------- | ------ |
-| 19  | Consolidate duplicate reports      | 🟡 MEDIUM | 30 min |
-| 20  | Clean up root migration files      | 🟢 LOW    | 5 min  |
-| 21  | Integrate TypeSpec into build flow | 🟡 MEDIUM | 30 min |
-| 22  | Create latest-status symlink       | 🟢 LOW    | 5 min  |
-| 23  | Archive old status reports         | 🟢 LOW    | 60 min |
-| 24  | Improve branch naming convention   | 🟢 LOW    | 10 min |
+| #  | Task                               | Priority  | Time   |
+| -- | ---------------------------------- | --------- | ------ |
+| 19 | Consolidate duplicate reports      | 🟡 MEDIUM | 30 min |
+| 20 | Clean up root migration files      | 🟢 LOW    | 5 min  |
+| 21 | Integrate TypeSpec into build flow | 🟡 MEDIUM | 30 min |
+| 22 | Create latest-status symlink       | 🟢 LOW    | 5 min  |
+| 23 | Archive old status reports         | 🟢 LOW    | 60 min |
+| 24 | Improve branch naming convention   | 🟢 LOW    | 10 min |
 
 ### Low Priority (Nice to Have)
 
-| #   | Task                                  | Priority  | Time   |
-| --- | ------------------------------------- | --------- | ------ |
-| 25  | Add security scanning (gosec)         | 🟡 MEDIUM | 30 min |
-| 26  | Add performance benchmark to CI       | 🟡 MEDIUM | 20 min |
-| 27  | Add cross-platform build targets      | 🟢 LOW    | 30 min |
-| 28  | Create Docker build verification      | 🟢 LOW    | 20 min |
-| 29  | Improve justfile with parallel builds | 🟡 MEDIUM | 30 min |
+| #  | Task                                  | Priority  | Time   |
+| -- | ------------------------------------- | --------- | ------ |
+| 25 | Add security scanning (gosec)         | 🟡 MEDIUM | 30 min |
+| 26 | Add performance benchmark to CI       | 🟡 MEDIUM | 20 min |
+| 27 | Add cross-platform build targets      | 🟢 LOW    | 30 min |
+| 28 | Create Docker build verification      | 🟢 LOW    | 20 min |
+| 29 | Improve justfile with parallel builds | 🟡 MEDIUM | 30 min |
 
 ---
 

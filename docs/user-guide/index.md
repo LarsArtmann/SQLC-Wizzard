@@ -1,6 +1,6 @@
 # SQLC-Wizard User Guide
 
-**Last Updated:** January 13, 2026  
+**Last Updated:** January 13, 2026\
 **Version:** 1.0.0
 
 ---
@@ -681,12 +681,12 @@ testing/
 
 | Project Type | Complexity           | Features | Database          | Use Case |
 | ------------ | -------------------- | -------- | ----------------- | -------- |
-| Hobby        | ⭐ Simple            | Basic    | Personal projects |
-| Microservice | ⭐⭐⭐ Moderate      | Advanced | APIs, Services    |
-| Enterprise   | ⭐⭐⭐⭐⭐⭐ Complex | Multi-DB | SaaS, Large apps  |
-| API-First    | ⭐⭐⭐⭐ Advanced    | Multi-DB | REST/GraphQL APIs |
-| Analytics    | ⭐⭐⭐⭐ Moderate    | Advanced | Data pipelines    |
-| Testing      | ⭐⭐ Simple          | Basic    | QA, Testing tools |
+| Hobby        | ⭐ Simple            | Basic    | Personal projects |          |
+| Microservice | ⭐⭐⭐ Moderate      | Advanced | APIs, Services    |          |
+| Enterprise   | ⭐⭐⭐⭐⭐⭐ Complex | Multi-DB | SaaS, Large apps  |          |
+| API-First    | ⭐⭐⭐⭐ Advanced    | Multi-DB | REST/GraphQL APIs |          |
+| Analytics    | ⭐⭐⭐⭐ Moderate    | Advanced | Data pipelines    |          |
+| Testing      | ⭐⭐ Simple          | Basic    | QA, Testing tools |          |
 
 **Recommendation:** Start with **Hobby** or **Microservice** type, then upgrade as needed.
 

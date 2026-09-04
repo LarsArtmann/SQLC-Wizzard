@@ -1097,7 +1097,7 @@ DECISION: [Final recommendation on best path forward]
 | Pass Rate                | 100%       | ✅     |
 | High Coverage (>70%)     | 6 packages | ✅     |
 | Good Coverage (>50%)     | 3 packages | ✅     |
-| Needs Improvement (<50%) | 2 packages | ⚠️     |
+| Needs Improvement (<50%) | 2 packages | ⚠️      |
 
 ### Documentation Statistics
 

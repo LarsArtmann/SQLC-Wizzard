@@ -64,24 +64,24 @@
 
 ### Internal Package Coupling Matrix
 
-| Package             | generated | apperrors | domain | validation | schema | templates | config | adapters | commands | creators | generators | wizard | ui  | utils | migration | testing |
-| ------------------- | --------- | --------- | ------ | ---------- | ------ | --------- | ------ | -------- | -------- | -------- | ---------- | ------ | --- | ----- | --------- | ------- |
-| **apperrors**       |           |           |        |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **domain**          | ✅        |           |        |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **validation**      | ✅        |           | ✅     |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **schema**          |           |           |        |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **templates**       | ✅        | ✅        |        | ✅         |        |           | ✅     |          |          |          |            |        |     |       |           |         |
-| **config**          | ✅        | ✅        |        |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **adapters**        | ✅        | ✅        |        |            | ✅     | ✅        | ✅     |          |          |          |            |        |     |       | ✅        |         |
-| **commands**        | ✅        | ✅        |        |            |        | ✅        | ✅     | ✅       |          | ✅       | ✅         | ✅     | ✅  |       |           |         |
-| **creators**        | ✅        | ✅        |        |            |        |           | ✅     | ✅       |          |          |            |        |     |       |           |         |
-| **generators**      |           |           |        |            |        | ✅        | ✅     |          |          |          |            |        |     |       |           |         |
-| **wizard**          | ✅        | ✅        |        |            | ✅     | ✅        | ✅     |          |          |          |            |        | ✅  |       |           |         |
-| **ui**              |           |           |        |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **utils**           |           |           |        |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **migration**       |           |           |        |            |        |           |        |          |          |          |            |        |     |       |           |         |
-| **testing**         | ✅        |           | ✅     |            |        |           | ✅     |          |          |          |            |        |     |       |           |         |
-| **cmd/sqlc-wizard** |           |           |        |            |        |           |        |          | ✅       |          |            |        |     |       |           |         |
+| Package             | generated | apperrors | domain | validation | schema | templates | config | adapters | commands | creators | generators | wizard | ui | utils | migration | testing |
+| ------------------- | --------- | --------- | ------ | ---------- | ------ | --------- | ------ | -------- | -------- | -------- | ---------- | ------ | -- | ----- | --------- | ------- |
+| **apperrors**       |           |           |        |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **domain**          | ✅        |           |        |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **validation**      | ✅        |           | ✅     |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **schema**          |           |           |        |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **templates**       | ✅        | ✅        |        | ✅         |        |           | ✅     |          |          |          |            |        |    |       |           |         |
+| **config**          | ✅        | ✅        |        |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **adapters**        | ✅        | ✅        |        |            | ✅     | ✅        | ✅     |          |          |          |            |        |    |       | ✅        |         |
+| **commands**        | ✅        | ✅        |        |            |        | ✅        | ✅     | ✅       |          | ✅       | ✅         | ✅     | ✅ |       |           |         |
+| **creators**        | ✅        | ✅        |        |            |        |           | ✅     | ✅       |          |          |            |        |    |       |           |         |
+| **generators**      |           |           |        |            |        | ✅        | ✅     |          |          |          |            |        |    |       |           |         |
+| **wizard**          | ✅        | ✅        |        |            | ✅     | ✅        | ✅     |          |          |          |            |        | ✅ |       |           |         |
+| **ui**              |           |           |        |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **utils**           |           |           |        |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **migration**       |           |           |        |            |        |           |        |          |          |          |            |        |    |       |           |         |
+| **testing**         | ✅        |           | ✅     |            |        |           | ✅     |          |          |          |            |        |    |       |           |         |
+| **cmd/sqlc-wizard** |           |           |        |            |        |           |        |          | ✅       |          |            |        |    |       |           |         |
 
 ### Coupling Metrics
 

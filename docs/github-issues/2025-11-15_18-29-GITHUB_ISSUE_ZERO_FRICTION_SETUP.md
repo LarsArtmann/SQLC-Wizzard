@@ -1,8 +1,8 @@
 # 🚀 Zero-Friction Setup: One-Command SQLC Project Creation
 
-**Priority:** HIGH (#1)  
-**Complexity:** HIGH  
-**Estimated Time:** 3-4 days  
+**Priority:** HIGH (#1)\
+**Complexity:** HIGH\
+**Estimated Time:** 3-4 days\
 **Impact:** CRITICAL - Core user experience
 
 ---
@@ -306,6 +306,6 @@ This feature is **CRITICAL** for SQLC adoption because:
 
 ---
 
-_Created: 2025-11-15_  
-_Priority: HIGH (#1)_  
+_Created: 2025-11-15_\
+_Priority: HIGH (#1)_\
 _Ready for implementation_ 🎯

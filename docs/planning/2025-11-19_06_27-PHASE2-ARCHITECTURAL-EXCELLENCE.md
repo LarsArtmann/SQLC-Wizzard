@@ -18,10 +18,10 @@
 | creators   | 95.0%    | ✅ Excellent    |
 | migration  | 100.0%   | ✅ Perfect      |
 | utils      | 93.4%    | ✅ Excellent    |
-| templates  | 64.8%    | ⚠️ Good         |
-| generators | 47.6%    | ⚠️ Acceptable   |
-| domain     | 33.3%    | ⚠️ Needs Work   |
-| config     | 30.0%    | ⚠️ Needs Work   |
+| templates  | 64.8%    | ⚠️ Good          |
+| generators | 47.6%    | ⚠️ Acceptable    |
+| domain     | 33.3%    | ⚠️ Needs Work    |
+| config     | 30.0%    | ⚠️ Needs Work    |
 | adapters   | 23.3%    | ❌ Poor         |
 | commands   | 21.3%    | ❌ Poor         |
 | **wizard** | **2.9%** | ❌ **TERRIBLE** |

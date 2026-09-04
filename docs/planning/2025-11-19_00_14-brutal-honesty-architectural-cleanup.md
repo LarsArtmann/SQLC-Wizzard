@@ -83,32 +83,32 @@ Stop trying to be everything. Be the best at ONE thing.
 
 ## 📊 HIGH-LEVEL EXECUTION PLAN (30-100 min tasks)
 
-| #   | Task                                                          | Priority | Effort | Impact   | Customer Value             | Time |
-| --- | ------------------------------------------------------------- | -------- | ------ | -------- | -------------------------- | ---- |
-| 1   | Fix adapter interface mismatches (Println, MkdirAll, context) | P0       | M      | CRITICAL | Enables compilation        | 60m  |
-| 2   | Implement missing SqlcConfig.ToYAML() method                  | P0       | S      | CRITICAL | Enables config generation  | 30m  |
-| 3   | Fix generated types (add ProjectTypeFullstack, etc.)          | P0       | M      | CRITICAL | Enables proper type safety | 45m  |
-| 4   | Remove or stub ProjectCreator to fix build                    | P0       | S      | CRITICAL | Enables compilation        | 30m  |
-| 5   | Verify clean build and run existing tests                     | P0       | S      | CRITICAL | Baseline functionality     | 20m  |
-| 6   | **Decision: Remove event bus system**                         | P1       | M      | HIGH     | Reduce complexity          | 40m  |
-| 7   | **Decision: Remove plugin system**                            | P1       | S      | HIGH     | Reduce scope creep         | 30m  |
-| 8   | Fix split brain: Consolidate SafetyRules/ToRuleConfigs        | P1       | M      | HIGH     | Type safety                | 50m  |
-| 9   | Fix split brain: Unify ProjectType definitions                | P1       | M      | HIGH     | Type safety                | 45m  |
-| 10  | Complete init command end-to-end test                         | P1       | M      | HIGH     | Verify core functionality  | 60m  |
-| 11  | Add 2-3 more solid templates (API, Library, Fullstack)        | P1       | L      | HIGH     | Customer value             | 120m |
-| 12  | Complete validation command                                   | P2       | M      | MEDIUM   | Enhanced experience        | 75m  |
-| 13  | Complete doctor command (8 essential checks)                  | P2       | M      | MEDIUM   | Developer experience       | 80m  |
-| 14  | **Decision: Migration system - implement basic or remove**    | P2       | L      | MEDIUM   | Future value               | 100m |
-| 15  | Add integration tests for file generation                     | P2       | M      | MEDIUM   | Quality assurance          | 70m  |
-| 16  | Add E2E test: CLI -> valid sqlc.yaml -> sqlc validate         | P2       | M      | MEDIUM   | Quality assurance          | 60m  |
-| 17  | Implement samber/do dependency injection properly             | P2       | M      | MEDIUM   | Architecture improvement   | 50m  |
-| 18  | Fix all TODO comments and incomplete implementations          | P2       | M      | MEDIUM   | Code quality               | 60m  |
-| 19  | Update documentation to match reality                         | P2       | M      | MEDIUM   | Trust & clarity            | 55m  |
-| 20  | Add comprehensive error handling with uniflow                 | P3       | L      | LOW      | Enhanced UX                | 90m  |
-| 21  | Add OpenTelemetry tracing (if needed for CLI?)                | P3       | M      | LOW      | Observability              | 70m  |
-| 22  | Performance optimization and benchmarking                     | P3       | M      | LOW      | Polish                     | 60m  |
-| 23  | Create contribution guidelines                                | P3       | S      | LOW      | Community building         | 30m  |
-| 24  | Add CI/CD pipeline configuration                              | P2       | M      | MEDIUM   | DevOps                     | 75m  |
+| #  | Task                                                          | Priority | Effort | Impact   | Customer Value             | Time |
+| -- | ------------------------------------------------------------- | -------- | ------ | -------- | -------------------------- | ---- |
+| 1  | Fix adapter interface mismatches (Println, MkdirAll, context) | P0       | M      | CRITICAL | Enables compilation        | 60m  |
+| 2  | Implement missing SqlcConfig.ToYAML() method                  | P0       | S      | CRITICAL | Enables config generation  | 30m  |
+| 3  | Fix generated types (add ProjectTypeFullstack, etc.)          | P0       | M      | CRITICAL | Enables proper type safety | 45m  |
+| 4  | Remove or stub ProjectCreator to fix build                    | P0       | S      | CRITICAL | Enables compilation        | 30m  |
+| 5  | Verify clean build and run existing tests                     | P0       | S      | CRITICAL | Baseline functionality     | 20m  |
+| 6  | **Decision: Remove event bus system**                         | P1       | M      | HIGH     | Reduce complexity          | 40m  |
+| 7  | **Decision: Remove plugin system**                            | P1       | S      | HIGH     | Reduce scope creep         | 30m  |
+| 8  | Fix split brain: Consolidate SafetyRules/ToRuleConfigs        | P1       | M      | HIGH     | Type safety                | 50m  |
+| 9  | Fix split brain: Unify ProjectType definitions                | P1       | M      | HIGH     | Type safety                | 45m  |
+| 10 | Complete init command end-to-end test                         | P1       | M      | HIGH     | Verify core functionality  | 60m  |
+| 11 | Add 2-3 more solid templates (API, Library, Fullstack)        | P1       | L      | HIGH     | Customer value             | 120m |
+| 12 | Complete validation command                                   | P2       | M      | MEDIUM   | Enhanced experience        | 75m  |
+| 13 | Complete doctor command (8 essential checks)                  | P2       | M      | MEDIUM   | Developer experience       | 80m  |
+| 14 | **Decision: Migration system - implement basic or remove**    | P2       | L      | MEDIUM   | Future value               | 100m |
+| 15 | Add integration tests for file generation                     | P2       | M      | MEDIUM   | Quality assurance          | 70m  |
+| 16 | Add E2E test: CLI -> valid sqlc.yaml -> sqlc validate         | P2       | M      | MEDIUM   | Quality assurance          | 60m  |
+| 17 | Implement samber/do dependency injection properly             | P2       | M      | MEDIUM   | Architecture improvement   | 50m  |
+| 18 | Fix all TODO comments and incomplete implementations          | P2       | M      | MEDIUM   | Code quality               | 60m  |
+| 19 | Update documentation to match reality                         | P2       | M      | MEDIUM   | Trust & clarity            | 55m  |
+| 20 | Add comprehensive error handling with uniflow                 | P3       | L      | LOW      | Enhanced UX                | 90m  |
+| 21 | Add OpenTelemetry tracing (if needed for CLI?)                | P3       | M      | LOW      | Observability              | 70m  |
+| 22 | Performance optimization and benchmarking                     | P3       | M      | LOW      | Polish                     | 60m  |
+| 23 | Create contribution guidelines                                | P3       | S      | LOW      | Community building         | 30m  |
+| 24 | Add CI/CD pipeline configuration                              | P2       | M      | MEDIUM   | DevOps                     | 75m  |
 
 **TOTAL ESTIMATED TIME:** ~1,395 minutes (23.25 hours)
 

@@ -1,8 +1,8 @@
 # SQLC-Wizzard Micro-Task Execution Plan (15min max)
 
-**Total Tasks:** 150 micro-tasks  
-**Max Duration:** 15 minutes per task  
-**Total Estimated Time:** ~37.5 hours  
+**Total Tasks:** 150 micro-tasks\
+**Max Duration:** 15 minutes per task\
+**Total Estimated Time:** ~37.5 hours\
 **Focus:** Systematic, verifiable progress with zero architectural failures
 
 ---
@@ -224,7 +224,7 @@
 
 ## 🎯 FINAL EXCELLENCE METRICS
 
-**Current State:** 30% type safety, fake DDD, production unready  
+**Current State:** 30% type safety, fake DDD, production unready\
 **Target State:** 95%+ type safety, real DDD, production excellent
 
 **Execution Strategy:**

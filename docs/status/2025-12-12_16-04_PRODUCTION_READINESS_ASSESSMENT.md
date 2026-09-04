@@ -14,16 +14,16 @@ SQLC-Wizard has solid technical foundations but needs production-grade hardening
 
 ## 📊 OVERALL STATUS BREAKDOWN
 
-| Category                 | Status                | Completion | Notes                                      |
-| ------------------------ | --------------------- | ---------- | ------------------------------------------ |
-| **Core Functionality**   | ✅ **FULLY DONE**     | 95%        | All CLI commands work, wizard functional   |
+| Category                 | Status               | Completion | Notes                                      |
+| ------------------------ | -------------------- | ---------- | ------------------------------------------ |
+| **Core Functionality**   | ✅ **FULLY DONE**    | 95%        | All CLI commands work, wizard functional   |
 | **Testing Coverage**     | ⚠️ **PARTIALLY DONE** | 60%        | Added tests, but wizard coverage still low |
-| **Legal & License**      | ✅ **FULLY DONE**     | 100%       | MIT license added                          |
-| **Documentation**        | ✅ **FULLY DONE**     | 85%        | Excellent README and architecture docs     |
-| **Release Engineering**  | ❌ **NOT STARTED**    | 0%         | No CI/CD, releases, or distribution        |
+| **Legal & License**      | ✅ **FULLY DONE**    | 100%       | MIT license added                          |
+| **Documentation**        | ✅ **FULLY DONE**    | 85%        | Excellent README and architecture docs     |
+| **Release Engineering**  | ❌ **NOT STARTED**   | 0%         | No CI/CD, releases, or distribution        |
 | **Production Hardening** | ⚠️ **PARTIALLY DONE** | 30%        | Basic error handling, needs more           |
 | **Security**             | ⚠️ **PARTIALLY DONE** | 40%        | Basic validation, needs security audit     |
-| **Performance**          | ❌ **NOT STARTED**    | 10%        | No benchmarks or performance testing       |
+| **Performance**          | ❌ **NOT STARTED**   | 10%        | No benchmarks or performance testing       |
 
 ---
 

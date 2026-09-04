@@ -1,7 +1,7 @@
 # EXECUTION PLAN - 1% that delivers 51% of results
 
-**Date:** 2025-11-07 02:15 CET  
-**Author:** Senior Software Architect  
+**Date:** 2025-11-07 02:15 CET\
+**Author:** Senior Software Architect\
 **Status:** CRITICAL RECOVERY EXECUTION
 
 ## 🚨 BRUTAL ARCHITECTURAL ASSESSMENT
@@ -59,29 +59,29 @@
 
 | #     | Task                                 | Priority    | Impact | Effort                  | Success Criteria |
 | ----- | ------------------------------------ | ----------- | ------ | ----------------------- | ---------------- |
-| **1** | **Fix Confirmation Split Brain**     | 🔥 CRITICAL | 5 min  | Single source of truth  |
-| **2** | **Wizard File Size Reduction**       | 🔥 CRITICAL | 10 min | 282→<200 lines          |
-| **3** | **Adapter File Size Reduction**      | 🔥 CRITICAL | 10 min | 270→<200 lines          |
-| **4** | **TypeSpec File Size Reduction**     | 🔥 CRITICAL | 10 min | 272→<200 lines          |
-| **5** | **Doctor File Size Reduction**       | 🔥 CRITICAL | 5 min  | 256→<200 lines          |
-| **6** | **Template File Size Reduction**     | 🔥 CRITICAL | 5 min  | 240→<200 lines          |
-| **7** | **TypeSpec 100% Integration**        | 🔥 CRITICAL | 30 min | Zero manual types       |
-| **8** | **BDD Scenario Completion**          | 🔥 CRITICAL | 20 min | Full scenario coverage  |
-| **9** | **Domain Validation Implementation** | 🔥 HIGH     | 10 min | Business rules enforced |
+| **1** | **Fix Confirmation Split Brain**     | 🔥 CRITICAL | 5 min  | Single source of truth  |                  |
+| **2** | **Wizard File Size Reduction**       | 🔥 CRITICAL | 10 min | 282→<200 lines          |                  |
+| **3** | **Adapter File Size Reduction**      | 🔥 CRITICAL | 10 min | 270→<200 lines          |                  |
+| **4** | **TypeSpec File Size Reduction**     | 🔥 CRITICAL | 10 min | 272→<200 lines          |                  |
+| **5** | **Doctor File Size Reduction**       | 🔥 CRITICAL | 5 min  | 256→<200 lines          |                  |
+| **6** | **Template File Size Reduction**     | 🔥 CRITICAL | 5 min  | 240→<200 lines          |                  |
+| **7** | **TypeSpec 100% Integration**        | 🔥 CRITICAL | 30 min | Zero manual types       |                  |
+| **8** | **BDD Scenario Completion**          | 🔥 CRITICAL | 20 min | Full scenario coverage  |                  |
+| **9** | **Domain Validation Implementation** | 🔥 HIGH     | 10 min | Business rules enforced |                  |
 
 ### **🛠️ HIGH PRIORITY (10% Impact) - 20 minutes**
 
 | #      | Task                           | Priority | Impact | Effort             | Success Criteria |
 | ------ | ------------------------------ | -------- | ------ | ------------------ | ---------------- |
-| **10** | **TDD Scaffolding Fix**        | 🔥 HIGH  | 10 min | RED→GREEN→REFACTOR |
-| **11** | **Error System Consolidation** | 🔥 HIGH  | 10 min | 50→20 error types  |
+| **10** | **TDD Scaffolding Fix**        | 🔥 HIGH  | 10 min | RED→GREEN→REFACTOR |                  |
+| **11** | **Error System Consolidation** | 🔥 HIGH  | 10 min | 50→20 error types  |                  |
 
 ### **🔧 MEDIUM PRIORITY (5% Impact) - 20 minutes**
 
 | #      | Task                         | Priority  | Impact | Effort               | Success Criteria |
 | ------ | ---------------------------- | --------- | ------ | -------------------- | ---------------- |
-| **12** | **Performance Monitoring**   | 🟡 MEDIUM | 10 min | Automated benchmarks |
-| **13** | **Documentation Generation** | 🟡 MEDIUM | 10 min | TypeSpec→OpenAPI     |
+| **12** | **Performance Monitoring**   | 🟡 MEDIUM | 10 min | Automated benchmarks |                  |
+| **13** | **Documentation Generation** | 🟡 MEDIUM | 10 min | TypeSpec→OpenAPI     |                  |
 
 ---
 
@@ -89,88 +89,88 @@
 
 ### **Type Safety Tasks (1-30)**
 
-| #   | Task                               | Effort | Priority    |
-| --- | ---------------------------------- | ------ | ----------- |
-| 1   | Find all split brain patterns      | 5 min  | 🔥 CRITICAL |
-| 2   | Eliminate confirmation split brain | 5 min  | 🔥 CRITICAL |
-| 3   | Fix project status split brain     | 5 min  | 🔥 CRITICAL |
-| 4   | Fix user state split brain         | 5 min  | 🔥 CRITICAL |
-| 5   | Add IsConfirmed() methods          | 5 min  | 🔥 CRITICAL |
-| 6   | Remove boolean flags               | 5 min  | 🔥 CRITICAL |
-| 7   | Add TypeSpec temporal decorators   | 5 min  | 🔥 CRITICAL |
-| 8   | Generate types from TypeSpec       | 10 min | 🔥 CRITICAL |
-| 9   | Replace manual types               | 10 min | 🔥 CRITICAL |
-| 10  | Test type safety                   | 5 min  | 🔥 CRITICAL |
-| 11  | Fix compilation errors             | 5 min  | 🔥 CRITICAL |
-| 12  | Validate no invalid states         | 5 min  | 🔥 CRITICAL |
-| 13  | Add domain invariants              | 5 min  | 🔥 CRITICAL |
-| 14  | Test business rules                | 5 min  | 🔥 CRITICAL |
-| 15  | Commit type safety fix             | 5 min  | 🔥 CRITICAL |
+| #  | Task                               | Effort | Priority    |
+| -- | ---------------------------------- | ------ | ----------- |
+| 1  | Find all split brain patterns      | 5 min  | 🔥 CRITICAL |
+| 2  | Eliminate confirmation split brain | 5 min  | 🔥 CRITICAL |
+| 3  | Fix project status split brain     | 5 min  | 🔥 CRITICAL |
+| 4  | Fix user state split brain         | 5 min  | 🔥 CRITICAL |
+| 5  | Add IsConfirmed() methods          | 5 min  | 🔥 CRITICAL |
+| 6  | Remove boolean flags               | 5 min  | 🔥 CRITICAL |
+| 7  | Add TypeSpec temporal decorators   | 5 min  | 🔥 CRITICAL |
+| 8  | Generate types from TypeSpec       | 10 min | 🔥 CRITICAL |
+| 9  | Replace manual types               | 10 min | 🔥 CRITICAL |
+| 10 | Test type safety                   | 5 min  | 🔥 CRITICAL |
+| 11 | Fix compilation errors             | 5 min  | 🔥 CRITICAL |
+| 12 | Validate no invalid states         | 5 min  | 🔥 CRITICAL |
+| 13 | Add domain invariants              | 5 min  | 🔥 CRITICAL |
+| 14 | Test business rules                | 5 min  | 🔥 CRITICAL |
+| 15 | Commit type safety fix             | 5 min  | 🔥 CRITICAL |
 
 ### **File Size Tasks (16-45)**
 
-| #   | Task                               | Effort | Priority    |
-| --- | ---------------------------------- | ------ | ----------- |
-| 16  | Extract wizard step methods        | 10 min | 🔥 CRITICAL |
-| 17  | Extract wizard UI methods          | 5 min  | 🔥 CRITICAL |
-| 18  | Extract wizard validation          | 5 min  | 🔥 CRITICAL |
-| 19  | Test wizard functionality          | 5 min  | 🔥 CRITICAL |
-| 20  | Commit wizard split                | 5 min  | 🔥 CRITICAL |
-| 21  | Extract adapter implementations    | 10 min | 🔥 CRITICAL |
-| 22  | Split SQLC adapter                 | 5 min  | 🔥 CRITICAL |
-| 23  | Split database adapter             | 5 min  | 🔥 CRITICAL |
-| 24  | Test adapter functionality         | 5 min  | 🔥 CRITICAL |
-| 25  | Commit adapter split               | 5 min  | 🔥 CRITICAL |
-| 26  | Extract TypeSpec enums             | 5 min  | 🔥 CRITICAL |
-| 27  | Extract TypeSpec structs           | 5 min  | 🔥 CRITICAL |
-| 28  | Split type definitions             | 5 min  | 🔥 CRITICAL |
-| 29  | Test TypeSpec generation           | 5 min  | 🔥 CRITICAL |
-| 30  | Commit TypeSpec split              | 5 min  | 🔥 CRITICAL |
-| 31  | Extract doctor health checks       | 5 min  | 🔥 CRITICAL |
-| 32  | Split check_go_version             | 3 min  | 🔥 CRITICAL |
-| 33  | Split check_sqlc_installation      | 3 min  | 🔥 CRITICAL |
-| 34  | Split check_database_drivers       | 5 min  | 🔥 CRITICAL |
-| 35  | Split check_filesystem_permissions | 4 min  | 🔥 CRITICAL |
-| 36  | Split check_memory_availability    | 2 min  | 🔥 CRITICAL |
-| 37  | Extract doctor results formatting  | 5 min  | 🔥 CRITICAL |
-| 38  | Test doctor functionality          | 5 min  | 🔥 CRITICAL |
-| 39  | Commit doctor split                | 5 min  | 🔥 CRITICAL |
-| 40  | Extract template builders          | 5 min  | 🔥 CRITICAL |
-| 41  | Split generator methods            | 5 min  | 🔥 CRITICAL |
-| 42  | Extract configuration helpers      | 5 min  | 🔥 CRITICAL |
-| 43  | Create modular template system     | 5 min  | 🔥 CRITICAL |
-| 44  | Test template functionality        | 5 min  | 🔥 CRITICAL |
-| 45  | Commit template split              | 5 min  | 🔥 CRITICAL |
+| #  | Task                               | Effort | Priority    |
+| -- | ---------------------------------- | ------ | ----------- |
+| 16 | Extract wizard step methods        | 10 min | 🔥 CRITICAL |
+| 17 | Extract wizard UI methods          | 5 min  | 🔥 CRITICAL |
+| 18 | Extract wizard validation          | 5 min  | 🔥 CRITICAL |
+| 19 | Test wizard functionality          | 5 min  | 🔥 CRITICAL |
+| 20 | Commit wizard split                | 5 min  | 🔥 CRITICAL |
+| 21 | Extract adapter implementations    | 10 min | 🔥 CRITICAL |
+| 22 | Split SQLC adapter                 | 5 min  | 🔥 CRITICAL |
+| 23 | Split database adapter             | 5 min  | 🔥 CRITICAL |
+| 24 | Test adapter functionality         | 5 min  | 🔥 CRITICAL |
+| 25 | Commit adapter split               | 5 min  | 🔥 CRITICAL |
+| 26 | Extract TypeSpec enums             | 5 min  | 🔥 CRITICAL |
+| 27 | Extract TypeSpec structs           | 5 min  | 🔥 CRITICAL |
+| 28 | Split type definitions             | 5 min  | 🔥 CRITICAL |
+| 29 | Test TypeSpec generation           | 5 min  | 🔥 CRITICAL |
+| 30 | Commit TypeSpec split              | 5 min  | 🔥 CRITICAL |
+| 31 | Extract doctor health checks       | 5 min  | 🔥 CRITICAL |
+| 32 | Split check_go_version             | 3 min  | 🔥 CRITICAL |
+| 33 | Split check_sqlc_installation      | 3 min  | 🔥 CRITICAL |
+| 34 | Split check_database_drivers       | 5 min  | 🔥 CRITICAL |
+| 35 | Split check_filesystem_permissions | 4 min  | 🔥 CRITICAL |
+| 36 | Split check_memory_availability    | 2 min  | 🔥 CRITICAL |
+| 37 | Extract doctor results formatting  | 5 min  | 🔥 CRITICAL |
+| 38 | Test doctor functionality          | 5 min  | 🔥 CRITICAL |
+| 39 | Commit doctor split                | 5 min  | 🔥 CRITICAL |
+| 40 | Extract template builders          | 5 min  | 🔥 CRITICAL |
+| 41 | Split generator methods            | 5 min  | 🔥 CRITICAL |
+| 42 | Extract configuration helpers      | 5 min  | 🔥 CRITICAL |
+| 43 | Create modular template system     | 5 min  | 🔥 CRITICAL |
+| 44 | Test template functionality        | 5 min  | 🔥 CRITICAL |
+| 45 | Commit template split              | 5 min  | 🔥 CRITICAL |
 
 ### **BDD & Domain Tasks (46-75)**
 
-| #   | Task                               | Effort | Priority    |
-| --- | ---------------------------------- | ------ | ----------- |
-| 46  | Complete CLI BDD scenarios         | 5 min  | 🔥 CRITICAL |
-| 47  | Add error handling BDD             | 5 min  | 🔥 CRITICAL |
-| 48  | Add validation BDD                 | 5 min  | 🔥 CRITICAL |
-| 49  | Add integration BDD scenarios      | 5 min  | 🔥 CRITICAL |
-| 50  | Add performance BDD                | 5 min  | 🔥 CRITICAL |
-| 51  | Test BDD scenarios                 | 5 min  | 🔥 CRITICAL |
-| 52  | Fix BDD compilation                | 5 min  | 🔥 CRITICAL |
-| 53  | Add BDD coverage                   | 5 min  | 🔥 CRITICAL |
-| 54  | Run BDD tests                      | 5 min  | 🔥 CRITICAL |
-| 55  | Commit BDD completion              | 5 min  | 🔥 CRITICAL |
-| 56  | Add TypeSpec validation decorators | 5 min  | 🔥 HIGH     |
-| 57  | Generate validation code           | 5 min  | 🔥 HIGH     |
-| 58  | Add business rule invariants       | 5 min  | 🔥 HIGH     |
-| 59  | Test domain validation             | 5 min  | 🔥 HIGH     |
-| 60  | Fix validation errors              | 5 min  | 🔥 HIGH     |
-| 61  | Add validation error messages      | 5 min  | 🔥 HIGH     |
-| 62  | Test validation messages           | 5 min  | 🔥 HIGH     |
-| 63  | Add validation CI checks           | 5 min  | 🔥 HIGH     |
-| 64  | Commit domain validation           | 5 min  | 🔥 HIGH     |
-| 65  | Test domain integrity              | 5 min  | 🔥 HIGH     |
-| 66  | Fix domain issues                  | 5 min  | 🔥 HIGH     |
-| 67  | Validate business rules            | 5 min  | 🔥 HIGH     |
-| 68  | Test domain boundaries             | 5 min  | 🔥 HIGH     |
-| 69  | Commit domain completion           | 5 min  | 🔥 HIGH     |
-| 70  | Final domain testing               | 5 min  | 🔥 HIGH     |
+| #  | Task                               | Effort | Priority    |
+| -- | ---------------------------------- | ------ | ----------- |
+| 46 | Complete CLI BDD scenarios         | 5 min  | 🔥 CRITICAL |
+| 47 | Add error handling BDD             | 5 min  | 🔥 CRITICAL |
+| 48 | Add validation BDD                 | 5 min  | 🔥 CRITICAL |
+| 49 | Add integration BDD scenarios      | 5 min  | 🔥 CRITICAL |
+| 50 | Add performance BDD                | 5 min  | 🔥 CRITICAL |
+| 51 | Test BDD scenarios                 | 5 min  | 🔥 CRITICAL |
+| 52 | Fix BDD compilation                | 5 min  | 🔥 CRITICAL |
+| 53 | Add BDD coverage                   | 5 min  | 🔥 CRITICAL |
+| 54 | Run BDD tests                      | 5 min  | 🔥 CRITICAL |
+| 55 | Commit BDD completion              | 5 min  | 🔥 CRITICAL |
+| 56 | Add TypeSpec validation decorators | 5 min  | 🔥 HIGH     |
+| 57 | Generate validation code           | 5 min  | 🔥 HIGH     |
+| 58 | Add business rule invariants       | 5 min  | 🔥 HIGH     |
+| 59 | Test domain validation             | 5 min  | 🔥 HIGH     |
+| 60 | Fix validation errors              | 5 min  | 🔥 HIGH     |
+| 61 | Add validation error messages      | 5 min  | 🔥 HIGH     |
+| 62 | Test validation messages           | 5 min  | 🔥 HIGH     |
+| 63 | Add validation CI checks           | 5 min  | 🔥 HIGH     |
+| 64 | Commit domain validation           | 5 min  | 🔥 HIGH     |
+| 65 | Test domain integrity              | 5 min  | 🔥 HIGH     |
+| 66 | Fix domain issues                  | 5 min  | 🔥 HIGH     |
+| 67 | Validate business rules            | 5 min  | 🔥 HIGH     |
+| 68 | Test domain boundaries             | 5 min  | 🔥 HIGH     |
+| 69 | Commit domain completion           | 5 min  | 🔥 HIGH     |
+| 70 | Final domain testing               | 5 min  | 🔥 HIGH     |
 
 ### **Production Polish Tasks (71-150)**
 
@@ -371,9 +371,9 @@ graph TD
 
 ## 🎁 READY FOR EXECUTION
 
-**30 Critical Tasks**: 100 minutes maximum effort  
-**150 Microscopic Tasks**: 15 minutes maximum each  
-**Clear Priority Stack**: Critical → High → Medium  
+**30 Critical Tasks**: 100 minutes maximum effort\
+**150 Microscopic Tasks**: 15 minutes maximum each\
+**Clear Priority Stack**: Critical → High → Medium\
 **Success Metrics**: Quantified and measurable
 
 **Execution Ready**: NOW 🚀
@@ -382,9 +382,9 @@ graph TD
 
 ## 🎯 SENIOR ARCHITECT COMMITMENT
 
-**Type Safety First**: 100% non-negotiable  
-**File Size Compliance**: 100% required  
-**Incremental Build Verification**: Every 5 minutes  
+**Type Safety First**: 100% non-negotiable\
+**File Size Compliance**: 100% required\
+**Incremental Build Verification**: Every 5 minutes\
 **Professional Standards**: No compromises
 
 **Ready for immediate execution** 🚀

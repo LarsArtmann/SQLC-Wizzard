@@ -8,13 +8,13 @@
 
 ✅ **MISSION ACCOMPLISHED** — All 11 files flagged in the lint report have been refactored under the 350-line limit. Build passes; 8 pre-existing test failures remain (unrelated to this work).
 
-| Category                           | Count         | Status       |
-| ---------------------------------- | ------------- | ------------ |
-| Files refactored                   | 11/11         | ✅ DONE      |
-| Lines removed from oversized files | ~2,000+       | ✅ DONE      |
-| New focused files created          | 24            | ✅ DONE      |
-| Build status                       | PASSING       | ✅           |
-| Test status (related work)         | PASSING       | ✅           |
+| Category                           | Count         | Status      |
+| ---------------------------------- | ------------- | ----------- |
+| Files refactored                   | 11/11         | ✅ DONE     |
+| Lines removed from oversized files | ~2,000+       | ✅ DONE     |
+| New focused files created          | 24            | ✅ DONE     |
+| Build status                       | PASSING       | ✅          |
+| Test status (related work)         | PASSING       | ✅          |
 | Pre-existing test failures         | 8 (unrelated) | ⚠️ UNCHANGED |
 
 ---
@@ -192,33 +192,33 @@ The IDE shows "duplicate declaration" errors for files I removed. After committi
 
 Prioritized by impact-to-effort ratio (Pareto):
 
-| #   | Action                                                                                                  | Impact | Effort | Priority |
-| --- | ------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
-| 1   | Fix the 8 pre-existing template test failures (JSONEq bug)                                              | High   | Low    | P0       |
-| 2   | Delete deprecated 21-param `BuildDefaultData` from base.go                                              | Medium | Low    | P0       |
-| 3   | Remove all `*domain.SafetyRules` usages in test code                                                    | Medium | Medium | P1       |
-| 4   | Refactor `internal/wizard/wizard.go` (355 lines)                                                        | High   | High   | P1       |
-| 5   | Refactor 5 oversized `internal/wizard/*_test.go` files                                                  | High   | Medium | P1       |
-| 6   | Refactor `internal/creators/project_creator.go` (432 lines)                                             | High   | High   | P1       |
-| 7   | Refactor `internal/adapters/migration_real.go` (371 lines)                                              | Medium | Medium | P2       |
-| 8   | Refactor `internal/utils/utils_test.go` (330 lines)                                                     | Low    | Low    | P2       |
-| 9   | Fix the 17 `internal/db` goconst warnings by using `DefaultPackagePath` everywhere                      | Low    | Low    | P2       |
-| 10  | Add `make` / `just` target for `find-duplicates` to catch these BEFORE they grow                        | Medium | Low    | P2       |
-| 11  | Add a CI check that fails when files exceed 350 lines                                                   | High   | Low    | P2       |
-| 12  | Run `go test -race` to verify the split test files don't have race conditions on shared `BeforeEach`    | Medium | Low    | P2       |
-| 13  | Reduce `template_helper_options.go` (164 lines) by grouping related options                             | Low    | Low    | P3       |
-| 14  | Consolidate duplicated `BeforeEach` in `creators/*_test.go` into a shared suite                         | Low    | Low    | P3       |
-| 15  | Add godoc to all new helper functions (many lack it)                                                    | Low    | Low    | P3       |
-| 16  | Run `golangci-lint run ./...` and capture full warning list                                             | High   | Low    | P1       |
-| 17  | Add table-driven test for `ValidateAllProjectTypes` to test all 8 valid types                           | Low    | Low    | P3       |
-| 18  | Investigate the `getJSONTagsCaseStyle` warning in `template_validation_test.go`                         | Low    | Low    | P3       |
-| 19  | Profile test execution — split files may have slowed down test setup                                    | Low    | Low    | P4       |
-| 20  | Add a `CONTRIBUTING.md` note about the 350-line file policy                                             | Low    | Low    | P4       |
-| 21  | Run `go mod tidy` — `go.mod` has changes I didn't make                                                  | Low    | Low    | P3       |
-| 22  | Review and possibly reduce `gomega` import surface in test files                                        | Low    | Low    | P4       |
-| 23  | Consider whether `paralleltest` lint warnings should be addressed (they exist for ALL split test files) | Low    | Low    | P4       |
-| 24  | Update `internal/templates/types.go` constants if `DefaultDatabaseURL` etc. are exported                | Low    | Low    | P4       |
-| 25  | Create an ADR for the file-size policy (why 350? why not 200 or 500?)                                   | Medium | Low    | P2       |
+| #  | Action                                                                                                  | Impact | Effort | Priority |
+| -- | ------------------------------------------------------------------------------------------------------- | ------ | ------ | -------- |
+| 1  | Fix the 8 pre-existing template test failures (JSONEq bug)                                              | High   | Low    | P0       |
+| 2  | Delete deprecated 21-param `BuildDefaultData` from base.go                                              | Medium | Low    | P0       |
+| 3  | Remove all `*domain.SafetyRules` usages in test code                                                    | Medium | Medium | P1       |
+| 4  | Refactor `internal/wizard/wizard.go` (355 lines)                                                        | High   | High   | P1       |
+| 5  | Refactor 5 oversized `internal/wizard/*_test.go` files                                                  | High   | Medium | P1       |
+| 6  | Refactor `internal/creators/project_creator.go` (432 lines)                                             | High   | High   | P1       |
+| 7  | Refactor `internal/adapters/migration_real.go` (371 lines)                                              | Medium | Medium | P2       |
+| 8  | Refactor `internal/utils/utils_test.go` (330 lines)                                                     | Low    | Low    | P2       |
+| 9  | Fix the 17 `internal/db` goconst warnings by using `DefaultPackagePath` everywhere                      | Low    | Low    | P2       |
+| 10 | Add `make` / `just` target for `find-duplicates` to catch these BEFORE they grow                        | Medium | Low    | P2       |
+| 11 | Add a CI check that fails when files exceed 350 lines                                                   | High   | Low    | P2       |
+| 12 | Run `go test -race` to verify the split test files don't have race conditions on shared `BeforeEach`    | Medium | Low    | P2       |
+| 13 | Reduce `template_helper_options.go` (164 lines) by grouping related options                             | Low    | Low    | P3       |
+| 14 | Consolidate duplicated `BeforeEach` in `creators/*_test.go` into a shared suite                         | Low    | Low    | P3       |
+| 15 | Add godoc to all new helper functions (many lack it)                                                    | Low    | Low    | P3       |
+| 16 | Run `golangci-lint run ./...` and capture full warning list                                             | High   | Low    | P1       |
+| 17 | Add table-driven test for `ValidateAllProjectTypes` to test all 8 valid types                           | Low    | Low    | P3       |
+| 18 | Investigate the `getJSONTagsCaseStyle` warning in `template_validation_test.go`                         | Low    | Low    | P3       |
+| 19 | Profile test execution — split files may have slowed down test setup                                    | Low    | Low    | P4       |
+| 20 | Add a `CONTRIBUTING.md` note about the 350-line file policy                                             | Low    | Low    | P4       |
+| 21 | Run `go mod tidy` — `go.mod` has changes I didn't make                                                  | Low    | Low    | P3       |
+| 22 | Review and possibly reduce `gomega` import surface in test files                                        | Low    | Low    | P4       |
+| 23 | Consider whether `paralleltest` lint warnings should be addressed (they exist for ALL split test files) | Low    | Low    | P4       |
+| 24 | Update `internal/templates/types.go` constants if `DefaultDatabaseURL` etc. are exported                | Low    | Low    | P4       |
+| 25 | Create an ADR for the file-size policy (why 350? why not 200 or 500?)                                   | Medium | Low    | P2       |
 
 ---
 

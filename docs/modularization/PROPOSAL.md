@@ -294,20 +294,20 @@ See `EXECUTION_PLAN.md` for the full step-by-step migration with verification ch
 
 ### 4.4 Cross-Reference with how-to-golang
 
-| Check                              | Status                                                       |
-| ---------------------------------- | ------------------------------------------------------------ |
+| Check                              | Status                                                      |
+| ---------------------------------- | ----------------------------------------------------------- |
 | No banned deps in proposed modules | ⚠️ `gopkg.in/yaml.v3` in config/ (documented, migrate later) |
 | No banned deps in proposed modules | ⚠️ `testify` in root module (non-test code, document)        |
-| Domain types in correct location   | ✅ `generated/` is canonical source                          |
-| Architecture patterns aligned      | ✅ Layered with DAG enforcement                              |
-| Required libraries present         | ✅ ginkgo/gomega for testing                                 |
+| Domain types in correct location   | ✅ `generated/` is canonical source                         |
+| Architecture patterns aligned      | ✅ Layered with DAG enforcement                             |
+| Required libraries present         | ✅ ginkgo/gomega for testing                                |
 
 ### 4.5 Split Brain Check
 
-| Type             | Location 1                 | Location 2                              | Resolution                           |
-| ---------------- | -------------------------- | --------------------------------------- | ------------------------------------ |
-| `DatabaseConfig` | `generated.DatabaseConfig` | `config.DatabaseConfig` (YAML-specific) | ✅ Different purposes — keep both    |
-| `RuleConfig`     | `generated.RuleConfig`     | `config.RuleConfig`                     | ✅ Different purposes — keep both    |
+| Type             | Location 1                 | Location 2                              | Resolution                          |
+| ---------------- | -------------------------- | --------------------------------------- | ----------------------------------- |
+| `DatabaseConfig` | `generated.DatabaseConfig` | `config.DatabaseConfig` (YAML-specific) | ✅ Different purposes — keep both   |
+| `RuleConfig`     | `generated.RuleConfig`     | `config.RuleConfig`                     | ✅ Different purposes — keep both   |
 | `EmitOptions`    | `generated.EmitOptions`    | `domain.EmitOptions` (deprecated alias) | ⚠️ Remove alias during extraction    |
 | `SafetyRules`    | `generated.SafetyRules`    | `domain.SafetyRules` (deprecated alias) | ⚠️ Remove alias during extraction    |
 | Error types      | `pkg/errors.BaseError`     | `internal/apperrors.Error`              | ⚠️ Delete `pkg/errors` — it's unused |

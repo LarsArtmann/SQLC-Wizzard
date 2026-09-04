@@ -9,10 +9,10 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 | Feature            | Hobby        | Microservice        | Enterprise          | API First           | Analytics                  | Testing               | Multi Tenant        | Library            |
 | ------------------ | ------------ | ------------------- | ------------------- | ------------------- | -------------------------- | --------------------- | ------------------- | ------------------ |
 | **Complexity**     | Simple       | Medium              | High                | Medium              | Medium                     | Medium                | Medium              | Medium             |
-| **Database**       | SQLite       | PostgreSQL          | PostgreSQL          | PostgreSQL          | PostgreSQL                 | PostgreSQL            | PostgreSQL          |
-| **SQL Driver**     | database/sql | pgx/v5              | pgx/v5              | pgx/v5              | pgx/v5                     | pgx/v5                | pgx/v5              |
+| **Database**       | SQLite       | PostgreSQL          | PostgreSQL          | PostgreSQL          | PostgreSQL                 | PostgreSQL            | PostgreSQL          |                    |
+| **SQL Driver**     | database/sql | pgx/v5              | pgx/v5              | pgx/v5              | pgx/v5                     | pgx/v5                | pgx/v5              |                    |
 | **Output Path**    | db           | internal/db         | internal/db         | internal/db         | internal/analytics         | testdata/db           | internal/db         | internal/db        |
-| **Query Path**     | db/queries   | internal/db/queries | internal/db/queries | internal/db/queries | internal/analytics/queries | testdata/db/queries   | internal/db/queries |
+| **Query Path**     | db/queries   | internal/db/queries | internal/db/queries | internal/db/queries | internal/analytics/queries | testdata/db/queries   | internal/db/queries |                    |
 | **Schema Path**    | db/schema    | internal/db/schema  | internal/db/schema  | internal/db/schema  | internal/analytics/schema  | testdata/db/schema    | internal/db/schema  | internal/db/schema |
 | **Default DB URL** | file:dev.db  | ${DATABASE_URL}     | ${DATABASE_URL}     | ${DATABASE_URL}     | ${ANALYTICS_DATABASE_URL}  | file:testdata/test.db | ${DATABASE_URL}     | ${DATABASE_URL}    |
 
@@ -24,43 +24,43 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 
 | Feature              | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
 | -------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
-| **UUID Support**     | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |
-| **JSON Support**     | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ✅           |
-| **Array Support**    | ❌    | ❌           | ✅         | ✅        | ❌        | ✅      | ❌           |
-| **Full-Text Search** | ❌    | ❌           | ✅         | ❌        | ✅        | ❌      | ❌           |
+| **UUID Support**     | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |         |
+| **JSON Support**     | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ✅           |         |
+| **Array Support**    | ❌    | ❌           | ✅         | ✅        | ❌        | ✅      | ❌           |         |
+| **Full-Text Search** | ❌    | ❌           | ✅         | ❌        | ✅        | ❌      | ❌           |         |
 
 ### Code Generation Options
 
 | Option                     | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
 | -------------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
-| **Emit JSON Tags**         | ❌    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |
-| **Prepared Queries**       | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |
-| **Interface Generation**   | ❌    | ✅           | ✅         | ✅        | ✅        | ❌      | ✅           |
-| **Empty Slices**           | ✅    | ✅           | ✅         | ✅        | ❌        | ❌      | ❌           |
-| **Result Struct Pointers** | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
-| **Params Struct Pointers** | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
-| **Enum Validation**        | ❌    | ❌           | ❌         | ✅        | ❌        | ❌      | ✅           |
-| **All Enum Values**        | ❌    | ❌           | ❌         | ✅        | ❌        | ❌      | ✅           |
+| **Emit JSON Tags**         | ❌    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |         |
+| **Prepared Queries**       | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |         |
+| **Interface Generation**   | ❌    | ✅           | ✅         | ✅        | ✅        | ❌      | ✅           |         |
+| **Empty Slices**           | ✅    | ✅           | ✅         | ✅        | ❌        | ❌      | ❌           |         |
+| **Result Struct Pointers** | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
+| **Params Struct Pointers** | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
+| **Enum Validation**        | ❌    | ❌           | ❌         | ✅        | ❌        | ❌      | ✅           |         |
+| **All Enum Values**        | ❌    | ❌           | ❌         | ✅        | ❌        | ❌      | ✅           |         |
 | **JSON Tags Case Style**   | snake | camel        | camel      | camel     | snake     | snake   | camel        | camel   |
 
 ### Validation Options
 
 | Validation           | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
 | -------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
-| **Strict Functions** | ❌    | ❌           | ✅         | ❌        | ✅        | ❌      | ❌           |
-| **Strict Order By**  | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
-| **No Select Star**   | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
-| **Require Where**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
-| **No Drop Table**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
-| **No Truncate**      | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
-| **Require Limit**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |
+| **Strict Functions** | ❌    | ❌           | ✅         | ❌        | ✅        | ❌      | ❌           |         |
+| **Strict Order By**  | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
+| **No Select Star**   | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
+| **Require Where**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
+| **No Drop Table**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
+| **No Truncate**      | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
+| **Require Limit**    | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           |         |
 
 ### Type Overrides
 
 | Override Type              | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
 | -------------------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
-| **UUID → uuid.UUID**       | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |
-| **JSON → json.RawMessage** | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ❌           |
+| **UUID → uuid.UUID**       | ❌    | ✅           | ✅         | ✅        | ❌        | ✅      | ❌           |         |
+| **JSON → json.RawMessage** | ❌    | ✅           | ✅         | ✅        | ❌        | ❌      | ❌           |         |
 | **Arrays → []string**      | ❌    | ❌           | ✅         | ✅        | ❌        | ❌      | ❌           | ❌      |
 | **Full-Text → string**     | ❌    | ❌           | ✅         | ❌        | ❌        | ❌      | ❌           | ❌      |
 | **Array Nullable**         | -     | -            | ✅         | ✅        | -         | -       | ✅           | -       |
@@ -83,8 +83,8 @@ This matrix provides side-by-side comparison of all 8 templates to help you choo
 
 | Database       | Hobby | Microservice | Enterprise | API First | Analytics | Testing | Multi Tenant | Library |
 | -------------- | ----- | ------------ | ---------- | --------- | --------- | ------- | ------------ | ------- |
-| **PostgreSQL** | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |
-| **MySQL**      | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |
+| **PostgreSQL** | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |         |
+| **MySQL**      | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           |         |
 | **SQLite**     | ✅    | ✅           | ✅         | ✅        | ✅        | ✅      | ✅           | ✅      |
 
 ---

@@ -36,7 +36,7 @@
           commit = self.rev or "unknown";
           buildDate = self.lastModifiedDate or "1970-01-01T00:00:00Z";
 
-          vendorHash = "sha256-o2jReSqZLDNqcQSRGowBILfJlVygGuWGz9aq8334f8M=";
+          vendorHash = "sha256-cyRhf6EyA2FPjqi+BKMUZ0BZhEMAlAVL78ISq0G25fY=";
 
           ldflags = [
             "-s"

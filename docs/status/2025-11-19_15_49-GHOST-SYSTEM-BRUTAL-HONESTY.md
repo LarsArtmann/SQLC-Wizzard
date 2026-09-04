@@ -68,12 +68,12 @@ Why the gap?
 
 | Item                     | Status | What's Missing                                |
 | ------------------------ | ------ | --------------------------------------------- |
-| Type safety improvements | ⚠️ 20% | Types exist but unused (0% integration)       |
-| uint migration           | ⚠️ 15% | Only in QuerySafetyRules, not comprehensive   |
-| Deprecation path         | ⚠️ 30% | Noticed but no conversion utilities           |
-| Phase 1 tasks            | ⚠️ 43% | Tasks 1.1-1.4 done, 1.5-1.7 skipped           |
-| EmitOptions refactoring  | ⚠️ 25% | New type created, old still in use everywhere |
-| SafetyRules refactoring  | ⚠️ 25% | New type created, old still in use everywhere |
+| Type safety improvements | ⚠️ 20%  | Types exist but unused (0% integration)       |
+| uint migration           | ⚠️ 15%  | Only in QuerySafetyRules, not comprehensive   |
+| Deprecation path         | ⚠️ 30%  | Noticed but no conversion utilities           |
+| Phase 1 tasks            | ⚠️ 43%  | Tasks 1.1-1.4 done, 1.5-1.7 skipped           |
+| EmitOptions refactoring  | ⚠️ 25%  | New type created, old still in use everywhere |
+| SafetyRules refactoring  | ⚠️ 25%  | New type created, old still in use everywhere |
 
 ### C) Not Started ❌
 
@@ -513,48 +513,48 @@ func TestFullProjectCreation_WithTypeSafeSafetyRules(t *testing.T) {
 
 ### 🔴 CRITICAL (Must Do)
 
-| #   | Task                                              | Time  | Impact | Effort | Score |
-| --- | ------------------------------------------------- | ----- | ------ | ------ | ----- |
-| 1   | Add ToTypeSafe() converter                        | 15min | 🔥🔥🔥 | 🟢 Low | 9.5   |
-| 2   | Add ToLegacy() converter                          | 15min | 🔥🔥🔥 | 🟢 Low | 9.5   |
-| 3   | Update RuleTransformer for TypeSafeSafetyRules    | 20min | 🔥🔥🔥 | 🟢 Low | 9.0   |
-| 4   | Add integration test (RuleTransformer end-to-end) | 25min | 🔥🔥🔥 | 🟡 Med | 8.5   |
-| 5   | Write migration guide with examples               | 20min | 🔥🔥   | 🟢 Low | 8.0   |
+| # | Task                                              | Time  | Impact | Effort | Score |
+| - | ------------------------------------------------- | ----- | ------ | ------ | ----- |
+| 1 | Add ToTypeSafe() converter                        | 15min | 🔥🔥🔥 | 🟢 Low | 9.5   |
+| 2 | Add ToLegacy() converter                          | 15min | 🔥🔥🔥 | 🟢 Low | 9.5   |
+| 3 | Update RuleTransformer for TypeSafeSafetyRules    | 20min | 🔥🔥🔥 | 🟢 Low | 9.0   |
+| 4 | Add integration test (RuleTransformer end-to-end) | 25min | 🔥🔥🔥 | 🟡 Med | 8.5   |
+| 5 | Write migration guide with examples               | 20min | 🔥🔥   | 🟢 Low | 8.0   |
 
 ### 🟡 HIGH (Should Do)
 
-| #   | Task                                            | Time  | Impact | Effort  | Score |
-| --- | ----------------------------------------------- | ----- | ------ | ------- | ----- |
-| 6   | Update one generator to use TypeSafeEmitOptions | 45min | 🔥🔥🔥 | 🟡 Med  | 7.5   |
-| 7   | Task 1.5: Comprehensive uint migration          | 30min | 🔥🔥   | 🟡 Med  | 7.0   |
-| 8   | Task 1.6: Fix MigrationStatus split brain       | 20min | 🔥🔥   | 🟢 Low  | 7.5   |
-| 9   | Task 1.7: Integration verification              | 25min | 🔥🔥🔥 | 🟢 Low  | 8.0   |
-| 10  | Add wizard package tests (2.9%→80%)             | 90min | 🔥🔥🔥 | 🔴 High | 6.0   |
+| #  | Task                                            | Time  | Impact | Effort  | Score |
+| -- | ----------------------------------------------- | ----- | ------ | ------- | ----- |
+| 6  | Update one generator to use TypeSafeEmitOptions | 45min | 🔥🔥🔥 | 🟡 Med  | 7.5   |
+| 7  | Task 1.5: Comprehensive uint migration          | 30min | 🔥🔥   | 🟡 Med  | 7.0   |
+| 8  | Task 1.6: Fix MigrationStatus split brain       | 20min | 🔥🔥   | 🟢 Low  | 7.5   |
+| 9  | Task 1.7: Integration verification              | 25min | 🔥🔥🔥 | 🟢 Low  | 8.0   |
+| 10 | Add wizard package tests (2.9%→80%)             | 90min | 🔥🔥🔥 | 🔴 High | 6.0   |
 
 ### 🟢 MEDIUM (Nice to Have)
 
-| #   | Task                                 | Time  | Impact | Effort | Score |
-| --- | ------------------------------------ | ----- | ------ | ------ | ----- |
-| 11  | Add CLI entry tests (0%→80%)         | 50min | 🔥🔥   | 🟡 Med | 6.5   |
-| 12  | Split errors.go into 4 files         | 40min | 🔥     | 🟡 Med | 5.5   |
-| 13  | Add commands package tests (21%→75%) | 55min | 🔥🔥   | 🟡 Med | 6.0   |
-| 14  | Add QueryExecutor adapter            | 45min | 🔥     | 🟡 Med | 5.0   |
-| 15  | Add SchemaInspector adapter          | 45min | 🔥     | 🟡 Med | 5.0   |
+| #  | Task                                 | Time  | Impact | Effort | Score |
+| -- | ------------------------------------ | ----- | ------ | ------ | ----- |
+| 11 | Add CLI entry tests (0%→80%)         | 50min | 🔥🔥   | 🟡 Med | 6.5   |
+| 12 | Split errors.go into 4 files         | 40min | 🔥     | 🟡 Med | 5.5   |
+| 13 | Add commands package tests (21%→75%) | 55min | 🔥🔥   | 🟡 Med | 6.0   |
+| 14 | Add QueryExecutor adapter            | 45min | 🔥     | 🟡 Med | 5.0   |
+| 15 | Add SchemaInspector adapter          | 45min | 🔥     | 🟡 Med | 5.0   |
 
 ### ⚪ LOW (Later)
 
-| #   | Task                                       | Time  | Impact | Effort  | Score |
-| --- | ------------------------------------------ | ----- | ------ | ------- | ----- |
-| 16  | Consolidate validation logic               | 50min | 🔥     | 🟡 Med  | 4.5   |
-| 17  | Add value objects (DatabaseName, etc.)     | 75min | 🔥     | 🔴 High | 4.0   |
-| 18  | Update ARCHITECTURE.md                     | 15min | 🔥     | 🟢 Low  | 5.0   |
-| 19  | Write ADR for type migration               | 20min | 🔥     | 🟢 Low  | 4.5   |
-| 20  | Add linter rule preferring new types       | 30min | 🔥     | 🟡 Med  | 4.0   |
-| 21  | Performance benchmarks                     | 45min | 🔥     | 🟡 Med  | 3.5   |
-| 22  | Remove duplicate DefaultEmitOptions        | 15min | 🔥     | 🟢 Low  | 4.0   |
-| 23  | Add //deprecated comments to old functions | 10min | 🔥     | 🟢 Low  | 4.5   |
-| 24  | Integration test: Full project creation    | 30min | 🔥🔥   | 🟡 Med  | 5.5   |
-| 25  | Cleanup: Remove unused imports/code        | 20min | 🔥     | 🟢 Low  | 3.0   |
+| #  | Task                                       | Time  | Impact | Effort  | Score |
+| -- | ------------------------------------------ | ----- | ------ | ------- | ----- |
+| 16 | Consolidate validation logic               | 50min | 🔥     | 🟡 Med  | 4.5   |
+| 17 | Add value objects (DatabaseName, etc.)     | 75min | 🔥     | 🔴 High | 4.0   |
+| 18 | Update ARCHITECTURE.md                     | 15min | 🔥     | 🟢 Low  | 5.0   |
+| 19 | Write ADR for type migration               | 20min | 🔥     | 🟢 Low  | 4.5   |
+| 20 | Add linter rule preferring new types       | 30min | 🔥     | 🟡 Med  | 4.0   |
+| 21 | Performance benchmarks                     | 45min | 🔥     | 🟡 Med  | 3.5   |
+| 22 | Remove duplicate DefaultEmitOptions        | 15min | 🔥     | 🟢 Low  | 4.0   |
+| 23 | Add //deprecated comments to old functions | 10min | 🔥     | 🟢 Low  | 4.5   |
+| 24 | Integration test: Full project creation    | 30min | 🔥🔥   | 🟡 Med  | 5.5   |
+| 25 | Cleanup: Remove unused imports/code        | 20min | 🔥     | 🟢 Low  | 3.0   |
 
 **Score = (Impact × 3) - (Effort × 2)**
 
@@ -731,9 +731,9 @@ I will not declare "complete" again until:
 
 | File                                                              | Lines       | Purpose                        | Status      |
 | ----------------------------------------------------------------- | ----------- | ------------------------------ | ----------- |
-| internal/domain/emit_modes.go                                     | 259         | TypeSafeEmitOptions + 4 enums  | ⚠️ Unused   |
+| internal/domain/emit_modes.go                                     | 259         | TypeSafeEmitOptions + 4 enums  | ⚠️ Unused    |
 | internal/domain/emit_modes_test.go                                | 424         | 38 BDD tests                   | ✅ Passing  |
-| internal/domain/safety_policy.go                                  | 184         | TypeSafeSafetyRules + 3 groups | ⚠️ Unused   |
+| internal/domain/safety_policy.go                                  | 184         | TypeSafeSafetyRules + 3 groups | ⚠️ Unused    |
 | internal/domain/safety_policy_test.go                             | 324         | 30 BDD tests                   | ✅ Passing  |
 | docs/planning/2025-11-19_06_27-PHASE2-ARCHITECTURAL-EXCELLENCE.md | 689         | Phase 2 plan                   | ✅ Complete |
 | docs/status/2025-11-19_15_49-GHOST-SYSTEM-BRUTAL-HONESTY.md       | (this file) | Status report                  | ✅ Complete |
@@ -749,8 +749,8 @@ I will not declare "complete" again until:
 | Commit  | Message                            | Value            |
 | ------- | ---------------------------------- | ---------------- |
 | 89c96cf | docs: comprehensive Phase 2 plan   | ✅ Planning      |
-| 48f8b02 | feat: add type-safe EmitOptions    | ⚠️ Unused        |
-| 109aea7 | feat: add type-safe SafetyRules    | ⚠️ Unused        |
+| 48f8b02 | feat: add type-safe EmitOptions    | ⚠️ Unused         |
+| 109aea7 | feat: add type-safe SafetyRules    | ⚠️ Unused         |
 | 2dfb7b2 | docs: add deprecation notices      | ✅ Documentation |
 | 5e96441 | meta: Phase 1 complete - 51% value | ❌ FALSE CLAIM   |
 

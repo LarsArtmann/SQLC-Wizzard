@@ -1,8 +1,8 @@
 # Migration to Nix Flakes Proposal
 
-**Project:** SQLC-Wizard  
-**Date:** 2026-04-13  
-**Status:** Draft  
+**Project:** SQLC-Wizard\
+**Date:** 2026-04-13\
+**Status:** Draft\
 **Author:** Auto-generated from tooling audit
 
 ---
@@ -58,16 +58,16 @@ This proposal outlines a phased migration that:
 
 ### 2.3 Development Tools (Currently Expected as Global Installs)
 
-| Tool             | Purpose                  | Install Method           | Version Pinned?          |
-| ---------------- | ------------------------ | ------------------------ | ------------------------ |
-| `go`             | Build & test             | Manual / Homebrew        | Yes (go.mod)             |
-| `golangci-lint`  | 90+ linters              | `go install ...@latest`  | **No** — always latest   |
-| `dupl`           | Duplicate code detection | `go install ...@latest`  | **No**                   |
-| `goreleaser`     | Release automation       | CI action / manual       | **No** (CI uses `@v5`)   |
-| `just`           | Task runner              | Manual / Homebrew        | **No**                   |
+| Tool             | Purpose                  | Install Method                | Version Pinned?          |
+| ---------------- | ------------------------ | ----------------------------- | ------------------------ |
+| `go`             | Build & test             | Manual / Homebrew             | Yes (go.mod)             |
+| `golangci-lint`  | 90+ linters              | `go install ...@latest`       | **No** — always latest   |
+| `dupl`           | Duplicate code detection | `go install ...@latest`       | **No**                   |
+| `goreleaser`     | Release automation       | CI action / manual            | **No** (CI uses `@v5`)   |
+| `just`           | Task runner              | Manual / Homebrew             | **No**                   |
 | `tsp` (TypeSpec) | Type generation          | `pnpm dlx @typespec/compiler` | Partially (package.json) |
-| `git`            | Version info via ldflags | System                   | **No**                   |
-| `go-arch-lint`   | Architecture enforcement | Manual                   | **No**                   |
+| `git`            | Version info via ldflags | System                        | **No**                   |
+| `go-arch-lint`   | Architecture enforcement | Manual                        | **No**                   |
 
 ### 2.4 Build Configuration
 

@@ -618,7 +618,6 @@ What actually happens?
 Paste relevant log output here
 
 ```
-
 ---
 
 ## Summary

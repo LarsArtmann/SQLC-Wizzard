@@ -7,7 +7,7 @@
 | **CRITICAL**    | **Phase 1: Foundation**                                |        |        |                         |              |
 | 1               | Add missing core dependencies (viper, mo, do, sqlc)    | 45min  | HIGH   | ✅ Enables config & FP  | None         |
 | 2               | Add auth/otel/monitoring libs (casbin, otel)           | 30min  | HIGH   | ✅ Production readiness | Task 1       |
-| 3               | Add web libs (gin, templ, htmx)                        | 30min  | MEDIUM | ⚠️ Future web features  | Task 1       |
+| 3               | Add web libs (gin, templ, htmx)                        | 30min  | MEDIUM | ⚠️ Future web features   | Task 1       |
 | 4               | Add architecture enforcement (go-arch-lint)            | 20min  | HIGH   | ✅ Code quality         | Task 1       |
 | 5               | Fix CRITICAL lint issues (file.Close, os.RemoveAll)    | 30min  | HIGH   | ✅ Stability            | None         |
 | 6               | Fix method signature (errors.Is)                       | 20min  | HIGH   | ✅ Interface compliance | None         |
@@ -29,9 +29,9 @@
 | 19              | Add security validation                                | 40min  | MEDIUM | ✅ Security             | Task 12      |
 | 20              | Add OpenTelemetry instrumentation                      | 35min  | MEDIUM | ✅ Observability        | Task 2       |
 | **MAINTENANCE** | **Phase 5: Polish**                                    |        |        |                         |              |
-| 21              | Fix TODO comments (10 remaining)                       | 60min  | LOW    | ⚠️ Completeness         | Task 20      |
-| 22              | Add comprehensive documentation                        | 90min  | LOW    | ⚠️ Maintainability      | Task 21      |
-| 23              | Optimize performance bottlenecks                       | 45min  | LOW    | ⚠️ Performance          | Task 17      |
+| 21              | Fix TODO comments (10 remaining)                       | 60min  | LOW    | ⚠️ Completeness          | Task 20      |
+| 22              | Add comprehensive documentation                        | 90min  | LOW    | ⚠️ Maintainability       | Task 21      |
+| 23              | Optimize performance bottlenecks                       | 45min  | LOW    | ⚠️ Performance           | Task 17      |
 | 24              | Clean up ghost systems                                 | 30min  | MEDIUM | ✅ Architecture         | Task 8       |
 
 ---

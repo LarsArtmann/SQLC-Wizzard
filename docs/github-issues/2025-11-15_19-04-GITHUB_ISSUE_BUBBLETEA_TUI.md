@@ -1,8 +1,8 @@
 # 🎨 **BubbleTea & Bubbles: Proper TUI Implementation**
 
-**Priority:** HIGH  
-**Complexity:** HIGH  
-**Estimated Time:** 4-5 days  
+**Priority:** HIGH\
+**Complexity:** HIGH\
+**Estimated Time:** 4-5 days\
 **Impact:** HIGH - Core user experience transformation
 
 ---
@@ -423,6 +423,6 @@ This feature is **CRITICAL** for user experience because:
 
 ---
 
-_Created: 2025-11-15_  
-_Priority: HIGH_  
+_Created: 2025-11-15_\
+_Priority: HIGH_\
 _Ready for implementation_ 🎯

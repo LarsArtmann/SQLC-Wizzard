@@ -49,7 +49,6 @@ body: |
 labels: ["critical", "verification", "error-handling", "high-priority"]
 
 ````
-
 **2. ISSUE: Wizard Package Compilation Verification**
 ```yaml
 title: "CRITICAL: Verify Wizard Package Compilation After Transformation"
@@ -94,7 +93,6 @@ body: |
 labels: ["critical", "verification", "wizard", "testing", "high-priority"]
 
 ````
-
 ### 📁 FILE SIZE REDUCTION ISSUES (High Priority)
 
 **3. ISSUE: File Size Limits Enforcement Initiative**
@@ -144,7 +142,6 @@ body: |
 labels: ["architectural", "file-size", "refactoring", "maintainability", "high-priority"]
 
 ````
-
 ### 🛡️ TYPE SAFETY REVOLUTION ISSUES (Medium Priority)
 
 **4. ISSUE: Boolean-to-Enum Migration Project**
@@ -258,7 +255,6 @@ go test -race ./...
 labels: ["performance", "benchmarking", "infrastructure", "medium-priority"]
 
 ````
-
 ## 🔗 QUICK GITHUB ISSUE CREATION COMMANDS
 
 For tomorrow's GitHub CLI usage:
@@ -296,9 +292,9 @@ nix-shell --packages gh --run 'gh issue create --title "PERFORMANCE: Benchmarkin
 
 ## 🎯 READY FOR TOMORROW EXECUTION
 
-**STATUS:** All GitHub issues prepared and documented  
-**FORMAT:** YAML format ready for CLI creation  
-**PRIORITIES:** Clear ordering from critical to medium  
+**STATUS:** All GitHub issues prepared and documented\
+**FORMAT:** YAML format ready for CLI creation\
+**PRIORITIES:** Clear ordering from critical to medium\
 **TIMELINE:** Immediate verification first, then systematic improvement
 
 **Tomorrow's first action:** Resolve GitHub CLI connectivity issues and create these 5 critical GitHub issues.

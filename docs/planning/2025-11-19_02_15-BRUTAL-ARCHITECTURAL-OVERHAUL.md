@@ -38,12 +38,12 @@
 
 **Rationale:** These are production blockers. Nothing else matters if these aren't fixed.
 
-| #   | Task                                                           | Time   | Impact   | Blocker? |
-| --- | -------------------------------------------------------------- | ------ | -------- | -------- |
-| 1   | Fix failing tests (adapters, generators)                       | 45min  | CRITICAL | ✅ YES   |
-| 2   | Delete 168 lines of commented TODO code                        | 30min  | HIGH     | ✅ YES   |
-| 3   | Convert DoctorStatus to enum (magic strings → type safety)     | 40min  | CRITICAL | ✅ YES   |
-| 4   | Add tests to 0% coverage packages (errors, schema, validation) | 100min | CRITICAL | ✅ YES   |
+| # | Task                                                           | Time   | Impact   | Blocker? |
+| - | -------------------------------------------------------------- | ------ | -------- | -------- |
+| 1 | Fix failing tests (adapters, generators)                       | 45min  | CRITICAL | ✅ YES   |
+| 2 | Delete 168 lines of commented TODO code                        | 30min  | HIGH     | ✅ YES   |
+| 3 | Convert DoctorStatus to enum (magic strings → type safety)     | 40min  | CRITICAL | ✅ YES   |
+| 4 | Add tests to 0% coverage packages (errors, schema, validation) | 100min | CRITICAL | ✅ YES   |
 
 **Total: 215 minutes (3.6 hours)**
 **Value Delivered: 51% of overall improvement**
@@ -54,16 +54,16 @@
 
 **Rationale:** Critical architectural fixes that enable future development.
 
-| #   | Task                                                      | Time  | Impact | Customer Value  |
-| --- | --------------------------------------------------------- | ----- | ------ | --------------- |
-| 5   | Split errors.go into 4 files (<350 lines each)            | 60min | HIGH   | Maintainability |
-| 6   | Consolidate 4 error types into single hierarchy           | 80min | HIGH   | Consistency     |
-| 7   | Convert MigrationResult.Success bool → Result enum        | 35min | HIGH   | Type safety     |
-| 8   | Add uint types for positive-only values                   | 50min | MEDIUM | Type safety     |
-| 9   | Fix ApplyEmitOptions duplication (use reflection/codegen) | 70min | MEDIUM | DRY principle   |
-| 10  | Add integration tests for wizard flow                     | 90min | HIGH   | Quality         |
-| 11  | Run gofmt on entire codebase                              | 15min | MEDIUM | Standards       |
-| 12  | Fix pointer vs zero value confusion (Optional[T])         | 55min | MEDIUM | Type safety     |
+| #  | Task                                                      | Time  | Impact | Customer Value  |
+| -- | --------------------------------------------------------- | ----- | ------ | --------------- |
+| 5  | Split errors.go into 4 files (<350 lines each)            | 60min | HIGH   | Maintainability |
+| 6  | Consolidate 4 error types into single hierarchy           | 80min | HIGH   | Consistency     |
+| 7  | Convert MigrationResult.Success bool → Result enum        | 35min | HIGH   | Type safety     |
+| 8  | Add uint types for positive-only values                   | 50min | MEDIUM | Type safety     |
+| 9  | Fix ApplyEmitOptions duplication (use reflection/codegen) | 70min | MEDIUM | DRY principle   |
+| 10 | Add integration tests for wizard flow                     | 90min | HIGH   | Quality         |
+| 11 | Run gofmt on entire codebase                              | 15min | MEDIUM | Standards       |
+| 12 | Fix pointer vs zero value confusion (Optional[T])         | 55min | MEDIUM | Type safety     |
 
 **Total: 455 minutes (7.6 hours)**
 **Cumulative: 670 minutes (11.2 hours) for 64% value**
@@ -74,23 +74,23 @@
 
 **Rationale:** Comprehensive quality improvements for production readiness.
 
-| #   | Task                                                            | Time   | Impact   | Priority |
-| --- | --------------------------------------------------------------- | ------ | -------- | -------- |
-| 13  | Increase test coverage to 80% minimum                           | 180min | CRITICAL | P0       |
-| 14  | Create value objects (ProjectName, DatabaseURL, FilePath)       | 90min  | HIGH     | P1       |
-| 15  | Refactor package dependencies (dependency inversion)            | 100min | HIGH     | P1       |
-| 16  | Add property-based tests for validators                         | 75min  | MEDIUM   | P2       |
-| 17  | Standardize on Ginkgo/Gomega (remove testify)                   | 60min  | MEDIUM   | P2       |
-| 18  | Create architecture decision records (ADRs)                     | 50min  | MEDIUM   | P2       |
-| 19  | Add performance benchmarks for hot paths                        | 65min  | MEDIUM   | P2       |
-| 20  | Complete TypeSpec definitions (enums for json_tags_case_style)  | 40min  | MEDIUM   | P2       |
-| 21  | Extract domain logic from commands (fix anemic domain)          | 95min  | HIGH     | P1       |
-| 22  | Create glossary for ubiquitous language                         | 35min  | MEDIUM   | P2       |
-| 23  | Add E2E tests for complete CLI flows                            | 85min  | HIGH     | P1       |
-| 24  | Restructure generated package (split generated vs domain logic) | 70min  | MEDIUM   | P2       |
-| 25  | Add generic utilities (replace lo library where appropriate)    | 55min  | LOW      | P3       |
-| 26  | Document aggregate boundaries (DDD)                             | 45min  | MEDIUM   | P2       |
-| 27  | Complete or remove migrate command implementation               | 80min  | MEDIUM   | P2       |
+| #  | Task                                                            | Time   | Impact   | Priority |
+| -- | --------------------------------------------------------------- | ------ | -------- | -------- |
+| 13 | Increase test coverage to 80% minimum                           | 180min | CRITICAL | P0       |
+| 14 | Create value objects (ProjectName, DatabaseURL, FilePath)       | 90min  | HIGH     | P1       |
+| 15 | Refactor package dependencies (dependency inversion)            | 100min | HIGH     | P1       |
+| 16 | Add property-based tests for validators                         | 75min  | MEDIUM   | P2       |
+| 17 | Standardize on Ginkgo/Gomega (remove testify)                   | 60min  | MEDIUM   | P2       |
+| 18 | Create architecture decision records (ADRs)                     | 50min  | MEDIUM   | P2       |
+| 19 | Add performance benchmarks for hot paths                        | 65min  | MEDIUM   | P2       |
+| 20 | Complete TypeSpec definitions (enums for json_tags_case_style)  | 40min  | MEDIUM   | P2       |
+| 21 | Extract domain logic from commands (fix anemic domain)          | 95min  | HIGH     | P1       |
+| 22 | Create glossary for ubiquitous language                         | 35min  | MEDIUM   | P2       |
+| 23 | Add E2E tests for complete CLI flows                            | 85min  | HIGH     | P1       |
+| 24 | Restructure generated package (split generated vs domain logic) | 70min  | MEDIUM   | P2       |
+| 25 | Add generic utilities (replace lo library where appropriate)    | 55min  | LOW      | P3       |
+| 26 | Document aggregate boundaries (DDD)                             | 45min  | MEDIUM   | P2       |
+| 27 | Complete or remove migrate command implementation               | 80min  | MEDIUM   | P2       |
 
 **Total: 1,225 minutes (20.4 hours)**
 **Cumulative: 1,895 minutes (31.6 hours) for 80% value**

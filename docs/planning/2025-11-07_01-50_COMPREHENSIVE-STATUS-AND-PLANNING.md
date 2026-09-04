@@ -1,7 +1,7 @@
 # SQLC-Wizard Comprehensive Planning Document
 
-**Date:** 2025-11-07  
-**Author:** Senior Software Architect  
+**Date:** 2025-11-07\
+**Author:** Senior Software Architect\
 **Status:** Production-Ready with Technical Debt
 
 ## 🎯 Executive Summary

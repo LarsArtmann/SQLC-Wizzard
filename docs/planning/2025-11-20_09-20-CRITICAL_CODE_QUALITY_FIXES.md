@@ -1,7 +1,7 @@
 # Code Quality Critical Fixes - Execution Plan
 
-**Created:** 2025-11-20_09-20  
-**Priority:** CRITICAL - Prevents runtime failures and data corruption  
+**Created:** 2025-11-20_09-20\
+**Priority:** CRITICAL - Prevents runtime failures and data corruption\
 **Impact:** HIGH - Fixes production bugs and improves reliability
 
 ---
@@ -83,8 +83,8 @@ graph TD
 
 #### Task 1: Defensive Nil Check in project_creator.go
 
-**File:** `internal/creators/project_creator.go:113-123`  
-**Risk:** CRITICAL - Creates corrupted sqlc.yaml files  
+**File:** `internal/creators/project_creator.go:113-123`\
+**Risk:** CRITICAL - Creates corrupted sqlc.yaml files\
 **Time:** 5 minutes
 
 **Issue:** No nil check before marshalling cfg.Config
@@ -98,8 +98,8 @@ if cfg.Config == nil {
 
 #### Task 8: Fix Uint Underflow in status.go
 
-**File:** `internal/migration/status.go:103-107`  
-**Risk:** CRITICAL - Runtime panic from uint underflow  
+**File:** `internal/migration/status.go:103-107`\
+**Risk:** CRITICAL - Runtime panic from uint underflow\
 **Time:** 5 minutes
 
 **Issue:** Subtraction can underflow if applied > total
@@ -116,8 +116,8 @@ return total - applied
 
 #### Task 10: Fix Inconsistent Rule Semantics
 
-**File:** `internal/validation/rule_transformer.go:64-178`  
-**Risk:** HIGH - Logic bugs flip rule behavior  
+**File:** `internal/validation/rule_transformer.go:64-178`\
+**Risk:** HIGH - Logic bugs flip rule behavior\
 **Time:** 15 minutes
 
 **Issue:** RequireLimit polarity differs between transformers
@@ -131,8 +131,8 @@ return total - applied
 
 #### Task 2: Fix Rune to String Conversion
 
-**File:** `internal/domain/safety_policy.go:98-123`  
-**Impact:** HIGH - Error messages show character instead of index  
+**File:** `internal/domain/safety_policy.go:98-123`\
+**Impact:** HIGH - Error messages show character instead of index\
 **Time:** 5 minutes
 
 **Issue:** `string(rune(i))` produces rune character, not decimal
@@ -141,8 +141,8 @@ return total - applied
 
 #### Task 9: Fix Nil Rules Test
 
-**File:** `internal/validation/rule_transformer_test.go:271-280`  
-**Impact:** MEDIUM - Test doesn't actually test nil case  
+**File:** `internal/validation/rule_transformer_test.go:271-280`\
+**Impact:** MEDIUM - Test doesn't actually test nil case\
 **Time:** 5 minutes
 
 **Issue:** Test passes `&generated.SafetyRules{}` instead of `nil`
@@ -150,8 +150,8 @@ return total - applied
 
 #### Task 11: Optimize uintToString Call
 
-**File:** `internal/validation/rule_transformer.go:180-183`  
-**Impact:** LOW - Duplicate function calls  
+**File:** `internal/validation/rule_transformer.go:180-183`\
+**Impact:** LOW - Duplicate function calls\
 **Time:** 3 minutes
 
 **Issue:** `uintToString()` called twice with same value in MaxRowsWithoutLimit
@@ -161,8 +161,8 @@ return total - applied
 
 #### Task 3: Remove Redundant WithMessage Test
 
-**File:** `internal/errors/errors_test.go:146-165`  
-**Value:** MEDIUM - Test cleanup and clarity  
+**File:** `internal/errors/errors_test.go:146-165`\
+**Value:** MEDIUM - Test cleanup and clarity\
 **Time:** 8 minutes
 
 **Issue:** Two specs test the same behavior redundantly
@@ -170,8 +170,8 @@ return total - applied
 
 #### Task 4: Enhance Nil Error Wrapping Test
 
-**File:** `internal/errors/errors_test.go:407-412`  
-**Value:** MEDIUM - Better test coverage  
+**File:** `internal/errors/errors_test.go:407-412`\
+**Value:** MEDIUM - Better test coverage\
 **Time:** 5 minutes
 
 **Issue:** Test only checks message, not code/component
@@ -179,8 +179,8 @@ return total - applied
 
 #### Task 5: Fix Wrapf Description Clobbering
 
-**File:** `internal/errors/errors_test.go:435-452`  
-**Value:** MEDIUM - Bug fix preserves information  
+**File:** `internal/errors/errors_test.go:435-452`\
+**Value:** MEDIUM - Bug fix preserves information\
 **Time:** 10 minutes
 
 **Issue:** Wrapf overwrites baseErr.Description instead of merging
@@ -188,8 +188,8 @@ return total - applied
 
 #### Task 6: Tighten CombineErrors Tests
 
-**File:** `internal/errors/errors_test.go:477-497`  
-**Value:** MEDIUM - Better test quality  
+**File:** `internal/errors/errors_test.go:477-497`\
+**Value:** MEDIUM - Better test quality\
 **Time:** 8 minutes
 
 **Issue:** Missing assertions for component/message and missing nil handling test
@@ -197,8 +197,8 @@ return total - applied
 
 #### Task 7: Add Message Field Assertions
 
-**File:** `internal/errors/errors_test.go:525-545`  
-**Value:** LOW - Test stability  
+**File:** `internal/errors/errors_test.go:525-545`\
+**Value:** LOW - Test stability\
 **Time:** 5 minutes
 
 **Issue:** Sentinel error tests don't assert Message fields
@@ -256,8 +256,8 @@ If any task causes issues:
 
 ---
 
-**Total Estimated Time:** 93 minutes  
-**Buffer Time:** 30 minutes  
+**Total Estimated Time:** 93 minutes\
+**Buffer Time:** 30 minutes\
 **Maximum Session Time:** 2 hours
 
 ---

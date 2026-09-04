@@ -14,14 +14,14 @@ SQLC-Wizard provides **8 pre-configured templates** optimized for different use 
 
 | Template         | Best For                             | Database   | Complexity                                         | Features |
 | ---------------- | ------------------------------------ | ---------- | -------------------------------------------------- | -------- |
-| **Hobby**        | Personal projects, small apps        | SQLite     | Simple, minimal dependencies                       |
-| **Microservice** | API services, REST/GraphQL           | PostgreSQL | Prepared queries, JSON tags, interfaces            |
-| **Enterprise**   | Production systems, critical apps    | PostgreSQL | Strict validation, UUIDs, JSONB, arrays, full-text |
-| **API First**    | REST/GraphQL APIs (API-first design) | PostgreSQL | JSON support, camelCase naming, prepared queries   |
-| **Analytics**    | Data analytics, warehousing          | PostgreSQL | Arrays, full-text search, JSON support             |
-| **Testing**      | Test fixtures, mock data             | SQLite     | Minimal features, testdb path                      |
-| **Multi Tenant** | SaaS platforms, multi-tenant apps    | PostgreSQL | Tenant isolation, UUIDs, arrays, JSON support      |
-| **Library**      | Reusable Go libraries                | PostgreSQL | Minimal dependencies, JSON tags, interfaces        |
+| **Hobby**        | Personal projects, small apps        | SQLite     | Simple, minimal dependencies                       |          |
+| **Microservice** | API services, REST/GraphQL           | PostgreSQL | Prepared queries, JSON tags, interfaces            |          |
+| **Enterprise**   | Production systems, critical apps    | PostgreSQL | Strict validation, UUIDs, JSONB, arrays, full-text |          |
+| **API First**    | REST/GraphQL APIs (API-first design) | PostgreSQL | JSON support, camelCase naming, prepared queries   |          |
+| **Analytics**    | Data analytics, warehousing          | PostgreSQL | Arrays, full-text search, JSON support             |          |
+| **Testing**      | Test fixtures, mock data             | SQLite     | Minimal features, testdb path                      |          |
+| **Multi Tenant** | SaaS platforms, multi-tenant apps    | PostgreSQL | Tenant isolation, UUIDs, arrays, JSON support      |          |
+| **Library**      | Reusable Go libraries                | PostgreSQL | Minimal dependencies, JSON tags, interfaces        |          |
 
 ---
 

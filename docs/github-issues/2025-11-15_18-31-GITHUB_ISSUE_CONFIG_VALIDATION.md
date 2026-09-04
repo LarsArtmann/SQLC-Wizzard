@@ -1,8 +1,8 @@
 # 🔧 SQLC Config Validation, Extension & Improvement
 
-**Priority:** HIGH (#2)  
-**Complexity:** MEDIUM-HIGH  
-**Estimated Time:** 2-3 days  
+**Priority:** HIGH (#2)\
+**Complexity:** MEDIUM-HIGH\
+**Estimated Time:** 2-3 days\
 **Impact:** HIGH - Core configuration management
 
 ---
@@ -409,6 +409,6 @@ This feature is **HIGHLY VALUABLE** because:
 
 ---
 
-_Created: 2025-11-15_  
-_Priority: HIGH (#2)_  
+_Created: 2025-11-15_\
+_Priority: HIGH (#2)_\
 _Ready for implementation_ 🎯

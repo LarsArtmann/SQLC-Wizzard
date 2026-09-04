@@ -1,7 +1,7 @@
 # Template Migration Status Report
 
-**Date:** 2026-02-11 22:49  
-**Branch:** master  
+**Date:** 2026-02-11 22:49\
+**Branch:** master\
 **Status:** 2 commits ahead of origin/master
 
 ---
@@ -18,23 +18,23 @@ This report documents the completion of a systematic migration of 5 SQLC-Wizard 
 
 ### Templates Migrated
 
-| Template             | Previous Pattern | New Pattern        | Custom Rules   | Status         |
-| -------------------- | ---------------- | ------------------ | -------------- | -------------- |
-| HobbyTemplate        | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete    |
-| TestingTemplate      | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete    |
-| AnalyticsTemplate    | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete    |
-| LibraryTemplate      | BaseTemplate     | ConfiguredTemplate | Yes (3 rules)  | ✅ Complete    |
-| MultiTenantTemplate  | BaseTemplate     | ConfiguredTemplate | Yes (10 rules) | ✅ Complete    |
+| Template             | Previous Pattern | New Pattern        | Custom Rules   | Status        |
+| -------------------- | ---------------- | ------------------ | -------------- | ------------- |
+| HobbyTemplate        | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete   |
+| TestingTemplate      | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete   |
+| AnalyticsTemplate    | BaseTemplate     | ConfiguredTemplate | No             | ✅ Complete   |
+| LibraryTemplate      | BaseTemplate     | ConfiguredTemplate | Yes (3 rules)  | ✅ Complete   |
+| MultiTenantTemplate  | BaseTemplate     | ConfiguredTemplate | Yes (10 rules) | ✅ Complete   |
 | MicroserviceTemplate | BaseTemplate     | BaseTemplate       | No             | ⚠️ Intentional |
 
 ### Files Modified
 
 ```
- internal/templates/configured_template.go |  +24 lines (CustomRenameRules + methods)
- internal/templates/library.go             |  ±64 lines (migration + methods)
- internal/templates/multi_tenant.go        |  ±78 lines (migration + methods)
- ---------------------------------------------------------------
- 3 files changed, 119 insertions(+), 47 deletions(-)
+internal/templates/configured_template.go |  +24 lines (CustomRenameRules + methods)
+internal/templates/library.go             |  ±64 lines (migration + methods)
+internal/templates/multi_tenant.go        |  ±78 lines (migration + methods)
+---------------------------------------------------------------
+3 files changed, 119 insertions(+), 47 deletions(-)
 ```
 
 ---
@@ -349,6 +349,6 @@ The template migration initiative is 83% complete (5/6 templates). All tests pas
 
 ---
 
-**Report Generated:** 2026-02-11 22:49  
-**Author:** Crush AI Assistant  
+**Report Generated:** 2026-02-11 22:49\
+**Author:** Crush AI Assistant\
 **Project:** SQLC-Wizard Template Migration

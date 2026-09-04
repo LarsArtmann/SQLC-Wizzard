@@ -1,8 +1,8 @@
 # 🧠 AI-Powered Query Optimization
 
-**Priority:** LOW  
-**Estimated Time:** 1-2 days  
-**Complexity:** HIGH  
+**Priority:** LOW\
+**Estimated Time:** 1-2 days\
+**Complexity:** HIGH\
 **Impact:** HIGH (but non-critical)
 
 ---
@@ -238,6 +238,6 @@ While high-impact, this feature is **non-critical** because:
 
 ---
 
-_Created: 2025-11-15_  
-_Priority: LOW_  
+_Created: 2025-11-15_\
+_Priority: LOW_\
 _Ready for future sprint_ 🧠

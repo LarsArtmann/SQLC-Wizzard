@@ -913,7 +913,6 @@ func main() {
 See [API.md](./api.md) for detailed documentation.
 
 ````
-
 ### 3. CI/CD
 
 Create `.github/workflows/test.yml`:
