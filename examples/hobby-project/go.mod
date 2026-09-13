@@ -1,5 +1,5 @@
 module github.com/LarsArtmann/SQLC-Wizzard/examples/hobby-project
 
-go 1.26.7
+go 1.26
 
-require github.com/mattn/go-sqlite3 v1.14.50
+require github.com/mattn/go-sqlite3 v1.14.52
