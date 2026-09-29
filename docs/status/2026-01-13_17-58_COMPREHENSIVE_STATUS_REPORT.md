@@ -292,24 +292,24 @@
 ### Phase 1: Critical Foundation (43 tasks, 10 hours)
 
 - ❌ CF-01: Complete wizard test coverage to 60% (2h)
-- ❌ CF-02: Create microservice example (1h)
-- ❌ CF-03: Create enterprise example (1h)
-- ❌ CF-04: Fix commands test coverage to 60% (2h)
-- ❌ CF-05: Fix adapters test coverage to 50% (2h)
-- ❌ CF-06: Write migration guide (1h)
-- ❌ CF-07: Write troubleshooting expansion (1h)
+~~- ❌ CF-02: Create microservice example (1h)~~ → TODO_LIST T13
+~~- ❌ CF-03: Create enterprise example (1h)~~ → TODO_LIST T13
+~~- ❌ CF-04: Fix commands test coverage to 60% (2h)~~ → TODO_LIST T6 (47.2% on 2026-09-29)
+~~- ❌ CF-05: Fix adapters test coverage to 50% (2h)~~ → TODO_LIST T7 (22.9% on 2026-09-29)
+~~- ❌ CF-06: Write migration guide (1h)~~ done — `docs/MIGRATION_GUIDE.md`
+~~- ❌ CF-07: Write troubleshooting expansion (1h)~~ done — `docs/TROUBLESHOOTING.md`
 
 ### Phase 2: Hardening (81 tasks, 29 hours)
 
-- ❌ HR-01: Complete wizard coverage to 80% (4h)
-- ❌ HR-02: Complete commands coverage to 75% (3h)
-- ❌ HR-03: Complete adapters coverage to 70% (3h)
-- ❌ HR-04: Complete generators coverage to 80% (3h)
-- ❌ HR-05: Complete creators coverage to 70% (2h)
-- ❌ HR-06: Performance baseline testing (3h)
-- ❌ HR-07: Performance regression tests (2h)
-- ❌ HR-08: Load testing (3h)
-- ❌ HR-09: Memory profiling (2h)
+~~- ❌ HR-01: Complete wizard coverage to 80% (4h)~~ → TODO_LIST T6 (longer-term target)
+~~- ❌ HR-02: Complete commands coverage to 75% (3h)~~ → TODO_LIST T6
+~~- ❌ HR-03: Complete adapters coverage to 70% (3h)~~ → TODO_LIST T7
+~~- ❌ HR-04: Complete generators coverage to 80% (3h)~~ → ROADMAP "Trustworthy core" (coverage theme)
+~~- ❌ HR-05: Complete creators coverage to 70% (2h)~~ → ROADMAP "Trustworthy core" (49.4% on 2026-09-29)
+~~- ❌ HR-06: Performance baseline testing (3h)~~ → ROADMAP "Trustworthy core"
+~~- ❌ HR-07: Performance regression tests (2h)~~ → ROADMAP "Trustworthy core"
+~~- ❌ HR-08: Load testing (3h)~~ → ROADMAP "Reach"
+~~- ❌ HR-09: Memory profiling (2h)~~ → ROADMAP "Trustworthy core"
 - ❌ HR-10: Best practices guide (2h)
 - ❌ HR-11: CI/CD integration examples (2h)
 
@@ -469,7 +469,7 @@
 
 **Improvements Needed:**
 
-- 🔴 **Research `huh` library testing capabilities** (CRITICAL - #1 Priority)
+~~- 🔴 **Research `huh` library testing capabilities** (CRITICAL - #1 Priority)~~ done — resolved by mocking step functions; wizard suite passes (34.2% coverage 2026-09-29)
   - Read `huh` GitHub documentation
   - Search for testing examples in `huh` codebase
   - Check for TUI testing patterns in community
@@ -684,7 +684,7 @@
 
 ### CRITICAL (High Impact, Low Effort) - Do First
 
-#### 1. Generate working hobby example using wizard (30min)
+~~#### 1. Generate working hobby example using wizard (30min)~~ done at `9db82a7`, `eef7939` — `examples/hobby-sqlite/` and `examples/hobby-project/`
 
 **Priority:** 🔴🔴🔴 CRITICAL\
 **Impact:** Immediate user value, working reference\
@@ -859,7 +859,7 @@
 
 ---
 
-#### 7. Add CLI flags for non-interactive mode (1h)
+~~#### 7. Add CLI flags for non-interactive mode (1h)~~ done — `internal/commands/init.go` (`--non-interactive`, `--project-type`, …)
 
 **Priority:** 🔴🔴 HIGH\
 **Impact:** Enables automation and CI/CD\
@@ -966,7 +966,7 @@
 
 ---
 
-#### 10. Complete wizard coverage to 60% (2h)
+~~#### 10. Complete wizard coverage to 60% (2h)~~ → TODO_LIST T6 (34.2% on 2026-09-29)
 
 **Priority:** 🔴🔴 HIGH\
 **Impact:** Better test coverage, risk reduction\
@@ -1155,7 +1155,7 @@
 
 ---
 
-#### 18. Write best practices guide (2h)
+~~#### 18. Write best practices guide (2h)~~ done — `docs/BEST_PRACTICES.md`
 
 **Priority:** 🟡 MEDIUM\
 **Impact:** Users make better decisions\
@@ -1175,7 +1175,7 @@
 
 ---
 
-#### 19. Create CI/CD integration examples (2h)
+~~#### 19. Create CI/CD integration examples (2h)~~ → ROADMAP "Frictionless adoption"
 
 **Priority:** 🟡 MEDIUM\
 **Impact:** Easy CI/CD setup\
@@ -1239,7 +1239,7 @@
 
 ### SHOULD HAVE (Lower Impact, Higher Effort)
 
-#### 22. Separate business logic from TUI (8h)
+~~#### 22. Separate business logic from TUI (8h)~~ → TODO_LIST T1 (wizard.go split is the first step)
 
 **Priority:** 🟢 LOW\
 **Impact:** Better architecture, testability\
@@ -1257,7 +1257,7 @@
 
 ---
 
-#### 23. Create acceptance test suite (6h)
+~~#### 23. Create acceptance test suite (6h)~~ → ROADMAP "Trustworthy core"
 
 **Priority:** 🟢 LOW\
 **Impact:** Validate user experience\
@@ -1274,7 +1274,7 @@
 
 ---
 
-#### 24. Add comprehensive logging (4h)
+~~#### 24. Add comprehensive logging (4h)~~ Won't implement — CLI uses styled output; a logging framework is not warranted here
 
 **Priority:** 🟢 LOW\
 **Impact:** Easier debugging\
@@ -1291,7 +1291,7 @@
 
 ---
 
-#### 25. Write developer documentation (6h)
+~~#### 25. Write developer documentation (6h)~~ done — AGENTS.md + `docs/` suite (current as of 2026-09-29)
 
 **Priority:** 🟢 LOW\
 **Impact:** Easier onboarding\

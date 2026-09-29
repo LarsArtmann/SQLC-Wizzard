@@ -227,45 +227,45 @@ Common Go naming conventions applied:
 
 ### 6.1 Immediate Actions (This Session)
 
-1. **Commit BaseTemplate improvements**
+~~1. **Commit BaseTemplate improvements**~~ done — committed and superseded by the ConfiguredTemplate migration
    - Document the type change in GetSQLPackage
    - Preserve the documentation enhancements
 
-2. **Commit HobbyTemplate embedding**
+~~2. **Commit HobbyTemplate embedding**~~ done at `b1b4a80`
    - Align with other BaseTemplate-embedded templates
 
-3. **Verify full build and test suite**
+~~3. **Verify full build and test suite**~~ done — build and all 14 packages pass 2026-09-29
 
 ### 6.2 Short-Term Improvements (Next Sprint)
 
-1. **Standardize BaseTemplate usage**
+~~1. **Standardize BaseTemplate usage**~~ done — decision: ConfiguredTemplate for 7/8 templates; microservice intentionally on BaseTemplate
    - Option A: All templates embed BaseTemplate
    - Option B: Extract common behavior into shared utilities
    - Decision needed from team
 
-2. **Reduce code duplication**
+~~2. **Reduce code duplication**~~ done at `ee8f29e` — shared initialization helpers
    - Extract common Generate() logic
    - Create template-specific customization hooks
    - Consider template method pattern
 
-3. **Add integration tests**
+~~3. **Add integration tests**~~ → ROADMAP "Trustworthy core"
    - Test template registry interactions
    - Test configuration generation end-to-end
    - Validate generated configs are valid
 
 ### 6.3 Long-Term Strategy
 
-1. **Template Inheritance Architecture**
+~~1. **Template Inheritance Architecture**~~ done — realized as ConfiguredTemplate composition
    - Define base template with common behavior
    - Allow template-specific overrides
    - Use composition for flexible customization
 
-2. **Performance Optimization**
+~~2. **Performance Optimization**~~ → ROADMAP "Trustworthy core"
    - Benchmark template generation
    - Cache template configurations
    - Profile for hot paths
 
-3. **Documentation Enhancement**
+~~3. **Documentation Enhancement**~~ done — docs suite + AGENTS.md (ADRs declined — see 11-42 report row 15)
    - Add architecture decision records (ADRs)
    - Document template patterns
    - Create developer guide
@@ -381,23 +381,23 @@ Common Go naming conventions applied:
 
 ### Immediate (This Session)
 
-- [ ] Review and commit base.go changes
-- [ ] Review and commit hobby.go changes
-- [ ] Run full test suite to verify
-- [ ] Push changes to remote
+~~- [ ] Review and commit base.go changes~~ done — committed; later superseded by ConfiguredTemplate
+~~- [ ] Review and commit hobby.go changes~~ done at `b1b4a80`
+~~- [ ] Run full test suite to verify~~ done — all 14 packages pass 2026-09-29
+~~- [ ] Push changes to remote~~ done — on origin
 
 ### Short-Term (This Week)
 
-- [ ] Decide on template architecture strategy
-- [ ] Create plan for reducing code duplication
-- [ ] Add integration tests for template registry
-- [ ] Document template patterns
+~~- [ ] Decide on template architecture strategy~~ done — ConfiguredTemplate chosen (2026-02-11 report)
+~~- [ ] Create plan for reducing code duplication~~ done — realized via ConfiguredTemplate + `ee8f29e`
+~~- [ ] Add integration tests for template registry~~ → ROADMAP "Trustworthy core"
+~~- [ ] Document template patterns~~ done — `docs/templates/` + AGENTS.md
 
 ### Medium-Term (This Month)
 
-- [ ] Implement template architecture decisions
-- [ ] Reduce template code duplication
-- [ ] Add performance benchmarks
+~~- [ ] Implement template architecture decisions~~ done — migration completed 2026-02-11
+~~- [ ] Reduce template code duplication~~ done at `ee8f29e`
+~~- [ ] Add performance benchmarks~~ → ROADMAP "Trustworthy core"
 - [ ] Create developer documentation
 
 ---

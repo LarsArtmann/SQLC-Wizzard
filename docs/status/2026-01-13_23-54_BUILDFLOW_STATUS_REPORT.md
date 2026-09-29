@@ -499,55 +499,55 @@ Existing Reports in `reports/`:
 
 | # | Task                                | Priority    | Time  |
 | - | ----------------------------------- | ----------- | ----- |
-| 1 | Commit or stash 11 modified files   | 🔴 CRITICAL | 5 min |
-| 2 | Clarify `buildflow -pv` user intent | 🔴 CRITICAL | 2 min |
-| 3 | Decide on backup strategy           | 🔴 CRITICAL | 1 min |
+~~| 1 | Commit or stash 11 modified files   | 🔴 CRITICAL | 5 min |~~ done — all changes committed; working tree clean (2026-09-29)
+~~| 2 | Clarify `buildflow -pv` user intent | 🔴 CRITICAL | 2 min |~~ Won't implement — the buildflow CLI was never adopted; superseded by the BuildFlow skill plus Nix/CI
+~~| 3 | Decide on backup strategy           | 🔴 CRITICAL | 1 min |~~ Won't implement — moot: tree committed; auto-commit daemon guards against loss
 
 ### Blockers (Must Complete Today - <2 hours)
 
 | #  | Task                                | Priority    | Time      |
 | -- | ----------------------------------- | ----------- | --------- |
-| 4  | Execute `just tidy` and `just deps` | 🟠 HIGH     | 5 min     |
-| 5  | Execute `just build`                | 🟠 HIGH     | 2 min     |
-| 6  | Verify binary execution             | 🟠 HIGH     | 1 min     |
-| 7  | Execute `just fmt`                  | 🟠 HIGH     | 1 min     |
-| 8  | Execute `just vet`                  | 🟠 HIGH     | 2 min     |
-| 9  | Execute `just test`                 | 🔴 CRITICAL | 5-15 min  |
-| 10 | Execute `just lint`                 | 🟠 HIGH     | 3-8 min   |
-| 11 | Fix any test failures               | 🔴 CRITICAL | 15-60 min |
-| 12 | Fix any lint errors                 | 🟠 HIGH     | 10-30 min |
+~~| 4  | Execute `just tidy` and `just deps` | 🟠 HIGH     | 5 min     |~~ done — modules tidy; build green (justfile since removed for Nix)
+~~| 5  | Execute `just build`                | 🟠 HIGH     | 2 min     |~~ done — `go build ./...` passes (2026-09-29)
+~~| 6  | Verify binary execution             | 🟠 HIGH     | 1 min     |~~ done — binary builds; commands documented in README
+~~| 7  | Execute `just fmt`                  | 🟠 HIGH     | 1 min     |~~ done — dprint adopted at `38c193c`
+~~| 8  | Execute `just vet`                  | 🟠 HIGH     | 2 min     |~~ done — `go vet ./...` clean (2026-09-29)
+~~| 9  | Execute `just test`                 | 🔴 CRITICAL | 5-15 min  |~~ done — all 14 packages pass (2026-09-29)
+~~| 10 | Execute `just lint`                 | 🟠 HIGH     | 3-8 min   |~~ done — golangci-lint in CI and locally
+~~| 11 | Fix any test failures               | 🔴 CRITICAL | 15-60 min |~~ done — none remain (2026-09-29, after `1c68e3a`)
+~~| 12 | Fix any lint errors                 | 🟠 HIGH     | 10-30 min |~~ → TODO_LIST T17 (remaining findings tracked)
 
 ### High Priority (Do This Week - <8 hours)
 
 | #  | Task                                 | Priority  | Time   |
 | -- | ------------------------------------ | --------- | ------ |
-| 13 | Review and analyze 11 modified files | 🟠 HIGH   | 30 min |
-| 14 | Execute `just find-duplicates`       | 🟡 MEDIUM | 2 min  |
-| 15 | Create proper feature branch         | 🟡 MEDIUM | 2 min  |
-| 16 | Document changes in CHANGELOG        | 🟡 MEDIUM | 15 min |
-| 17 | Add pre-build git check to justfile  | 🟠 HIGH   | 15 min |
-| 18 | Define/build `buildflow` command     | 🟠 HIGH   | 20 min |
+~~| 13 | Review and analyze 11 modified files | 🟠 HIGH   | 30 min |~~ done — changes reviewed and landed on master
+~~| 14 | Execute `just find-duplicates`       | 🟡 MEDIUM | 2 min  |~~ done — `dupl -t 100` runs in CI
+~~| 15 | Create proper feature branch         | 🟡 MEDIUM | 2 min  |~~ Won't implement — trunk-based master is the established workflow
+~~| 16 | Document changes in CHANGELOG        | 🟡 MEDIUM | 15 min |~~ done — CHANGELOG.md rebuilt (2026-09-29 docs-health pass)
+~~| 17 | Add pre-build git check to justfile  | 🟠 HIGH   | 15 min |~~ NOT-DO/DUPLICATE — justfile removed; Nix + CI replaced it
+~~| 18 | Define/build `buildflow` command     | 🟠 HIGH   | 20 min |~~ Won't implement — superseded by the BuildFlow skill plus Nix/CI pipeline
 
 ### Medium Priority (Do This Sprint - <2 days)
 
 | #  | Task                               | Priority  | Time   |
 | -- | ---------------------------------- | --------- | ------ |
-| 19 | Consolidate duplicate reports      | 🟡 MEDIUM | 30 min |
-| 20 | Clean up root migration files      | 🟢 LOW    | 5 min  |
-| 21 | Integrate TypeSpec into build flow | 🟡 MEDIUM | 30 min |
-| 22 | Create latest-status symlink       | 🟢 LOW    | 5 min  |
-| 23 | Archive old status reports         | 🟢 LOW    | 60 min |
-| 24 | Improve branch naming convention   | 🟢 LOW    | 10 min |
+~~| 19 | Consolidate duplicate reports      | 🟡 MEDIUM | 30 min |~~ done — 2026-09-29 docs-health pass annotated and archived the status/planning snapshots
+~~| 20 | Clean up root migration files      | 🟢 LOW    | 5 min  |~~ → TODO_LIST T5 (stray root SQL files still present)
+~~| 21 | Integrate TypeSpec into build flow | 🟡 MEDIUM | 30 min |~~ Won't implement — no `.tsp` spec is committed; `generated/` is edited directly (AGENTS.md)
+~~| 22 | Create latest-status symlink       | 🟢 LOW    | 5 min  |~~ Won't implement — superseded by the docs/status/README.md index
+~~| 23 | Archive old status reports         | 🟢 LOW    | 60 min |~~ done — 2026-09-29 docs-health pass (this annotation sweep)
+~~| 24 | Improve branch naming convention   | 🟢 LOW    | 10 min |~~ Won't implement — trunk-based flow; no feature branches
 
 ### Low Priority (Nice to Have)
 
 | #  | Task                                  | Priority  | Time   |
 | -- | ------------------------------------- | --------- | ------ |
-| 25 | Add security scanning (gosec)         | 🟡 MEDIUM | 30 min |
-| 26 | Add performance benchmark to CI       | 🟡 MEDIUM | 20 min |
-| 27 | Add cross-platform build targets      | 🟢 LOW    | 30 min |
-| 28 | Create Docker build verification      | 🟢 LOW    | 20 min |
-| 29 | Improve justfile with parallel builds | 🟡 MEDIUM | 30 min |
+~~| 25 | Add security scanning (gosec)         | 🟡 MEDIUM | 30 min |~~ → ROADMAP "Reach" (security audit pass)
+~~| 26 | Add performance benchmark to CI       | 🟡 MEDIUM | 20 min |~~ → ROADMAP "Trustworthy core"
+~~| 27 | Add cross-platform build targets      | 🟢 LOW    | 30 min |~~ done — GoReleaser cross-compiles in the release workflow
+~~| 28 | Create Docker build verification      | 🟢 LOW    | 20 min |~~ done — GHCR image built by the release workflow
+~~| 29 | Improve justfile with parallel builds | 🟡 MEDIUM | 30 min |~~ NOT-DO/DUPLICATE — justfile removed; Nix + CI replaced it
 
 ---
 
