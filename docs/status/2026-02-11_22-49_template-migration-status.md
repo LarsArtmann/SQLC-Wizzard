@@ -234,18 +234,18 @@ go build ./... → SUCCESS
 
 ### Minor Issues (Non-Blocking)
 
-1. **LSP Warning:** `debug_test.go` referenced but doesn't exist
+~~1. **LSP Warning:** `debug_test.go` referenced but doesn't exist~~ Won't implement — stale gopls cache artifact; no `debug_test.go` reference exists in the tree (grep 2026-09-29)
    - Impact: Minor, only affects IDE
    - Workaround: Ignore or delete reference
 
-2. **Missing Zero-Value Tests:**
+~~2. **Missing Zero-Value Tests:**~~ → TODO_LIST T10 (APIFirst/Enterprise/Microservice zero-value tests still missing 2026-09-29)
    - APIFirstTemplate: No zero-value test
    - EnterpriseTemplate: No zero-value test
    - MicroserviceTemplate: No zero-value test
    - Impact: Coverage gap
    - Fix: Add tests (estimated 45 minutes)
 
-3. **Template Duplication:**
+~~3. **Template Duplication:**~~ done at `ee8f29e` — shared template initialization helpers extracted
    - hobby.go, testing.go have similar patterns
    - Could be consolidated into shared helper
    - Impact: Minor code smell
@@ -257,41 +257,41 @@ go build ./... → SUCCESS
 
 ### Immediate (This Week)
 
-1. **Add Missing Zero-Value Tests**
+~~1. **Add Missing Zero-Value Tests**~~ → TODO_LIST T10
    - Priority: High
    - Effort: 45 minutes
    - Benefit: Complete coverage
 
-2. **Fix LSP Warning**
+~~2. **Fix LSP Warning**~~ Won't implement — stale gopls cache; nothing to fix in the tree
    - Priority: Medium
    - Effort: 5 minutes
    - Benefit: Clean development environment
 
-3. **Document MicroserviceTemplate Decision**
+~~3. **Document MicroserviceTemplate Decision**~~ done — recorded in this report and in AGENTS.md Gotchas
    - Priority: Medium
    - Effort: 10 minutes
    - Benefit: Prevent future confusion
 
 ### Short-Term (This Sprint)
 
-4. **Create Template Checklist**
+~~4. **Create Template Checklist**~~ Won't implement — superseded by `docs/templates/` usage + customization guides
    - Priority: Medium
    - Effort: 15 minutes
    - Benefit: Ensure new templates follow pattern
 
-5. **Extract Common Template Data Builder**
+~~5. **Extract Common Template Data Builder**~~ done at `ee8f29e`
    - Priority: Low
    - Effort: 30 minutes
    - Benefit: Reduce duplication
 
 ### Medium-Term (This Quarter)
 
-6. **Migrate MicroserviceTemplate to ConfiguredTemplate**
+~~6. **Migrate MicroserviceTemplate to ConfiguredTemplate**~~ Won't implement — intentional; custom `Generate()` logic documented in this report and AGENTS.md
    - Priority: Low
    - Effort: 2 hours
    - Benefit: Complete consistency
 
-7. **Add Template Feature Matrix**
+~~7. **Add Template Feature Matrix**~~ done — `docs/templates/comparison.md`
    - Priority: Low
    - Effort: 20 minutes
    - Benefit: Help developers choose templates
@@ -343,9 +343,9 @@ The template migration initiative is 83% complete (5/6 templates). All tests pas
 
 **Next Actions:**
 
-1. Stage and commit current changes
-2. Push to origin/master
-3. Schedule remaining zero-value tests
+~~1. Stage and commit current changes~~ done — committed (`c09ad6d`, `b1b4a80`, `179ac0f`)
+~~2. Push to origin/master~~ done — on origin
+~~3. Schedule remaining zero-value tests~~ → TODO_LIST T10
 
 ---
 
