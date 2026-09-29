@@ -23,7 +23,7 @@ Successfully implemented all 8 project templates with comprehensive test coverag
 
 - 🔴 40%+ code duplication across templates
 - 🔴 No shared template utilities/helpers
-- 🔴 template_validation_test.go has compilation error (needs fix)
+- ~~🔴 template_validation_test.go has compilation error (needs fix)~~ FIXED at `e3fb4c8` (unused `allTemplates` removed)
 - 🔴 No architectural pattern for template code organization
 - 🔴 No base template or helper functions
 
@@ -352,20 +352,20 @@ func Test[Template]Generate_Basic(t *testing.T)     // Verifies config generatio
 
 ### Technical Debt
 
-1. **Code Duplication (CRITICAL)**
+~~1. **Code Duplication (CRITICAL)**~~ done at `e3fb4c8` — BaseTemplate/ConfiguredTemplate eliminated the duplication
    - ~40% duplication across 8 template files
    - No shared helper functions
    - No base template or common utilities
    - **Estimated Refactoring Time:** 4-5 hours
 
-2. **Missing Documentation (HIGH)**
+~~2. **Missing Documentation (HIGH)**~~ done — `docs/templates/` usage, comparison, customization, examples
    - No template usage guide
    - No template examples
    - No comparison matrix
    - No architectural decisions documented
    - **Estimated Documentation Time:** 3-4 hours
 
-3. **Incomplete Test Coverage (MEDIUM)**
+~~3. **Incomplete Test Coverage (MEDIUM)**~~ → TODO_LIST T6/T7 (wizard 34.2%, adapters 22.9% on 2026-09-29)
    - No snapshot tests
    - No benchmark tests
    - No integration tests
@@ -424,45 +424,45 @@ A  internal/templates/template_validation_test.go (NEW - 350 lines - HAS COMPILA
 
 ### CRITICAL - Must Complete Immediately (Next 30 Minutes)
 
-1. 🔴 **Fix template_validation_test.go compilation error** (5 minutes)
+~~1. 🔴 **Fix template_validation_test.go compilation error** (5 minutes)~~ done at `e3fb4c8` — unused `allTemplates` variable removed
    - **Action:** Delete file completely and rewrite with consistent variable naming
    - **Method:** Use write (not sed/edit) to create clean file
    - **Verification:** Run `go test ./internal/templates -v` to ensure all tests pass
    - **Why:** File has "declared and not used: allTemplates" error blocking compilation
 
-2. 🔴 **Commit and push template validation tests** (10 minutes)
+~~2. 🔴 **Commit and push template validation tests** (10 minutes)~~ done — committed (`43cc824`)
    - **Action:** Add fixed file to git, commit with detailed message, push
    - **Commit Message:** "test(templates): add comprehensive template validation tests"
    - **Why:** Complete test coverage for template system
 
 ### HIGH PRIORITY - Complete Today (Next 3-4 Hours)
 
-3. ⚡ **Extract common type overrides into factory functions** (1 hour)
+~~3. ⚡ **Extract common type overrides into factory functions** (1 hour)~~ done — centralized as `BaseTemplate.GetTypeOverrides` (`e3fb4c8`)
    - **File:** Create `internal/templates/overrides.go`
    - **Functions:** `GetPostgresOverrides()`, `GetMySQLOverrides()`, `GetSQLiteOverrides()`
    - **Impact:** Reduces ~200 lines of duplication
    - **Why:** Removes copy-pasted override code from all templates
 
-4. ⚡ **Create rename rules registry** (1 hour)
+~~4. ⚡ **Create rename rules registry** (1 hour)~~ done — `internal/templates/rename_rules.go`
    - **File:** Create `internal/templates/rename_rules.go`
    - **Function:** `GetRenameRules(templateType) map[string]string`
    - **Impact:** Reduces ~150 lines of duplication
    - **Why:** Centralizes all rename rules in one place
 
-5. ⚡ **Extract base template helper functions** (2 hours)
+~~5. ⚡ **Extract base template helper functions** (2 hours)~~ done at `e3fb4c8` — `internal/templates/base.go`
    - **File:** Create `internal/templates/helpers.go`
    - **Functions:** `buildGoGenConfig()`, `getSQLPackage()`, `getBuildTags()`, `getTypeOverrides()`, `getRenameRules()`
    - **Impact:** Reduces ~400 lines of duplication
    - **ARCHITECTURAL DECISION NEEDED:** Inheritance vs Composition vs Builder
    - **Why:** Massive code duplication across all templates
 
-6. ⚡ **Create template usage guide** (1 hour)
+~~6. ⚡ **Create template usage guide** (1 hour)~~ done — `docs/templates/usage.md`
    - **File:** Create `docs/templates/usage.md`
    - **Content:** When to use each template, features, examples
    - **Impact:** Improves developer experience and template adoption
    - **Why:** Developers need guidance on template selection
 
-7. ⚡ **Create template comparison matrix** (1 hour)
+~~7. ⚡ **Create template comparison matrix** (1 hour)~~ done — `docs/templates/comparison.md`
    - **File:** Create `docs/templates/comparison.md`
    - **Content:** Features, databases, validation, output paths per template
    - **Impact:** Visual comparison aid for template selection
@@ -470,23 +470,23 @@ A  internal/templates/template_validation_test.go (NEW - 350 lines - HAS COMPILA
 
 ### MEDIUM PRIORITY - Complete This Week (Next 2 Days)
 
-8. ⏳ **Add snapshot tests** (1 hour)
+~~8. ⏳ **Add snapshot tests** (1 hour)~~ → TODO_LIST T9
    - **File:** Create `internal/templates/snapshot_test.go`
    - **Content:** Capture default configs, compare against golden files
    - **Impact:** Prevents regressions in generated configs
    - **Why:** Catch config changes that break expectations
 
-9. ⏳ **Add integration test** (2 hours)
+~~9. ⏳ **Add integration test** (2 hours)~~ → ROADMAP "Trustworthy core"
    - **Action:** Test full workflow from template selection to file output
    - **Impact:** End-to-end validation of template system
    - **Why:** Ensures templates work in practice, not just in unit tests
 
-10. ⏳ **Improve error messages** (1 hour)
+~~10. ⏳ **Improve error messages** (1 hour)~~ Won't implement — errors flow through `internal/apperrors` with codes and context
     - **Action:** Add template name, field name to error messages
     - **Impact:** Better debugging experience
     - **Why:** Helps users understand what went wrong
 
-11. ⏳ **Create template examples** (1 hour)
+~~11. ⏳ **Create template examples** (1 hour)~~ done — `docs/templates/examples/` (8 per-template docs)
     - **File:** Create `docs/templates/examples/` directory
     - **Content:** Example sqlc.yaml, schemas, usage code per template
     - **Impact:** Learning resources for developers
@@ -494,14 +494,14 @@ A  internal/templates/template_validation_test.go (NEW - 350 lines - HAS COMPILA
 
 ### LOW PRIORITY - Nice to Have (Next 2 Weeks)
 
-12. ⏳ **Add benchmark tests** (1 hour)
-13. ⏳ **Add regression test suite** (2 hours)
-14. ⏳ **Extract template builder pattern** (2 hours)
-15. ⏳ **Add code coverage enforcement** (2 hours)
-16. ⏳ **Implement template version compatibility** (3 hours)
-17. ⏳ **Create template customization guide** (2 hours)
-18. ⏳ **Add template linting tool** (3 hours)
-    19-25. ⏳ **Long-term improvements** (15 hours total)
+~~12. ⏳ **Add benchmark tests** (1 hour)~~ → ROADMAP "Trustworthy core"
+~~13. ⏳ **Add regression test suite** (2 hours)~~ NOT-DO/DUPLICATE — covered by TODO_LIST T9 (golden/snapshot tests)
+~~14. ⏳ **Extract template builder pattern** (2 hours)~~ Won't implement — `ConfiguredTemplate` + `ConfigBuilder` provide this
+~~15. ⏳ **Add code coverage enforcement** (2 hours)~~ → ROADMAP "Trustworthy core" (coverage gates)
+~~16. ⏳ **Implement template version compatibility** (3 hours)~~ → ROADMAP "Extensibility" (template versioning)
+~~17. ⏳ **Create template customization guide** (2 hours)~~ done — `docs/templates/customization.md`
+~~18. ⏳ **Add template linting tool** (3 hours)~~ → ROADMAP "Extensibility"
+~~    19-25. ⏳ **Long-term improvements** (15 hours total)~~ → ROADMAP — ideas distributed across Extensibility (plugins, presets) and Reach (docs site, i18n)
 
 ---
 

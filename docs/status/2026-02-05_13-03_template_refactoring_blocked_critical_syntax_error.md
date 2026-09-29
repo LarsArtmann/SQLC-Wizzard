@@ -3,7 +3,7 @@
 **Date:** 2026-02-05 13:03
 **Project:** SQLC-Wizard
 **Component:** Template System Refactoring
-**Status:** BLOCKED - Critical Syntax Error in MicroserviceTemplate
+**Status:** ~~BLOCKED - Critical Syntax Error in MicroserviceTemplate~~ RESOLVED (2026-02-05/06): syntax error fixed, enterprise + api-first migrated to `ConfiguredTemplate`, microservice intentionally kept on `BaseTemplate`. All tests pass (verified 2026-09-29).
 
 ---
 
@@ -731,10 +731,10 @@ Successfully implemented comprehensive template documentation and testing infras
 
 ## b) PARTIALLY DONE ⚠️ (2 Major Items - BLOCKED)
 
-### 1. ⚠️ MicroserviceTemplate Refactoring - BROKEN, CRITICAL BLOCKER 🔥
+### 1. ~~⚠️ MicroserviceTemplate Refactoring - BROKEN, CRITICAL BLOCKER 🔥~~ RESOLVED — restored, intentionally kept on `BaseTemplate`
 
 **File:** `internal/templates/microservice.go`
-**Status:** BROKEN - SYNTAX ERROR
+**Status:** ~~BROKEN - SYNTAX ERROR~~ FIXED — compiles and all MicroserviceTemplate tests pass (verified 2026-09-29)
 **Error Line:** 147
 **Error Message:** "non-declaration statement outside function body"
 **Original Lines:** 243 lines
@@ -821,7 +821,7 @@ Successfully implemented comprehensive template documentation and testing infras
 
 ---
 
-### 2. ⚠️ Template Customization Guide - Written but NOT COMMITTED
+### 2. ~~⚠️ Template Customization Guide - Written but NOT COMMITTED~~ RESOLVED — committed at `docs/templates/customization.md`
 
 **File:** `docs/templates/customization.md`
 **Lines:** 1,500+ lines
@@ -1046,7 +1046,7 @@ Successfully implemented comprehensive template documentation and testing infras
 **Estimated Time:** ~15 minutes
 **Work Required:**
 
-1. Fix MicroserviceTemplate syntax error
+~~1. Fix MicroserviceTemplate syntax error~~ done — restored and healthy (see §f item 1)
 2. Stage all modified template files (microservice, enterprise, api_first, base)
 3. Stage customization guide
 4. Commit with detailed message
@@ -1824,7 +1824,7 @@ Successfully implemented comprehensive template documentation and testing infras
 
 ### CRITICAL - MUST COMPLETE IMMEDIATELY (Next 15 Minutes)
 
-1. 🔴 **Fix MicroserviceTemplate syntax error** (10 minutes)
+~~1. 🔴 **Fix MicroserviceTemplate syntax error** (10 minutes)~~ done — file restored and compiles; template healthy on `BaseTemplate` (verified 2026-09-29)
    - **Approach:** Restore from git: `git checkout -- internal/templates/microservice.go`
    - **Redo Refactoring:**
      1. Add `BaseTemplate` embed
@@ -1836,7 +1836,7 @@ Successfully implemented comprehensive template documentation and testing infras
    - **WHY CRITICAL:** BLOCKS all further work, current state is broken
    - **Estimated Time:** 10 minutes (restore and redo properly)
 
-2. 🔴 **Commit and push template customization guide** (5 minutes)
+~~2. 🔴 **Commit and push template customization guide** (5 minutes)~~ done — `docs/templates/customization.md` committed
    - **File:** `docs/templates/customization.md`
    - **Actions:**
      1. Stage: `git add docs/templates/customization.md`
@@ -1847,7 +1847,7 @@ Successfully implemented comprehensive template documentation and testing infras
 
 ### HIGH PRIORITY - Complete Today (Next 1 Hour)
 
-3. ⚡ **Refactor MicroserviceTemplate to use BaseTemplate (PROPERLY)** (15 minutes)
+~~3. ⚡ **Refactor MicroserviceTemplate to use BaseTemplate (PROPERLY)** (15 minutes)~~ Won't implement — intentional: MicroserviceTemplate stays on `BaseTemplate` (custom `Generate()` logic; AGENTS.md Gotchas)
    - **Steps:**
      1. Restore from git: `git checkout -- internal/templates/microservice.go`
      2. Add `BaseTemplate` embed to struct
@@ -1860,19 +1860,19 @@ Successfully implemented comprehensive template documentation and testing infras
    - **WHY HIGH:** Completes MicroserviceTemplate refactoring correctly
    - **Estimated Time:** 15 minutes
 
-4. ⚡ **Refactor EnterpriseTemplate to use BaseTemplate** (15 minutes)
+~~4. ⚡ **Refactor EnterpriseTemplate to use BaseTemplate** (15 minutes)~~ done — migrated to `ConfiguredTemplate` (verified 2026-09-29)
    - **Steps:** Same as #3 (apply to EnterpriseTemplate)
    - **Verify:** File is ~180 lines, all 4 tests pass
    - **WHY HIGH:** Completes EnterpriseTemplate refactoring
    - **Estimated Time:** 15 minutes
 
-5. ⚡ **Refactor APIFirstTemplate to use BaseTemplate** (15 minutes)
+~~5. ⚡ **Refactor APIFirstTemplate to use BaseTemplate** (15 minutes)~~ done — migrated to `ConfiguredTemplate` (verified 2026-09-29)
    - **Steps:** Same as #3-4 (apply to APIFirstTemplate)
    - **Verify:** File is ~170 lines, all 4 tests pass
    - **WHY HIGH:** Completes APIFirstTemplate refactoring
    - **Estimated Time:** 15 minutes
 
-6. ⚡ **Verify all 8 templates use BaseTemplate** (5 minutes)
+~~6. ⚡ **Verify all 8 templates use BaseTemplate** (5 minutes)~~ done — 7/8 on `ConfiguredTemplate`, microservice intentionally on `BaseTemplate`; all template tests pass 2026-09-29
    - **Actions:**
      1. Run all template tests: `go test ./internal/templates -v`
      2. Verify no compilation errors
@@ -1882,7 +1882,7 @@ Successfully implemented comprehensive template documentation and testing infras
    - **WHY HIGH:** Ensures all refactoring is complete and correct
    - **Estimated Time:** 5 minutes
 
-7. ⚡ **Fix BaseTemplate.GetSQLPackage type signature** (5 minutes)
+~~7. ⚡ **Fix BaseTemplate.GetSQLPackage type signature** (5 minutes)~~ done — signature takes `generated.DatabaseType` (verified in `internal/templates/base.go`)
    - **File:** `internal/templates/base.go`
    - **Change:** `db DatabaseType` → `db generated.DatabaseType`
    - **Actions:**
@@ -1892,7 +1892,7 @@ Successfully implemented comprehensive template documentation and testing infras
    - **WHY HIGH:** Fixes type mismatch between BaseTemplate and templates
    - **Estimated Time:** 5 minutes
 
-8. ⚡ **Commit and push all template refactoring** (10 minutes)
+~~8. ⚡ **Commit and push all template refactoring** (10 minutes)~~ done — landed on master
    - **Files:** `internal/templates/{microservice,enterprise,api_first,base}.go`
    - **Actions:**
      1. Stage all modified template files
@@ -1903,7 +1903,7 @@ Successfully implemented comprehensive template documentation and testing infras
 
 ### MEDIUM PRIORITY - Complete This Week (Next 2 Days)
 
-9. ⏳ **Add snapshot tests for generated configs** (1 hour)
+~~9. ⏳ **Add snapshot tests for generated configs** (1 hour)~~ → TODO_LIST T9
    - **File:** `internal/templates/snapshot_test.go`
    - **Actions:**
      1. Create test file with snapshot tests for all 8 templates
@@ -1914,7 +1914,7 @@ Successfully implemented comprehensive template documentation and testing infras
    - **WHY MEDIUM:** Prevents regressions in generated configs
    - **Estimated Time:** 1 hour
 
-10. ⏳ **Add integration test for template generation workflow** (2 hours)
+~~10. ⏳ **Add integration test for template generation workflow** (2 hours)~~ → ROADMAP "Trustworthy core" (real-sqlc integration tests)
     - **File:** `internal/templates/integration_test.go`
     - **Actions:**
       1. Create test file for full workflow
@@ -1925,7 +1925,7 @@ Successfully implemented comprehensive template documentation and testing infras
     - **WHY MEDIUM:** Ensures templates work in practice, not just in unit tests
     - **Estimated Time:** 2 hours
 
-11. ⏳ **Improve error messages in templates** (1 hour)
+~~11. ⏳ **Improve error messages in templates** (1 hour)~~ Won't implement — errors already flow through `internal/apperrors` with codes and context
     - **Actions:**
       1. Add template name to all error messages
       2. Add field name to all error messages
@@ -1935,7 +1935,7 @@ Successfully implemented comprehensive template documentation and testing infras
     - **WHY MEDIUM:** Better debugging experience
     - **Estimated Time:** 1 hour
 
-12. ⏳ **Add benchmark tests for performance** (1 hour)
+~~12. ⏳ **Add benchmark tests for performance** (1 hour)~~ → ROADMAP "Trustworthy core"
     - **File:** `internal/templates/bench_test.go`
     - **Actions:**
       1. Benchmark template generation for each template
@@ -1948,68 +1948,68 @@ Successfully implemented comprehensive template documentation and testing infras
 
 ### LOW PRIORITY - Nice to Have (Next 2 Weeks)
 
-13. 📅 **Add regression test suite** (2 hours)
+~~13. 📅 **Add regression test suite** (2 hours)~~ NOT-DO/DUPLICATE — covered by TODO_LIST T9 (golden/snapshot tests)
     - **Actions:** Test all previous working features, add smoke tests, ensure no regressions
     - **WHY LOW:** Prevents breaking changes
     - **Estimated Time:** 2 hours
 
-14. 📅 **Implement template version compatibility** (3 hours)
+~~14. 📅 **Implement template version compatibility** (3 hours)~~ → ROADMAP "Extensibility" (template versioning)
     - **Actions:** Add version field, validate configs, add migration paths, document breaking changes
     - **WHY LOW:** Enables template evolution without breaking existing users
     - **Estimated Time:** 3 hours
 
-15. 📅 **Add code coverage enforcement in CI** (2 hours)
+~~15. 📅 **Add code coverage enforcement in CI** (2 hours)~~ → ROADMAP "Trustworthy core" (coverage gates)
     - **Actions:** Update CI/CD, set 80% minimum, fail builds below threshold, generate reports, add badge
     - **WHY LOW:** Ensures code quality remains high
     - **Estimated Time:** 2 hours
 
-16. 📅 **Extract template builder pattern** (2 hours)
+~~16. 📅 **Extract template builder pattern** (2 hours)~~ Won't implement — `ConfiguredTemplate` + `ConfigBuilder` already provide this
     - **Actions:** Create TemplateBuilder, incremental config building, validation, documentation, examples
     - **WHY LOW:** More flexible API for custom configs
     - **Estimated Time:** 2 hours
 
-17. 📅 **Add template linting tool** (3 hours)
+~~17. 📅 **Add template linting tool** (3 hours)~~ → ROADMAP "Extensibility"
     - **Actions:** Create linter, validate consistency, check naming, verify features, JSON schema validation, CLI command
     - **WHY LOW:** Ensures all templates follow best practices
     - **Estimated Time:** 3 hours
 
-18. 📅 **Create template examples with base directory structure** (30 minutes)
+~~18. 📅 **Create template examples with base directory structure** (30 minutes)~~ Won't implement — per-template example docs shipped in `docs/templates/examples/`; an index adds little
     - **File:** `docs/templates/examples/README.md`
     - **Actions:** Add recommended project structure for each template
     - **WHY LOW:** Helps developers understand how to structure their projects
     - **Estimated Time:** 30 minutes
 
-19. 📅 **Add comprehensive input validation in templates** (1 hour)
+~~19. 📅 **Add comprehensive input validation in templates** (1 hour)~~ Won't implement — defaults flow through typed `BuildOptions`; no demand signal
     - **Actions:** Validate TemplateData, fail fast with clear errors, check database engine, check features, validate required fields
     - **WHY LOW:** Prevents invalid config generation
     - **Estimated Time:** 1 hour
 
-20. 📅 **Create template versioning system** (2 hours)
+~~20. 📅 **Create template versioning system** (2 hours)~~ → ROADMAP "Extensibility" (template versioning)
     - **Actions:** Define semver, add version field, document breaking changes, add migration tools
     - **WHY LOW:** Enables smooth upgrades
     - **Estimated Time:** 2 hours
 
-21. 📅 **Add template migration tools** (2 hours)
+~~21. 📅 **Add template migration tools** (2 hours)~~ → ROADMAP "Extensibility"
     - **Actions:** Migrate v1 to v2 configs, validate old configs, convert old to new, add migration docs
     - **WHY LOW:** Helps users upgrade templates
     - **Estimated Time:** 2 hours
 
-22. 📅 **Add template analytics/metrics** (1 hour)
+~~22. 📅 **Add template analytics/metrics** (1 hour)~~ Won't implement — CLI tool; no telemetry by design
     - **Actions:** Track template usage, add metrics collection, generate reports, analyze adoption
     - **WHY LOW:** Data-driven decisions on template development
     - **Estimated Time:** 1 hour
 
-23. 📅 **Create template documentation site** (3 hours)
+~~23. 📅 **Create template documentation site** (3 hours)~~ → ROADMAP "Reach" (documentation website)
     - **Actions:** Generate static site, include examples, add comparison tool, create decision tree
     - **WHY LOW:** Better developer experience
     - **Estimated Time:** 3 hours
 
-24. 📅 **Add template plugin system** (5 hours)
+~~24. 📅 **Add template plugin system** (5 hours)~~ → ROADMAP "Extensibility" (plugin architecture)
     - **Actions:** Allow custom templates via plugins, define plugin interface, implement discovery, add docs
     - **WHY LOW:** Enables community contributions
     - **Estimated Time:** 5 hours
 
-25. 📅 **Create comprehensive testing guide** (2 hours)
+~~25. 📅 **Create comprehensive testing guide** (2 hours)~~ Won't implement — CONTRIBUTING + docs suite cover testing patterns
     - **Actions:** Document how to test generated code, provide patterns, add mocking examples, add integration tests
     - **WHY LOW:** Helps developers write better tests
     - **Estimated Time:** 2 hours
@@ -2111,26 +2111,26 @@ Successfully implemented comprehensive template documentation and testing infras
 
 ## SUMMARY
 
-**Overall Status:** BLOCKED on MicroserviceTemplate refactoring
+**Overall Status:** ~~BLOCKED on MicroserviceTemplate refactoring~~ RESOLVED (see inline annotations; every item dispositioned 2026-09-29)
 **Progress:** ~40% complete (8/20 major items)
-**Blocking Issue:** MicroserviceTemplate syntax error (line 147)
+**Blocking Issue:** ~~MicroserviceTemplate syntax error (line 147)~~ fixed — file restored
 **Estimated Time to Unblocked:** 10 minutes (restore and redo properly)
 **Total Remaining Work:** ~30 hours (after unblocked)
 
 **Next Immediate Actions:**
 
-1. Fix MicroserviceTemplate syntax error (CRITICAL)
-2. Commit template customization guide
-3. Complete 3 template refactorings
-4. Verify all tests pass
-5. Commit and push all work
+~~1. Fix MicroserviceTemplate syntax error (CRITICAL)~~ done — restored and compiles; healthy on `BaseTemplate` (verified 2026-09-29)
+~~2. Commit template customization guide~~ done — `docs/templates/customization.md`
+~~3. Complete 3 template refactorings~~ done — enterprise + api-first migrated; microservice intentionally kept on `BaseTemplate`
+~~4. Verify all tests pass~~ done — all 14 packages pass 2026-09-29
+~~5. Commit and push all work~~ done — landed on master
 
 **WAITING FOR INSTRUCTIONS ON:**
 
-1. How to properly fix MicroserviceTemplate without breaking it?
-2. What is the proven process that worked for the other 5 templates?
-3. Restore vs. fix - which is better approach?
-4. How to test compile after each change to catch errors immediately?
+~~1. How to properly fix MicroserviceTemplate without breaking it?~~ Won't implement — moot: file was restored; template intentionally stays on `BaseTemplate`
+~~2. What is the proven process that worked for the other 5 templates?~~ Won't implement — moot: resolved by direct edits and the `ee8f29e` helper extraction
+~~3. Restore vs. fix - which is better approach?~~ Won't implement — moot: restore won
+~~4. How to test compile after each change to catch errors immediately?~~ Won't implement — moot: `go build ./...` after each change (AGENTS.md Commands)
 
 ---
 
