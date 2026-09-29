@@ -652,6 +652,7 @@ Spread across 7 days, 3 hours per day on average.
 
 ~~- [ ] All 150 tasks completed~~ → superseded: open work lives in TODO_LIST.md / ROADMAP.md (2026-09-29)
 ~~- [ ] Overall test coverage >70%~~ → ROADMAP "Trustworthy core"
+
 - [ ] All tests passing (100%)
 - [ ] Documentation complete
 - [ ] Examples working

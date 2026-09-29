@@ -110,58 +110,58 @@ _Prioritized by impact/effort. T-numbers refer to TODO_LIST.md._
 
 ### P0 — hygiene (hours, high confidence)
 
-| # | Action | Ref |
-| --- | --- | --- |
-| 1 | Delete `internal/adapters/adapters_test.go.bak2`/`.bak4` + stray root `1763227265_test_migration.*.sql` | T5 |
-| 2 | Delete `pkg/errors` (zero importers) | T4 |
-| 3 | Delete deprecated 21-param `BuildDefaultData`, migrate its 5 callers to `BuildDefaultDataFromOptions` | T2 |
-| 4 | Remove stale `bun.lock` (package manager is pnpm) | new |
-| 5 | Archive or annotate the five stale root strategy docs (Nix proposal is done — flake.nix ships) | new |
-| 6 | Replace hardcoded `internal/db`/`${DATABASE_URL}` literals with the extracted constants | T12 |
-| 7 | Add CONTRIBUTING.md note about the 350-line policy | T15 |
+| # | Action                                                                                                  | Ref |
+| - | ------------------------------------------------------------------------------------------------------- | --- |
+| 1 | Delete `internal/adapters/adapters_test.go.bak2`/`.bak4` + stray root `1763227265_test_migration.*.sql` | T5  |
+| 2 | Delete `pkg/errors` (zero importers)                                                                    | T4  |
+| 3 | Delete deprecated 21-param `BuildDefaultData`, migrate its 5 callers to `BuildDefaultDataFromOptions`   | T2  |
+| 4 | Remove stale `bun.lock` (package manager is pnpm)                                                       | new |
+| 5 | Archive or annotate the five stale root strategy docs (Nix proposal is done — flake.nix ships)          | new |
+| 6 | Replace hardcoded `internal/db`/`${DATABASE_URL}` literals with the extracted constants                 | T12 |
+| 7 | Add CONTRIBUTING.md note about the 350-line policy                                                      | T15 |
 
 ### P1 — quality gates and coverage (days)
 
-| # | Action | Ref |
-| --- | --- | --- |
-| 8 | Add CI file-size gate (>350 lines fails) | T8 |
-| 9 | Finish `TypeSafeSafetyRules` migration, delete boolean `SafetyRules` (4 files) | T3 |
-| 10 | Split `project_creator.go` (434) — biggest production file | T1 |
-| 11 | Split `wizard/features.go` (392) + `wizard.go` (355) | T1 |
-| 12 | Split `adapters/migration_real.go` (378) | T1 |
-| 13 | Split remaining oversized test files (template_validation_test 376, branching_flow_test 369, wizard_step_implementation_test 364, validator_test 360, wizard_run_integration_test 358) | T1 |
-| 14 | Wire `generateQueryFiles()` into `CreateProject` or delete it | T11 |
-| 15 | Golden/snapshot tests for all 8 templates' generated sqlc.yaml | T9 |
-| 16 | Zero-value tests for APIFirst, Enterprise, Microservice | T10 |
-| 17 | Raise wizard coverage 34.2% → 60% (core UI) | T6 |
-| 18 | Raise commands coverage 47.2% → 60% | T6 |
-| 19 | Raise adapters coverage 22.9% → 40% (lowest package) | T7 |
-| 20 | Add microservice example (Docker Compose + PostgreSQL) | T13 |
-| 21 | Add enterprise example (audit tables + RLS queries) | T13 |
-| 22 | Ship MySQL starter query/schema templates | T14 |
-| 23 | Clear `internal/testing` lint findings (exhaustruct ×9, staticcheck ×5, gochecknoglobals ×3, godoclint ×2, golines ×1) | T17 |
-| 24 | Resolve `paralleltest` policy on template tests (add `t.Parallel()` or disable rule with rationale) | T17 |
-| 25 | Investigate `getJSONTagsCaseStyle` warning in template_validation_test.go | T17 |
-| 26 | Consolidate duplicated `BeforeEach` in creators tests; add godoc to extracted helpers; table-driven `ValidateAllProjectTypes` | T16 |
-| 27 | Sweep for any other `assert.JSONEq` misuse patterns repo-wide | new |
+| #  | Action                                                                                                                                                                                 | Ref |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --- |
+| 8  | Add CI file-size gate (>350 lines fails)                                                                                                                                               | T8  |
+| 9  | Finish `TypeSafeSafetyRules` migration, delete boolean `SafetyRules` (4 files)                                                                                                         | T3  |
+| 10 | Split `project_creator.go` (434) — biggest production file                                                                                                                             | T1  |
+| 11 | Split `wizard/features.go` (392) + `wizard.go` (355)                                                                                                                                   | T1  |
+| 12 | Split `adapters/migration_real.go` (378)                                                                                                                                               | T1  |
+| 13 | Split remaining oversized test files (template_validation_test 376, branching_flow_test 369, wizard_step_implementation_test 364, validator_test 360, wizard_run_integration_test 358) | T1  |
+| 14 | Wire `generateQueryFiles()` into `CreateProject` or delete it                                                                                                                          | T11 |
+| 15 | Golden/snapshot tests for all 8 templates' generated sqlc.yaml                                                                                                                         | T9  |
+| 16 | Zero-value tests for APIFirst, Enterprise, Microservice                                                                                                                                | T10 |
+| 17 | Raise wizard coverage 34.2% → 60% (core UI)                                                                                                                                            | T6  |
+| 18 | Raise commands coverage 47.2% → 60%                                                                                                                                                    | T6  |
+| 19 | Raise adapters coverage 22.9% → 40% (lowest package)                                                                                                                                   | T7  |
+| 20 | Add microservice example (Docker Compose + PostgreSQL)                                                                                                                                 | T13 |
+| 21 | Add enterprise example (audit tables + RLS queries)                                                                                                                                    | T13 |
+| 22 | Ship MySQL starter query/schema templates                                                                                                                                              | T14 |
+| 23 | Clear `internal/testing` lint findings (exhaustruct ×9, staticcheck ×5, gochecknoglobals ×3, godoclint ×2, golines ×1)                                                                 | T17 |
+| 24 | Resolve `paralleltest` policy on template tests (add `t.Parallel()` or disable rule with rationale)                                                                                    | T17 |
+| 25 | Investigate `getJSONTagsCaseStyle` warning in template_validation_test.go                                                                                                              | T17 |
+| 26 | Consolidate duplicated `BeforeEach` in creators tests; add godoc to extracted helpers; table-driven `ValidateAllProjectTypes`                                                          | T16 |
+| 27 | Sweep for any other `assert.JSONEq` misuse patterns repo-wide                                                                                                                          | new |
 
 ### P2 — releases, infra, docs (week)
 
-| # | Action | Ref |
-| --- | --- | --- |
-| 28 | Cut a real v0.3.0 tag to validate GoReleaser end-to-end (v0.1.0/v0.2.0 are the same commit) | new |
-| 29 | `goreleaser check` + dry-run to validate config before tagging | new |
-| 30 | Pin golangci-lint version in CI (prevents the version-panic class from Feb) | new |
-| 31 | Re-run `dupl` locally to re-baseline clone groups (confirm the 2026-01-14 state held) | new |
-| 32 | Deep-verify `docs/DOMAIN_LANGUAGE.md` terms vs code; add ConfiguredTemplate/BaseTemplate/apperrors if missing | new |
-| 33 | Docs-health sweep for the ~50 2025-era status/planning files (annotate + archive, same pattern as this pass) | new |
-| 34 | Move finished strategy docs (Nix proposal) to an archive or delete | new |
-| 35 | Add dprint install/availability note to AGENTS.md Commands (it is not on PATH locally) | new |
-| 36 | Coverage badge/summary in README fed from the CI coverage artifact | new |
-| 37 | Verify `examples/hobby-*` READMEs still build (go mod tidy + go build in the example) | new |
-| 38 | Add `*.bak*` to .gitignore | new |
-| 39 | Reconsider a 5-line "why 350" rationale in AGENTS.md (ADR declined this pass as overhead) | new |
-| 40 | Real-sqlc integration test harness (template → generate → `sqlc generate` passes) | ROADMAP seed |
+| #  | Action                                                                                                        | Ref          |
+| -- | ------------------------------------------------------------------------------------------------------------- | ------------ |
+| 28 | Cut a real v0.3.0 tag to validate GoReleaser end-to-end (v0.1.0/v0.2.0 are the same commit)                   | new          |
+| 29 | `goreleaser check` + dry-run to validate config before tagging                                                | new          |
+| 30 | Pin golangci-lint version in CI (prevents the version-panic class from Feb)                                   | new          |
+| 31 | Re-run `dupl` locally to re-baseline clone groups (confirm the 2026-01-14 state held)                         | new          |
+| 32 | Deep-verify `docs/DOMAIN_LANGUAGE.md` terms vs code; add ConfiguredTemplate/BaseTemplate/apperrors if missing | new          |
+| 33 | Docs-health sweep for the ~50 2025-era status/planning files (annotate + archive, same pattern as this pass)  | new          |
+| 34 | Move finished strategy docs (Nix proposal) to an archive or delete                                            | new          |
+| 35 | Add dprint install/availability note to AGENTS.md Commands (it is not on PATH locally)                        | new          |
+| 36 | Coverage badge/summary in README fed from the CI coverage artifact                                            | new          |
+| 37 | Verify `examples/hobby-*` READMEs still build (go mod tidy + go build in the example)                         | new          |
+| 38 | Add `*.bak*` to .gitignore                                                                                    | new          |
+| 39 | Reconsider a 5-line "why 350" rationale in AGENTS.md (ADR declined this pass as overhead)                     | new          |
+| 40 | Real-sqlc integration test harness (template → generate → `sqlc generate` passes)                             | ROADMAP seed |
 
 ---
 

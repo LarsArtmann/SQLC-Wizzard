@@ -228,39 +228,46 @@ return apperrors.ValidationError("field", "validation failed")  // Context-rich 
 ### Planned Tasks (M-C-001 to M-C-065)
 
 ~~1. **Test Suite Structure (Task C-001)**~~ done — duplicate `RunSpecs` calls removed (dedup pass 2026-01-14); single-run suites
-   - Create single test suite runner
-   - Remove duplicate RunSpecs calls
-   - Enable parallel test execution
+
+- Create single test suite runner
+- Remove duplicate RunSpecs calls
+- Enable parallel test execution
 
 ~~2. **Type Safety Audit (Tasks C-006 to C-018)**~~ → TODO_LIST T3 (SafetyRules boolean→enum migration remains)
-   - Audit all error returns
-   - Replace generic errors with typed errors
-   - Ensure context preservation
+
+- Audit all error returns
+- Replace generic errors with typed errors
+- Ensure context preservation
 
 ~~3. **File Size Management (Tasks C-019 to C-030)**~~ → TODO_LIST T1 (9 files over 350 on 2026-09-29; 11-file split done 2026-06-14)
-   - Check all files < 350 lines
-   - Split oversized files
-   - Improve code organization
+
+- Check all files < 350 lines
+- Split oversized files
+- Improve code organization
 
 ~~4. **Comprehensive Testing (Tasks C-031 to C-037)**~~ done — `internal/apperrors` has behavior/wrapping/creation/comparison tests
-   - Add error wrapping tests
-   - Add error context tests
-   - Add error comparison tests
+
+- Add error wrapping tests
+- Add error context tests
+- Add error comparison tests
 
 ~~5. **Documentation (Tasks C-038 to C-044)**~~ done — AGENTS.md + `docs/` suite
-   - Document error handling patterns
-   - Update AGENTS.md
-   - Add examples and best practices
+
+- Document error handling patterns
+- Update AGENTS.md
+- Add examples and best practices
 
 ~~6. **Performance Optimization (Tasks C-045 to C-060)**~~ → ROADMAP "Trustworthy core"
-   - Benchmark error creation
-   - Optimize if needed
-   - Add performance tests
+
+- Benchmark error creation
+- Optimize if needed
+- Add performance tests
 
 ~~7. **Integration & Validation (Tasks C-061 to M-C-065)**~~ → ROADMAP "Trustworthy core"
-   - Add integration tests
-   - Final verification
-   - Document results
+
+- Add integration tests
+- Final verification
+- Document results
 
 ### Quality Gates for Phase 3
 

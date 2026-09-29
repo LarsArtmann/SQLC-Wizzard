@@ -228,47 +228,55 @@ Common Go naming conventions applied:
 ### 6.1 Immediate Actions (This Session)
 
 ~~1. **Commit BaseTemplate improvements**~~ done — committed and superseded by the ConfiguredTemplate migration
-   - Document the type change in GetSQLPackage
-   - Preserve the documentation enhancements
+
+- Document the type change in GetSQLPackage
+- Preserve the documentation enhancements
 
 ~~2. **Commit HobbyTemplate embedding**~~ done at `b1b4a80`
-   - Align with other BaseTemplate-embedded templates
+
+- Align with other BaseTemplate-embedded templates
 
 ~~3. **Verify full build and test suite**~~ done — build and all 14 packages pass 2026-09-29
 
 ### 6.2 Short-Term Improvements (Next Sprint)
 
 ~~1. **Standardize BaseTemplate usage**~~ done — decision: ConfiguredTemplate for 7/8 templates; microservice intentionally on BaseTemplate
-   - Option A: All templates embed BaseTemplate
-   - Option B: Extract common behavior into shared utilities
-   - Decision needed from team
+
+- Option A: All templates embed BaseTemplate
+- Option B: Extract common behavior into shared utilities
+- Decision needed from team
 
 ~~2. **Reduce code duplication**~~ done at `ee8f29e` — shared initialization helpers
-   - Extract common Generate() logic
-   - Create template-specific customization hooks
-   - Consider template method pattern
+
+- Extract common Generate() logic
+- Create template-specific customization hooks
+- Consider template method pattern
 
 ~~3. **Add integration tests**~~ → ROADMAP "Trustworthy core"
-   - Test template registry interactions
-   - Test configuration generation end-to-end
-   - Validate generated configs are valid
+
+- Test template registry interactions
+- Test configuration generation end-to-end
+- Validate generated configs are valid
 
 ### 6.3 Long-Term Strategy
 
 ~~1. **Template Inheritance Architecture**~~ done — realized as ConfiguredTemplate composition
-   - Define base template with common behavior
-   - Allow template-specific overrides
-   - Use composition for flexible customization
+
+- Define base template with common behavior
+- Allow template-specific overrides
+- Use composition for flexible customization
 
 ~~2. **Performance Optimization**~~ → ROADMAP "Trustworthy core"
-   - Benchmark template generation
-   - Cache template configurations
-   - Profile for hot paths
+
+- Benchmark template generation
+- Cache template configurations
+- Profile for hot paths
 
 ~~3. **Documentation Enhancement**~~ done — docs suite + AGENTS.md (ADRs declined — see 11-42 report row 15)
-   - Add architecture decision records (ADRs)
-   - Document template patterns
-   - Create developer guide
+
+- Add architecture decision records (ADRs)
+- Document template patterns
+- Create developer guide
 
 ---
 
@@ -398,6 +406,7 @@ Common Go naming conventions applied:
 ~~- [ ] Implement template architecture decisions~~ done — migration completed 2026-02-11
 ~~- [ ] Reduce template code duplication~~ done at `ee8f29e`
 ~~- [ ] Add performance benchmarks~~ → ROADMAP "Trustworthy core"
+
 - [ ] Create developer documentation
 
 ---

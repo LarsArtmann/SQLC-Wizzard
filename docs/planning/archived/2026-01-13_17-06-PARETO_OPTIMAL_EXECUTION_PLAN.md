@@ -17,12 +17,12 @@
 **Impact:** IMMEDIATE - Unblocks enterprise release
 **Priority:** 🔴 CRITICAL
 
-| Task                                        | Time  | Impact | Why It Matters                                     |
-| ------------------------------------------- | ----- | ------ | -------------------------------------------------- |
-~~| Fix 3 failing integration tests             | 30min | 🔴🔴🔴 | Shows test suite works, builds confidence          |~~ done — suites green (2026-09-29); fixes landed with the apperrors rename (`b4540e8`)
-~~| Create "Getting Started" user guide         | 2h    | 🔴🔴🔴 | Users can actually use the tool effectively        |~~ done at `6507a01` — `docs/user-guide/index.md`
-~~| Add wizard step tests (critical paths)      | 2h    | 🔴🔴🔴 | Covers 80% of user interactions, highest risk area |~~ → TODO_LIST T6 (34.2% on 2026-09-29)
-| Create basic example project (hobby/SQLite) | 1h    | 🔴🔴   | Users can see working example immediately          |
+| Task                                        | Time                                   | Impact | Why It Matters                            |
+| ------------------------------------------- | -------------------------------------- | ------ | ----------------------------------------- |
+| ~~                                          | Fix 3 failing integration tests        | 30min  | 🔴🔴🔴                                    |
+| ~~                                          | Create "Getting Started" user guide    | 2h     | 🔴🔴🔴                                    |
+| ~~                                          | Add wizard step tests (critical paths) | 2h     | 🔴🔴🔴                                    |
+| Create basic example project (hobby/SQLite) | 1h                                     | 🔴🔴   | Users can see working example immediately |
 
 **Delivers:** 51% of enterprise readiness value
 
@@ -34,14 +34,14 @@
 **Impact:** HIGH - Solidifies foundation
 **Priority:** 🟡 IMPORTANT
 
-| Task                                 | Time | Impact | Why It Matters                                    |
-| ------------------------------------ | ---- | ------ | ------------------------------------------------- |
-~~| Complete wizard test coverage to 60% | 2h   | 🔴🔴   | Covers critical user flows, reduces risk by 50%   |~~ → TODO_LIST T6
-| Create 2 real-world examples         | 2h   | 🔴🔴   | Microservice (PostgreSQL) + Enterprise (multi-DB) |
-~~| Fix commands test coverage to 60%    | 2h   | 🔴🔴   | Commands are user-facing, need reliability        |~~ → TODO_LIST T6 (47.2%)
-~~| Fix adapters test coverage to 50%    | 2h   | 🟡     | Adapters handle I/O, need confidence              |~~ → TODO_LIST T7 (22.9%)
-| Add migration guide doc              | 1h   | 🔴🔴   | Users can upgrade from manual sqlc.yaml           |
-| Add troubleshooting guide doc        | 1h   | 🔴🔴   | Users can solve common problems                   |
+| Task                          | Time                                 | Impact | Why It Matters                                    |
+| ----------------------------- | ------------------------------------ | ------ | ------------------------------------------------- |
+| ~~                            | Complete wizard test coverage to 60% | 2h     | 🔴🔴                                              |
+| Create 2 real-world examples  | 2h                                   | 🔴🔴   | Microservice (PostgreSQL) + Enterprise (multi-DB) |
+| ~~                            | Fix commands test coverage to 60%    | 2h     | 🔴🔴                                              |
+| ~~                            | Fix adapters test coverage to 50%    | 2h     | 🟡                                                |
+| Add migration guide doc       | 1h                                   | 🔴🔴   | Users can upgrade from manual sqlc.yaml           |
+| Add troubleshooting guide doc | 1h                                   | 🔴🔴   | Users can solve common problems                   |
 
 **Delivers:** 64% of enterprise readiness value
 
@@ -53,18 +53,18 @@
 **Impact:** MAJOR - Completes enterprise readiness
 **Priority:** 🟢 SHOULD HAVE
 
-| Task                                      | Time | Impact | Why It Matters                               |
-| ----------------------------------------- | ---- | ------ | -------------------------------------------- |
-~~| Complete wizard test coverage to 80%      | 4h   | 🔴🔴   | Comprehensive coverage, ready for production |~~ → TODO_LIST T6 (longer-term)
-~~| Complete commands test coverage to 75%    | 3h   | 🔴🔴   | All CLI commands thoroughly tested           |~~ → TODO_LIST T6
-~~| Complete adapters test coverage to 70%    | 3h   | 🔴🔴   | I/O layer reliable under all conditions      |~~ → TODO_LIST T7
-~~| Complete generators test coverage to 80%  | 3h   | 🔴🔴   | File generation never fails                  |~~ → ROADMAP "Trustworthy core"
-~~| Complete creators test coverage to 70%    | 2h   | 🔴🔴   | Project scaffolding always works             |~~ → ROADMAP "Trustworthy core" (49.4%)
-~~| Performance baseline testing              | 3h   | 🟡     | Establish benchmarks, add regression tests   |~~ → ROADMAP "Trustworthy core"
-| Create comprehensive best practices guide | 2h   | 🔴🔴   | Teams can use tool effectively               |
-~~| Create CI/CD integration examples         | 2h   | 🔴🔴   | Easy integration with existing workflows     |~~ → ROADMAP "Frictionless adoption"
-| Add load testing (100+ tables)            | 3h   | 🟡     | Confirms scalability for enterprise          |
-~~| Memory profiling & leak detection         | 2h   | 🟡     | No hidden memory issues                      |~~ → ROADMAP "Trustworthy core"
+| Task                                      | Time                                     | Impact | Why It Matters                      |
+| ----------------------------------------- | ---------------------------------------- | ------ | ----------------------------------- |
+| ~~                                        | Complete wizard test coverage to 80%     | 4h     | 🔴🔴                                |
+| ~~                                        | Complete commands test coverage to 75%   | 3h     | 🔴🔴                                |
+| ~~                                        | Complete adapters test coverage to 70%   | 3h     | 🔴🔴                                |
+| ~~                                        | Complete generators test coverage to 80% | 3h     | 🔴🔴                                |
+| ~~                                        | Complete creators test coverage to 70%   | 2h     | 🔴🔴                                |
+| ~~                                        | Performance baseline testing             | 3h     | 🟡                                  |
+| Create comprehensive best practices guide | 2h                                       | 🔴🔴   | Teams can use tool effectively      |
+| ~~                                        | Create CI/CD integration examples        | 2h     | 🔴🔴                                |
+| Add load testing (100+ tables)            | 3h                                       | 🟡     | Confirms scalability for enterprise |
+| ~~                                        | Memory profiling & leak detection        | 2h     | 🟡                                  |
 
 **Delivers:** 80% of enterprise readiness value
 
@@ -74,12 +74,12 @@
 
 ### Phase 0: Quick Wins (1% → 51%) - 5 Hours
 
-| ID    | Task                                   | Priority    | Time  | Dependencies | Impact                |
-| ----- | -------------------------------------- | ----------- | ----- | ------------ | --------------------- |
-| QW-01 | Fix 3 failing integration tests        | 🔴 CRITICAL | 30min | None         | Immediate credibility |
-| QW-02 | Create "Getting Started" user guide    | 🔴 CRITICAL | 2h    | QW-01        | Users can use tool    |
-| QW-03 | Add wizard step tests (critical paths) | 🔴 CRITICAL | 2h    | QW-01        | Reduces risk 50%      |
-~~| QW-04 | Create basic example (hobby/SQLite)    | 🔴 CRITICAL | 1h    | QW-02        | Working reference     |~~ done at `9db82a7` — `examples/hobby-sqlite/`
+| ID    | Task                                   | Priority                            | Time        | Dependencies | Impact                |
+| ----- | -------------------------------------- | ----------------------------------- | ----------- | ------------ | --------------------- |
+| QW-01 | Fix 3 failing integration tests        | 🔴 CRITICAL                         | 30min       | None         | Immediate credibility |
+| QW-02 | Create "Getting Started" user guide    | 🔴 CRITICAL                         | 2h          | QW-01        | Users can use tool    |
+| QW-03 | Add wizard step tests (critical paths) | 🔴 CRITICAL                         | 2h          | QW-01        | Reduces risk 50%      |
+| ~~    | QW-04                                  | Create basic example (hobby/SQLite) | 🔴 CRITICAL | 1h           | QW-02                 |
 
 **Total Phase 0:** 5.5 hours
 
@@ -87,15 +87,15 @@
 
 ### Phase 1: Critical Foundation (4% → 64%) - 10 Hours
 
-| ID    | Task                                     | Priority     | Time | Dependencies | Impact                |
-| ----- | ---------------------------------------- | ------------ | ---- | ------------ | --------------------- |
-| CF-01 | Complete wizard test coverage to 60%     | 🔴 CRITICAL  | 2h   | QW-03        | Critical flows tested |
-~~| CF-02 | Create microservice example (PostgreSQL) | 🔴 CRITICAL  | 1h   | QW-04        | Real-world reference  |~~ → TODO_LIST T13
-~~| CF-03 | Create enterprise example (multi-DB)     | 🔴 CRITICAL  | 1h   | CF-02        | Complex scenario      |~~ → TODO_LIST T13
-| CF-04 | Fix commands test coverage to 60%        | 🔴 CRITICAL  | 2h   | QW-01        | CLI reliability       |
-| CF-05 | Fix adapters test coverage to 50%        | 🟡 IMPORTANT | 2h   | QW-01        | I/O confidence        |
-~~| CF-06 | Write migration guide doc                | 🔴 CRITICAL  | 1h   | QW-02        | Upgrade path          |~~ done — `docs/MIGRATION_GUIDE.md`
-~~| CF-07 | Write troubleshooting guide doc          | 🔴 CRITICAL  | 1h   | QW-02        | User self-service     |~~ done — `docs/TROUBLESHOOTING.md`
+| ID    | Task                                 | Priority                                 | Time        | Dependencies | Impact                |
+| ----- | ------------------------------------ | ---------------------------------------- | ----------- | ------------ | --------------------- |
+| CF-01 | Complete wizard test coverage to 60% | 🔴 CRITICAL                              | 2h          | QW-03        | Critical flows tested |
+| ~~    | CF-02                                | Create microservice example (PostgreSQL) | 🔴 CRITICAL | 1h           | QW-04                 |
+| ~~    | CF-03                                | Create enterprise example (multi-DB)     | 🔴 CRITICAL | 1h           | CF-02                 |
+| CF-04 | Fix commands test coverage to 60%    | 🔴 CRITICAL                              | 2h          | QW-01        | CLI reliability       |
+| CF-05 | Fix adapters test coverage to 50%    | 🟡 IMPORTANT                             | 2h          | QW-01        | I/O confidence        |
+| ~~    | CF-06                                | Write migration guide doc                | 🔴 CRITICAL | 1h           | QW-02                 |
+| ~~    | CF-07                                | Write troubleshooting guide doc          | 🔴 CRITICAL | 1h           | QW-02                 |
 
 **Total Phase 1:** 10 hours
 
@@ -103,19 +103,19 @@
 
 ### Phase 2: Hardening (20% → 80%) - 30 Hours
 
-| ID    | Task                                     | Priority     | Time | Dependencies | Impact            |
-| ----- | ---------------------------------------- | ------------ | ---- | ------------ | ----------------- |
-| HR-01 | Complete wizard test coverage to 80%     | 🔴 CRITICAL  | 4h   | CF-01        | Production ready  |
-| HR-02 | Complete commands test coverage to 75%   | 🔴 CRITICAL  | 3h   | CF-04        | CLI reliability   |
-| HR-03 | Complete adapters test coverage to 70%   | 🔴 CRITICAL  | 3h   | CF-05        | I/O robustness    |
-| HR-04 | Complete generators test coverage to 80% | 🔴 CRITICAL  | 3h   | CF-01        | File generation   |
-| HR-05 | Complete creators test coverage to 70%   | 🔴 CRITICAL  | 2h   | CF-01        | Scaffolding works |
-| HR-06 | Performance baseline testing             | 🟡 IMPORTANT | 3h   | None         | Benchmarks        |
-~~| HR-07 | Add performance regression tests         | 🟡 IMPORTANT | 2h   | HR-06        | No regressions    |~~ → ROADMAP "Trustworthy core"
-~~| HR-08 | Load testing (100+ tables)               | 🟡 IMPORTANT | 3h   | HR-06        | Scalability       |~~ → ROADMAP "Reach"
-| HR-09 | Memory profiling & leak detection        | 🟡 IMPORTANT | 2h   | HR-08        | Stability         |
-~~| HR-10 | Write comprehensive best practices guide | 🔴 CRITICAL  | 2h   | QW-02        | Team usage        |~~ done — `docs/BEST_PRACTICES.md`
-| HR-11 | Create CI/CD integration examples        | 🔴 CRITICAL  | 2h   | QW-02        | Easy integration  |
+| ID    | Task                                     | Priority                                 | Time         | Dependencies | Impact            |
+| ----- | ---------------------------------------- | ---------------------------------------- | ------------ | ------------ | ----------------- |
+| HR-01 | Complete wizard test coverage to 80%     | 🔴 CRITICAL                              | 4h           | CF-01        | Production ready  |
+| HR-02 | Complete commands test coverage to 75%   | 🔴 CRITICAL                              | 3h           | CF-04        | CLI reliability   |
+| HR-03 | Complete adapters test coverage to 70%   | 🔴 CRITICAL                              | 3h           | CF-05        | I/O robustness    |
+| HR-04 | Complete generators test coverage to 80% | 🔴 CRITICAL                              | 3h           | CF-01        | File generation   |
+| HR-05 | Complete creators test coverage to 70%   | 🔴 CRITICAL                              | 2h           | CF-01        | Scaffolding works |
+| HR-06 | Performance baseline testing             | 🟡 IMPORTANT                             | 3h           | None         | Benchmarks        |
+| ~~    | HR-07                                    | Add performance regression tests         | 🟡 IMPORTANT | 2h           | HR-06             |
+| ~~    | HR-08                                    | Load testing (100+ tables)               | 🟡 IMPORTANT | 3h           | HR-06             |
+| HR-09 | Memory profiling & leak detection        | 🟡 IMPORTANT                             | 2h           | HR-08        | Stability         |
+| ~~    | HR-10                                    | Write comprehensive best practices guide | 🔴 CRITICAL  | 2h           | QW-02             |
+| HR-11 | Create CI/CD integration examples        | 🔴 CRITICAL                              | 2h           | QW-02        | Easy integration  |
 
 **Total Phase 2:** 29 hours
 

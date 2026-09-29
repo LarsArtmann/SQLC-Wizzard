@@ -689,72 +689,81 @@ ecadc06 cleanup: remove redundant wizard test files
 ### 🔴 CRITICAL (Block Future Work)
 
 ~~1. **Increase Adapters Coverage from 23.0% to 40%**~~ → TODO_LIST T7 (22.9% on 2026-09-29 — still the lowest package)
-   - Add tests for all adapter interfaces
-   - Test error paths and edge cases
-   - Add integration tests
-   - **Impact**: HIGH - Core infrastructure
-   - **Time**: 2 hours
+
+- Add tests for all adapter interfaces
+- Test error paths and edge cases
+- Add integration tests
+- **Impact**: HIGH - Core infrastructure
+- **Time**: 2 hours
 
 ~~2. **Increase Creators Coverage from 23.7% to 40%**~~ done — 49.4% on 2026-09-29 (target exceeded)
-   - Test all creator methods
-   - Add error handling tests
-   - Test file generation edge cases
-   - **Impact**: HIGH - Core functionality
-   - **Time**: 2 hours
+
+- Test all creator methods
+- Add error handling tests
+- Test file generation edge cases
+- **Impact**: HIGH - Core functionality
+- **Time**: 2 hours
 
 ~~3. **Increase Commands Coverage from 38.1% to 60%**~~ → TODO_LIST T6 (47.2% on 2026-09-29)
-   - Test all CLI commands (init, validate, doctor, generate, migrate)
-   - Test flag parsing and validation
-   - Test command execution flow
-   - **Impact**: HIGH - User interface
-   - **Time**: 3 hours
+
+- Test all CLI commands (init, validate, doctor, generate, migrate)
+- Test flag parsing and validation
+- Test command execution flow
+- **Impact**: HIGH - User interface
+- **Time**: 3 hours
 
 ### 🟠 HIGH IMPACT (User Experience)
 
 ~~4. **Create Additional Example Projects**~~ → TODO_LIST T13 (microservice, enterprise)
-   - microservice example (Docker, K8s)
-   - API-first example (OpenAPI, Swagger)
-   - Multi-tenant example (RLS policies)
-   - Analytics example (materialized views)
-   - **Impact**: HIGH - User onboarding
-   - **Time**: 3 hours
+
+- microservice example (Docker, K8s)
+- API-first example (OpenAPI, Swagger)
+- Multi-tenant example (RLS policies)
+- Analytics example (materialized views)
+- **Impact**: HIGH - User onboarding
+- **Time**: 3 hours
 
 ~~5. **Create Video Tutorials**~~ → ROADMAP "Frictionless adoption"
-   - Screen recording of wizard usage
-   - Step-by-step walkthrough
-   - Upload to YouTube
-   - **Impact**: HIGH - User learning
-   - **Time**: 2 hours
+
+- Screen recording of wizard usage
+- Step-by-step walkthrough
+- Upload to YouTube
+- **Impact**: HIGH - User learning
+- **Time**: 2 hours
 
 ~~6. **Add Integration Tests**~~ → ROADMAP "Trustworthy core"
-   - End-to-end wizard flow tests
-   - Database integration tests
-   - File system integration tests
-   - **Impact**: HIGH - System reliability
-   - **Time**: 4 hours
+
+- End-to-end wizard flow tests
+- Database integration tests
+- File system integration tests
+- **Impact**: HIGH - System reliability
+- **Time**: 4 hours
 
 ~~7. **Create CONTRIBUTING Guide**~~ done at `c9d7e57` — `CONTRIBUTING.md`
-   - Development setup instructions
-   - Code style guidelines
-   - PR process and review criteria
-   - **Impact**: MEDIUM - Team collaboration
-   - **Time**: 1 hour
+
+- Development setup instructions
+- Code style guidelines
+- PR process and review criteria
+- **Impact**: MEDIUM - Team collaboration
+- **Time**: 1 hour
 
 ### 🟡 MEDIUM IMPACT (Documentation)
 
 ~~8. **Create API Documentation**~~ Won't implement — godoc plus the docs suite cover it; a separate API reference is not scheduled
-   - Generated code API reference
-   - Query naming conventions
-   - Type system documentation
-   - **Impact**: MEDIUM - Developer experience
-   - **Time**: 2 hours
+
+- Generated code API reference
+- Query naming conventions
+- Type system documentation
+- **Impact**: MEDIUM - Developer experience
+- **Time**: 2 hours
 
 ~~9. **Create Changelog**~~ done — `CHANGELOG.md` (rebuilt in the 2026-09-29 docs-health pass)
-   - Document breaking changes
-   - Version history
-   - Migration notes
-   - **Impact**: MEDIUM - Release management
-   - **Time**: 30 minutes
+
+- Document breaking changes
+- Version history
+- Migration notes
+- **Impact**: MEDIUM - Release management
+- **Time**: 30 minutes
 
 ~~10. **Create Release Notes**~~ Won't implement — GoReleaser generates GitHub release notes per tag
 

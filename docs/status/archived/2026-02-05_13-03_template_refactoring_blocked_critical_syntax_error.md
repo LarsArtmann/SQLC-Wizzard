@@ -1825,194 +1825,225 @@ Successfully implemented comprehensive template documentation and testing infras
 ### CRITICAL - MUST COMPLETE IMMEDIATELY (Next 15 Minutes)
 
 ~~1. 🔴 **Fix MicroserviceTemplate syntax error** (10 minutes)~~ done — file restored and compiles; template healthy on `BaseTemplate` (verified 2026-09-29)
-   - **Approach:** Restore from git: `git checkout -- internal/templates/microservice.go`
-   - **Redo Refactoring:**
-     1. Add `BaseTemplate` embed
-     2. Change `t.getSQLPackage()` to `t.GetSQLPackage()`
-     3. Change `t.buildGoGenConfig()` to `t.BuildGoGenConfig()`
-     4. Delete 5 duplicate methods (buildGoGenConfig, getSQLPackage, getBuildTags, getTypeOverrides, getRenameRules)
-     5. Test compile after each change
-   - **Verify:** All 4 MicroserviceTemplate tests pass
-   - **WHY CRITICAL:** BLOCKS all further work, current state is broken
-   - **Estimated Time:** 10 minutes (restore and redo properly)
+
+- **Approach:** Restore from git: `git checkout -- internal/templates/microservice.go`
+- **Redo Refactoring:**
+  1. Add `BaseTemplate` embed
+  2. Change `t.getSQLPackage()` to `t.GetSQLPackage()`
+  3. Change `t.buildGoGenConfig()` to `t.BuildGoGenConfig()`
+  4. Delete 5 duplicate methods (buildGoGenConfig, getSQLPackage, getBuildTags, getTypeOverrides, getRenameRules)
+  5. Test compile after each change
+- **Verify:** All 4 MicroserviceTemplate tests pass
+- **WHY CRITICAL:** BLOCKS all further work, current state is broken
+- **Estimated Time:** 10 minutes (restore and redo properly)
 
 ~~2. 🔴 **Commit and push template customization guide** (5 minutes)~~ done — `docs/templates/customization.md` committed
-   - **File:** `docs/templates/customization.md`
-   - **Actions:**
-     1. Stage: `git add docs/templates/customization.md`
-     2. Commit with detailed message
-     3. Push to remote
-   - **WHY CRITICAL:** Documentation written but not saved to git history
-   - **Estimated Time:** 5 minutes
+
+- **File:** `docs/templates/customization.md`
+- **Actions:**
+  1. Stage: `git add docs/templates/customization.md`
+  2. Commit with detailed message
+  3. Push to remote
+- **WHY CRITICAL:** Documentation written but not saved to git history
+- **Estimated Time:** 5 minutes
 
 ### HIGH PRIORITY - Complete Today (Next 1 Hour)
 
 ~~3. ⚡ **Refactor MicroserviceTemplate to use BaseTemplate (PROPERLY)** (15 minutes)~~ Won't implement — intentional: MicroserviceTemplate stays on `BaseTemplate` (custom `Generate()` logic; AGENTS.md Gotchas)
-   - **Steps:**
-     1. Restore from git: `git checkout -- internal/templates/microservice.go`
-     2. Add `BaseTemplate` embed to struct
-     3. Change `t.getSQLPackage()` to `t.GetSQLPackage()`
-     4. Change `t.buildGoGenConfig()` to `t.BuildGoGenConfig()`
-     5. Delete 5 duplicate methods (buildGoGenConfig, getSQLPackage, getBuildTags, getTypeOverrides, getRenameRules)
-     6. Test compile after each change
-     7. Run all 4 MicroserviceTemplate tests
-   - **Verify:** File is ~150-160 lines, all tests pass
-   - **WHY HIGH:** Completes MicroserviceTemplate refactoring correctly
-   - **Estimated Time:** 15 minutes
+
+- **Steps:**
+  1. Restore from git: `git checkout -- internal/templates/microservice.go`
+  2. Add `BaseTemplate` embed to struct
+  3. Change `t.getSQLPackage()` to `t.GetSQLPackage()`
+  4. Change `t.buildGoGenConfig()` to `t.BuildGoGenConfig()`
+  5. Delete 5 duplicate methods (buildGoGenConfig, getSQLPackage, getBuildTags, getTypeOverrides, getRenameRules)
+  6. Test compile after each change
+  7. Run all 4 MicroserviceTemplate tests
+- **Verify:** File is ~150-160 lines, all tests pass
+- **WHY HIGH:** Completes MicroserviceTemplate refactoring correctly
+- **Estimated Time:** 15 minutes
 
 ~~4. ⚡ **Refactor EnterpriseTemplate to use BaseTemplate** (15 minutes)~~ done — migrated to `ConfiguredTemplate` (verified 2026-09-29)
-   - **Steps:** Same as #3 (apply to EnterpriseTemplate)
-   - **Verify:** File is ~180 lines, all 4 tests pass
-   - **WHY HIGH:** Completes EnterpriseTemplate refactoring
-   - **Estimated Time:** 15 minutes
+
+- **Steps:** Same as #3 (apply to EnterpriseTemplate)
+- **Verify:** File is ~180 lines, all 4 tests pass
+- **WHY HIGH:** Completes EnterpriseTemplate refactoring
+- **Estimated Time:** 15 minutes
 
 ~~5. ⚡ **Refactor APIFirstTemplate to use BaseTemplate** (15 minutes)~~ done — migrated to `ConfiguredTemplate` (verified 2026-09-29)
-   - **Steps:** Same as #3-4 (apply to APIFirstTemplate)
-   - **Verify:** File is ~170 lines, all 4 tests pass
-   - **WHY HIGH:** Completes APIFirstTemplate refactoring
-   - **Estimated Time:** 15 minutes
+
+- **Steps:** Same as #3-4 (apply to APIFirstTemplate)
+- **Verify:** File is ~170 lines, all 4 tests pass
+- **WHY HIGH:** Completes APIFirstTemplate refactoring
+- **Estimated Time:** 15 minutes
 
 ~~6. ⚡ **Verify all 8 templates use BaseTemplate** (5 minutes)~~ done — 7/8 on `ConfiguredTemplate`, microservice intentionally on `BaseTemplate`; all template tests pass 2026-09-29
-   - **Actions:**
-     1. Run all template tests: `go test ./internal/templates -v`
-     2. Verify no compilation errors
-     3. Verify all 33 tests pass
-     4. Verify all 8 templates embed BaseTemplate
-   - **Verify:** All templates refactored, all tests pass
-   - **WHY HIGH:** Ensures all refactoring is complete and correct
-   - **Estimated Time:** 5 minutes
+
+- **Actions:**
+  1. Run all template tests: `go test ./internal/templates -v`
+  2. Verify no compilation errors
+  3. Verify all 33 tests pass
+  4. Verify all 8 templates embed BaseTemplate
+- **Verify:** All templates refactored, all tests pass
+- **WHY HIGH:** Ensures all refactoring is complete and correct
+- **Estimated Time:** 5 minutes
 
 ~~7. ⚡ **Fix BaseTemplate.GetSQLPackage type signature** (5 minutes)~~ done — signature takes `generated.DatabaseType` (verified in `internal/templates/base.go`)
-   - **File:** `internal/templates/base.go`
-   - **Change:** `db DatabaseType` → `db generated.DatabaseType`
-   - **Actions:**
-     1. Update type signature
-     2. Verify all templates can call it correctly
-     3. Run all tests to verify
-   - **WHY HIGH:** Fixes type mismatch between BaseTemplate and templates
-   - **Estimated Time:** 5 minutes
+
+- **File:** `internal/templates/base.go`
+- **Change:** `db DatabaseType` → `db generated.DatabaseType`
+- **Actions:**
+  1. Update type signature
+  2. Verify all templates can call it correctly
+  3. Run all tests to verify
+- **WHY HIGH:** Fixes type mismatch between BaseTemplate and templates
+- **Estimated Time:** 5 minutes
 
 ~~8. ⚡ **Commit and push all template refactoring** (10 minutes)~~ done — landed on master
-   - **Files:** `internal/templates/{microservice,enterprise,api_first,base}.go`
-   - **Actions:**
-     1. Stage all modified template files
-     2. Commit with detailed message
-     3. Push to remote
-   - **WHY HIGH:** Saves all refactoring work to git history
-   - **Estimated Time:** 10 minutes
+
+- **Files:** `internal/templates/{microservice,enterprise,api_first,base}.go`
+- **Actions:**
+  1. Stage all modified template files
+  2. Commit with detailed message
+  3. Push to remote
+- **WHY HIGH:** Saves all refactoring work to git history
+- **Estimated Time:** 10 minutes
 
 ### MEDIUM PRIORITY - Complete This Week (Next 2 Days)
 
 ~~9. ⏳ **Add snapshot tests for generated configs** (1 hour)~~ → TODO_LIST T9
-   - **File:** `internal/templates/snapshot_test.go`
-   - **Actions:**
-     1. Create test file with snapshot tests for all 8 templates
-     2. Add golden files for each template (8 files)
-     3. Test with `go test ./internal/templates -update-golden`
-     4. Commit golden files to git
-     5. Update CI to run snapshot tests
-   - **WHY MEDIUM:** Prevents regressions in generated configs
-   - **Estimated Time:** 1 hour
+
+- **File:** `internal/templates/snapshot_test.go`
+- **Actions:**
+  1. Create test file with snapshot tests for all 8 templates
+  2. Add golden files for each template (8 files)
+  3. Test with `go test ./internal/templates -update-golden`
+  4. Commit golden files to git
+  5. Update CI to run snapshot tests
+- **WHY MEDIUM:** Prevents regressions in generated configs
+- **Estimated Time:** 1 hour
 
 ~~10. ⏳ **Add integration test for template generation workflow** (2 hours)~~ → ROADMAP "Trustworthy core" (real-sqlc integration tests)
-    - **File:** `internal/templates/integration_test.go`
-    - **Actions:**
-      1. Create test file for full workflow
-      2. Test: template selection → config generation → file output
-      3. Test: wizard flow from start to finish
-      4. Test: all 8 templates work end-to-end
-      5. Add test for edge cases and error handling
-    - **WHY MEDIUM:** Ensures templates work in practice, not just in unit tests
-    - **Estimated Time:** 2 hours
+
+- **File:** `internal/templates/integration_test.go`
+- **Actions:**
+
+1. Create test file for full workflow
+2. Test: template selection → config generation → file output
+3. Test: wizard flow from start to finish
+4. Test: all 8 templates work end-to-end
+5. Add test for edge cases and error handling
+
+- **WHY MEDIUM:** Ensures templates work in practice, not just in unit tests
+- **Estimated Time:** 2 hours
 
 ~~11. ⏳ **Improve error messages in templates** (1 hour)~~ Won't implement — errors already flow through `internal/apperrors` with codes and context
-    - **Actions:**
-      1. Add template name to all error messages
-      2. Add field name to all error messages
-      3. Add helpful suggestions for fixing errors
-      4. Test error messages are clear and actionable
-      5. Update documentation with error examples
-    - **WHY MEDIUM:** Better debugging experience
-    - **Estimated Time:** 1 hour
+
+- **Actions:**
+
+1. Add template name to all error messages
+2. Add field name to all error messages
+3. Add helpful suggestions for fixing errors
+4. Test error messages are clear and actionable
+5. Update documentation with error examples
+
+- **WHY MEDIUM:** Better debugging experience
+- **Estimated Time:** 1 hour
 
 ~~12. ⏳ **Add benchmark tests for performance** (1 hour)~~ → ROADMAP "Trustworthy core"
-    - **File:** `internal/templates/bench_test.go`
-    - **Actions:**
-      1. Benchmark template generation for each template
-      2. Benchmark config generation
-      3. Establish performance baseline
-      4. Add benchmark to CI
-      5. Fail if performance degrades beyond threshold
-    - **WHY MEDIUM:** Performance monitoring and regression detection
-    - **Estimated Time:** 1 hour
+
+- **File:** `internal/templates/bench_test.go`
+- **Actions:**
+
+1. Benchmark template generation for each template
+2. Benchmark config generation
+3. Establish performance baseline
+4. Add benchmark to CI
+5. Fail if performance degrades beyond threshold
+
+- **WHY MEDIUM:** Performance monitoring and regression detection
+- **Estimated Time:** 1 hour
 
 ### LOW PRIORITY - Nice to Have (Next 2 Weeks)
 
 ~~13. 📅 **Add regression test suite** (2 hours)~~ NOT-DO/DUPLICATE — covered by TODO_LIST T9 (golden/snapshot tests)
-    - **Actions:** Test all previous working features, add smoke tests, ensure no regressions
-    - **WHY LOW:** Prevents breaking changes
-    - **Estimated Time:** 2 hours
+
+- **Actions:** Test all previous working features, add smoke tests, ensure no regressions
+- **WHY LOW:** Prevents breaking changes
+- **Estimated Time:** 2 hours
 
 ~~14. 📅 **Implement template version compatibility** (3 hours)~~ → ROADMAP "Extensibility" (template versioning)
-    - **Actions:** Add version field, validate configs, add migration paths, document breaking changes
-    - **WHY LOW:** Enables template evolution without breaking existing users
-    - **Estimated Time:** 3 hours
+
+- **Actions:** Add version field, validate configs, add migration paths, document breaking changes
+- **WHY LOW:** Enables template evolution without breaking existing users
+- **Estimated Time:** 3 hours
 
 ~~15. 📅 **Add code coverage enforcement in CI** (2 hours)~~ → ROADMAP "Trustworthy core" (coverage gates)
-    - **Actions:** Update CI/CD, set 80% minimum, fail builds below threshold, generate reports, add badge
-    - **WHY LOW:** Ensures code quality remains high
-    - **Estimated Time:** 2 hours
+
+- **Actions:** Update CI/CD, set 80% minimum, fail builds below threshold, generate reports, add badge
+- **WHY LOW:** Ensures code quality remains high
+- **Estimated Time:** 2 hours
 
 ~~16. 📅 **Extract template builder pattern** (2 hours)~~ Won't implement — `ConfiguredTemplate` + `ConfigBuilder` already provide this
-    - **Actions:** Create TemplateBuilder, incremental config building, validation, documentation, examples
-    - **WHY LOW:** More flexible API for custom configs
-    - **Estimated Time:** 2 hours
+
+- **Actions:** Create TemplateBuilder, incremental config building, validation, documentation, examples
+- **WHY LOW:** More flexible API for custom configs
+- **Estimated Time:** 2 hours
 
 ~~17. 📅 **Add template linting tool** (3 hours)~~ → ROADMAP "Extensibility"
-    - **Actions:** Create linter, validate consistency, check naming, verify features, JSON schema validation, CLI command
-    - **WHY LOW:** Ensures all templates follow best practices
-    - **Estimated Time:** 3 hours
+
+- **Actions:** Create linter, validate consistency, check naming, verify features, JSON schema validation, CLI command
+- **WHY LOW:** Ensures all templates follow best practices
+- **Estimated Time:** 3 hours
 
 ~~18. 📅 **Create template examples with base directory structure** (30 minutes)~~ Won't implement — per-template example docs shipped in `docs/templates/examples/`; an index adds little
-    - **File:** `docs/templates/examples/README.md`
-    - **Actions:** Add recommended project structure for each template
-    - **WHY LOW:** Helps developers understand how to structure their projects
-    - **Estimated Time:** 30 minutes
+
+- **File:** `docs/templates/examples/README.md`
+- **Actions:** Add recommended project structure for each template
+- **WHY LOW:** Helps developers understand how to structure their projects
+- **Estimated Time:** 30 minutes
 
 ~~19. 📅 **Add comprehensive input validation in templates** (1 hour)~~ Won't implement — defaults flow through typed `BuildOptions`; no demand signal
-    - **Actions:** Validate TemplateData, fail fast with clear errors, check database engine, check features, validate required fields
-    - **WHY LOW:** Prevents invalid config generation
-    - **Estimated Time:** 1 hour
+
+- **Actions:** Validate TemplateData, fail fast with clear errors, check database engine, check features, validate required fields
+- **WHY LOW:** Prevents invalid config generation
+- **Estimated Time:** 1 hour
 
 ~~20. 📅 **Create template versioning system** (2 hours)~~ → ROADMAP "Extensibility" (template versioning)
-    - **Actions:** Define semver, add version field, document breaking changes, add migration tools
-    - **WHY LOW:** Enables smooth upgrades
-    - **Estimated Time:** 2 hours
+
+- **Actions:** Define semver, add version field, document breaking changes, add migration tools
+- **WHY LOW:** Enables smooth upgrades
+- **Estimated Time:** 2 hours
 
 ~~21. 📅 **Add template migration tools** (2 hours)~~ → ROADMAP "Extensibility"
-    - **Actions:** Migrate v1 to v2 configs, validate old configs, convert old to new, add migration docs
-    - **WHY LOW:** Helps users upgrade templates
-    - **Estimated Time:** 2 hours
+
+- **Actions:** Migrate v1 to v2 configs, validate old configs, convert old to new, add migration docs
+- **WHY LOW:** Helps users upgrade templates
+- **Estimated Time:** 2 hours
 
 ~~22. 📅 **Add template analytics/metrics** (1 hour)~~ Won't implement — CLI tool; no telemetry by design
-    - **Actions:** Track template usage, add metrics collection, generate reports, analyze adoption
-    - **WHY LOW:** Data-driven decisions on template development
-    - **Estimated Time:** 1 hour
+
+- **Actions:** Track template usage, add metrics collection, generate reports, analyze adoption
+- **WHY LOW:** Data-driven decisions on template development
+- **Estimated Time:** 1 hour
 
 ~~23. 📅 **Create template documentation site** (3 hours)~~ → ROADMAP "Reach" (documentation website)
-    - **Actions:** Generate static site, include examples, add comparison tool, create decision tree
-    - **WHY LOW:** Better developer experience
-    - **Estimated Time:** 3 hours
+
+- **Actions:** Generate static site, include examples, add comparison tool, create decision tree
+- **WHY LOW:** Better developer experience
+- **Estimated Time:** 3 hours
 
 ~~24. 📅 **Add template plugin system** (5 hours)~~ → ROADMAP "Extensibility" (plugin architecture)
-    - **Actions:** Allow custom templates via plugins, define plugin interface, implement discovery, add docs
-    - **WHY LOW:** Enables community contributions
-    - **Estimated Time:** 5 hours
+
+- **Actions:** Allow custom templates via plugins, define plugin interface, implement discovery, add docs
+- **WHY LOW:** Enables community contributions
+- **Estimated Time:** 5 hours
 
 ~~25. 📅 **Create comprehensive testing guide** (2 hours)~~ Won't implement — CONTRIBUTING + docs suite cover testing patterns
-    - **Actions:** Document how to test generated code, provide patterns, add mocking examples, add integration tests
-    - **WHY LOW:** Helps developers write better tests
-    - **Estimated Time:** 2 hours
+
+- **Actions:** Document how to test generated code, provide patterns, add mocking examples, add integration tests
+- **WHY LOW:** Helps developers write better tests
+- **Estimated Time:** 2 hours
 
 **TOTAL ESTIMATED TIME: ~30 hours** (Critical: 15 min, High: 1 hr, Medium: 8 hrs, Low: 21 hrs)
 

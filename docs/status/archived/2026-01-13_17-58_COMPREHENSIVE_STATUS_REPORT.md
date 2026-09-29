@@ -292,12 +292,12 @@
 ### Phase 1: Critical Foundation (43 tasks, 10 hours)
 
 - ❌ CF-01: Complete wizard test coverage to 60% (2h)
-~~- ❌ CF-02: Create microservice example (1h)~~ → TODO_LIST T13
-~~- ❌ CF-03: Create enterprise example (1h)~~ → TODO_LIST T13
-~~- ❌ CF-04: Fix commands test coverage to 60% (2h)~~ → TODO_LIST T6 (47.2% on 2026-09-29)
-~~- ❌ CF-05: Fix adapters test coverage to 50% (2h)~~ → TODO_LIST T7 (22.9% on 2026-09-29)
-~~- ❌ CF-06: Write migration guide (1h)~~ done — `docs/MIGRATION_GUIDE.md`
-~~- ❌ CF-07: Write troubleshooting expansion (1h)~~ done — `docs/TROUBLESHOOTING.md`
+  ~~- ❌ CF-02: Create microservice example (1h)~~ → TODO_LIST T13
+  ~~- ❌ CF-03: Create enterprise example (1h)~~ → TODO_LIST T13
+  ~~- ❌ CF-04: Fix commands test coverage to 60% (2h)~~ → TODO_LIST T6 (47.2% on 2026-09-29)
+  ~~- ❌ CF-05: Fix adapters test coverage to 50% (2h)~~ → TODO_LIST T7 (22.9% on 2026-09-29)
+  ~~- ❌ CF-06: Write migration guide (1h)~~ done — `docs/MIGRATION_GUIDE.md`
+  ~~- ❌ CF-07: Write troubleshooting expansion (1h)~~ done — `docs/TROUBLESHOOTING.md`
 
 ### Phase 2: Hardening (81 tasks, 29 hours)
 
@@ -310,6 +310,7 @@
 ~~- ❌ HR-07: Performance regression tests (2h)~~ → ROADMAP "Trustworthy core"
 ~~- ❌ HR-08: Load testing (3h)~~ → ROADMAP "Reach"
 ~~- ❌ HR-09: Memory profiling (2h)~~ → ROADMAP "Trustworthy core"
+
 - ❌ HR-10: Best practices guide (2h)
 - ❌ HR-11: CI/CD integration examples (2h)
 
@@ -470,10 +471,11 @@
 **Improvements Needed:**
 
 ~~- 🔴 **Research `huh` library testing capabilities** (CRITICAL - #1 Priority)~~ done — resolved by mocking step functions; wizard suite passes (34.2% coverage 2026-09-29)
-  - Read `huh` GitHub documentation
-  - Search for testing examples in `huh` codebase
-  - Check for TUI testing patterns in community
-  - Document findings and decide on strategy
+
+- Read `huh` GitHub documentation
+- Search for testing examples in `huh` codebase
+- Check for TUI testing patterns in community
+- Document findings and decide on strategy
 
 - Test data validation logic, not TUI interactions
   - Extract business logic from TUI
