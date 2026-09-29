@@ -144,7 +144,7 @@ sql:
 
 ### Prerequisites
 
-- Go 1.21+
+- Go 1.27+
 - sqlc (for testing generated code)
 
 ### Setup
@@ -152,7 +152,14 @@ sql:
 ```bash
 go mod tidy
 go test ./...
-just build
+go build ./cmd/sqlc-wizard
+```
+
+Or with Nix:
+
+```bash
+nix build   # builds the sqlc-wizard binary
+nix develop # enters the dev shell
 ```
 
 ### Testing
@@ -165,24 +172,7 @@ go test ./pkg/config -v
 
 ## Roadmap
 
-### Completed
-
-- Interactive wizard with 8 project templates
-- Configuration validation
-- Environment health checks
-- PostgreSQL, MySQL, SQLite support
-
-### In Progress
-
-- Configuration migration tools
-- Enhanced validation rules
-- Additional template customization
-
-### Planned
-
-- Web-based configuration generator
-- IDE integrations
-- Cloud provider templates
+See [ROADMAP.md](ROADMAP.md) for long-term direction and [FEATURES.md](FEATURES.md) for an honest feature inventory.
 
 ## License
 
