@@ -33,3 +33,5 @@ Harvested from `docs/status/2026-06-14_13-03-File-Size-Refactor-Complete.md`, `2
 | T13 | Add microservice and enterprise example projects (only hobby examples exist) | `examples/` holds `hobby-project/`, `hobby-sqlite/` only | Medium |
 | T14 | Ship MySQL starter query/schema templates (wizard supports MySQL engine; starter files are PostgreSQL/SQLite only) | `templates/queries/`, `templates/schema/` | Low |
 | T15 | Add CONTRIBUTING.md note about the 350-line file policy | `CONTRIBUTING.md` has no size-policy mention (grep 2026-09-29) | Trivial |
+| T16 | Test-suite tidy: consolidate duplicated `BeforeEach` blocks in `internal/creators` tests, add godoc to extracted test helpers, add a table-driven `ValidateAllProjectTypes` covering all 8 types | Harvested from 2026-06-14 report rows 14/15/17 | Low |
+| T17 | Clear remaining lint findings: `paralleltest` on template tests (add `t.Parallel()` or justify disabling), investigate `getJSONTagsCaseStyle` warning in `template_validation_test.go` | Harvested from 2026-06-14 report rows 18/23; LSP warnings 2026-09-29 | Low |
