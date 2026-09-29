@@ -85,11 +85,11 @@ SQLC-Wizard is an interactive CLI tool for generating production-ready sqlc conf
 - **Status:** No goreleaser, no GitHub releases, no binaries
 - **Risk:** Tool is unusable by anyone except developers
 
-#### 4. golangci-lint CRASH
+#### 4. ~~golangci-lint CRASH~~ RESOLVED
 
-- **Impact:** Cannot run linting in CI
-- **Error:** `panic: file requires newer Go version go1.26 (application built with go1.25)`
-- **Status:** Blocks static analysis
+- **Impact:** ~~Cannot run linting in CI~~ golangci-lint runs in CI and locally (verified 2026-09-29)
+- **Error:** ~~`panic: file requires newer Go version go1.26 (application built with go1.25)`~~ toolchain pinned; no longer reproduces
+- **Status:** ~~Blocks static analysis~~ resolved
 
 ---
 
@@ -321,14 +321,14 @@ Cannot claim production-ready with untested core component.
 
 ### Priority Order
 
-1. 🔴 **Fix wizard test execution** - Understand why tests don't run
-2. 🔴 **Add wizard test coverage** - Core user flows
-3. 🔴 **Set up GitHub Actions** - Automated CI/CD
-4. 🔴 **Create goreleaser config** - Release automation
-5. 🟡 **Fix golangci-lint** - Resolve version mismatch
-6. 🟡 **Add integration tests** - Real sqlc testing
-7. 🟡 **Create more examples** - enterprise, microservice
-8. 🟢 **Documentation improvements** - Videos, tutorials
+~~1. 🔴 **Fix wizard test execution** - Understand why tests don't run~~ done — wizard suite runs and passes (34.2% coverage 2026-09-29); Ginkgo suite healthy
+~~2. 🔴 **Add wizard test coverage** - Core user flows~~ → TODO_LIST T6
+~~3. 🔴 **Set up GitHub Actions** - Automated CI/CD~~ done at `e569c44`, hardened `044fa14`
+~~4. 🔴 **Create goreleaser config** - Release automation~~ done — `.goreleaser.yml` + `.github/workflows/release.yml` (`abb746e`); tags v0.1.0/v0.2.0 cut
+~~5. 🟡 **Fix golangci-lint** - Resolve version mismatch~~ done — golangci-lint runs in CI and locally (2026-09-29)
+~~6. 🟡 **Add integration tests** - Real sqlc testing~~ → ROADMAP "Trustworthy core" (real-sqlc tests); skeleton in `internal/integration/`
+~~7. 🟡 **Create more examples** - enterprise, microservice~~ → TODO_LIST T13
+~~8. 🟢 **Documentation improvements** - Videos, tutorials~~ → ROADMAP "Frictionless adoption" (videos/walkthroughs)
 
 ---
 

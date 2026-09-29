@@ -18,7 +18,7 @@ Harvested from `docs/status/2026-06-14_13-03-File-Size-Refactor-Complete.md`, `2
 
 | ID | Task | Evidence | Effort |
 | --- | --- | --- | --- |
-| T6 | Raise wizard coverage (34.2% on 2026-09-29) toward 60%; it is the core UI component | `go test -cover ./internal/wizard/` 2026-09-29 | High |
+| T6 | Raise wizard coverage (34.2%) and commands coverage (47.2%) toward 60%; the wizard is the core UI component | `go test -cover` 2026-09-29 | High |
 | T7 | Raise adapters coverage (22.9%, lowest package) | `go test -cover ./internal/adapters/` 2026-09-29 | Medium |
 | T8 | Add CI file-size gate that fails when a `.go` file exceeds 350 lines | CI (`.github/workflows/ci-cd.yml`) runs tests/lint/dupl but no size check; report §f #11 | Low |
 | T9 | Add snapshot/golden tests for generated `sqlc.yaml` of all 8 templates | No `snapshot_test.go` in `internal/templates/` (verified 2026-09-29) | Medium |

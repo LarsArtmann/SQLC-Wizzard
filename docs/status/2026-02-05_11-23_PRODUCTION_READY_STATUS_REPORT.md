@@ -688,21 +688,21 @@ ecadc06 cleanup: remove redundant wizard test files
 
 ### 🔴 CRITICAL (Block Future Work)
 
-1. **Increase Adapters Coverage from 23.0% to 40%**
+~~1. **Increase Adapters Coverage from 23.0% to 40%**~~ → TODO_LIST T7 (22.9% on 2026-09-29 — still the lowest package)
    - Add tests for all adapter interfaces
    - Test error paths and edge cases
    - Add integration tests
    - **Impact**: HIGH - Core infrastructure
    - **Time**: 2 hours
 
-2. **Increase Creators Coverage from 23.7% to 40%**
+~~2. **Increase Creators Coverage from 23.7% to 40%**~~ done — 49.4% on 2026-09-29 (target exceeded)
    - Test all creator methods
    - Add error handling tests
    - Test file generation edge cases
    - **Impact**: HIGH - Core functionality
    - **Time**: 2 hours
 
-3. **Increase Commands Coverage from 38.1% to 60%**
+~~3. **Increase Commands Coverage from 38.1% to 60%**~~ → TODO_LIST T6 (47.2% on 2026-09-29)
    - Test all CLI commands (init, validate, doctor, generate, migrate)
    - Test flag parsing and validation
    - Test command execution flow
@@ -711,7 +711,7 @@ ecadc06 cleanup: remove redundant wizard test files
 
 ### 🟠 HIGH IMPACT (User Experience)
 
-4. **Create Additional Example Projects**
+~~4. **Create Additional Example Projects**~~ → TODO_LIST T13 (microservice, enterprise)
    - microservice example (Docker, K8s)
    - API-first example (OpenAPI, Swagger)
    - Multi-tenant example (RLS policies)
@@ -719,21 +719,21 @@ ecadc06 cleanup: remove redundant wizard test files
    - **Impact**: HIGH - User onboarding
    - **Time**: 3 hours
 
-5. **Create Video Tutorials**
+~~5. **Create Video Tutorials**~~ → ROADMAP "Frictionless adoption"
    - Screen recording of wizard usage
    - Step-by-step walkthrough
    - Upload to YouTube
    - **Impact**: HIGH - User learning
    - **Time**: 2 hours
 
-6. **Add Integration Tests**
+~~6. **Add Integration Tests**~~ → ROADMAP "Trustworthy core"
    - End-to-end wizard flow tests
    - Database integration tests
    - File system integration tests
    - **Impact**: HIGH - System reliability
    - **Time**: 4 hours
 
-7. **Create CONTRIBUTING Guide**
+~~7. **Create CONTRIBUTING Guide**~~ done at `c9d7e57` — `CONTRIBUTING.md`
    - Development setup instructions
    - Code style guidelines
    - PR process and review criteria
@@ -742,21 +742,21 @@ ecadc06 cleanup: remove redundant wizard test files
 
 ### 🟡 MEDIUM IMPACT (Documentation)
 
-8. **Create API Documentation**
+~~8. **Create API Documentation**~~ Won't implement — godoc plus the docs suite cover it; a separate API reference is not scheduled
    - Generated code API reference
    - Query naming conventions
    - Type system documentation
    - **Impact**: MEDIUM - Developer experience
    - **Time**: 2 hours
 
-9. **Create Changelog**
+~~9. **Create Changelog**~~ done — `CHANGELOG.md` (rebuilt in the 2026-09-29 docs-health pass)
    - Document breaking changes
    - Version history
    - Migration notes
    - **Impact**: MEDIUM - Release management
    - **Time**: 30 minutes
 
-10. **Create Release Notes**
+~~10. **Create Release Notes**~~ Won't implement — GoReleaser generates GitHub release notes per tag
 
 - Feature highlights
 - Upgrade instructions
@@ -764,7 +764,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: MEDIUM - User communication
 - **Time**: 30 minutes
 
-11. **Add Performance Benchmarks**
+~~11. **Add Performance Benchmarks**~~ → ROADMAP "Trustworthy core"
 
 - Query execution time tests
 - Code generation speed tests
@@ -772,7 +772,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: MEDIUM - Performance monitoring
 - **Time**: 2 hours
 
-12. **Create Docker Deployment Guide**
+~~12. **Create Docker Deployment Guide**~~ Won't implement — Dockerfile + GHCR image ship via the release workflow; a compose guide is not scheduled
 
 - Dockerfile optimization
 - docker-compose examples
@@ -780,7 +780,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: MEDIUM - Deployment ease
 - **Time**: 1 hour
 
-13. **Create Kubernetes Deployment Guide**
+~~13. **Create Kubernetes Deployment Guide**~~ → ROADMAP "Reach"
 
 - Helm charts
 - K8s deployment manifests
@@ -790,7 +790,7 @@ ecadc06 cleanup: remove redundant wizard test files
 
 ### 🟢 LOWER IMPACT (Nice to Have)
 
-14. **Add Security Audit Tests**
+~~14. **Add Security Audit Tests**~~ → ROADMAP "Reach" (security audit pass)
 
 - SQL injection prevention tests
 - XSS prevention tests
@@ -798,7 +798,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Security assurance
 - **Time**: 2 hours
 
-15. **Create Multi-Database Example**
+~~15. **Create Multi-Database Example**~~ Won't implement — all three engines are supported by the templates; no demand for a combined example
 
 - Support for PostgreSQL + MySQL + SQLite
 - Database abstraction layer
@@ -806,7 +806,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Flexibility demonstration
 - **Time**: 2 hours
 
-16. **Add Load Testing Scripts**
+~~16. **Add Load Testing Scripts**~~ → ROADMAP "Reach"
 
 - k6 performance tests
 - Database load tests
@@ -814,7 +814,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Performance validation
 - **Time**: 2 hours
 
-17. **Create GitHub Actions CI**
+~~17. **Create GitHub Actions CI**~~ done at `e569c44`, hardened `044fa14`
 
 - Automated testing
 - Coverage reporting
@@ -822,7 +822,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - CI/CD
 - **Time**: 2 hours
 
-18. **Add Linting Tools**
+~~18. **Add Linting Tools**~~ done — golangci-lint runs in CI (`.github/workflows/ci-cd.yml`)
 
 - golangci-lint
 - Static analysis
@@ -830,7 +830,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Code quality
 - **Time**: 1 hour
 
-19. **Create Pre-commit Hooks**
+~~19. **Create Pre-commit Hooks**~~ Won't implement — CI is the quality gate; local hooks not used in this workflow
 
 - Format checking
 - Linting before push
@@ -838,7 +838,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Code quality
 - **Time**: 30 minutes
 
-20. **Add License Headers**
+~~20. **Add License Headers**~~ Won't implement — MIT `LICENSE` at repo root; per-file headers not required
 
 - Copyright notices in all files
 - MIT license header
@@ -846,7 +846,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Legal compliance
 - **Time**: 30 minutes
 
-21. **Create Architecture Diagrams**
+~~21. **Create Architecture Diagrams**~~ done — `docs/architecture-understanding/*.mmd`
 
 - Package dependency graph
 - Data flow diagrams
@@ -854,7 +854,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Documentation
 - **Time**: 2 hours
 
-22. **Add Example API Endpoints**
+~~22. **Add Example API Endpoints**~~ NOT-DO/DUPLICATE — this is a config wizard, not an API server (ROADMAP non-goals)
 
 - REST API examples
 - GraphQL examples (if applicable)
@@ -862,7 +862,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - User reference
 - **Time**: 2 hours
 
-23. **Create Unit Test Examples**
+~~23. **Create Unit Test Examples**~~ Won't implement — the test suites themselves serve as examples
 
 - Testing best practices
 - Mock examples
@@ -870,7 +870,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - Developer guidance
 - **Time**: 1 hour
 
-24. **Add Documentation Website**
+~~24. **Add Documentation Website**~~ → ROADMAP "Reach"
 
 - Hugo/Jekyll site
 - Interactive tutorials
@@ -878,7 +878,7 @@ ecadc06 cleanup: remove redundant wizard test files
 - **Impact**: LOW - User experience
 - **Time**: 4 hours
 
-25. **Create Release Checklist**
+~~25. **Create Release Checklist**~~ Won't implement — GoReleaser automates the release path
 
 - Pre-release tasks
 - Post-release verification

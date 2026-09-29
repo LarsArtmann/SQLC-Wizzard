@@ -161,30 +161,30 @@ Created 7 comprehensive documentation files:
 
 ### Critical Priority
 
-1. **Split project_creator.go** (775 → 4 files <200 lines each)
-2. **Integrate generateQueryFiles()** into CreateProject workflow
-3. **Migrate SafetyRules → TypeSafeSafetyRules** across all templates
+~~1. **Split project_creator.go** (775 → 4 files <200 lines each)~~ → TODO_LIST T1 (still 434 lines on 2026-09-29)
+~~2. **Integrate generateQueryFiles()** into CreateProject workflow~~ → TODO_LIST T11 (still unwired, `project_creator.go:62`)
+~~3. **Migrate SafetyRules → TypeSafeSafetyRules** across all templates~~ → TODO_LIST T3 (4 files still on the boolean type)
 
 ### High Priority
 
-4. Add file size limit check to CI (>300 lines = fail)
-5. Add dupl check to CI (detect code duplication)
-6. Refactor commands_enhanced_test.go (565 lines)
-7. Refactor domain/conversions_test.go (521 lines)
-8. Refactor schema/schema_test.go (472 lines)
+~~4. Add file size limit check to CI (>300 lines = fail)~~ → TODO_LIST T8 (no size gate in CI 2026-09-29)
+~~5. Add dupl check to CI (detect code duplication)~~ done — `dupl -t 100 -plumbing .` runs in CI
+~~6. Refactor commands_enhanced_test.go (565 lines)~~ done — split to 222 lines in the 2026-06-14 file-size refactor
+~~7. Refactor domain/conversions_test.go (521 lines)~~ done — deleted and replaced by 3 focused files (2026-06-14 refactor)
+~~8. Refactor schema/schema_test.go (472 lines)~~ done — now 295 lines (2026-06-14 refactor)
 
 ### Medium Priority
 
-9. Add golden file tests for SQL generation
-10. Create Template interface compliance checker
-11. Add coverage reporting to CI pipeline
-12. Remove dead code in project_creator.go TODO section (lines 58-76)
+~~9. Add golden file tests for SQL generation~~ → TODO_LIST T9
+~~10. Create Template interface compliance checker~~ Won't implement — template validation tests already assert conformance
+~~11. Add coverage reporting to CI pipeline~~ done — CI runs `-coverprofile=coverage.txt`
+~~12. Remove dead code in project_creator.go TODO section (lines 58-76)~~ → TODO_LIST T11
 
 ### Low Priority
 
-13. Document BaseTemplate usage in AGENTS.md
-14. Create example template showing BaseTemplate extension
-15. Add architectural decision record (ADR) for BaseTemplate pattern
+~~13. Document BaseTemplate usage in AGENTS.md~~ done — AGENTS.md Architecture documents both template patterns (2026-09-29)
+~~14. Create example template showing BaseTemplate extension~~ Won't implement — the 8 shipped templates are the examples; `docs/templates/customization.md` covers extension
+~~15. Add architectural decision record (ADR) for BaseTemplate pattern~~ Won't implement — pattern documented in AGENTS.md; an ADR adds little now
 
 ---
 
@@ -229,10 +229,10 @@ a834bb6 test: add adapter tests and user guide
 
 **What Remains:**
 
-1. ⚠️ Split project_creator.go (775 lines - exceeds limit)
-2. ⚠️ Complete SafetyRules → TypeSafeSafetyRules migration
-3. ⚠️ Integrate generateQueryFiles() into project creation workflow
-4. ⚠️ Add CI checks for file size and code duplication
+~~1. ⚠️ Split project_creator.go (775 lines - exceeds limit)~~ → TODO_LIST T1
+~~2. ⚠️ Complete SafetyRules → TypeSafeSafetyRules migration~~ → TODO_LIST T3
+~~3. ⚠️ Integrate generateQueryFiles() into project creation workflow~~ → TODO_LIST T11
+~~4. ⚠️ Add CI checks for file size and code duplication~~ → TODO_LIST T8 (size gate); dupl already in CI
 
 **Overall Assessment:**
 The codebase has been significantly improved through today's work. The template system is now DRY (Don't Repeat Yourself) with the BaseTemplate pattern, documentation is comprehensive, and tests are passing. The remaining work is cleanup and consolidation rather than critical fixes.
