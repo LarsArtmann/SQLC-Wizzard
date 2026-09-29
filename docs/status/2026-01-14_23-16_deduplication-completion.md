@@ -386,10 +386,10 @@ FAIL	github.com/LarsArtmann/SQLC-Wizzard/internal/apperrors	0.435s
 
 ### Future Improvements
 
-1. **CI Integration**: Consider adding `art-dupl` to CI pipeline to catch new duplications
-2. **Code Review Guidelines**: Add guidelines for using test helpers and table-driven tests
-3. **Refactoring Sprints**: Schedule regular deduplication sessions (monthly/quarterly)
-4. **Metrics Tracking**: Track code duplication metrics over time to identify trends
+~~1. **CI Integration**: Consider adding `art-dupl` to CI pipeline to catch new duplications~~ done — `dupl -t 100` runs in CI (`.github/workflows/ci-cd.yml`)
+~~2. **Code Review Guidelines**: Add guidelines for using test helpers and table-driven tests~~ Won't implement — conventions live in AGENTS.md
+~~3. **Refactoring Sprints**: Schedule regular deduplication sessions (monthly/quarterly)~~ Won't implement — refactors happen on sight per the AGENTS.md file policy
+~~4. **Metrics Tracking**: Track code duplication metrics over time to identify trends~~ Won't implement — the CI dupl gate suffices; no standing metrics dashboard
 
 ### Monitoring
 
@@ -438,3 +438,9 @@ Successfully completed comprehensive code deduplication across the SQLC-Wizard c
 **Tool:** `art-dupl` v1.0.0
 **Threshold:** 70% similarity
 **Analyst:** Crush AI Assistant
+
+---
+
+## Resolution (2026-09-29)
+
+Deduplication pass held: the CI pipeline now runs `dupl -t 100` as a standing gate, and the three remaining clone groups were accepted as intentional (see analysis above). Future-improvement items are dispositioned inline; the follow-up ideas that still matter live in TODO_LIST.md and ROADMAP.md. File archived to `docs/status/archived/`.

@@ -221,56 +221,56 @@ return apperrors.ValidationError("field", "validation failed")  // Context-rich 
 
 ## 🚀 Next Steps (Phase 3: Comprehensive)
 
-**Status:** READY TO START
-**Estimated Time:** ~12 hours
-**Expected Result:** 80% of architectural improvements complete
+**Status:** ~~READY TO START~~ never executed as a unit — superseded by later sessions (dedup 2026-01-14, file-size refactor 2026-06-14); each task group dispositioned inline, remaining work in TODO_LIST.md
+**Estimated Time:** ~~12 hours~~ n/a
+**Expected Result:** ~~80% of architectural improvements complete~~ remaining items tracked in TODO_LIST/ROADMAP
 
 ### Planned Tasks (M-C-001 to M-C-065)
 
-1. **Test Suite Structure (Task C-001)**
+~~1. **Test Suite Structure (Task C-001)**~~ done — duplicate `RunSpecs` calls removed (dedup pass 2026-01-14); single-run suites
    - Create single test suite runner
    - Remove duplicate RunSpecs calls
    - Enable parallel test execution
 
-2. **Type Safety Audit (Tasks C-006 to C-018)**
+~~2. **Type Safety Audit (Tasks C-006 to C-018)**~~ → TODO_LIST T3 (SafetyRules boolean→enum migration remains)
    - Audit all error returns
    - Replace generic errors with typed errors
    - Ensure context preservation
 
-3. **File Size Management (Tasks C-019 to C-030)**
+~~3. **File Size Management (Tasks C-019 to C-030)**~~ → TODO_LIST T1 (9 files over 350 on 2026-09-29; 11-file split done 2026-06-14)
    - Check all files < 350 lines
    - Split oversized files
    - Improve code organization
 
-4. **Comprehensive Testing (Tasks C-031 to C-037)**
+~~4. **Comprehensive Testing (Tasks C-031 to C-037)**~~ done — `internal/apperrors` has behavior/wrapping/creation/comparison tests
    - Add error wrapping tests
    - Add error context tests
    - Add error comparison tests
 
-5. **Documentation (Tasks C-038 to C-044)**
+~~5. **Documentation (Tasks C-038 to C-044)**~~ done — AGENTS.md + `docs/` suite
    - Document error handling patterns
    - Update AGENTS.md
    - Add examples and best practices
 
-6. **Performance Optimization (Tasks C-045 to C-060)**
+~~6. **Performance Optimization (Tasks C-045 to C-060)**~~ → ROADMAP "Trustworthy core"
    - Benchmark error creation
    - Optimize if needed
    - Add performance tests
 
-7. **Integration & Validation (Tasks C-061 to M-C-065)**
+~~7. **Integration & Validation (Tasks C-061 to M-C-065)**~~ → ROADMAP "Trustworthy core"
    - Add integration tests
    - Final verification
    - Document results
 
 ### Quality Gates for Phase 3
 
-- [ ] Zero build errors
-- [ ] All tests pass (including multiple RunSpecs resolved)
-- [ ] All files < 350 lines
-- [ ] Test coverage > 80%
-- [ ] No performance regressions
-- [ ] Documentation complete
-- [ ] Code review approved
+~~- [ ] Zero build errors~~ done — build green 2026-09-29
+~~- [ ] All tests pass (including multiple RunSpecs resolved)~~ done — all 14 packages pass 2026-09-29
+~~- [ ] All files < 350 lines~~ → TODO_LIST T1 (9 files over on 2026-09-29)
+~~- [ ] Test coverage > 80%~~ → ROADMAP "Trustworthy core" (34.2-64.5% across key packages)
+~~- [ ] No performance regressions~~ → ROADMAP "Trustworthy core" (no baseline exists yet)
+~~- [ ] Documentation complete~~ done — AGENTS.md, FEATURES, TODO_LIST, ROADMAP, docs suite
+~~- [ ] Code review approved~~ Won't implement — superseded by CI gate (test+lint+dupl on every push)
 
 ---
 
@@ -327,10 +327,10 @@ Total: 37 files changed
 
 ### Nice-to-Have (INFO)
 
-- [ ] Benchmark results optimized (Phase 3)
-- [ ] Integration tests comprehensive (Phase 3)
-- [ ] Error patterns well-documented (Phase 3)
-- [ ] Code review checklist updated (Phase 3)
+~~- [ ] Benchmark results optimized (Phase 3)~~ → ROADMAP "Trustworthy core"
+~~- [ ] Integration tests comprehensive (Phase 3)~~ → ROADMAP "Trustworthy core"
+~~- [ ] Error patterns well-documented (Phase 3)~~ done — AGENTS.md Conventions cover apperrors patterns
+~~- [ ] Code review checklist updated (Phase 3)~~ Won't implement — CI gate replaces manual checklist
 
 ---
 

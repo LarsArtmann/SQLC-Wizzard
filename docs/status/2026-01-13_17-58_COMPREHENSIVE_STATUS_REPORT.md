@@ -158,7 +158,7 @@
 
 ## ⚠️ PARTIALLY COMPLETED (20-60%)
 
-### 4. Wizard Step Tests (QW-03) - 30% Complete
+### 4. Wizard Step Tests (QW-03) - ~~30% Complete~~ 34.2% as of 2026-09-29 (→ TODO_LIST T6)
 
 **Status:** ⚠️ BLOCKED\
 **Time:** 2 hours spent (of 2 estimated)\
@@ -217,7 +217,7 @@
 
 ---
 
-### 5. Basic Example Project (QW-04) - 20% Complete
+### 5. Basic Example Project (QW-04) - ~~20% Complete~~ done at `9db82a7`, `eef7939`
 
 **Status:** ⚠️ PARTIAL\
 **Time:** 1 hour spent (of 1 estimated)\
