@@ -81,7 +81,9 @@ func AssertTemplateDefaultData(t *testing.T, helper TemplateTestHelper) {
 		)
 	}
 
-	assert.Equal(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle)
+	// Style names are plain strings ("camel"/"snake"), not JSON documents;
+	// JSONEq here fails with "invalid character 'c'" on every template.
+	assert.Equal(t, expectedJSONTagsCaseStyle, data.Validation.EmitOptions.JSONTagsCaseStyle) //nolint:testifylint // encoded-compare misfire: neither side is JSON
 
 	// Check prepared queries - defaults to true unless explicitly set
 	expectedPreparedQueries := helper.ExpectPreparedQueries
