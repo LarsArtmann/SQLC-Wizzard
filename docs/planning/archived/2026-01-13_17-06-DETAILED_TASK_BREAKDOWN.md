@@ -20,7 +20,7 @@ Tasks sorted by **(Impact × Importance) / Effort** ratio:
 
 ## 📋 Complete Task List (150 Tasks)
 
-### Phase 0: Quick Wins (1% → 51%) - 23 Tasks
+### ~~Phase 0: Quick Wins (1% → 51%) - 23 Tasks~~ EXECUTED — user guide (`6507a01`), test fixes, hobby example (`9db82a7`); wizard coverage at 34.2% (→ TODO_LIST T6)
 
 #### QW-01: Fix 3 Failing Integration Tests (30min = 2 tasks)
 
@@ -86,7 +86,7 @@ Tasks sorted by **(Impact × Importance) / Effort** ratio:
 
 ---
 
-### Phase 1: Critical Foundation (4% → 64%) - 45 Tasks
+### ~~Phase 1: Critical Foundation (4% → 64%) - 45 Tasks~~ PARTIALLY EXECUTED — guides done; coverage targets open (→ TODO_LIST T6/T7, T13)
 
 #### CF-01: Complete Wizard Test Coverage to 60% (2h = 8 tasks)
 
@@ -197,7 +197,7 @@ Tasks sorted by **(Impact × Importance) / Effort** ratio:
 
 ---
 
-### Phase 2: Hardening (20% → 80%) - 81 Tasks
+### ~~Phase 2: Hardening (20% → 80%) - 81 Tasks~~ DISPOSITIONED 2026-09-29 — best-practices guide done; coverage/perf/load ideas → ROADMAP "Trustworthy core" / "Reach"
 
 #### HR-01: Complete Wizard Test Coverage to 80% (4h = 16 tasks)
 
@@ -623,35 +623,35 @@ Spread across 7 days, 3 hours per day on average.
 
 ### Phase 0: Quick Wins (1% → 51%)
 
-- [ ] All 26 tasks completed
-- [ ] 3 failing tests fixed
-- [ ] Getting Started guide created
-- [ ] Wizard test coverage improved to ~30%
-- [ ] Basic example working
+~~- [ ] All 26 tasks completed~~ → dispositioned via the PARETO plan verdicts (archived 2026-09-29)
+~~- [ ] 3 failing tests fixed~~ done — suites green (2026-09-29)
+~~- [ ] Getting Started guide created~~ done at `6507a01`
+~~- [ ] Wizard test coverage improved to ~30%~~ done — 34.2% on 2026-09-29 (→ TODO_LIST T6 for 60%)
+~~- [ ] Basic example working~~ done at `9db82a7`
 
 ### Phase 1: Critical Foundation (4% → 64%)
 
-- [ ] All 43 tasks completed
-- [ ] Wizard test coverage >60%
-- [ ] 3 real-world examples working
-- [ ] Commands/adapters test coverage >60%
-- [ ] Migration and troubleshooting guides written
+~~- [ ] All 43 tasks completed~~ → dispositioned via the PARETO plan verdicts
+~~- [ ] Wizard test coverage >60%~~ → TODO_LIST T6 (34.2%)
+~~- [ ] 3 real-world examples working~~ → TODO_LIST T13 (hobby examples only)
+~~- [ ] Commands/adapters test coverage >60%~~ → TODO_LIST T6/T7 (47.2% / 22.9%)
+~~- [ ] Migration and troubleshooting guides written~~ done — `docs/MIGRATION_GUIDE.md`, `docs/TROUBLESHOOTING.md`
 
 ### Phase 2: Hardening (20% → 80%)
 
-- [ ] All 81 tasks completed
-- [ ] Wizard test coverage >80%
-- [ ] All package coverage >70%
-- [ ] Performance baselines established
-- [ ] Load testing completed
-- [ ] Memory profiling completed
-- [ ] Best practices guide written
-- [ ] CI/CD examples provided
+~~- [ ] All 81 tasks completed~~ → dispositioned via the PARETO plan verdicts
+~~- [ ] Wizard test coverage >80%~~ → TODO_LIST T6 (longer-term)
+~~- [ ] All package coverage >70%~~ → ROADMAP "Trustworthy core"
+~~- [ ] Performance baselines established~~ → ROADMAP "Trustworthy core"
+~~- [ ] Load testing completed~~ → ROADMAP "Reach"
+~~- [ ] Memory profiling completed~~ → ROADMAP "Trustworthy core"
+~~- [ ] Best practices guide written~~ done — `docs/BEST_PRACTICES.md`
+~~- [ ] CI/CD examples provided~~ → ROADMAP "Frictionless adoption"
 
 ### Final: 100% Enterprise Ready
 
-- [ ] All 150 tasks completed
-- [ ] Overall test coverage >70%
+~~- [ ] All 150 tasks completed~~ → superseded: open work lives in TODO_LIST.md / ROADMAP.md (2026-09-29)
+~~- [ ] Overall test coverage >70%~~ → ROADMAP "Trustworthy core"
 - [ ] All tests passing (100%)
 - [ ] Documentation complete
 - [ ] Examples working
@@ -665,3 +665,9 @@ Spread across 7 days, 3 hours per day on average.
 **Total Time:** ~37.5 hours
 **Priority:** Impact/Effort sorted
 **Status:** 🟢 READY TO EXECUTE
+
+---
+
+## Resolution (2026-09-29)
+
+This 150-task plan was superseded by actual execution across 2026 sessions. Phase-level verdicts are inline above; per-task dispositions for the shared 27-task core are in the archived PARETO plan (`docs/planning/archived/2026-01-13_17-06-PARETO_OPTIMAL_EXECUTION_PLAN.md`), and all surviving work is consolidated in TODO_LIST.md and ROADMAP.md.
