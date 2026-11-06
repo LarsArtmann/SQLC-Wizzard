@@ -6,7 +6,7 @@ require (
 	charm.land/huh/v2 v2.0.3
 	charm.land/lipgloss/v2 v2.0.6
 	charm.land/log/v2 v2.0.1
-	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20261103202827-4291b05824c7
+	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20261105022150-36a5351c0df6
 	github.com/golang-migrate/migrate/v4 v4.20.1
 	github.com/google/uuid v1.6.0
 	github.com/onsi/ginkgo/v2 v2.34.0
@@ -38,7 +38,7 @@ require (
 	github.com/go-logr/logr v1.4.4 // indirect
 	github.com/go-task/slim-sprig/v3 v3.0.0 // indirect
 	github.com/google/go-cmp v0.7.0 // indirect
-	github.com/google/pprof v0.0.0-20261103193413-97e8293de3c4 // indirect
+	github.com/google/pprof v0.0.0-20261105003125-4bf881d7fb0b // indirect
 	github.com/inconshreveable/mousetrap v1.1.0 // indirect
 	github.com/lucasb-eyer/go-colorful v1.4.1 // indirect
 	github.com/mattn/go-runewidth v0.0.31 // indirect
@@ -46,7 +46,7 @@ require (
 	github.com/muesli/cancelreader v0.2.2 // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/spf13/pflag v1.0.10 // indirect
-	github.com/xo/terminfo v1.3.0 // indirect
+	github.com/xo/terminfo v1.3.1 // indirect
 	go.yaml.in/yaml/v3 v3.0.6 // indirect
 	golang.org/x/exp v0.0.0-20261014143641-f0251eb4aa3e // indirect
 	golang.org/x/mod v0.42.0 // indirect
