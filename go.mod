@@ -4,7 +4,7 @@ go 1.27
 
 require (
 	charm.land/huh/v2 v2.0.3
-	charm.land/lipgloss/v2 v2.0.6
+	charm.land/lipgloss/v2 v2.1.0
 	charm.land/log/v2 v2.0.1
 	github.com/LarsArtmann/SQLC-Wizzard/generated v0.0.0-20261105022150-36a5351c0df6
 	github.com/golang-migrate/migrate/v4 v4.20.1
